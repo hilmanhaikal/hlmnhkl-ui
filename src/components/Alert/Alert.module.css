@@ -1,0 +1,107 @@
+.root {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--hl-space-4);
+  padding: var(--hl-space-5);
+  border: var(--hl-line) solid var(--hl-color-border);
+  border-radius: var(--hl-radius-md);
+  background: var(--hl-color-surface);
+  overflow: hidden;
+  animation: alertIn var(--hl-motion-slow) var(--hl-ease-out);
+}
+
+/* The icon shape also tells statuses apart, so colour is never alone. */
+.success {
+  background: var(--hl-color-success-soft);
+  border-color: color-mix(in srgb, var(--hl-color-success) 45%, var(--hl-color-border));
+}
+.warning {
+  background: var(--hl-color-warning-soft);
+  border-color: color-mix(in srgb, var(--hl-color-warning) 45%, var(--hl-color-border));
+}
+.error {
+  background: var(--hl-color-danger-soft);
+  border-color: color-mix(in srgb, var(--hl-color-danger) 45%, var(--hl-color-border));
+}
+.success .icon { color: var(--hl-color-success); }
+.warning .icon { color: var(--hl-color-warning); }
+.error .icon { color: var(--hl-color-danger); }
+.error .title { font-weight: var(--hl-weight-semibold); }
+
+.banner {
+  border-radius: 0;
+  border-width: 0 0 var(--hl-line);
+  background: var(--hl-color-inverse);
+  color: var(--hl-color-inverse-fg);
+  align-items: center;
+  padding-block: var(--hl-space-3);
+}
+
+.banner .body { color: inherit; opacity: 0.8; }
+.banner .close { color: inherit; }
+@media (hover: hover) {
+  .banner .close:hover { background: var(--hl-color-inverse-hover); }
+}
+
+.icon {
+  flex: none;
+  width: var(--hl-icon-lg);
+  height: var(--hl-icon-lg);
+  margin-top: var(--hl-space-1);
+  animation: iconIn var(--hl-motion-slower) var(--hl-ease-spring);
+}
+
+/* On the inverse strip a status hue can drop under 3:1, so the banner icon keeps the strip's text colour. */
+.banner .icon { margin-top: 0; color: inherit; }
+
+.text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hl-space-1);
+}
+
+.title {
+  margin: 0;
+  font-weight: var(--hl-weight-medium);
+  line-height: var(--hl-leading-snug);
+}
+
+.body {
+  font-size: var(--hl-text-sm);
+  color: var(--hl-color-fg-muted);
+  line-height: var(--hl-leading-normal);
+}
+
+.action { margin-top: var(--hl-space-3); }
+
+.close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--hl-hit-min);
+  height: var(--hl-hit-min);
+  margin: calc(var(--hl-space-4) * -1) calc(var(--hl-space-3) * -1) calc(var(--hl-space-4) * -1) 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--hl-radius-full);
+  background: transparent;
+  color: var(--hl-color-fg-muted);
+  font-size: var(--hl-icon-md);
+  cursor: pointer;
+  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+@media (hover: hover) {
+  .close:hover { background: var(--hl-color-surface-hover); color: var(--hl-color-fg); }
+}
+.close:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+
+@keyframes alertIn {
+  from { opacity: 0; transform: translateY(calc(var(--hl-shift-sm) * -1)); }
+}
+
+@keyframes iconIn {
+  from { opacity: 0; transform: scale(0.5) rotate(-20deg); }
+}

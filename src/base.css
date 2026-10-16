@@ -1,0 +1,39 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--hl-color-bg);
+  color: var(--hl-color-fg);
+  font-family: var(--hl-font-sans);
+  font-size: var(--hl-text-md);
+  line-height: var(--hl-leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--hl-motion-base) var(--hl-ease-out), color var(--hl-motion-base) var(--hl-ease-out);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+img,
+svg {
+  display: block;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}

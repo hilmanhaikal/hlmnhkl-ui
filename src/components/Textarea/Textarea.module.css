@@ -1,0 +1,63 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.labelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--hl-space-4);
+  margin-bottom: var(--hl-space-3);
+}
+
+.label {
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-medium);
+}
+
+.count {
+  font-size: var(--hl-text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--hl-color-fg-muted);
+}
+
+.textarea {
+  display: block;
+  width: 100%;
+  resize: none;
+  padding: var(--hl-space-4) var(--hl-space-5);
+  border: var(--hl-line) solid var(--hl-color-border-strong);
+  border-radius: var(--hl-radius-md);
+  background: var(--hl-color-surface);
+  font-size: var(--hl-text-input);
+  line-height: var(--hl-leading-normal);
+  outline: none;
+  overflow-y: hidden;
+  transition:
+    height var(--hl-motion-base) var(--hl-ease-out),
+    border-color var(--hl-motion-fast) var(--hl-ease-out),
+    box-shadow var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.textarea::placeholder { color: var(--hl-color-fg-subtle); }
+@media (hover: hover) {
+  .textarea:hover { border-color: var(--hl-color-fg-muted); }
+}
+
+.textarea:focus {
+  border-color: var(--hl-color-fg);
+  box-shadow: 0 0 0 var(--hl-halo) var(--hl-color-surface-active);
+}
+
+.textarea[data-invalid] {
+  border-color: var(--hl-color-danger);
+  border-width: var(--hl-line-thick);
+}
+
+.textarea:disabled {
+  background: var(--hl-color-surface-sunken);
+  opacity: 0.6;
+  cursor: not-allowed;
+}

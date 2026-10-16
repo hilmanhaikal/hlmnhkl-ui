@@ -1,0 +1,96 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--hl-line) solid var(--hl-color-border);
+}
+
+.item {
+  border-bottom: var(--hl-line) solid var(--hl-color-border);
+}
+
+.heading {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hl-space-5);
+  width: 100%;
+  min-height: var(--hl-hit-min);
+  padding: var(--hl-space-5) var(--hl-space-2);
+  border: 0;
+  border-radius: var(--hl-radius-sm);
+  background: transparent;
+  /* Without a colour, iPhone Safari draws button text in its own blue. */
+  color: var(--hl-color-fg);
+  font-family: inherit;
+  font-size: var(--hl-text-md);
+  font-weight: var(--hl-weight-medium);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+@media (hover: hover) {
+  .trigger:hover:not(:disabled) { background: var(--hl-color-surface-hover); }
+}
+.trigger:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.trigger:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 var(--hl-line-focus) var(--hl-color-fg);
+}
+
+.chevron {
+  flex: none;
+  width: var(--hl-icon-md);
+  height: var(--hl-icon-md);
+  color: var(--hl-color-fg-muted);
+  transition: transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.item[data-open] .chevron { transform: rotate(180deg); }
+
+/* Height animates with grid rows from 0fr to 1fr, so no JS measuring is needed. */
+.panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--hl-motion-slow) var(--hl-ease-out),
+    visibility 0s linear var(--hl-motion-slow);
+}
+
+.item[data-open] .panel {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--hl-motion-slow) var(--hl-ease-out),
+    visibility 0s;
+}
+
+.panelInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.content {
+  padding: 0 var(--hl-space-2) var(--hl-space-6);
+  color: var(--hl-color-fg-muted);
+  line-height: var(--hl-leading-normal);
+  opacity: 0;
+  transform: translateY(calc(var(--hl-shift-md) * -1));
+  transition:
+    opacity var(--hl-motion-base) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-out);
+}
+
+.item[data-open] .content {
+  opacity: 1;
+  transform: none;
+  transition-delay: var(--hl-motion-instant);
+}

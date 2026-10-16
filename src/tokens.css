@@ -1,0 +1,483 @@
+:root,
+[data-theme="light"] {
+  /* Grey scale (raw, components use the semantic tokens) */
+  --hl-gray-0: #ffffff;
+  --hl-gray-50: #fafafa;
+  --hl-gray-100: #f4f4f4;
+  --hl-gray-150: #ededed;
+  --hl-gray-200: #e4e4e4;
+  --hl-gray-300: #d1d1d1;
+  --hl-gray-400: #a6a6a6;
+  --hl-gray-500: #808080;
+  --hl-gray-600: #5e5e5e;
+  --hl-gray-700: #404040;
+  --hl-gray-800: #262626;
+  --hl-gray-850: #1c1c1c;
+  --hl-gray-900: #141414;
+  --hl-gray-950: #0a0a0a;
+  --hl-gray-1000: #000000;
+
+  /* Semantic colours, light theme */
+  --hl-color-bg: var(--hl-gray-50);
+  --hl-color-surface: var(--hl-gray-0);
+  --hl-color-surface-sunken: var(--hl-gray-100);
+  --hl-color-surface-hover: var(--hl-gray-150);
+  --hl-color-surface-active: var(--hl-gray-200);
+  --hl-color-overlay: rgb(10 10 10 / 0.32);
+  --hl-color-fg: var(--hl-gray-950);
+  --hl-color-fg-muted: var(--hl-gray-600);
+  --hl-color-fg-subtle: #6b6b6b;
+  --hl-color-fg-disabled: var(--hl-gray-400);
+  --hl-color-border: var(--hl-gray-200);
+  --hl-color-border-strong: #8a8a8a;
+  --hl-color-inverse: var(--hl-gray-950);
+  --hl-color-inverse-fg: var(--hl-gray-0);
+  --hl-color-inverse-hover: var(--hl-gray-700);
+  --hl-color-shimmer: rgb(255 255 255 / 0.7);
+  /* Accent: the foreground by default, so the library stays monochrome */
+  --hl-color-accent: var(--hl-color-inverse);
+  --hl-color-accent-fg: var(--hl-color-inverse-fg);
+
+  /* Status: always paired with an icon or word */
+  --hl-color-success: #12733a;
+  --hl-color-warning: #9a5a00;
+  --hl-color-danger: #c62a1f;
+  --hl-color-success-soft: color-mix(in srgb, var(--hl-color-success) 10%, var(--hl-color-surface));
+  --hl-color-warning-soft: color-mix(in srgb, var(--hl-color-warning) 10%, var(--hl-color-surface));
+  --hl-color-danger-soft: color-mix(in srgb, var(--hl-color-danger) 10%, var(--hl-color-surface));
+  /* Danger solid: white text at 4.6:1 or more in both themes */
+  --hl-color-danger-solid: #c62a1f;
+  --hl-color-danger-solid-hover: #a82218;
+  --hl-color-on-danger: #ffffff;
+
+  /* Focus ring */
+  --hl-focus-ring: 0 0 0 2px var(--hl-color-bg), 0 0 0 4px var(--hl-color-fg);
+
+  /* Type */
+  --hl-font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --hl-font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  --hl-text-xs: 12px;
+  --hl-text-sm: 13px;
+  --hl-text-md: 15px;
+  /* Text typed into a field. On a touch screen it is at least 16px, or iPhone Safari zooms
+     the page in when the field is tapped. */
+  --hl-text-input: var(--hl-text-md);
+  --hl-text-lg: 17px;
+  --hl-text-xl: 20px;
+  --hl-text-2xl: 26px;
+  --hl-text-3xl: 34px;
+  --hl-text-4xl: 44px;
+  --hl-leading-tight: 1.2;
+  --hl-leading-snug: 1.4;
+  --hl-leading-normal: 1.6;
+  --hl-weight-regular: 400;
+  --hl-weight-medium: 500;
+  --hl-weight-semibold: 600;
+  --hl-tracking-tight: -0.02em;
+  --hl-tracking-wide: 0.06em;
+
+  /* Space */
+  --hl-space-0: 0px;
+  --hl-space-px: 1px;
+  --hl-space-1: 2px;
+  --hl-space-2: 4px;
+  --hl-space-3: 8px;
+  --hl-space-4: 12px;
+  --hl-space-5: 16px;
+  --hl-space-6: 20px;
+  --hl-space-7: 24px;
+  --hl-space-8: 32px;
+  --hl-space-9: 40px;
+  --hl-space-10: 48px;
+  --hl-space-11: 64px;
+  --hl-space-12: 96px;
+
+  /* Sizes */
+  --hl-line: 1px;
+  --hl-line-thick: 1.5px;
+  --hl-hit-min: 44px;
+  --hl-control-h-sm: 32px;
+  --hl-control-h-md: 40px;
+  --hl-control-h-lg: 48px;
+  --hl-icon-sm: 14px;
+  --hl-icon-md: 16px;
+  --hl-icon-lg: 20px;
+  --hl-icon-xl: 28px;
+  --hl-panel-w-sm: 380px;
+  --hl-panel-w-md: 480px;
+  --hl-panel-w-lg: 640px;
+  --hl-menu-w: 220px;
+  --hl-tooltip-w: 260px;
+  --hl-toast-w: 360px;
+  --hl-line-focus: 2px;
+  --hl-halo: 3px;
+  --hl-indicator: 2px;
+  --hl-underline-offset: 3px;
+  --hl-control-box: 20px;
+  --hl-control-dot: 10px;
+  --hl-track-h: 4px;
+  --hl-progress-h: 6px;
+  --hl-progress-h-sm: 3px;
+  --hl-switch-w: 44px;
+  --hl-switch-h: 26px;
+  --hl-switch-pad: 3px;
+  --hl-switch-stretch: 6px;
+  --hl-field-h-floating: 56px;
+  --hl-step-marker: 28px;
+  --hl-avatar-sm: 28px;
+  --hl-avatar-md: 36px;
+  --hl-avatar-lg: 48px;
+  --hl-avatar-xl: 72px;
+  --hl-kbd-h: 24px;
+  --hl-badge-h: 22px;
+  --hl-dot: 6px;
+  --hl-mini-button: 24px;
+  --hl-handle-w: 40px;
+  --hl-handle-w-active: 56px;
+  --hl-handle-h: 5px;
+  --hl-empty-icon: 64px;
+  --hl-empty-w: 420px;
+  --hl-listbox-max-h: 320px;
+  --hl-skeleton-block: 120px;
+  --hl-skeleton-avatar: 40px;
+
+  /* Radii */
+  --hl-radius-xs: 4px;
+  --hl-radius-sm: 8px;
+  --hl-radius-md: 12px;
+  --hl-radius-panel: 20px;
+  --hl-radius-sheet: 28px;
+  --hl-radius-control: 999px;
+  --hl-radius-full: 999px;
+
+  /* Shadows */
+  --hl-shadow-1: 0 1px 2px rgb(0 0 0 / 0.05);
+  --hl-shadow-2: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 12px rgb(0 0 0 / 0.06);
+  --hl-shadow-3: 0 2px 4px rgb(0 0 0 / 0.04), 0 12px 32px rgb(0 0 0 / 0.1);
+  --hl-shadow-4: 0 4px 8px rgb(0 0 0 / 0.05), 0 24px 64px rgb(0 0 0 / 0.16);
+
+  /* Motion. Every duration is its base times --hl-motion-scale, so one value retimes the whole
+     library (see Retime). 1 is normal, 1.5 is slower, 0 is no motion. Reduced motion still wins. */
+  --hl-motion-scale: 1;
+  --hl-motion-instant: calc(80ms * var(--hl-motion-scale));
+  --hl-motion-fast: calc(140ms * var(--hl-motion-scale));
+  --hl-motion-base: calc(220ms * var(--hl-motion-scale));
+  --hl-motion-slow: calc(360ms * var(--hl-motion-scale));
+  --hl-motion-slower: calc(600ms * var(--hl-motion-scale));
+  --hl-motion-stagger: calc(30ms * var(--hl-motion-scale));
+  --hl-motion-delay-tooltip: 400ms;
+  --hl-motion-shimmer: 1400ms;
+  --hl-motion-spin: 800ms;
+  --hl-motion-indeterminate: 1500ms;
+  --hl-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --hl-ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  --hl-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* Springs settle, they do not wobble: spring goes about 1% past its target, bounce about 3% (only
+     for small pops like a badge). A bigger overshoot reads as wobbly once it is on every control. */
+  --hl-ease-spring: cubic-bezier(0.3, 1.2, 0.5, 1);
+  --hl-ease-bounce: cubic-bezier(0.3, 1.3, 0.5, 1);
+  --hl-ease-linear: linear;
+
+  /* Movement distances */
+  --hl-shift-sm: 4px;
+  --hl-shift-md: 8px;
+  --hl-press-scale: 0.97;
+  /* Small controls (icon buttons, checkboxes, steppers) press deeper so the tap is felt. */
+  --hl-press-scale-strong: 0.9;
+  --hl-pop-scale: 0.96;
+
+  /* Layers */
+  --hl-z-sticky: 10;
+  --hl-z-dialog: 100;
+  /* Above dialogs, so a list or picker opened inside a dialog shows on top */
+  --hl-z-popover: 150;
+  --hl-z-toast: 200;
+  --hl-z-tooltip: 300;
+
+  color-scheme: light;
+}
+
+/* Dark theme (system) */
+@media (pointer: coarse) {
+  :root,
+  [data-theme] {
+    --hl-text-input: max(16px, var(--hl-text-md));
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --hl-color-bg: #161616;
+    --hl-color-surface: #1e1e1e;
+    --hl-color-surface-sunken: #121212;
+    --hl-color-surface-hover: #262626;
+    --hl-color-surface-active: #2e2e2e;
+    --hl-color-overlay: rgb(0 0 0 / 0.6);
+    --hl-color-fg: #ececec;
+    --hl-color-fg-muted: #ababab;
+    --hl-color-fg-subtle: #949494;
+    --hl-color-fg-disabled: #5a5a5a;
+    --hl-color-border: #2e2e2e;
+    --hl-color-border-strong: #707070;
+    --hl-color-inverse: #ececec;
+    --hl-color-inverse-fg: #161616;
+    --hl-color-inverse-hover: var(--hl-gray-300);
+    --hl-color-shimmer: rgb(255 255 255 / 0.06);
+    --hl-color-success: #4cc97a;
+    --hl-color-warning: #f2b33d;
+    --hl-color-danger: #ff7a6e;
+    --hl-color-success-soft: color-mix(in srgb, var(--hl-color-success) 14%, var(--hl-color-surface));
+    --hl-color-warning-soft: color-mix(in srgb, var(--hl-color-warning) 14%, var(--hl-color-surface));
+    --hl-color-danger-soft: color-mix(in srgb, var(--hl-color-danger) 14%, var(--hl-color-surface));
+    --hl-color-danger-solid: #d63a2e;
+    /* Darker on hover: a lighter red drops white text under 4.5:1 */
+    --hl-color-danger-solid-hover: #b8302a;
+    --hl-shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+    --hl-shadow-2: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 12px rgb(0 0 0 / 0.4);
+    --hl-shadow-3: 0 2px 4px rgb(0 0 0 / 0.4), 0 12px 32px rgb(0 0 0 / 0.5);
+    --hl-shadow-4: 0 4px 8px rgb(0 0 0 / 0.4), 0 24px 64px rgb(0 0 0 / 0.6);
+    color-scheme: dark;
+  }
+}
+
+/* Dark theme (forced). Never pure black: a dark grey page, raised surfaces a step lighter, and a soft
+   white for text, so it does not glare. */
+[data-theme="dark"] {
+  --hl-color-bg: #161616;
+  --hl-color-surface: #1e1e1e;
+  --hl-color-surface-sunken: #121212;
+  --hl-color-surface-hover: #262626;
+  --hl-color-surface-active: #2e2e2e;
+  --hl-color-overlay: rgb(0 0 0 / 0.6);
+  --hl-color-fg: #ececec;
+  --hl-color-fg-muted: #ababab;
+  --hl-color-fg-subtle: #949494;
+  --hl-color-fg-disabled: #5a5a5a;
+  --hl-color-border: #2e2e2e;
+  --hl-color-border-strong: #707070;
+  --hl-color-inverse: #ececec;
+  --hl-color-inverse-fg: #161616;
+  --hl-color-inverse-hover: var(--hl-gray-300);
+  --hl-color-shimmer: rgb(255 255 255 / 0.06);
+  --hl-color-success: #4cc97a;
+  --hl-color-warning: #f2b33d;
+  --hl-color-danger: #ff7a6e;
+  --hl-color-success-soft: color-mix(in srgb, var(--hl-color-success) 14%, var(--hl-color-surface));
+  --hl-color-warning-soft: color-mix(in srgb, var(--hl-color-warning) 14%, var(--hl-color-surface));
+  --hl-color-danger-soft: color-mix(in srgb, var(--hl-color-danger) 14%, var(--hl-color-surface));
+  --hl-color-danger-solid: #d63a2e;
+  /* Darker on hover: a lighter red drops white text under 4.5:1 */
+  --hl-color-danger-solid-hover: #b8302a;
+  --hl-shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --hl-shadow-2: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 12px rgb(0 0 0 / 0.4);
+  --hl-shadow-3: 0 2px 4px rgb(0 0 0 / 0.4), 0 12px 32px rgb(0 0 0 / 0.5);
+  --hl-shadow-4: 0 4px 8px rgb(0 0 0 / 0.4), 0 24px 64px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+/* Reduced motion: loops slow down instead of stopping, so a spinner still reads as busy */
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  [data-theme] {
+    --hl-motion-instant: 0ms;
+    --hl-motion-fast: 0ms;
+    --hl-motion-base: 0ms;
+    --hl-motion-slow: 0ms;
+    --hl-motion-slower: 0ms;
+    --hl-motion-stagger: 0ms;
+    --hl-motion-shimmer: 0ms;
+    --hl-motion-spin: 1600ms;
+    --hl-motion-indeterminate: 3000ms;
+    --hl-shift-sm: 0px;
+    --hl-shift-md: 0px;
+    --hl-press-scale: 1;
+    --hl-press-scale-strong: 1;
+    --hl-pop-scale: 1;
+  }
+}
+
+:root,
+[data-theme="light"] {
+  /* Dates and time */
+  --hl-day-size: 40px;
+  --hl-day-mark: 4px;
+  --hl-calendar-gap: 32px;
+  --hl-wheel-rows: 5;
+  --hl-wheel-w: 64px;
+
+  /* Smarter inputs */
+  --hl-pin-w: 44px;
+  --hl-pin-h: 52px;
+  --hl-star: 28px;
+  --hl-dropzone-h: 168px;
+  --hl-number-w: 168px;
+  --hl-motion-repeat-delay: 400ms;
+  --hl-motion-repeat: 70ms;
+
+  /* Media */
+  --hl-blur: 16px;
+  /* A soft blur for small things settling in, such as an avatar loading. */
+  --hl-blur-sm: 6px;
+  --hl-thumb: 104px;
+  --hl-hovercard-w: 320px;
+  --hl-marquee-fade: 48px;
+  --hl-marquee-speed: 48;
+  --hl-motion-delay-hovercard: 500ms;
+  --hl-motion-delay-hovercard-out: 200ms;
+  /* Image viewer: near-black in both themes, so photos keep true colours */
+  --hl-color-scrim: rgb(8 8 8 / 0.92);
+  --hl-color-on-scrim: var(--hl-gray-0);
+  --hl-color-on-scrim-muted: rgb(255 255 255 / 0.72);
+  --hl-color-on-scrim-hover: rgb(255 255 255 / 0.14);
+}
+
+:root,
+[data-theme="light"] {
+  /* Navigation and layout */
+  --hl-palette-top: 12vh;
+  --hl-palette-list-max-h: 360px;
+  --hl-navbar-h: 64px;
+  --hl-sidebar-w: 248px;
+  --hl-sidebar-w-collapsed: 64px;
+  --hl-tabbar-h: 64px;
+  --hl-tabbar-pill-w: 56px;
+  --hl-tabbar-pill-h: 30px;
+  --hl-scrollbar-w: 6px;
+  --hl-scrollbar-w-active: 10px;
+  --hl-scrollbar-min: 24px;
+  --hl-carousel-dot: 8px;
+  --hl-carousel-dot-active: 24px;
+
+  /* Data */
+  --hl-ring-sm: 32px;
+  --hl-ring-md: 56px;
+  --hl-ring-lg: 96px;
+  --hl-sparkline-w: 120px;
+  --hl-sparkline-h: 32px;
+  --hl-tree-indent: 20px;
+  --hl-timeline-marker: 12px;
+  --hl-table-check: 18px;
+  /* A cell's widest, so long text wraps and a sideways-scrolling table stays readable. */
+  --hl-table-cell-max: 320px;
+
+  /* Charts: series differ by shade, dash and marker, never colour alone */
+  --hl-chart-h: 260px;
+  --hl-chart-donut: 220px;
+  --hl-chart-area-opacity: 0.14;
+  --hl-chart-1: var(--hl-gray-950);
+  --hl-chart-2: var(--hl-gray-600);
+  --hl-chart-3: #8a8a8a;
+  --hl-chart-4: var(--hl-gray-800);
+  --hl-chart-5: var(--hl-gray-500);
+  --hl-chart-dash-1: none;
+  --hl-chart-dash-2: 6 4;
+  --hl-chart-dash-3: 1.5 3.5;
+  --hl-chart-dash-4: 10 4 2 4;
+  --hl-chart-dash-5: 14 6;
+  --hl-motion-draw: calc(900ms * var(--hl-motion-scale));
+
+  /* Boards and editor */
+  --hl-kanban-col-w: 288px;
+  --hl-lift-scale: 1.03;
+  --hl-lift-tilt: 2deg;
+  --hl-editor-min-h: 160px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --hl-chart-1: var(--hl-gray-50);
+    --hl-chart-2: var(--hl-gray-400);
+    --hl-chart-3: #707070;
+    --hl-chart-4: var(--hl-gray-200);
+    --hl-chart-5: var(--hl-gray-500);
+  }
+}
+
+[data-theme="dark"] {
+  --hl-chart-1: var(--hl-gray-50);
+  --hl-chart-2: var(--hl-gray-400);
+  --hl-chart-3: #707070;
+  --hl-chart-4: var(--hl-gray-200);
+  --hl-chart-5: var(--hl-gray-500);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  [data-theme] {
+    --hl-motion-draw: 0ms;
+    --hl-lift-scale: 1;
+    --hl-lift-tilt: 0deg;
+  }
+}
+
+:root,
+[data-theme="light"] {
+  /* Container: max width, padding not included */
+  --hl-container-sm: 640px;
+  --hl-container-md: 768px;
+  --hl-container-lg: 1024px;
+  --hl-container-xl: 1280px;
+
+  /* Grid: min cell width before a column drops */
+  --hl-grid-min-xs: 140px;
+  --hl-grid-min-sm: 192px;
+  --hl-grid-min-md: 240px;
+  --hl-grid-min-lg: 320px;
+
+  /* Split: sidebar widths */
+  --hl-split-side-sm: 200px;
+  --hl-split-side-md: 260px;
+  --hl-split-side-lg: 320px;
+
+  /* Center: min heights */
+  --hl-center-h-sm: 240px;
+  --hl-center-h-md: 400px;
+  --hl-center-h-lg: 560px;
+  --hl-center-h-screen: 100dvh;
+}
+
+:root,
+[data-theme="light"] {
+  /* Chat and comments */
+  --hl-bubble-w: 560px;
+  --hl-bubble-radius-joined: 6px;
+  --hl-composer-max-h: 160px;
+  --hl-chat-jump-offset: 12px;
+  --hl-comment-indent: 48px;
+  --hl-inbox-max-h: 420px;
+  --hl-unread-dot: 8px;
+
+  /* Players: controls hide after this long without input while playing */
+  --hl-player-idle: 2500ms;
+  --hl-player-seek-h: 4px;
+  --hl-player-seek-h-active: 6px;
+  --hl-player-volume-w: 88px;
+  --hl-player-big-play: 64px;
+  --hl-waveform-h: 40px;
+  --hl-waveform-gap: 2px;
+  /* Same in both themes: the bar sits on video, not on the page */
+  --hl-color-player-bar: rgb(8 8 8 / 0.64);
+
+  /* QR code: always dark on light in both themes, so every scanner reads it */
+  --hl-qr-dark: #000000;
+  --hl-qr-light: #ffffff;
+
+  /* Tour */
+  --hl-tour-pad: 8px;
+  --hl-tour-w: 340px;
+}
+
+:root,
+[data-theme="light"] {
+  /* Resizable panels: handle box; the hit area reaches --hl-hit-min */
+  --hl-resize-handle: 12px;
+
+  /* Description list: label column widths */
+  --hl-dl-term-sm: 120px;
+  --hl-dl-term-md: 180px;
+  --hl-dl-term-lg: 240px;
+
+  /* Countdown: min width of one number column */
+  --hl-countdown-cell: 72px;
+  --hl-countdown-cell-sm: 52px;
+}

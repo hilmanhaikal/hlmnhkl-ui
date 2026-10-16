@@ -1,0 +1,95 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--hl-space-4);
+  min-height: var(--hl-hit-min);
+}
+
+.start {
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.root[data-disabled] { opacity: 0.5; }
+
+.track {
+  --w: var(--hl-switch-w);
+  --h: var(--hl-switch-h);
+  --pad: var(--hl-switch-pad);
+  --thumb: calc(var(--h) - var(--pad) * 2);
+  position: relative;
+  flex: none;
+  width: var(--w);
+  height: var(--h);
+  padding: 0;
+  border: var(--hl-line) solid var(--hl-color-border-strong);
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-surface);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--hl-motion-base) var(--hl-ease-out),
+    border-color var(--hl-motion-base) var(--hl-ease-out),
+    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.track::after {
+  content: "";
+  position: absolute;
+  inset: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+}
+
+.track:focus-visible {
+  outline: none;
+  box-shadow: var(--hl-focus-ring);
+}
+
+.track:disabled { cursor: not-allowed; }
+
+.track[data-on] {
+  background: var(--hl-color-accent);
+  border-color: var(--hl-color-accent);
+}
+
+.thumb {
+  position: absolute;
+  top: calc(var(--pad) - var(--hl-line));
+  left: calc(var(--pad) - var(--hl-line));
+  width: var(--thumb);
+  height: var(--thumb);
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-border-strong);
+  transition:
+    transform var(--hl-motion-slow) var(--hl-ease-spring),
+    width var(--hl-motion-base) var(--hl-ease-out),
+    background-color var(--hl-motion-base) var(--hl-ease-out);
+}
+
+/* Both on and off pass 3:1 contrast */
+.track[data-on] .thumb {
+  background: var(--hl-color-accent-fg);
+  box-shadow: var(--hl-shadow-2);
+}
+
+.track[data-on] .thumb {
+  transform: translateX(calc(var(--w) - var(--thumb) - var(--pad) * 2));
+}
+
+.track:active:not(:disabled) .thumb { width: calc(var(--thumb) + var(--hl-switch-stretch)); }
+
+.track[data-on]:active:not(:disabled) .thumb {
+  transform: translateX(calc(var(--w) - var(--thumb) - var(--pad) * 2 - var(--hl-switch-stretch)));
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hl-space-1);
+}
+
+.label { cursor: pointer; line-height: var(--hl-leading-snug); }
+
+.description {
+  font-size: var(--hl-text-sm);
+  color: var(--hl-color-fg-muted);
+}

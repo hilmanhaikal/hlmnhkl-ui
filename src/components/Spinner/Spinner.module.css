@@ -1,0 +1,50 @@
+.root {
+  display: inline-flex;
+  flex: none;
+  color: currentColor;
+}
+
+.sm { width: var(--hl-icon-sm); height: var(--hl-icon-sm); }
+.md { width: var(--hl-icon-lg); height: var(--hl-icon-lg); }
+.lg { width: var(--hl-icon-xl); height: var(--hl-icon-xl); }
+
+.svg {
+  width: 100%;
+  height: 100%;
+  animation: spin var(--hl-motion-spin) var(--hl-ease-linear) infinite;
+}
+
+.track {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  opacity: 0.16;
+}
+
+.arc {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 30 100;
+  transform-origin: center;
+  animation: breathe calc(var(--hl-motion-spin) * 2) var(--hl-ease-in-out) infinite;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes breathe {
+  0%, 100% { stroke-dasharray: 18 100; }
+  50% { stroke-dasharray: 62 100; }
+}

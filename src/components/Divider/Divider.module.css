@@ -1,0 +1,39 @@
+.root {
+  flex: none;
+  background: var(--hl-color-border);
+}
+
+.horizontal { width: 100%; height: var(--hl-line); }
+.vertical { align-self: stretch; width: var(--hl-line); min-height: 1em; }
+
+.animated.horizontal,
+.animated .line { animation: drawX var(--hl-motion-slower) var(--hl-ease-out); }
+.animated.vertical { animation: drawY var(--hl-motion-slower) var(--hl-ease-out); }
+
+.labelled {
+  display: flex;
+  align-items: center;
+  gap: var(--hl-space-4);
+  width: 100%;
+}
+
+.line {
+  flex: 1;
+  height: var(--hl-line);
+  background: var(--hl-color-border);
+}
+
+.line:first-child { transform-origin: right; }
+.line:last-child { transform-origin: left; }
+
+.text {
+  font-size: var(--hl-text-xs);
+  font-weight: var(--hl-weight-medium);
+  color: var(--hl-color-fg-muted);
+}
+
+.animated .text { animation: fade var(--hl-motion-slower) var(--hl-ease-out); }
+
+@keyframes drawX { from { transform: scaleX(0); } }
+@keyframes drawY { from { transform: scaleY(0); } }
+@keyframes fade { from { opacity: 0; } }

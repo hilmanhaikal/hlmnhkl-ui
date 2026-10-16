@@ -1,0 +1,37 @@
+{
+  "name": "hlmnhkl-ui",
+  "version": "0.15.0",
+  "description": "React components in a monochrome style. Copy them into your app with npx hlmnhkl-ui add <name>.",
+  "license": "MIT",
+  "homepage": "https://ui.hlmnhkl.my",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hilmanhaikal/hlmnhkl-ui.git"
+  },
+  "type": "module",
+  "bin": {
+    "hlmnhkl-ui": "scripts/add.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "scripts/add.js",
+    "src/components",
+    "src/internal",
+    "src/tokens.css",
+    "src/base.css",
+    "scripts/pro-components.json"
+  ],
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "add": "node scripts/add.js"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}

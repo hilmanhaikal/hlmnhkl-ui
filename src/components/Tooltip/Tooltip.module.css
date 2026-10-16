@@ -1,0 +1,30 @@
+.tip {
+  --dx: 0px;
+  --dy: var(--hl-shift-sm);
+  z-index: var(--hl-z-tooltip);
+  max-width: var(--hl-tooltip-w);
+  padding: var(--hl-space-2) var(--hl-space-4);
+  border-radius: var(--hl-radius-sm);
+  background: var(--hl-color-inverse);
+  color: var(--hl-color-inverse-fg);
+  font-size: var(--hl-text-sm);
+  line-height: var(--hl-leading-snug);
+  box-shadow: var(--hl-shadow-2);
+  animation: tipIn var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.tip[data-side="bottom"] { --dy: calc(var(--hl-shift-sm) * -1); }
+.tip[data-side="left"] { --dy: 0px; --dx: var(--hl-shift-sm); }
+.tip[data-side="right"] { --dy: 0px; --dx: calc(var(--hl-shift-sm) * -1); }
+
+.tip[data-state="closed"] {
+  animation: tipOut var(--hl-motion-fast) var(--hl-ease-in) forwards;
+}
+
+@keyframes tipIn {
+  from { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(var(--hl-pop-scale)); }
+}
+
+@keyframes tipOut {
+  to { opacity: 0; transform: scale(var(--hl-pop-scale)); }
+}

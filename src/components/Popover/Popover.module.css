@@ -1,0 +1,70 @@
+.panel {
+  --oy: calc(var(--hl-shift-md) * -1);
+  z-index: var(--hl-z-popover);
+  width: max-content;
+  max-width: min(var(--hl-panel-w-sm), calc(100vw - var(--hl-space-5) * 2));
+  padding: var(--hl-space-5);
+  border: var(--hl-line) solid var(--hl-color-border);
+  border-radius: var(--hl-radius-panel);
+  background: var(--hl-color-surface);
+  box-shadow: var(--hl-shadow-3);
+  outline: none;
+  transform-origin: top left;
+  animation: popIn var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.panel[data-side="top"] { --oy: var(--hl-shift-md); transform-origin: bottom left; }
+
+.panel[data-state="closed"] {
+  animation: popOut var(--hl-motion-fast) var(--hl-ease-in) forwards;
+  pointer-events: none;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hl-space-4);
+  margin: calc(var(--hl-space-2) * -1) calc(var(--hl-space-3) * -1) var(--hl-space-3) 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--hl-text-md);
+  font-weight: var(--hl-weight-semibold);
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: var(--hl-hit-min);
+  height: var(--hl-hit-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--hl-radius-full);
+  background: transparent;
+  color: var(--hl-color-fg-muted);
+  font-size: var(--hl-icon-md);
+  cursor: pointer;
+  transition: background-color var(--hl-motion-fast) var(--hl-ease-out), transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+@media (hover: hover) {
+  .close:hover { background: var(--hl-color-surface-hover); color: var(--hl-color-fg); }
+}
+.close:active { transform: scale(var(--hl-press-scale)); }
+.close:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+
+.body {
+  font-size: var(--hl-text-sm);
+  color: var(--hl-color-fg-muted);
+  line-height: var(--hl-leading-normal);
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(var(--oy)) scale(var(--hl-pop-scale)); }
+}
+
+@keyframes popOut {
+  to { opacity: 0; transform: scale(var(--hl-pop-scale)); }
+}

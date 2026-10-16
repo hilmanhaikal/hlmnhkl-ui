@@ -1,0 +1,35 @@
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hl-space-3);
+}
+
+.bone {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: var(--hl-color-surface-active);
+  border-radius: var(--hl-radius-sm);
+}
+
+.bone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--hl-color-shimmer), transparent);
+  animation: shimmer var(--hl-motion-shimmer) var(--hl-ease-in-out) infinite;
+  animation-delay: calc(var(--i, 0) * var(--hl-motion-stagger) * 3);
+}
+
+.text { height: 0.8em; border-radius: var(--hl-radius-xs); }
+.rect { width: 100%; height: var(--hl-skeleton-block); border-radius: var(--hl-radius-md); }
+.circle { width: var(--hl-skeleton-avatar); height: var(--hl-skeleton-avatar); border-radius: var(--hl-radius-full); }
+
+@keyframes shimmer {
+  to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bone::after { animation: none; display: none; }
+}

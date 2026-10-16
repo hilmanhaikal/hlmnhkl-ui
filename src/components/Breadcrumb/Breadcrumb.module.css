@@ -1,0 +1,98 @@
+.root { min-width: 0; }
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--hl-text-sm);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.item[data-revealed] {
+  animation: reveal var(--hl-motion-slow) var(--hl-ease-out) backwards;
+  animation-delay: calc(var(--i) * var(--hl-motion-stagger));
+}
+
+.link,
+.more {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--hl-hit-min);
+  padding: 0 var(--hl-space-2);
+  border-radius: var(--hl-radius-sm);
+  color: var(--hl-color-fg-muted);
+  text-decoration: none;
+  transition: color var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  left: var(--hl-space-2);
+  right: var(--hl-space-2);
+  bottom: calc((var(--hl-hit-min) - 1em) / 2 - var(--hl-space-2));
+  height: var(--hl-line);
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--hl-motion-base) var(--hl-ease-out);
+}
+
+@media (hover: hover) {
+  .link:hover { color: var(--hl-color-fg); }
+  .link:hover::after { transform: scaleX(1); }
+}
+
+.link:focus-visible,
+.more:focus-visible {
+  outline: none;
+  box-shadow: var(--hl-focus-ring);
+}
+
+.button {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.more {
+  border: 0;
+  background: transparent;
+  font-size: inherit;
+  cursor: pointer;
+  letter-spacing: var(--hl-tracking-wide);
+}
+
+@media (hover: hover) {
+  .more:hover { color: var(--hl-color-fg); background: var(--hl-color-surface-hover); }
+}
+
+.current {
+  padding: 0 var(--hl-space-2);
+  font-weight: var(--hl-weight-medium);
+  color: var(--hl-color-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sep {
+  flex: none;
+  width: var(--hl-icon-sm);
+  height: var(--hl-icon-sm);
+  color: var(--hl-color-fg-subtle);
+}
+
+@keyframes reveal {
+  from { opacity: 0; transform: translateX(calc(var(--hl-shift-sm) * -1)); }
+}

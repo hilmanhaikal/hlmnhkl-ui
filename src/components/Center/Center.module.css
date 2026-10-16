@@ -1,0 +1,15 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--center-gap);
+  min-width: 0;
+  min-height: var(--center-min-h, auto);
+  margin: 0;
+}
+
+.both { justify-content: center; }
+.text { text-align: center; }
+
+/* A child wider than the box wraps instead of spilling out on both sides. */
+.root > * { max-width: 100%; }

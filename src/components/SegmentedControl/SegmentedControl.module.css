@@ -1,0 +1,83 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  padding: var(--hl-space-1);
+  border: var(--hl-line) solid var(--hl-color-border);
+  border-radius: var(--hl-radius-control);
+  background: var(--hl-color-surface-sunken);
+  isolation: isolate;
+  max-width: 100%;
+}
+
+.full { display: flex; width: 100%; }
+.full .item { flex: 1; }
+
+.pill {
+  position: absolute;
+  top: var(--hl-space-1);
+  bottom: var(--hl-space-1);
+  left: 0;
+  z-index: -1;
+  border-radius: var(--hl-radius-control);
+  background: var(--hl-color-surface);
+  box-shadow: var(--hl-shadow-2), 0 0 0 var(--hl-line) var(--hl-color-border);
+}
+
+/* No spring on the pill: it is pressed often, and an overshoot on every press feels wobbly. */
+.pill[data-ready] {
+  transition:
+    transform var(--hl-motion-slow) var(--hl-ease-out),
+    width var(--hl-motion-slow) var(--hl-ease-out);
+}
+
+.item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hl-space-3);
+  min-height: calc(var(--hl-control-h-md) - var(--hl-space-1) * 2);
+  padding: 0 var(--hl-space-5);
+  border: 0;
+  border-radius: var(--hl-radius-control);
+  background: transparent;
+  color: var(--hl-color-fg-muted);
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--hl-motion-base) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.item::after {
+  content: "";
+  position: absolute;
+  inset-block: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset-inline: 0;
+}
+
+.sm .item {
+  min-height: calc(var(--hl-control-h-sm) - var(--hl-space-1) * 2);
+  padding: 0 var(--hl-space-4);
+  font-size: var(--hl-text-xs);
+}
+
+@media (hover: hover) {
+  .item:hover:not(:disabled) { color: var(--hl-color-fg); }
+}
+.item:active:not(:disabled) { transform: scale(var(--hl-press-scale)); }
+.item[data-on] { color: var(--hl-color-fg); }
+.item:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.item:focus-visible {
+  outline: none;
+  box-shadow: var(--hl-focus-ring);
+}
+
+.icon {
+  display: inline-flex;
+  font-size: var(--hl-icon-md);
+}

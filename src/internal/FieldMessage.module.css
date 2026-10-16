@@ -1,0 +1,49 @@
+.collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(calc(var(--hl-shift-sm) * -1));
+  transition:
+    grid-template-rows var(--hl-motion-base) var(--hl-ease-out),
+    opacity var(--hl-motion-base) var(--hl-ease-out),
+    transform var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: none;
+}
+
+.inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.help,
+.error {
+  margin: 0;
+  padding-top: var(--hl-space-3);
+  font-size: var(--hl-text-sm);
+  line-height: var(--hl-leading-snug);
+  color: var(--hl-color-fg-muted);
+}
+
+.error {
+  display: flex;
+  gap: var(--hl-space-2);
+  /* Red text and icon; the icon and the words still say it is an error without colour. */
+  color: var(--hl-color-danger);
+  font-weight: var(--hl-weight-medium);
+}
+
+.mark {
+  flex: none;
+  width: var(--hl-icon-sm);
+  height: var(--hl-icon-sm);
+  margin-top: var(--hl-space-1);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}

@@ -1,0 +1,174 @@
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.viewport {
+  position: fixed;
+  left: var(--hl-space-4);
+  right: var(--hl-space-4);
+  bottom: calc(var(--hl-space-5) + env(safe-area-inset-bottom));
+  z-index: var(--hl-z-toast);
+  pointer-events: none;
+  transition: height var(--hl-motion-slow) var(--hl-ease-out);
+}
+
+@media (min-width: 640px) {
+  .viewport {
+    left: auto;
+    right: var(--hl-space-7);
+    bottom: var(--hl-space-7);
+    width: var(--hl-toast-w);
+  }
+}
+
+.list {
+  position: relative;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* All toasts sit at the bottom; --y, --s and --dx move each into place */
+.toast {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--hl-space-4);
+  padding: var(--hl-space-5) var(--hl-space-2) var(--hl-space-5) var(--hl-space-5);
+  border: var(--hl-line) solid var(--hl-color-border);
+  border-radius: var(--hl-radius-md);
+  background: var(--hl-color-surface);
+  box-shadow: var(--hl-shadow-3);
+  pointer-events: auto;
+  touch-action: pan-y;
+  user-select: none;
+  transform-origin: bottom center;
+  transform: translate(var(--dx), var(--y)) scale(var(--s));
+  transition:
+    transform var(--hl-motion-slow) var(--hl-ease-spring),
+    opacity var(--hl-motion-base) var(--hl-ease-out);
+  animation: toastIn var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.toast[data-dragging] { transition: none; }
+.toast[data-hidden] { opacity: 0; pointer-events: none; }
+
+.toast[data-behind] {
+  height: var(--front-h);
+  overflow: hidden;
+}
+
+.toast[data-behind] > * {
+  opacity: 0;
+  transition: opacity var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.toast > * { transition: opacity var(--hl-motion-base) var(--hl-ease-out); }
+
+.toast[data-leaving="down"] { animation: toastOutDown var(--hl-motion-slow) var(--hl-ease-in-out) forwards; }
+.toast[data-leaving="left"] { animation: toastOutLeft var(--hl-motion-slow) var(--hl-ease-out) forwards; }
+.toast[data-leaving="right"] { animation: toastOutRight var(--hl-motion-slow) var(--hl-ease-out) forwards; }
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  margin-top: var(--hl-space-1);
+  font-size: var(--hl-icon-lg);
+}
+
+/* Only the icon has status colour; its shape and the title carry the meaning */
+.icon[data-variant="success"] { color: var(--hl-color-success); }
+.icon[data-variant="error"] { color: var(--hl-color-danger); }
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--hl-text-md);
+  font-weight: var(--hl-weight-medium);
+  line-height: var(--hl-leading-snug);
+}
+
+.description {
+  margin: var(--hl-space-1) 0 0;
+  font-size: var(--hl-text-sm);
+  color: var(--hl-color-fg-muted);
+  line-height: var(--hl-leading-snug);
+}
+
+.action {
+  flex: none;
+  align-self: center;
+  min-height: var(--hl-control-h-sm);
+  padding: 0 var(--hl-space-4);
+  border: var(--hl-line) solid var(--hl-color-border-strong);
+  border-radius: var(--hl-radius-control);
+  background: transparent;
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-medium);
+  cursor: pointer;
+  position: relative;
+  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.action::after {
+  content: "";
+  position: absolute;
+  inset-block: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset-inline: 0;
+}
+
+@media (hover: hover) {
+  .action:hover { background: var(--hl-color-surface-hover); }
+}
+.action:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+
+.close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--hl-hit-min);
+  height: var(--hl-hit-min);
+  margin-block: calc(var(--hl-space-4) * -1);
+  padding: 0;
+  border: 0;
+  border-radius: var(--hl-radius-full);
+  background: transparent;
+  color: var(--hl-color-fg-muted);
+  font-size: var(--hl-icon-md);
+  cursor: pointer;
+  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+@media (hover: hover) {
+  .close:hover { background: var(--hl-color-surface-hover); color: var(--hl-color-fg); }
+}
+.close:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(100%) scale(var(--hl-pop-scale)); }
+}
+
+@keyframes toastOutDown {
+  to { opacity: 0; transform: translate(var(--dx), calc(var(--y) + 100%)) scale(var(--hl-pop-scale)); }
+}
+
+@keyframes toastOutLeft {
+  to { opacity: 0; transform: translate(-110%, var(--y)); }
+}
+
+@keyframes toastOutRight {
+  to { opacity: 0; transform: translate(110%, var(--y)); }
+}

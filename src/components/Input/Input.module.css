@@ -1,0 +1,134 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topLabel {
+  margin-bottom: var(--hl-space-3);
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-medium);
+  color: var(--hl-color-fg);
+}
+
+.optional {
+  font-weight: var(--hl-weight-regular);
+  color: var(--hl-color-fg-muted);
+}
+
+.field {
+  --h: var(--hl-hit-min);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--hl-space-3);
+  min-height: var(--h);
+  padding: 0 var(--hl-space-5);
+  border: var(--hl-line) solid var(--hl-color-border-strong);
+  border-radius: var(--hl-radius-md);
+  background: var(--hl-color-surface);
+  cursor: text;
+  transition:
+    border-color var(--hl-motion-fast) var(--hl-ease-out),
+    box-shadow var(--hl-motion-base) var(--hl-ease-out),
+    background-color var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.sm { --h: var(--hl-control-h-sm); gap: var(--hl-space-2); padding: 0 var(--hl-space-4); }
+.lg { --h: var(--hl-control-h-lg); }
+.floating { --h: var(--hl-field-h-floating); }
+
+@media (hover: hover) {
+  .field:hover { border-color: var(--hl-color-fg-muted); }
+}
+
+.field:focus-within {
+  border-color: var(--hl-color-fg);
+  box-shadow: 0 0 0 var(--hl-halo) var(--hl-color-surface-active);
+}
+
+/* Red border, plus the thicker line and the nudge, so the error does not rely on colour. */
+.field[data-invalid] {
+  border-color: var(--hl-color-danger);
+  border-width: var(--hl-line-thick);
+  animation: nudge var(--hl-motion-slow) var(--hl-ease-out);
+}
+
+.field[data-disabled] {
+  background: var(--hl-color-surface-sunken);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.adorn {
+  display: inline-flex;
+  color: var(--hl-color-fg-muted);
+  font-size: var(--hl-icon-md);
+}
+
+.control {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  outline: none;
+  font-size: var(--hl-text-input);
+  color: var(--hl-color-fg);
+}
+
+/* Small fields read at the small text size where there is a mouse; touch keeps 16px so phones never zoom. */
+@media (pointer: fine) {
+  .sm .input { font-size: var(--hl-text-sm); }
+}
+
+.input::placeholder {
+  color: var(--hl-color-fg-subtle);
+  transition: opacity var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.floating .input {
+  padding-top: var(--hl-space-6);
+  padding-bottom: var(--hl-space-2);
+}
+
+.floating .input::placeholder { opacity: 0; }
+.floating:focus-within .input::placeholder { opacity: 1; transition-delay: var(--hl-motion-fast); }
+
+.floatLabel {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--hl-color-fg-muted);
+  font-size: var(--hl-text-md);
+  transform-origin: left center;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition:
+    transform var(--hl-motion-base) var(--hl-ease-out),
+    color var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.floating:focus-within .floatLabel,
+.floating[data-filled] .floatLabel {
+  transform: translateY(-110%) scale(0.8);
+  color: var(--hl-color-fg);
+}
+
+@keyframes nudge {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(calc(var(--hl-shift-sm) * -1)); }
+  60% { transform: translateX(var(--hl-shift-sm)); }
+}

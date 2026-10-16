@@ -1,0 +1,85 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--hl-space-2);
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* On a narrow phone the pages scroll inside the list, so the page itself never scrolls sideways.
+   The padding keeps focus rings from being clipped by the scroll box. */
+.list {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--hl-space-1);
+  min-width: 0;
+  margin: calc(var(--hl-space-2) * -1);
+  padding: var(--hl-space-2);
+  list-style: none;
+  isolation: isolate;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar { display: none; }
+
+.list > li { flex: none; }
+
+.pill {
+  position: absolute;
+  top: var(--hl-space-2);
+  left: 0;
+  height: var(--hl-hit-min);
+  z-index: -1;
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-accent);
+}
+
+.pill[data-ready] {
+  transition:
+    transform var(--hl-motion-slow) var(--hl-ease-out),
+    width var(--hl-motion-slow) var(--hl-ease-out);
+}
+
+.btn {
+  display: grid;
+  place-items: center;
+  flex: none;
+  min-width: var(--hl-hit-min);
+  height: var(--hl-hit-min);
+  padding: 0 var(--hl-space-3);
+  border: 0;
+  border-radius: var(--hl-radius-full);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--hl-text-sm);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--hl-weight-medium);
+  cursor: pointer;
+  transition:
+    color var(--hl-motion-base) var(--hl-ease-out),
+    background-color var(--hl-motion-fast) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+@media (hover: hover) {
+  .btn:hover:not(:disabled):not([aria-current]) { background: var(--hl-color-surface-hover); }
+}
+.btn:active:not(:disabled) { transform: scale(0.92); }
+.btn[aria-current="page"] { color: var(--hl-color-accent-fg); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+
+.edge {
+  font-size: var(--hl-icon-md);
+  border: var(--hl-line) solid var(--hl-color-border);
+}
+
+.gap {
+  min-width: var(--hl-space-7);
+  text-align: center;
+  color: var(--hl-color-fg-muted);
+}

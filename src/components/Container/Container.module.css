@@ -1,0 +1,14 @@
+/* The max width adds the padding back, so the size token stays the content width. */
+.root {
+  box-sizing: border-box;
+  max-width: calc(var(--container-max) + 2 * var(--container-pad));
+  margin-inline: auto;
+  padding-left: max(var(--container-pad), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--container-pad), env(safe-area-inset-right, 0px));
+}
+
+.sm { --container-max: var(--hl-container-sm); }
+.md { --container-max: var(--hl-container-md); }
+.lg { --container-max: var(--hl-container-lg); }
+.xl { --container-max: var(--hl-container-xl); }
+.full { max-width: none; }

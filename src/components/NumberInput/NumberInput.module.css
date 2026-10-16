@@ -1,0 +1,101 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.label {
+  margin-bottom: var(--hl-space-3);
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-medium);
+}
+
+.field {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  width: var(--hl-number-w);
+  max-width: 100%;
+  min-height: var(--hl-hit-min);
+  padding: 0;
+  border: var(--hl-line) solid var(--hl-color-border-strong);
+  border-radius: var(--hl-radius-control);
+  background: var(--hl-color-surface);
+  transition:
+    border-color var(--hl-motion-fast) var(--hl-ease-out),
+    box-shadow var(--hl-motion-base) var(--hl-ease-out);
+}
+
+@media (hover: hover) {
+  .field:hover { border-color: var(--hl-color-fg-muted); }
+}
+
+.field:focus-within {
+  border-color: var(--hl-color-fg);
+  box-shadow: 0 0 0 var(--hl-halo) var(--hl-color-surface-active);
+}
+
+.field[data-invalid] { border-color: var(--hl-color-danger); border-width: var(--hl-line-thick); }
+.field[data-disabled] { opacity: 0.6; background: var(--hl-color-surface-sunken); }
+
+.step {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--hl-hit-min);
+  height: var(--hl-hit-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--hl-radius-full);
+  background: transparent;
+  color: var(--hl-color-fg);
+  font-size: var(--hl-icon-md);
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--hl-motion-fast) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+@media (hover: hover) {
+  .step:hover:not(:disabled) { background: var(--hl-color-surface-hover); }
+}
+.step:active:not(:disabled) { transform: scale(var(--hl-press-scale-strong)); transition-duration: var(--hl-motion-instant); }
+.step:disabled { color: var(--hl-color-fg-disabled); cursor: not-allowed; }
+
+.control {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  text-align: center;
+  font-size: var(--hl-text-input);
+  font-weight: var(--hl-weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Real text hides under the rolling copy until editing */
+.input:not([data-editing]) { color: transparent; }
+.input:disabled { cursor: not-allowed; }
+
+.rolling {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: var(--hl-text-md);
+  font-weight: var(--hl-weight-medium);
+  pointer-events: none;
+}

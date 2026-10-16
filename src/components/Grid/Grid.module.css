@@ -1,0 +1,39 @@
+.root {
+  display: grid;
+  gap: var(--grid-gap);
+  min-width: 0;
+  margin: 0;
+}
+
+.root:is(ul, ol) {
+  padding: 0;
+  list-style: none;
+}
+
+.fixed { grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr)); }
+
+/* min(100%, ...) lets one cell shrink below the minimum, so a phone gets one column and no side scroll. */
+.fit { grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--grid-min)), 1fr)); }
+
+/* A cell is never narrower than one column of the cap, so the grid stops at that many columns. */
+.capped {
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, max(var(--grid-min), (100% - (var(--grid-cols) - 1) * var(--grid-gap)) / var(--grid-cols))), 1fr)
+  );
+}
+
+/*
+  No container query: each clamp() is a switch. (threshold - 100%) * 9999 is hugely negative when the row fits,
+  so the cell is exactly one column of that count; when it does not fit, the value is huge and the next step wins.
+*/
+.halves {
+  --full: calc((100% - (var(--grid-cols) - 1) * var(--grid-gap)) / var(--grid-cols));
+  --full-at: calc(var(--grid-cols) * var(--grid-min) + (var(--grid-cols) - 1) * var(--grid-gap));
+  --half: calc((100% - (var(--grid-half) - 1) * var(--grid-gap)) / var(--grid-half));
+  --half-at: calc(var(--grid-half) * var(--grid-min) + (var(--grid-half) - 1) * var(--grid-gap));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(clamp(var(--full), (var(--full-at) - 100%) * 9999, clamp(var(--half), (var(--half-at) - 100%) * 9999, 100%)), 1fr)
+  );
+}

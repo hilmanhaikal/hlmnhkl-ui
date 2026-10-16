@@ -1,0 +1,53 @@
+/* Hide the browser's own clear button */
+.root input::-webkit-search-cancel-button,
+.root input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }
+
+.clear {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--hl-mini-button);
+  height: var(--hl-mini-button);
+  margin-right: calc(var(--hl-space-2) * -1);
+  padding: 0;
+  border: 0;
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-surface-active);
+  color: var(--hl-color-fg);
+  font-size: var(--hl-icon-sm);
+  cursor: pointer;
+  animation: popIn var(--hl-motion-slow) var(--hl-ease-spring);
+  transition:
+    background-color var(--hl-motion-fast) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.clear::after {
+  content: "";
+  position: absolute;
+  inset: calc((var(--hl-mini-button) - var(--hl-hit-min)) / 2);
+}
+
+@media (hover: hover) {
+  .clear:hover { background: var(--hl-color-border-strong); color: var(--hl-color-surface); }
+}
+.clear:active { transform: scale(var(--hl-press-scale-strong)); transition-duration: var(--hl-motion-instant); }
+.clear:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+
+.hint {
+  display: inline-flex;
+  animation: fadeIn var(--hl-motion-base) var(--hl-ease-out);
+}
+
+/* Touch screens rarely have a keyboard; the shortcut still works */
+@media (hover: none) {
+  .hint { display: none; }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.4) rotate(-90deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+}

@@ -1,0 +1,101 @@
+.root {
+  --s: var(--hl-control-h-md);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hl-space-3);
+  min-width: var(--s);
+  height: var(--s);
+  padding: 0;
+  border: var(--hl-line) solid var(--hl-color-border);
+  border-radius: var(--hl-radius-control);
+  background: var(--hl-color-surface);
+  color: var(--hl-color-fg);
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-medium);
+  cursor: pointer;
+  transition:
+    background-color var(--hl-motion-fast) var(--hl-ease-out),
+    border-color var(--hl-motion-base) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.root::after {
+  content: "";
+  position: absolute;
+  inset: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+}
+
+.sm { --s: var(--hl-control-h-sm); }
+.withLabel { padding: 0 var(--hl-space-5) 0 var(--hl-space-4); }
+
+@media (hover: hover) {
+  .root:hover { background: var(--hl-color-surface-hover); }
+}
+.root:active { transform: scale(var(--hl-press-scale-strong)); transition-duration: var(--hl-motion-instant); }
+.root:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+.root[data-copied] { border-color: var(--hl-color-fg); }
+
+.icons {
+  display: grid;
+  width: var(--hl-icon-md);
+  height: var(--hl-icon-md);
+}
+
+.copy,
+.check {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+}
+
+.copy {
+  transition:
+    opacity var(--hl-motion-fast) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.check {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset var(--hl-motion-base) var(--hl-ease-in);
+}
+
+.root[data-copied] .copy { opacity: 0; transform: scale(0.4) rotate(-45deg); }
+
+.root[data-copied] .check {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset var(--hl-motion-slow) var(--hl-ease-out) var(--hl-motion-instant);
+}
+
+.labels {
+  display: grid;
+  overflow: hidden;
+}
+
+.labelIdle,
+.labelDone {
+  grid-area: 1 / 1;
+  transition:
+    transform var(--hl-motion-slow) var(--hl-ease-spring),
+    opacity var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.labelDone { transform: translateY(100%); opacity: 0; }
+.root[data-copied] .labelIdle { transform: translateY(-100%); opacity: 0; }
+.root[data-copied] .labelDone { transform: none; opacity: 1; }
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

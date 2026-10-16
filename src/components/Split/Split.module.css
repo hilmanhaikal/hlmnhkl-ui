@@ -1,0 +1,29 @@
+.root {
+  container-type: inline-size;
+  min-width: 0;
+}
+
+.inner {
+  display: grid;
+  gap: var(--split-gap);
+}
+
+.start { grid-template-columns: var(--split-side) minmax(0, 1fr); }
+.end { grid-template-columns: minmax(0, 1fr) var(--split-side); }
+.solo { grid-template-columns: minmax(0, 1fr); }
+
+.side,
+.main { min-width: 0; }
+
+/* Catches a side component that renders nothing; the null check cannot see it */
+.side:empty { display: none; }
+.inner:has(> .side:empty) { grid-template-columns: minmax(0, 1fr); }
+
+/* Container queries cannot read variables, so this width is raw */
+@container (max-width: 640px) {
+  .start,
+  .end { grid-template-columns: minmax(0, 1fr); }
+
+  [data-stacked="main"] > .side,
+  [data-stacked="sidebar"] > .main { display: none; }
+}

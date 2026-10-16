@@ -1,0 +1,17 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-gap);
+  min-width: 0;
+  margin: 0;
+}
+
+.root:is(ul, ol) {
+  padding: 0;
+  list-style: none;
+}
+
+.stretch { align-items: stretch; }
+.start { align-items: flex-start; }
+.center { align-items: center; }
+.end { align-items: flex-end; }

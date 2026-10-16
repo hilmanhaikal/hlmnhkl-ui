@@ -1,0 +1,128 @@
+.root {
+  --h: var(--hl-control-h-md);
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  min-height: var(--h);
+  padding: 0 var(--hl-space-6);
+  border: var(--hl-line) solid transparent;
+  border-radius: var(--hl-radius-control);
+  font-size: var(--hl-text-md);
+  font-weight: var(--hl-weight-medium);
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--hl-motion-fast) var(--hl-ease-out),
+    border-color var(--hl-motion-fast) var(--hl-ease-out),
+    color var(--hl-motion-fast) var(--hl-ease-out),
+    box-shadow var(--hl-motion-fast) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+/* Invisible hit area so small buttons still get a 44px target. */
+.root::after {
+  content: "";
+  position: absolute;
+  inset-block: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset-inline: 0;
+}
+
+.root:focus-visible {
+  outline: none;
+  box-shadow: var(--hl-focus-ring);
+}
+
+.root:active:not([aria-disabled="true"]) {
+  transform: scale(var(--hl-press-scale));
+  transition-duration: var(--hl-motion-instant);
+}
+
+/* aria-disabled looks the same as disabled but stays focusable, so focus is not lost and the reason it points to stays readable. */
+.root:disabled,
+.root[aria-disabled="true"]:not([data-loading]) {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.root[data-loading] {
+  cursor: progress;
+}
+
+.sm { --h: var(--hl-control-h-sm); padding: 0 var(--hl-space-5); font-size: var(--hl-text-sm); }
+.lg { --h: var(--hl-control-h-lg); padding: 0 var(--hl-space-8); font-size: var(--hl-text-lg); }
+.full { display: grid; width: 100%; }
+
+.primary {
+  background: var(--hl-color-accent);
+  color: var(--hl-color-accent-fg);
+  box-shadow: var(--hl-shadow-1);
+}
+@media (hover: hover) {
+  .primary:hover:not([aria-disabled="true"]) { background: var(--hl-color-inverse-hover); }
+}
+
+.secondary {
+  background: var(--hl-color-surface);
+  border-color: var(--hl-color-border-strong);
+  color: var(--hl-color-fg);
+}
+@media (hover: hover) {
+  .secondary:hover:not([aria-disabled="true"]) { background: var(--hl-color-surface-hover); }
+}
+
+.ghost {
+  background: transparent;
+  color: var(--hl-color-fg);
+}
+@media (hover: hover) {
+  .ghost:hover:not([aria-disabled="true"]) { background: var(--hl-color-surface-hover); }
+}
+
+.danger {
+  background: var(--hl-color-danger-solid);
+  color: var(--hl-color-on-danger);
+  font-weight: var(--hl-weight-semibold);
+  box-shadow: var(--hl-shadow-1);
+}
+@media (hover: hover) {
+  .danger:hover:not([aria-disabled="true"]) { background: var(--hl-color-danger-solid-hover); }
+}
+
+.content,
+.spinner {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hl-space-3);
+  transition:
+    opacity var(--hl-motion-base) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring),
+    filter var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.icon {
+  display: inline-flex;
+  font-size: var(--hl-icon-md);
+}
+
+/* The spinner shares the label's grid cell, so the width never changes. */
+.spinner {
+  opacity: 0;
+  transform: translateY(var(--hl-shift-md)) scale(0.6);
+}
+
+.root[data-loading] .content {
+  opacity: 0;
+  transform: translateY(calc(var(--hl-shift-md) * -1)) scale(0.92);
+  filter: blur(2px);
+}
+
+.root[data-loading] .spinner {
+  opacity: 1;
+  transform: none;
+}

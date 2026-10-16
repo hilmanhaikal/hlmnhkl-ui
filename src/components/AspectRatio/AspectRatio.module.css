@@ -1,0 +1,15 @@
+.root {
+  position: relative;
+  aspect-ratio: var(--ratio);
+  overflow: hidden;
+}
+
+/* Children sit on top of the box, so their own size can never stretch it. */
+.root > * {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.root > :is(img, video) { object-fit: cover; }
