@@ -31,6 +31,8 @@ export type TableLabels = {
   sortedBy: (column: string, direction: TableSort['direction']) => string
   /** Spoken when a third press turns the sort off. */
   unsorted: (column: string) => string
+  /** The row count beside each group's name. */
+  groupCount: (count: number) => string
 }
 
 const defaultLabels: TableLabels = {
@@ -38,6 +40,7 @@ const defaultLabels: TableLabels = {
   selectRow: (name) => `Select ${name}`,
   sortedBy: (column, direction) => `Sorted by ${column}, ${direction}`,
   unsorted: (column) => `No longer sorted by ${column}`,
+  groupCount: (count) => `${count} ${count === 1 ? 'row' : 'rows'}`,
 }
 
 export type TableProps<T> = {
@@ -57,6 +60,9 @@ export type TableProps<T> = {
   defaultSort?: TableSort | null
   /** Called with the new sort when a header is pressed: ascending, descending, then null. */
   onSortChange?: (sort: TableSort | null) => void
+  /** Gathers rows under a header per group, such as each row's status. Groups keep the order they first
+   * appear in; the sort applies inside each group. Rows glide to their group when it changes. */
+  groupBy?: (row: T) => string
   /** Adds a checkbox column. */
   selectable?: boolean
   /** Ids of the selected rows, when you control it. */
@@ -109,6 +115,7 @@ export function Table<T>({
   sort: sortProp,
   defaultSort = null,
   onSortChange,
+  groupBy,
   selectable,
   selected: selectedProp,
   defaultSelected = [],
@@ -143,8 +150,10 @@ export function Table<T>({
   const [sort, setSort] = useControllable<TableSort | null>(sortProp, defaultSort, onSortChange)
   const [selected, setSelected] = useControllable(selectedProp, defaultSelected, onSelectedChange)
   const [announce, setAnnounce] = useState('')
-  const bodyRef = useRef<HTMLTableSectionElement>(null)
+  const tableRef = useRef<HTMLTableElement>(null)
   const lastTops = useRef(new Map<string, number>())
+  const lastShape = useRef('')
+  const groupOrder = useRef<string[]>([])
 
   const sorted = useMemo(() => {
     if (!sort) return rows
@@ -161,16 +170,26 @@ export function Table<T>({
     return out
   }, [rows, columns, sort])
 
-  const order = sorted.map(getRowId).join('|')
+  // Groups take the order they first appear in, and keep it: a sort, or a row moving to another group,
+  // never shuffles the groups themselves. A group seen for the first time joins at the end.
+  let groups: Array<{ key: string; rows: T[] }> | null = null
+  if (groupBy) {
+    for (const key of new Set(rows.map(groupBy))) if (!groupOrder.current.includes(key)) groupOrder.current.push(key)
+    groups = groupOrder.current.map((key) => ({ key, rows: sorted.filter((r) => groupBy(r) === key) })).filter((g) => g.rows.length)
+  }
+  const shape = groups ? groups.map((g) => g.key).join('|') : ''
+  const order = groups ? groups.map((g) => `${g.key}:${g.rows.map(getRowId).join(',')}`).join('|') : sorted.map(getRowId).join('|')
 
-  // FLIP: rows glide to their new place after a sort
+  // FLIP: rows glide to their new place after a sort. When the groups themselves change, they snap
+  // there with the spring, so the table visibly splits apart and closes up again.
   useLayoutEffect(() => {
-    const body = bodyRef.current
-    if (!body) return
+    const table = tableRef.current
+    if (!table) return
     const duration = motionMs('slow')
-    const ease = easing('out')
+    const ease = easing(shape !== lastShape.current ? 'spring' : 'out')
+    lastShape.current = shape
     const now = new Map<string, number>()
-    body.querySelectorAll<HTMLElement>('[data-row-id]').forEach((tr) => {
+    table.querySelectorAll<HTMLElement>('tbody [data-row-id]').forEach((tr) => {
       const rid = tr.dataset.rowId!
       const top = tr.offsetTop
       now.set(rid, top)
@@ -204,11 +223,35 @@ export function Table<T>({
   const scrollable = Boolean(maxHeight) || more.start || more.end
   const nameOf = (row: T) => (rowLabel ? rowLabel(row) : String(read(row, columns[0]?.key ?? '') ?? getRowId(row)))
 
+  const colCount = columns.length + (selectable ? 1 : 0)
+  // Keeps the entrance stagger going across groups.
+  let rowIndex = 0
+  const renderRow = (row: T) => {
+    const ri = rowIndex++
+    const rid = getRowId(row)
+    const on = selectedSet.has(rid)
+    return (
+      <tr key={rid} role="row" data-row-id={rid} className={styles.row} data-selected={on || undefined} style={{ ['--i' as string]: Math.min(ri, 12) }}>
+        {selectable && (
+          <td role="cell" className={styles.checkCell}>
+            <Check checked={on} label={labels.selectRow(nameOf(row))} onChange={(v) => setSelected(v ? [...selected, rid] : selected.filter((s) => s !== rid))} />
+          </td>
+        )}
+        {columns.map((c) => (
+          <td key={c.key} role="cell" className={styles.td} data-align={c.align ?? 'start'} data-label={labelOf(c)}>
+            {/* One wrapper, so the card layout always gets a label and a value */}
+            <span>{c.cell ? c.cell(row) : String(read(row, c.key) ?? '')}</span>
+          </td>
+        ))}
+      </tr>
+    )
+  }
+
   return (
     <div className={cx(styles.root, className)} data-layout={layout} data-more-start={more.start || undefined} data-more-end={more.end || undefined}>
       <div ref={scrollRef} onScroll={measure} className={styles.scroll} style={{ maxHeight }} tabIndex={scrollable ? 0 : undefined} role={scrollable ? 'region' : undefined} aria-labelledby={scrollable ? `${id}-cap` : undefined}>
         {/* Explicit roles keep table semantics when rows restyle as cards (layout="stack") */}
-        <table role="table" className={styles.table} aria-labelledby={`${id}-cap`}>
+        <table ref={tableRef} role="table" className={styles.table} aria-labelledby={`${id}-cap`}>
           <caption id={`${id}-cap`} className={cx(styles.caption, hideCaption && styles.srOnly)}>
             {caption}
           </caption>
@@ -253,34 +296,30 @@ export function Table<T>({
               })}
             </tr>
           </thead>
-          <tbody role="rowgroup" ref={bodyRef}>
-            {sorted.map((row, ri) => {
-              const rid = getRowId(row)
-              const on = selectedSet.has(rid)
-              return (
-                <tr key={rid} role="row" data-row-id={rid} className={styles.row} data-selected={on || undefined} style={{ ['--i' as string]: Math.min(ri, 12) }}>
-                  {selectable && (
-                    <td role="cell" className={styles.checkCell}>
-                      <Check checked={on} label={labels.selectRow(nameOf(row))} onChange={(v) => setSelected(v ? [...selected, rid] : selected.filter((s) => s !== rid))} />
-                    </td>
-                  )}
-                  {columns.map((c) => (
-                    <td key={c.key} role="cell" className={styles.td} data-align={c.align ?? 'start'} data-label={labelOf(c)}>
-                      {/* One wrapper, so the card layout always gets a label and a value */}
-                      <span>{c.cell ? c.cell(row) : String(read(row, c.key) ?? '')}</span>
-                    </td>
-                  ))}
+          {groups && groups.length > 0 ? (
+            groups.map((g) => (
+              <tbody key={g.key} role="rowgroup" className={styles.group}>
+                <tr role="row" data-row-id={`group:${g.key}`} className={styles.groupRow}>
+                  <th role="rowheader" scope="rowgroup" colSpan={colCount} className={styles.groupHead}>
+                    <span>{g.key}</span>{' '}
+                    <span className={styles.groupCount}>{labels.groupCount(g.rows.length)}</span>
+                  </th>
                 </tr>
-              )
-            })}
-            {sorted.length === 0 && (
-              <tr role="row">
-                <td role="cell" colSpan={columns.length + (selectable ? 1 : 0)} className={styles.empty}>
-                  {emptyText}
-                </td>
-              </tr>
-            )}
-          </tbody>
+                {g.rows.map(renderRow)}
+              </tbody>
+            ))
+          ) : (
+            <tbody role="rowgroup">
+              {sorted.map(renderRow)}
+              {sorted.length === 0 && (
+                <tr role="row">
+                  <td role="cell" colSpan={colCount} className={styles.empty}>
+                    {emptyText}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          )}
         </table>
       </div>
       <p className={styles.srOnly} role="status">{announce}</p>

@@ -49,7 +49,7 @@ Using Next.js or React Router? The [installation guide](https://ui.hlmnhkl.my/in
 
 ## Pro
 
-53 more components (such as Calendar, Chart, KanbanBoard and Combobox), page blocks, full templates and brand themes are coming as hlmnhkl/ui Pro. You can see them on the [docs site](https://ui.hlmnhkl.my).
+54 more components (such as Calendar, Chart, KanbanBoard, Combobox and Route), page blocks, full templates and brand themes are coming as hlmnhkl/ui Pro. You can see them on the [docs site](https://ui.hlmnhkl.my).
 
 ## Licence
 

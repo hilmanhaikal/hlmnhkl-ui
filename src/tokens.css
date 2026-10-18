@@ -303,6 +303,8 @@
   --hl-day-mark: 4px;
   --hl-calendar-gap: 32px;
   --hl-wheel-rows: 5;
+  /* How far each row tilts per row away from the middle, so a wheel reads as a drum. */
+  --hl-wheel-tilt: 18deg;
   --hl-wheel-w: 64px;
 
   /* Smarter inputs */

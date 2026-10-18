@@ -131,6 +131,33 @@
   text-align: left;
 }
 
+/* A group's header: its name and how many rows it holds, on a quiet band that opens a gap above it,
+   so the groups read as pieces the table split into. */
+.groupHead {
+  padding: var(--hl-space-6) var(--hl-space-5) var(--hl-space-2);
+  border-top: var(--hl-line) solid var(--hl-color-border);
+  background: var(--hl-color-surface-sunken);
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-semibold);
+  text-align: left;
+}
+
+.group:first-of-type .groupHead { padding-top: var(--hl-space-3); }
+
+.groupCount {
+  margin-left: var(--hl-space-3);
+  font-size: var(--hl-text-xs);
+  font-weight: var(--hl-weight-regular);
+  color: var(--hl-color-fg-muted);
+}
+
+/* A new group's header settles in while its rows glide into place below it. */
+.groupRow { animation: groupIn var(--hl-motion-slow) var(--hl-ease-out) both; }
+
+@keyframes groupIn {
+  from { opacity: 0; transform: translateY(calc(var(--hl-shift-sm) * -1)); }
+}
+
 .empty {
   padding: var(--hl-space-9) var(--hl-space-5);
   border-top: var(--hl-line) solid var(--hl-color-border);
@@ -216,7 +243,8 @@
   [data-layout="stack"] .table,
   [data-layout="stack"] .table tbody,
   [data-layout="stack"] .table tr,
-  [data-layout="stack"] .table td { display: block; }
+  [data-layout="stack"] .table td,
+  [data-layout="stack"] .table .groupHead { display: block; }
 
   [data-layout="stack"] .head { display: block; }
 

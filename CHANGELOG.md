@@ -2,6 +2,29 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.16.0 · 18 Oct 2026
+
+### Added
+
+- Table `groupBy`: gathers rows under a header per group, such as each invoice's status, with a row count. Turning groups on or off makes the table split apart and close up again, and a row that changes group glides into it. Groups keep their order; the sort applies inside each group. Each group is its own row group with a row header, so screen readers announce it.
+- **Route** (Pro): progress as a journey. Stops sit on a road, drawn in ink behind the marker and dashed ahead, and the marker glides between them. `value` can sit between two stops, such as 1.5. Along a line or down the page. Screen readers hear where it is, such as "On the way from Packed to Shipped".
+- Token `--hl-wheel-tilt` (`18deg`): how far each wheel row tilts per row away from the middle.
+
+### Changed
+
+- TimePicker wheels turn like a drum: rows tilt back and fade as they leave the middle. Hours and minutes go round, so 59 rolls on to 00 by scroll or keyboard, taking the short way. Screen readers still hear each option once.
+
+## 0.15.2 · 18 Oct 2026
+
+### Removed
+
+- Pro block List and detail. Team members covers the same people, and Inbox and Orders show the same list and detail pattern.
+- Pro theme Ink. It was close to the default look; Slate covers a cool blue-grey.
+
+### Changed
+
+- Pro previews are twice as sharp, saved as AVIF at about the same weight as before. Locked block pages now have the same Preview and Code switch as components: Preview is the screenshot, Code is the Pro lock.
+
 ## 0.15.1 · 18 Oct 2026
 
 ### Fixed
