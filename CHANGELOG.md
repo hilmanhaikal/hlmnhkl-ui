@@ -2,6 +2,22 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.18.0 · 18 Oct 2026
+
+### Added
+
+- TreeView `onMove`: drag items into folders. A small card with the name follows the pointer, the folder it would land in is ringed, and a closed folder held under it opens after a moment. On touch, hold an item first, so a quick swipe still scrolls. With the keyboard, Space picks an item up, Up and Down choose a folder or the top level, and Space drops; Escape cancels. Every step is announced. A folder never goes into itself or a folder inside it. The moved row glides to its new place.
+- `moveNode(nodes, id, folderId)`, to apply a move to your tree data in one line.
+- Token `--hl-tree-open-delay` (`800ms`): how long a closed folder waits under a dragged item before it opens. Reduced motion keeps it, since it is about intent, not motion.
+
+### Changed
+
+- TreeView: a node with `children: []` is a folder you can drop into, even while empty. With `onMove`, Space picks up and Enter selects; without it, Space still selects.
+
+### Fixed
+
+- The page did not scroll with the mouse wheel while the pointer was over a Table or a ScrollArea. They now only stop sideways scroll from spilling over, so a swipe at the edge does not go back a page, and the wheel scrolls the page as normal.
+
 ## 0.17.0 · 18 Oct 2026
 
 ### Added

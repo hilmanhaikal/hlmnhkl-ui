@@ -8,7 +8,9 @@
 /* Native scrolling kept; only the bar is custom */
 .viewport {
   overflow: auto;
-  overscroll-behavior: contain;
+  /* Sideways only: a swipe at the edge must not go back a page, and once the area is at its end the
+     wheel carries on to the page, as people expect. */
+  overscroll-behavior-x: contain;
   scrollbar-width: none;
   border-radius: inherit;
 }

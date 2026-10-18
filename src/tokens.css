@@ -363,6 +363,8 @@
   --hl-sparkline-w: 120px;
   --hl-sparkline-h: 32px;
   --hl-tree-indent: 20px;
+  /* How long a closed folder waits under a dragged item before it opens. Intent, not motion, so reduced motion keeps it. */
+  --hl-tree-open-delay: 800ms;
   --hl-timeline-marker: 12px;
   --hl-table-check: 18px;
   /* A cell's widest, so long text wraps and a sideways-scrolling table stays readable. */

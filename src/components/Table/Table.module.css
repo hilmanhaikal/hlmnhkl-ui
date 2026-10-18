@@ -12,7 +12,8 @@
 
 .scroll {
   overflow: auto;
-  overscroll-behavior: contain;
+  /* Sideways only: a swipe at the edge must not go back a page, but the wheel still scrolls the page. */
+  overscroll-behavior-x: contain;
 }
 
 .scroll:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--hl-line-focus) var(--hl-color-fg); }
