@@ -2,6 +2,13 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.15.1 · 18 Oct 2026
+
+### Fixed
+
+- Safari no longer shows a small dot where a hidden line starts: beside the Stepper number, and in Checkbox, CopyButton, ProgressRing, PasswordInput (the eye's slash) and Table row checkboxes. A hidden line used to be a zero-length dash, and Safari still drew its round ends.
+- Tabs fit a narrow phone more often: under 480px each tab has a little less room on its sides, so a short row no longer scrolls sideways by a few pixels. Every tab is now at least 44px wide, so none is too small to tap.
+
 ## 0.15.0 · 17 Oct 2026
 
 ### Added

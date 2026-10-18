@@ -71,8 +71,9 @@
 
 .tick,
 .dash {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
+  /* Hidden just before the path starts. A zero-length dash would leave its round ends as a dot in Safari. */
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.01;
   transition: stroke-dashoffset var(--hl-motion-base) var(--hl-ease-out);
 }
 

@@ -22,6 +22,7 @@
 
 .tab {
   position: relative;
+  min-width: var(--hl-hit-min);
   min-height: var(--hl-hit-min);
   padding: 0 var(--hl-space-4);
   border: 0;
@@ -34,6 +35,11 @@
   white-space: nowrap;
   cursor: pointer;
   transition: color var(--hl-motion-base) var(--hl-ease-out), background-color var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+/* Narrow screens: a little less room around each tab, so a short row fits instead of scrolling. */
+@media (max-width: 479px) {
+  .tab { padding: 0 var(--hl-space-3); }
 }
 
 @media (hover: hover) {
