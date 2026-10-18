@@ -1,6 +1,6 @@
 {
   "name": "hlmnhkl-ui",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "React components in a monochrome style. Copy them into your app with npx hlmnhkl-ui add <name>.",
   "license": "MIT",
   "homepage": "https://ui.hlmnhkl.my",

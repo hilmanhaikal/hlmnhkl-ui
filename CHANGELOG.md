@@ -2,6 +2,17 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.17.0 · 18 Oct 2026
+
+### Added
+
+- Skeleton `variant="sketch"`: the same shapes as dashed pencil outlines with no fill, for a quieter wait. Text becomes dashed baselines. The lines fade gently instead of shimmering, and hold still with reduced motion.
+- Token `--hl-color-surface-raised`: the surface for something that sits on a track, such as a sliding pill or a slider thumb. In light it is the surface; in dark it is a step lighter.
+
+### Changed
+
+- Dark mode depth: SegmentedControl and ToggleGroup pills and Slider and RangeSlider thumbs use the raised surface, so they stand out by fill. `--hl-shadow-1` and `--hl-shadow-2` are faint in dark (20% and 15%), so buttons and pills no longer look embossed. Larger shadows for menus and dialogs stay.
+
 ## 0.16.0 · 18 Oct 2026
 
 ### Added

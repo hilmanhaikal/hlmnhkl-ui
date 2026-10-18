@@ -73,7 +73,7 @@
   margin-top: calc((var(--hl-track-h) - var(--thumb)) / 2);
   border: var(--hl-line-thick) solid var(--hl-color-accent);
   border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface);
+  background: var(--hl-color-surface-raised);
   box-shadow: var(--hl-shadow-2);
   transition:
     transform var(--hl-motion-slow) var(--hl-ease-spring),
@@ -86,7 +86,7 @@
   box-sizing: border-box;
   border: var(--hl-line-thick) solid var(--hl-color-accent);
   border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface);
+  background: var(--hl-color-surface-raised);
   box-shadow: var(--hl-shadow-2);
   transition:
     transform var(--hl-motion-slow) var(--hl-ease-spring),

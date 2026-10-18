@@ -23,6 +23,8 @@
   --hl-color-surface-sunken: var(--hl-gray-100);
   --hl-color-surface-hover: var(--hl-gray-150);
   --hl-color-surface-active: var(--hl-gray-200);
+  /* Something that sits on a track, such as a sliding pill or a slider thumb. */
+  --hl-color-surface-raised: var(--hl-color-surface);
   --hl-color-overlay: rgb(10 10 10 / 0.32);
   --hl-color-fg: var(--hl-gray-950);
   --hl-color-fg-muted: var(--hl-gray-600);
@@ -212,6 +214,7 @@
     --hl-color-surface-sunken: #121212;
     --hl-color-surface-hover: #262626;
     --hl-color-surface-active: #2e2e2e;
+    --hl-color-surface-raised: #2c2c2c;
     --hl-color-overlay: rgb(0 0 0 / 0.6);
     --hl-color-fg: #ececec;
     --hl-color-fg-muted: #ababab;
@@ -232,8 +235,9 @@
     --hl-color-danger-solid: #d63a2e;
     /* Darker on hover: a lighter red drops white text under 4.5:1 */
     --hl-color-danger-solid-hover: #b8302a;
-    --hl-shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
-    --hl-shadow-2: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 12px rgb(0 0 0 / 0.4);
+    /* Faint: in the dark, height shows as a lighter surface, not a deep shadow. */
+    --hl-shadow-1: 0 1px 2px rgb(0 0 0 / 0.2);
+    --hl-shadow-2: 0 1px 2px rgb(0 0 0 / 0.2), 0 4px 12px rgb(0 0 0 / 0.15);
     --hl-shadow-3: 0 2px 4px rgb(0 0 0 / 0.4), 0 12px 32px rgb(0 0 0 / 0.5);
     --hl-shadow-4: 0 4px 8px rgb(0 0 0 / 0.4), 0 24px 64px rgb(0 0 0 / 0.6);
     color-scheme: dark;
@@ -248,6 +252,7 @@
   --hl-color-surface-sunken: #121212;
   --hl-color-surface-hover: #262626;
   --hl-color-surface-active: #2e2e2e;
+  --hl-color-surface-raised: #2c2c2c;
   --hl-color-overlay: rgb(0 0 0 / 0.6);
   --hl-color-fg: #ececec;
   --hl-color-fg-muted: #ababab;
@@ -268,8 +273,9 @@
   --hl-color-danger-solid: #d63a2e;
   /* Darker on hover: a lighter red drops white text under 4.5:1 */
   --hl-color-danger-solid-hover: #b8302a;
-  --hl-shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
-  --hl-shadow-2: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 12px rgb(0 0 0 / 0.4);
+  /* Faint: in the dark, height shows as a lighter surface, not a deep shadow. */
+  --hl-shadow-1: 0 1px 2px rgb(0 0 0 / 0.2);
+  --hl-shadow-2: 0 1px 2px rgb(0 0 0 / 0.2), 0 4px 12px rgb(0 0 0 / 0.15);
   --hl-shadow-3: 0 2px 4px rgb(0 0 0 / 0.4), 0 12px 32px rgb(0 0 0 / 0.5);
   --hl-shadow-4: 0 4px 8px rgb(0 0 0 / 0.4), 0 24px 64px rgb(0 0 0 / 0.6);
   color-scheme: dark;

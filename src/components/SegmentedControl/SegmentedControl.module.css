@@ -19,7 +19,7 @@
   left: 0;
   z-index: -1;
   border-radius: var(--hl-radius-control);
-  background: var(--hl-color-surface);
+  background: var(--hl-color-surface-raised);
   box-shadow: var(--hl-shadow-2), 0 0 0 var(--hl-line) var(--hl-color-border);
 }
 

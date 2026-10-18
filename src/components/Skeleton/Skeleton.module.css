@@ -26,10 +26,31 @@
 .rect { width: 100%; height: var(--hl-skeleton-block); border-radius: var(--hl-radius-md); }
 .circle { width: var(--hl-skeleton-avatar); height: var(--hl-skeleton-avatar); border-radius: var(--hl-radius-full); }
 
+/* A sketch: the shapes as dashed pencil outlines, no fill. Text becomes dashed baselines. The lines
+   themselves fade gently instead of a shimmer, which would light up the empty box behind them. */
+.sketch {
+  background: none;
+  border: var(--hl-line) dashed var(--hl-color-border-strong);
+  animation: sketching var(--hl-motion-shimmer) var(--hl-ease-in-out) infinite alternate;
+  animation-delay: calc(var(--i, 0) * var(--hl-motion-stagger) * 3);
+}
+
+.sketch::after { display: none; }
+
+.sketch.text {
+  border-width: 0 0 var(--hl-line);
+  border-radius: 0;
+}
+
+@keyframes sketching {
+  from { border-color: var(--hl-color-border); }
+}
+
 @keyframes shimmer {
   to { transform: translateX(100%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .bone::after { animation: none; display: none; }
+  .sketch { animation: none; }
 }
