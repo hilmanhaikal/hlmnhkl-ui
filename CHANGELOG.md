@@ -2,6 +2,25 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.19.0 · 19 Oct 2026
+
+### Added
+
+- `npx hlmnhkl-ui init`: sets a project up in one step. It adds `tokens.css` and `base.css`, writes `hlmnhkl-ui.json` with your folder, and shows the import lines. Later commands use that folder, so `--to` is only needed once.
+- `npx hlmnhkl-ui list`: shows every component, block, template and theme, free and Pro. `--kind blocks` shows one kind.
+- `npx hlmnhkl-ui diff <name>`: shows what changed between your copy and the latest version, line by line, like `git diff`.
+- `npx hlmnhkl-ui update <name>`: shows the changes, asks, then replaces your copy. `--yes` skips the question; without a terminal it stops instead of guessing. `tokens.css` and `base.css` are never replaced.
+- Every copied file starts with one line naming hlmnhkl/ui and its licence, so the MIT notice travels with the code. `diff` and `update` ignore that line.
+- `llms.txt`, `llms-full.txt` and `registry.json` on the docs site, so AI coding assistants can find, describe and install components. Pro items show a name and one line only.
+
+### Changed
+
+- `add` now uses the folder in `hlmnhkl-ui.json` when there is no `--to`. A bare name still works: `npx hlmnhkl-ui button` is the same as `add button`.
+
+### Fixed
+
+- Toast: its hidden screen reader announcers no longer add 1px of scroll under the page.
+
 ## 0.18.0 · 18 Oct 2026
 
 ### Added

@@ -11,18 +11,20 @@ React components that move with meaning. Black, white and grey, accessible, and 
 
 ## Install
 
-From your app's folder, copy the components you need:
+From your app's folder, set it up once, then copy the components you need:
 
 ```sh
+npx hlmnhkl-ui@latest init
 npx hlmnhkl-ui@latest add button dialog
 ```
 
-Also `pnpm dlx`, `yarn dlx` (Yarn 2 and up) or `bunx`. Files go to `src/ui`, or pass `--to <folder>`. The command also copies the components they use (Button needs Spinner), the shared files and `tokens.css`.
+Also `pnpm dlx`, `yarn dlx` (Yarn 2 and up) or `bunx`. `init` adds `tokens.css` and `base.css` to `src/ui` (or `--to <folder>`) and remembers the folder in `hlmnhkl-ui.json`. `add` also copies the components they use (Button needs Spinner) and the shared files.
 
-Then import the tokens once at your app root, and use a component:
+Then import the styles once at your app root, and use a component:
 
 ```tsx
 import './ui/tokens.css'
+import './ui/base.css'
 import { Button } from './ui/components/Button'
 
 <Button onClick={save}>Save</Button>
@@ -30,12 +32,25 @@ import { Button } from './ui/components/Button'
 
 Using Next.js or React Router? The [installation guide](https://ui.hlmnhkl.my/installation) has the steps for each.
 
+| Command | What it does |
+| --- | --- |
+| `init` | Set a project up: `tokens.css`, `base.css` and `hlmnhkl-ui.json` |
+| `add <name>...` | Copy components, with what they import |
+| `list` | Show everything there is, free and Pro. `--kind blocks` filters |
+| `diff <name>...` | Show what changed between your copy and the latest version |
+| `update <name>...` | Show the changes, then replace your copy after you say yes |
+
 | Option | What it does |
 | --- | --- |
-| `--to <folder>` | Where the files go. Default: `src/ui` |
-| `--dry-run` | Print what would be copied, write nothing |
-| `--overwrite` | Replace files that are already there. Without it, they are skipped and listed |
-| `--with-base` | Also copy `base.css`, the small reset |
+| `--to <folder>` | Where the files go. Default: the folder in `hlmnhkl-ui.json`, else `src/ui` |
+| `--dry-run` | Print what would happen, write nothing |
+| `--overwrite` | `add`: replace files that are already there. Without it, they are skipped and listed |
+| `--with-base` | `add`: also copy `base.css` (`init` always does) |
+| `--yes` | `update`: replace without asking |
+
+Every copied file starts with one line naming hlmnhkl/ui and the MIT licence, so the licence notice travels with the code. `diff` and `update` ignore that line.
+
+**With an AI assistant:** point it at [llms.txt](https://ui.hlmnhkl.my/llms.txt) (every component and the rules) or [llms-full.txt](https://ui.hlmnhkl.my/llms-full.txt) (props, keyboard notes and an example for each free component). There is also a [registry.json](https://ui.hlmnhkl.my/registry.json).
 
 ## What you get
 
