@@ -464,9 +464,45 @@ async function runUpdate(opts) {
   console.log(`Updated ${plural(todo.length, 'file')}.`)
 }
 
+const tokenNames = (text) => new Set([...text.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/(--[\w-]+)\s*:/g)].map((m) => m[1]))
+
+// tokens.css is never replaced, so a new component can read a token the project's copy does not have yet.
+function warnMissingTokens(opts) {
+  const mine = join(targetFolder(opts).to, 'tokens.css')
+  if (!isFile(mine)) return
+  const latest = join(SRC, 'tokens.css')
+  const text = readFileSync(latest, 'utf8')
+  const have = tokenNames(readFileSync(mine, 'utf8'))
+  const missing = [...tokenNames(text)].filter((name) => !have.has(name))
+  if (!missing.length) return
+  console.log(`\nYour tokens.css is missing ${plural(missing.length, 'token')} that the latest components use: ${missing.join(', ')}`)
+  console.log(`Your file was not changed. Copy these lines from the latest tokens.css into ${shown(CWD, mine)}, each into the same block:`)
+  // A token can be set in more than one block (dark theme, reduced motion), so every line is listed under its block.
+  const blocks = new Map()
+  const stack = []
+  let selector = ''
+  for (const line of text.split('\n').map((l) => l.trim())) {
+    if (line.endsWith('{')) {
+      stack.push(`${selector}${line.slice(0, -1)}`.trim())
+      selector = ''
+    } else if (line.startsWith('}')) stack.pop()
+    else if (line.endsWith(',') && !line.includes(': ')) selector += `${line} `
+    else if (missing.some((name) => line.startsWith(`${name}:`))) {
+      const where = stack.join(' / ')
+      blocks.set(where, [...(blocks.get(where) ?? []), line])
+    }
+  }
+  for (const [where, found] of blocks) {
+    console.log(`  In ${where}:`)
+    for (const line of found) console.log(`    ${line}`)
+  }
+  console.log(`The latest file is at ${latest}`)
+}
+
 const opts = parseArgs(process.argv.slice(2))
 if (opts.command === 'init') runInit(opts)
 else if (opts.command === 'list') runList(opts)
 else if (opts.command === 'diff') runDiff(opts)
 else if (opts.command === 'update') await runUpdate(opts)
 else runAdd(opts)
+if (['add', 'diff', 'update'].includes(opts.command)) warnMissingTokens(opts)

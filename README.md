@@ -50,6 +50,8 @@ Using Next.js or React Router? The [installation guide](https://ui.hlmnhkl.my/in
 
 Every copied file starts with one line naming hlmnhkl/ui and the MIT licence, so the licence notice travels with the code. `diff` and `update` ignore that line.
 
+`add`, `diff` and `update` never change your `tokens.css`. If the latest one has tokens yours lacks, they list them after the result, with the lines to copy.
+
 **With an AI assistant:** point it at [llms.txt](https://ui.hlmnhkl.my/llms.txt) (every component and the rules) or [llms-full.txt](https://ui.hlmnhkl.my/llms-full.txt) (props, keyboard notes and an example for each free component). There is also a [registry.json](https://ui.hlmnhkl.my/registry.json).
 
 ## What you get

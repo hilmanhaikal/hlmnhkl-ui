@@ -2,6 +2,12 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.20.1 · 28 Oct 2026
+
+### Changed
+
+- `add`, `diff` and `update` now check your `tokens.css` against the latest one. If yours lacks tokens the components use (for example `--hl-disabled-opacity`, `--hl-check-scale` and `--hl-check-peak-scale` from 0.20.0), they list the names and the lines to copy. Your file is never changed, and nothing is printed when no token is missing.
+
 ## 0.20.0 · 28 Oct 2026
 
 A full bug audit of every component, block and template, at 320, 390, 768 and 1280 wide, in light and dark. Every fix below was checked in the browser before and after.
