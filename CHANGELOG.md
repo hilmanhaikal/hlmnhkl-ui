@@ -2,6 +2,13 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.20.2 · 29 Oct 2026
+
+### Changed
+
+- Blocks and templates name people by their role ("Design lead", "Web engineer", "You") and businesses by what they are ("Your app", "A logistics team"), instead of made-up names. Avatars show the role's initials and emails are role addresses at example.com. Real places stay.
+- MentionInput and NotificationInbox: the examples in their prop notes use roles too.
+
 ## 0.20.1 · 28 Oct 2026
 
 ### Changed
