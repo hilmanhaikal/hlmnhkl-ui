@@ -2,6 +2,59 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.20.0 · 28 Oct 2026
+
+A full bug audit of every component, block and template, at 320, 390, 768 and 1280 wide, in light and dark. Every fix below was checked in the browser before and after.
+
+### Added
+
+- Calendar, DatePicker and DateRangePicker `today`: the date to treat as today. Without it, today follows the clock and moves on at midnight.
+- CopyButton `failedLabel` (default "Could not copy"): shown and announced when copying fails.
+- Tokens `--hl-disabled-opacity` (`0.5`), `--hl-check-scale` and `--hl-check-peak-scale`. The two scales become `1` under reduced motion.
+
+### Changed
+
+- Disabled controls use one opacity, `--hl-disabled-opacity`. Before, it was 0.3 to 0.6 depending on the component.
+- On touch screens, small Buttons and IconButtons, Inputs, SegmentedControl items, Calendar month buttons and the DateRangePicker icons give at least a 44px target without looking bigger. A tap area never covers the button next to it. On a mouse, IconButton's tap area is now the size of the button.
+- Long labels end in "…" instead of spilling out: Button, Badge, Tag, BottomTabBar, SegmentedControl. Long words wrap in Accordion, Collapsible, Timeline, EmptyState and Stepper.
+- Navbar: links that do not fit move into the menu, measured live, instead of running under the actions.
+- Pagination always shows 7 slots, and a "…" always stands for at least 2 pages.
+- Two-digit years read from 80 years back to 20 years ahead: `85` is 1985, `30` is 2030.
+- ContextMenu and Menubar: on a phone, a submenu that fits on neither side opens under its item.
+- Lightbox arrows use `aria-disabled`, so focus stays on them at the first and last picture.
+- VideoPlayer: at 320px wide the time moves under the seek bar, so every control fits.
+
+### Fixed
+
+- TimePicker: the wheels only scroll up and down. Typing "1" in 12-hour mode picks 1, not 12.
+- RichTextEditor: adding a link inside a form no longer reloads the page. Pasting from Google Docs keeps the real bold and no longer makes everything bold.
+- KanbanBoard: a dragged card follows the pointer and lands in its slot. On a phone the board no longer makes the page wider than the screen.
+- Dialog, Drawer, Sheet: a double click on a footer button no longer fires twice.
+- MentionInput no longer reports people who were not mentioned.
+- Combobox: the Escape that clears the text no longer also closes a Dialog around it. SearchInput's shortcut no longer pulls focus out of an open Dialog. Select no longer opens on Ctrl, Cmd or Alt keys.
+- Toast announces the same message again when it repeats.
+- Alert banner: links and buttons inside it are readable.
+- Button and Spinner announce the loading state.
+- NumberInput steps from the number being typed, and a disabled stepper no longer counts.
+- PinInput: Delete and Cut clear a box, and six boxes fit on one line at 320px.
+- TagInput: commas make tags on Android keyboards, and a pasted list split by new lines makes one tag per line.
+- Switch with a `name` submits its value in a form.
+- CurrencyInput: Backspace right after a comma deletes the digit before it.
+- RangeSlider: thumbs on the same value can be dragged apart either way.
+- Textarea and Input reset their height, count and floating label with the form.
+- FileUpload shows 999,999 bytes as "1 MB", not "1,000 kB".
+- TreeView: the first click after a drop works, and focus stays on an item moved by keyboard.
+- Carousel: Play works while focus is inside.
+- Calendar fits at 320px, and today moves on at midnight.
+- RelativeTime counts days by calendar day, so two days ago never reads "yesterday".
+- DatePicker and DateRangePicker clear bad typed text when you pick a date. A typed range can no longer span disabled days.
+- ScrollArea: dragging the thumb to the end reaches the end.
+- ResizablePanels: a collapsed panel stays collapsed on ArrowLeft and Home.
+- VideoPlayer plays new `sources` when they change.
+- Chart: the tooltip reads values aloud only while using the keyboard.
+- Tag, Navbar, Breadcrumb, Sidebar, Stat, Link, ProgressBar, Collapsible and Pagination fixes for focus, wrapping, ARIA values and overflow.
+- Blocks: Checkout locks the cart while placing the order. Inbox and Schedule use one date for today. AppShell's Profile item opens a page. EventPage's calendar file downloads in Safari. Booking, TwoStepVerification, Onboarding, ProjectBoard and Schedule fit at 320px.
+
 ## 0.19.0 · 19 Oct 2026
 
 ### Added

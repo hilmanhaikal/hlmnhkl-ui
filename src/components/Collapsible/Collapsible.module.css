@@ -8,6 +8,7 @@
   display: inline-flex;
   align-items: center;
   align-self: flex-start;
+  max-width: 100%;
   gap: var(--hl-space-3);
   min-height: var(--hl-hit-min);
   padding: 0 var(--hl-space-4);
@@ -31,7 +32,14 @@
 .trigger:disabled { opacity: 0.45; cursor: not-allowed; }
 .trigger:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
 
+.label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: start;
+}
+
 .chevron {
+  flex: none;
   width: var(--hl-icon-md);
   height: var(--hl-icon-md);
   color: var(--hl-color-fg-muted);

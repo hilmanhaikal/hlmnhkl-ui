@@ -2,7 +2,9 @@
   --h: var(--hl-control-h-md);
   position: relative;
   display: inline-grid;
+  grid-template-columns: minmax(0, auto);
   place-items: center;
+  max-width: 100%;
   min-height: var(--h);
   padding: 0 var(--hl-space-6);
   border: var(--hl-line) solid transparent;
@@ -30,6 +32,14 @@
   inset-block: min(0px, calc((100% - var(--hl-hit-min)) / 2));
   inset-inline: 0;
 }
+
+@media (pointer: coarse) {
+  .sm::after { inset-inline: min(0px, calc((100% - var(--hl-hit-min)) / 2)); }
+}
+
+/* Beside another button, the hit area sinks below every box in the row, so it only fills the empty gap. */
+:has(> button + .root, > .root + button) { isolation: isolate; }
+:has(> button + .root, > .root + button) > .root::after { z-index: -1; }
 
 .root:focus-visible {
   outline: none;
@@ -105,9 +115,28 @@
     filter var(--hl-motion-base) var(--hl-ease-out);
 }
 
+.content { max-width: 100%; }
+
+/* Clip only the x axis: line-height is 1, so hiding y would cut descenders. */
+.label {
+  min-width: 0;
+  overflow-x: clip;
+  text-overflow: ellipsis;
+}
+
 .icon {
   display: inline-flex;
+  flex: none;
   font-size: var(--hl-icon-md);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* The spinner shares the label's grid cell, so the width never changes. */

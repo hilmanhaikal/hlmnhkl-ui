@@ -127,7 +127,7 @@ export function Select({
       } else if (k === 'ArrowUp') {
         e.preventDefault()
         openList(enabled(selectedIndex) ? selectedIndex : last())
-      } else if (k.length === 1) {
+      } else if (k.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
         openList()
         runTypeahead(k)
       }

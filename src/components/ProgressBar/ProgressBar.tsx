@@ -37,7 +37,7 @@ export function ProgressBar({ label, value, max = 100, showValue = true, hideLab
         aria-labelledby={id}
         aria-valuemin={determinate ? 0 : undefined}
         aria-valuemax={determinate ? max : undefined}
-        aria-valuenow={determinate ? value : undefined}
+        aria-valuenow={determinate ? Math.min(Math.max(value, 0), max) : undefined}
         className={cx(styles.track, styles[size])}
         data-indeterminate={!determinate || undefined}
       >

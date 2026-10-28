@@ -18,6 +18,8 @@ export type SwitchProps = Omit<ComponentPropsWithRef<'button'>, 'onChange' | 'va
   onCheckedChange?: (checked: boolean) => void
   /** Puts the label before the switch, like a settings row. */
   labelPosition?: 'start' | 'end'
+  /** Form field name. The form gets "on" while the switch is on, and nothing while it is off. */
+  name?: string
 }
 
 export function Switch({
@@ -31,6 +33,7 @@ export function Switch({
   className,
   disabled,
   onClick,
+  name,
   'aria-describedby': describedByProp,
   ...rest
 }: SwitchProps) {
@@ -61,6 +64,8 @@ export function Switch({
         <label htmlFor={switchId} className={styles.label}>{label}</label>
         {description && <span id={`${switchId}-desc`} className={styles.description}>{description}</span>}
       </span>
+      {/* Submits like a checkbox: "on" when on, nothing when off */}
+      {name && checked && <input type="hidden" name={name} value="on" />}
     </div>
   )
 }

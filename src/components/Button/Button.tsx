@@ -66,8 +66,12 @@ export function Button({
         <span className={styles.label}>{children}</span>
         {trailingIcon && <span className={styles.icon}>{trailingIcon}</span>}
       </span>
-      <span className={styles.spinner} aria-hidden={!loading}>
-        {loading && <Spinner size="sm" label={loadingLabel} />}
+      <span className={styles.spinner} aria-hidden="true">
+        {loading && <Spinner size="sm" label={null} />}
+      </span>
+      {/* Stays mounted, because screen readers skip a live region that appears with its text. */}
+      <span className={styles.srOnly} role="status">
+        {loading ? loadingLabel : null}
       </span>
     </>
   )

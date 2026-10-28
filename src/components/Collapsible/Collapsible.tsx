@@ -40,6 +40,8 @@ export function Collapsible({ label, trigger, open: openProp, defaultOpen = fals
         cloneElement(trigger, {
           'aria-expanded': open,
           'aria-controls': `${id}-panel`,
+          // Only set when disabled, so a trigger's own disabled prop is kept otherwise.
+          ...(disabled ? { disabled: true, 'aria-disabled': true } : null),
           onClick: (e: MouseEvent<HTMLElement>) => {
             trigger.props.onClick?.(e)
             toggle()
@@ -54,7 +56,7 @@ export function Collapsible({ label, trigger, open: openProp, defaultOpen = fals
           disabled={disabled}
           onClick={toggle}
         >
-          <span>{label}</span>
+          <span className={styles.label}>{label}</span>
           <ChevronDownIcon className={styles.chevron} />
         </button>
       )}

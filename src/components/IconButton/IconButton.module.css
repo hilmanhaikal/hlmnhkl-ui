@@ -23,7 +23,23 @@
 .root::after {
   content: "";
   position: absolute;
-  inset: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset-block: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset-inline: 0;
+}
+
+/* Wider only for touch, as in Button: a mouse does not need it, and dense desktop rows have no gap to spare. */
+@media (pointer: coarse) {
+  .root::after { inset-inline: min(0px, calc((100% - var(--hl-hit-min)) / 2)); }
+}
+
+/* Beside another button, the hit area sinks below every box in the row, so it only fills the empty gap.
+   Links are left out: a card link with this button laid over it must not swallow the hit area. */
+:has(> button + .root, > .root + button) { isolation: isolate; }
+:has(> button + .root, > .root + button) > .root::after { z-index: -1; }
+
+/* A narrow gap leaves no room to share, so a ghost button beside another one takes the full width as its own box. */
+@media (pointer: coarse) {
+  .ghost:is(.root + .root, :has(+ .root)) { min-inline-size: var(--hl-hit-min); }
 }
 
 .sm { --s: var(--hl-control-h-sm); }

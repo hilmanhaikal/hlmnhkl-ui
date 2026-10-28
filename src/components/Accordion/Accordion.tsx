@@ -105,7 +105,7 @@ export function AccordionItem({ value, title, disabled, children }: AccordionIte
           disabled={disabled}
           onClick={() => ctx.toggle(value)}
         >
-          <span>{title}</span>
+          <span className={styles.title}>{title}</span>
           <ChevronDownIcon className={styles.chevron} />
         </button>
       </Heading>

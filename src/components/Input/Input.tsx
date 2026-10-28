@@ -1,8 +1,9 @@
 'use client'
 
-import { useId, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
+import { mergeRefs } from '../../internal/mergeRefs'
 import styles from './Input.module.css'
 
 export type InputProps = Omit<ComponentPropsWithRef<'input'>, 'size'> & {
@@ -49,6 +50,7 @@ export function Input({
   defaultValue,
   onChange,
   labels: labelsProp,
+  ref,
   'aria-describedby': describedByProp,
   ...rest
 }: InputProps) {
@@ -60,6 +62,22 @@ export function Input({
   const [innerFilled, setInnerFilled] = useState(() => String(defaultValue ?? '') !== '')
   const filled = value !== undefined ? String(value) !== '' : innerFilled
   const floating = labelPlacement === 'floating'
+  const inner = useRef<HTMLInputElement>(null)
+
+  // A native form reset changes the value without an onChange
+  useEffect(() => {
+    const form = inner.current?.form
+    if (!form) return
+    let frame = 0
+    const onReset = () => {
+      frame = requestAnimationFrame(() => setInnerFilled(inner.current?.value !== ''))
+    }
+    form.addEventListener('reset', onReset)
+    return () => {
+      form.removeEventListener('reset', onReset)
+      cancelAnimationFrame(frame)
+    }
+  }, [])
   // The caller's ids join ours, so help and error stay linked.
   const describedBy = [help && !error ? helpId : null, error ? errorId : null, describedByProp]
     .filter(Boolean)
@@ -89,6 +107,7 @@ export function Input({
           )}
           <input
             id={inputId}
+            ref={mergeRefs(inner, ref)}
             className={styles.input}
             value={value}
             defaultValue={defaultValue}

@@ -36,8 +36,9 @@
   align-items: center;
   justify-content: center;
   gap: var(--hl-space-3);
+  --pad: var(--hl-space-5);
   min-height: calc(var(--hl-control-h-md) - var(--hl-space-1) * 2);
-  padding: 0 var(--hl-space-5);
+  padding: 0 var(--pad);
   border: 0;
   border-radius: var(--hl-radius-control);
   background: transparent;
@@ -60,8 +61,8 @@
 }
 
 .sm .item {
+  --pad: var(--hl-space-4);
   min-height: calc(var(--hl-control-h-sm) - var(--hl-space-1) * 2);
-  padding: 0 var(--hl-space-4);
   font-size: var(--hl-text-xs);
 }
 
@@ -79,5 +80,31 @@
 
 .icon {
   display: inline-flex;
+  flex: none;
   font-size: var(--hl-icon-md);
+}
+
+/* Too wide for its box (a narrow phone): less padding first, then long labels end in an ellipsis */
+.root[data-tight] .item {
+  flex: 1 1 auto;
+  min-width: 0;
+  --pad: var(--hl-space-3);
+}
+
+.text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Segments touch, so the box itself is the 44px target. The floor sits on the content, so the
+   overflow check still sees the natural width, and tight mode shrinks no further than 44px. */
+@media (pointer: coarse) {
+  .text,
+  .icon:only-child {
+    min-width: calc(var(--hl-hit-min) - var(--pad) * 2);
+    justify-content: center;
+    text-align: center;
+  }
+  .root[data-tight] .item { min-width: var(--hl-hit-min); }
 }

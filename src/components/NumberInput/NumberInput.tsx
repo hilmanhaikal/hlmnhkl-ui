@@ -109,6 +109,9 @@ export function NumberInput({
   const [text, setText] = useState('')
   const valueRef = useRef(value)
   valueRef.current = value
+  // The hold timer keeps calling the bump from its first render, so it reads the typed text from a ref
+  const typed = useRef<string | null>(null)
+  typed.current = editing ? text : null
   const hold = useRef<{ timer?: number; count: number }>({ count: 0 })
   const decimals = (String(step).split('.')[1] ?? '').length
   const fmt = useMemo(() => new Intl.NumberFormat(locale, format), [locale, format])
@@ -121,11 +124,16 @@ export function NumberInput({
       valueRef.current = next
       setValue(next)
     }
-    if (editing) setText(next === null ? '' : plain.format(next))
+    if (editing) {
+      const shown = next === null ? '' : plain.format(next)
+      typed.current = shown
+      setText(shown)
+    }
   }
   const bump = (dir: 1 | -1, size = step) => {
-    const base = valueRef.current ?? (min > -Infinity ? min : 0)
-    commit(valueRef.current === null ? base : base + dir * size)
+    const current = (typed.current === null ? null : parseNumber(typed.current, locale)) ?? valueRef.current
+    const base = current ?? (min > -Infinity ? min : 0)
+    commit(current === null ? base : base + dir * size)
   }
 
   const stopHold = () => {
@@ -133,7 +141,8 @@ export function NumberInput({
     hold.current.count = 0
   }
   const startHold = (dir: 1 | -1) => (e: PointerEvent<HTMLButtonElement>) => {
-    if (e.button !== 0) return
+    // Chromium still sends pointer events to a disabled button
+    if (e.button !== 0 || e.currentTarget.disabled) return
     e.preventDefault()
     bump(dir)
     // A disabled button gets no pointerup, so listen on the window

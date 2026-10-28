@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useId, useLayoutEffect, useRef, type ComponentPropsWithRef, type ReactNode } from 'react'
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
 import { mergeRefs } from '../../internal/mergeRefs'
@@ -73,6 +73,21 @@ export function Textarea({
   }, [autoGrow, minRows, maxRows, maxLength])
 
   useLayoutEffect(resize, [resize, value])
+
+  // A native form reset changes the value without an onChange
+  useEffect(() => {
+    const form = inner.current?.form
+    if (!form) return
+    let frame = 0
+    const onReset = () => {
+      frame = requestAnimationFrame(resize)
+    }
+    form.addEventListener('reset', onReset)
+    return () => {
+      form.removeEventListener('reset', onReset)
+      cancelAnimationFrame(frame)
+    }
+  }, [resize])
 
   const describedBy = [help && !error ? helpId : null, error ? errorId : null, showCount && maxLength ? countId : null, describedByProp]
     .filter(Boolean)

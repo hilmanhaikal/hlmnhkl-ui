@@ -42,11 +42,14 @@ export function SearchInput({
   const [value, setValue] = useControllable(valueProp, defaultValue, onValueChange)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Ignored while another field has focus, so it never steals typed text
+  // Ignored while another field has focus, so it never steals typed text, and while a modal
+  // this field is not in is open, so focus never leaves the modal.
   useEffect(() => {
     if (!shortcut) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== shortcut || e.metaKey || e.ctrlKey || e.altKey || isTyping(document.activeElement)) return
+      const modals = document.querySelectorAll('[aria-modal="true"]')
+      if (modals.length && !modals[modals.length - 1].contains(inputRef.current)) return
       e.preventDefault()
       inputRef.current?.focus()
       inputRef.current?.select()

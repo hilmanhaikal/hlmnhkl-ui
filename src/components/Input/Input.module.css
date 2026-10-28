@@ -38,6 +38,13 @@
 .lg { --h: var(--hl-control-h-lg); }
 .floating { --h: var(--hl-field-h-floating); }
 
+/* On touch the input reaches over the field border, so the whole 44px box is the input's own target. */
+@media (pointer: coarse) {
+  .field { min-height: max(var(--h), var(--hl-hit-min)); }
+  .control { margin-block: calc(var(--hl-line) * -1); }
+  .field[data-invalid] .control { margin-block: calc(var(--hl-line-thick) * -1); }
+}
+
 @media (hover: hover) {
   .field:hover { border-color: var(--hl-color-fg-muted); }
 }

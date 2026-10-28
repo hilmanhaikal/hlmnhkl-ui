@@ -90,13 +90,17 @@ export function ScrollArea({ label, maxHeight, orientation = 'vertical', classNa
     e.preventDefault()
     e.stopPropagation()
     const track = e.currentTarget.parentElement as HTMLElement
+    const size = axis === 'y' ? vp.clientHeight : vp.clientWidth
     const full = axis === 'y' ? vp.scrollHeight : vp.scrollWidth
-    const trackLen = axis === 'y' ? track.clientHeight : track.clientWidth
+    const pad = parseFloat(getComputedStyle(track).paddingTop) || 0
+    const trackLen = (axis === 'y' ? track.clientHeight : track.clientWidth) - pad * 2
+    const thumbLen = axis === 'y' ? e.currentTarget.offsetHeight : e.currentTarget.offsetWidth
+    // The thumb travels the track minus its own length, which is all the scroll there is.
     drag.current = {
       axis,
       start: axis === 'y' ? e.clientY : e.clientX,
       scroll: axis === 'y' ? vp.scrollTop : vp.scrollLeft,
-      ratio: full / trackLen,
+      ratio: (full - size) / Math.max(1, trackLen - thumbLen),
       pointer: e.pointerId,
     }
     e.currentTarget.setPointerCapture(e.pointerId)

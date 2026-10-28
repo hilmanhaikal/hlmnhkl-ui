@@ -187,6 +187,12 @@
   /* Small controls (icon buttons, checkboxes, steppers) press deeper so the tap is felt. */
   --hl-press-scale-strong: 0.9;
   --hl-pop-scale: 0.96;
+  /* A check mark or small icon grows in from this size, and a ticked box bumps up to the peak. */
+  --hl-check-scale: 0.4;
+  --hl-check-peak-scale: 1.12;
+
+  /* One look for every disabled control */
+  --hl-disabled-opacity: 0.5;
 
   /* Layers */
   --hl-z-sticky: 10;
@@ -299,6 +305,8 @@
     --hl-press-scale: 1;
     --hl-press-scale-strong: 1;
     --hl-pop-scale: 1;
+    --hl-check-scale: 1;
+    --hl-check-peak-scale: 1;
   }
 }
 

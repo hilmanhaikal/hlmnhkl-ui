@@ -2,6 +2,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--hl-space-2);
+  max-width: 100%;
   height: var(--hl-badge-h);
   padding: 0 var(--hl-space-3);
   border: var(--hl-line) solid transparent;
@@ -26,13 +27,18 @@
 .outline[data-tone] { border-color: var(--tone); color: var(--tone); }
 .subtle[data-tone] { background: var(--tone-soft); color: var(--tone); }
 
+/* Clip only the x axis: line-height is 1, so hiding y would cut descenders. */
 .text {
   display: inline-block;
+  min-width: 0;
+  overflow-x: clip;
+  text-overflow: ellipsis;
   animation: pop var(--hl-motion-slow) var(--hl-ease-spring);
 }
 
 .dot {
   position: relative;
+  flex: none;
   width: var(--hl-dot);
   height: var(--hl-dot);
   border-radius: var(--hl-radius-full);

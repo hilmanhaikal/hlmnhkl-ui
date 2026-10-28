@@ -36,7 +36,9 @@
   animation: panelIn var(--hl-motion-slow) var(--hl-ease-spring);
 }
 
-.panel[data-state="closed"] { animation: panelOut var(--hl-motion-base) var(--hl-ease-in) forwards; }
+/* A closing panel takes no clicks, so a double click cannot run a footer action twice.
+   The overlay still catches them, so they never reach the page behind. */
+.panel[data-state="closed"] { animation: panelOut var(--hl-motion-base) var(--hl-ease-in) forwards; pointer-events: none; }
 
 .sm { max-width: var(--hl-panel-w-sm); }
 .lg { max-width: var(--hl-panel-w-lg); }

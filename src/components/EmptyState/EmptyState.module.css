@@ -32,6 +32,7 @@
   font-size: var(--hl-text-lg);
   font-weight: var(--hl-weight-semibold);
   letter-spacing: var(--hl-tracking-tight);
+  overflow-wrap: anywhere;
 }
 
 h1.title { font-size: var(--hl-text-2xl); }

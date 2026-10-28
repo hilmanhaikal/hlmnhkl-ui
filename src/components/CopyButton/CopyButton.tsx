@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { cx } from '../../internal/cx'
-import { CopyIcon } from '../../internal/icons'
+import { CopyIcon, XIcon } from '../../internal/icons'
 import styles from './CopyButton.module.css'
 
 export type CopyButtonProps = {
@@ -12,11 +12,13 @@ export type CopyButtonProps = {
   label?: string
   /** Shown and spoken after a successful copy. */
   copiedLabel?: string
+  /** Shown and spoken when the browser blocks the copy. */
+  failedLabel?: string
   /** Shows the label as text next to the icon. */
   showLabel?: boolean
   /** Size of the button. */
   size?: 'sm' | 'md'
-  /** How long the check stays, in ms. */
+  /** How long the check or the failed state stays, in ms. */
   resetAfter?: number
   /** Called after the text is copied, with the copied text. Not called if copying fails. */
   onCopy?: (value: string) => void
@@ -49,29 +51,31 @@ export function CopyButton({
   value,
   label = 'Copy',
   copiedLabel = 'Copied',
+  failedLabel = 'Could not copy',
   showLabel = false,
   size = 'md',
   resetAfter = 1800,
   onCopy,
   className,
 }: CopyButtonProps) {
-  const [copied, setCopied] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'copied' | 'failed'>('idle')
   const timer = useRef<number | undefined>(undefined)
   useEffect(() => () => window.clearTimeout(timer.current), [])
 
   const copy = async () => {
-    if (!(await writeText(value))) return
-    setCopied(true)
-    onCopy?.(value)
+    const ok = await writeText(value)
+    setStatus(ok ? 'copied' : 'failed')
+    if (ok) onCopy?.(value)
     window.clearTimeout(timer.current)
-    timer.current = window.setTimeout(() => setCopied(false), resetAfter)
+    timer.current = window.setTimeout(() => setStatus('idle'), resetAfter)
   }
 
   return (
     <button
       type="button"
       className={cx(styles.root, styles[size], showLabel && styles.withLabel, className)}
-      data-copied={copied || undefined}
+      data-copied={status === 'copied' || undefined}
+      data-failed={status === 'failed' || undefined}
       aria-label={showLabel ? undefined : label}
       onClick={copy}
     >
@@ -80,14 +84,16 @@ export function CopyButton({
         <svg viewBox="0 0 24 24" className={styles.check}>
           <path d="M5 12.5l4.5 4.5L19 7.5" pathLength="1" />
         </svg>
+        <XIcon className={styles.fail} />
       </span>
       {showLabel && (
         <span className={styles.labels}>
           <span className={styles.labelIdle}>{label}</span>
           <span className={styles.labelDone} aria-hidden="true">{copiedLabel}</span>
+          <span className={styles.labelFailed} aria-hidden="true">{failedLabel}</span>
         </span>
       )}
-      <span className={styles.srOnly} aria-live="polite">{copied ? copiedLabel : ''}</span>
+      <span className={styles.srOnly} aria-live="polite">{status === 'copied' ? copiedLabel : status === 'failed' ? failedLabel : ''}</span>
     </button>
   )
 }

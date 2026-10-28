@@ -76,8 +76,10 @@ export function ToastProvider({ children, visible = 3, label = 'Notifications', 
 
   const say = (opts: Partial<ToastOptions>, variant?: ToastVariant) => {
     const text = `${opts.title}${opts.description ? `. ${opts.description}` : ''}`
-    if (variant === 'error') setUrgent(text)
-    else setAnnounce(text)
+    // The same text twice is not read again, so a trailing space makes it change.
+    const fresh = (prev: string) => (prev === text ? `${text} ` : text)
+    if (variant === 'error') setUrgent(fresh)
+    else setAnnounce(fresh)
   }
 
   const remove = useCallback((id: number, dir: Item['leaving'] = 'down') => {

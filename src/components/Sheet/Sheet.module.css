@@ -35,6 +35,7 @@
 /* No "from" frame: the close starts where a drag left the sheet */
 .sheet[data-state="closed"] {
   animation: sheetOut var(--hl-motion-slow) var(--hl-ease-in-out) forwards;
+  pointer-events: none;
 }
 
 .grab {

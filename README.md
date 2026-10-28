@@ -1,10 +1,10 @@
 # hlmnhkl/ui
 
-React components that move with meaning. Black, white and grey, accessible, and copied into your app so the code is yours.
+React components, measured down to the part you never see: the 44px tap area, the 2px focus ring, the timing of every move. Black, white and grey, and copied into your app so the code is yours.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-dark.png">
-  <img alt="The hlmnhkl/ui homepage: the logo and name, the install command, and live components below." src="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-light.png">
+  <img alt="The hlmnhkl/ui homepage: a real Switch drawn large, with thin lines reading its live tap area, focus ring and timing, under the line 'Measured down to the part you never see.'" src="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-light.png">
 </picture>
 
 **[Docs](https://ui.hlmnhkl.my)** · [Installation](https://ui.hlmnhkl.my/installation) · [Components](https://ui.hlmnhkl.my/button) · [What's new](https://ui.hlmnhkl.my/changelog)
@@ -58,7 +58,7 @@ Every copied file starts with one line naming hlmnhkl/ui and the MIT licence, so
 - **50 free components**, from Button, Dialog, Select and Table to Toast and Retime, one speed setting for every animation. See [COMPONENTS.md](COMPONENTS.md).
 - **One look, set by tokens.** Every colour, size and timing comes from one file, `tokens.css`. Colour appears only to mean something: good, caution or bad.
 - **Light and dark.** Dark follows the system, or set `data-theme="dark"` on `<html>`.
-- **Accessible.** Keyboard support per the WAI-ARIA patterns, visible focus, 44px touch targets, screen reader labels, and reduced motion.
+- **Accessible.** Keyboard support per the WAI-ARIA patterns, visible focus, screen reader labels, and reduced motion. On touch screens every control gives at least a 44px target, even the small sizes; only the six PIN boxes and the seven calendar days get narrower when the row has no room, about 36px wide on a 320px phone.
 - **Small.** React 19 and CSS Modules. No other runtime packages: no animation library, no icon package.
 - **Works in** Vite, Next.js (App Router) and React Router.
 

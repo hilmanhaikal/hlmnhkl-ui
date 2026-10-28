@@ -29,17 +29,18 @@ export type PaginationProps = {
   className?: string
 }
 
+const span = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i)
+
+// Always the same number of slots, so the row keeps its width. A gap hides at least two pages.
 function range(page: number, count: number, siblings: number): Array<number | 'gap'> {
   const total = siblings * 2 + 5
-  if (count <= total) return Array.from({ length: count }, (_, i) => i + 1)
-  const left = Math.max(page - siblings, 2)
-  const right = Math.min(page + siblings, count - 1)
-  const out: Array<number | 'gap'> = [1]
-  if (left > 2) out.push('gap')
-  for (let p = left; p <= right; p++) out.push(p)
-  if (right < count - 1) out.push('gap')
-  out.push(count)
-  return out
+  if (count <= total) return span(1, count)
+  const side = total - 2
+  const leftGap = page - siblings > 3
+  const rightGap = page + siblings < count - 2
+  if (!leftGap) return [...span(1, side), 'gap', count]
+  if (!rightGap) return [1, 'gap', ...span(count - side + 1, count)]
+  return [1, 'gap', ...span(page - siblings, page + siblings), 'gap', count]
 }
 
 export function Pagination({
@@ -54,7 +55,9 @@ export function Pagination({
   pageLabel = (p) => `Page ${p}`,
   className,
 }: PaginationProps) {
-  const [page, setPage] = useControllable(pageProp, defaultPage, onPageChange)
+  const [rawPage, setPage] = useControllable(pageProp, defaultPage, onPageChange)
+  // A stored page can sit past the end after pageCount drops.
+  const page = Math.min(Math.max(rawPage, 1), Math.max(pageCount, 1))
   const listRef = useRef<HTMLUListElement>(null)
   const [pill, setPill] = useState<{ x: number; w: number } | null>(null)
   const [ready, setReady] = useState(false)

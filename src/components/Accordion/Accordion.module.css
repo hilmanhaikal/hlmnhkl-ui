@@ -45,6 +45,11 @@
   box-shadow: inset 0 0 0 var(--hl-line-focus) var(--hl-color-fg);
 }
 
+.title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .chevron {
   flex: none;
   width: var(--hl-icon-md);

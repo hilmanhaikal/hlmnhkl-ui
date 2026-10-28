@@ -54,7 +54,7 @@
 
 .trigger:focus-visible { box-shadow: var(--hl-focus-ring); }
 .trigger[data-invalid] { border-color: var(--hl-color-danger); border-width: var(--hl-line-thick); }
-.trigger:disabled { opacity: 0.5; cursor: not-allowed; background: var(--hl-color-surface-sunken); }
+.trigger:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; background: var(--hl-color-surface-sunken); }
 
 .value {
   min-width: 0;
@@ -149,7 +149,7 @@
   width: var(--hl-icon-md);
   height: var(--hl-icon-md);
   opacity: 0;
-  transform: scale(0.4);
+  transform: scale(var(--hl-check-scale));
   transition:
     opacity var(--hl-motion-fast) var(--hl-ease-out),
     transform var(--hl-motion-slow) var(--hl-ease-spring);

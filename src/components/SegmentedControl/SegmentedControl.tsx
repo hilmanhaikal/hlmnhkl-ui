@@ -47,6 +47,12 @@ export function SegmentedControl({
 
   useLayoutEffect(() => {
     const measure = () => {
+      // Tight mode only when the segments overflow at their normal size, so a wide screen keeps the normal look
+      const root = rootRef.current
+      if (root) {
+        root.removeAttribute('data-tight')
+        if (root.scrollWidth > root.clientWidth) root.setAttribute('data-tight', '')
+      }
       const el = refs.current[index]
       if (el) setPill({ x: el.offsetLeft, w: el.offsetWidth })
     }
@@ -119,7 +125,7 @@ export function SegmentedControl({
             onClick={() => setValue(o.value)}
           >
             {o.icon && <span className={styles.icon}>{o.icon}</span>}
-            {o.label}
+            {o.label && <span className={styles.text}>{o.label}</span>}
           </button>
         )
       })}

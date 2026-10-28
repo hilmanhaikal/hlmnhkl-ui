@@ -17,7 +17,7 @@ export type BreadcrumbItem = {
 export type BreadcrumbProps = {
   /** Path from the top level down. The last item is the current page. */
   items: BreadcrumbItem[]
-  /** Above this many items, the middle collapses into a "…" button. */
+  /** Above this many items, the middle collapses into a "…" button. With 2 or less, only "…" and the current page show. */
   maxItems?: number
   /** Name of the nav landmark. */
   label?: string
@@ -31,14 +31,16 @@ export function Breadcrumb({ items, maxItems = 4, label = 'Breadcrumb', expandLa
   const [expanded, setExpanded] = useState(false)
   const listRef = useRef<HTMLOListElement>(null)
   const collapse = !expanded && items.length > maxItems
-  const tail = Math.max(1, maxItems - 2)
-  const visible = collapse ? [items[0], null, ...items.slice(-tail)] : items
+  // Under 3 there is no room for the first item, so only "…" and the current page stay.
+  const head = maxItems < 3 ? 0 : 1
+  const tail = Math.max(1, maxItems - head - 1)
+  const visible = collapse ? [...items.slice(0, head), null, ...items.slice(-tail)] : items
 
   // The "…" button is gone after expanding, so focus moves to the first link it revealed.
   useLayoutEffect(() => {
     if (!expanded) return
-    listRef.current?.querySelector<HTMLElement>(':scope > li:nth-child(2) > :is(a, button)')?.focus()
-  }, [expanded])
+    listRef.current?.querySelector<HTMLElement>(`:scope > li:nth-child(${head + 1}) > :is(a, button)`)?.focus()
+  }, [expanded, head])
 
   return (
     <nav aria-label={label} className={cx(styles.root, className)}>

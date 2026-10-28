@@ -2,6 +2,7 @@
 
 import { useRef, useState, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
+import { focusables } from '../../internal/focus'
 import { CheckIcon, XIcon } from '../../internal/icons'
 import { easing, motionMs } from '../../internal/motion'
 import styles from './Tag.module.css'
@@ -43,16 +44,25 @@ export function Tag({ children, onRemove, removeLabel, selected, onSelectedChang
   const [leaving, setLeaving] = useState(false)
   const selectable = selected !== undefined
 
+  // The remove button is about to unmount, so focus moves to the next control (or the one before) instead of the body.
+  const finish = () => {
+    const el = ref.current
+    if (el?.contains(document.activeElement)) {
+      const others = focusables(document.body).filter((n) => !el.contains(n))
+      const next = others.find((n) => el.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_FOLLOWING)
+      const prev = [...others].reverse().find((n) => el.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_PRECEDING)
+      ;(next ?? prev)?.focus({ preventScroll: true })
+    }
+    onRemove?.()
+  }
+
   // Collapse first so neighbours slide in, then tell the parent
   const remove = () => {
     const el = ref.current
     if (!el || leaving) return
     setLeaving(true)
     const ms = motionMs('base')
-    if (ms === 0 || !el.animate) {
-      onRemove?.()
-      return
-    }
+    if (ms === 0 || !el.animate) return finish()
     const w = el.offsetWidth
     const anim = el.animate(
       [
@@ -61,7 +71,7 @@ export function Tag({ children, onRemove, removeLabel, selected, onSelectedChang
       ],
       { duration: ms, easing: easing('in-out'), fill: 'forwards' },
     )
-    anim.onfinish = () => onRemove?.()
+    anim.onfinish = finish
   }
 
   const label = typeof children === 'string' ? children : labels.item
@@ -88,7 +98,7 @@ export function Tag({ children, onRemove, removeLabel, selected, onSelectedChang
         <span className={styles.static}>{content}</span>
       )}
       {onRemove && (
-        <button type="button" className={styles.remove} aria-label={removeLabel ?? labels.remove(label)} onClick={remove} disabled={leaving}>
+        <button type="button" className={styles.remove} aria-label={removeLabel ?? labels.remove(label)} onClick={remove}>
           <XIcon />
         </button>
       )}

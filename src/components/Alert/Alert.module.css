@@ -29,18 +29,32 @@
 .error .title { font-weight: var(--hl-weight-semibold); }
 
 .banner {
+  --strip: var(--hl-color-inverse);
+  --strip-fg: var(--hl-color-inverse-fg);
   border-radius: 0;
   border-width: 0 0 var(--hl-line);
-  background: var(--hl-color-inverse);
-  color: var(--hl-color-inverse-fg);
+  background: var(--strip);
+  color: var(--strip-fg);
   align-items: center;
   padding-block: var(--hl-space-3);
 }
 
-.banner .body { color: inherit; opacity: 0.8; }
-.banner .close { color: inherit; }
-@media (hover: hover) {
-  .banner .close:hover { background: var(--hl-color-inverse-hover); }
+/* Swapped on the children, not the strip, so the strip still reads the page's own values. Links and buttons in the action stay visible. */
+.banner > * {
+  --hl-color-bg: var(--strip);
+  --hl-color-surface: var(--strip);
+  --hl-color-surface-hover: color-mix(in srgb, var(--strip-fg) 14%, var(--strip));
+  --hl-color-surface-active: color-mix(in srgb, var(--strip-fg) 20%, var(--strip));
+  --hl-color-fg: var(--strip-fg);
+  --hl-color-fg-muted: color-mix(in srgb, var(--strip-fg) 80%, var(--strip));
+  --hl-color-border: color-mix(in srgb, var(--strip-fg) 24%, var(--strip));
+  --hl-color-border-strong: color-mix(in srgb, var(--strip-fg) 55%, var(--strip));
+  --hl-color-inverse: var(--strip-fg);
+  --hl-color-inverse-fg: var(--strip);
+  --hl-color-inverse-hover: color-mix(in srgb, var(--strip-fg) 82%, var(--strip));
+  --hl-color-accent: var(--strip-fg);
+  --hl-color-accent-fg: var(--strip);
+  --hl-focus-ring: 0 0 0 var(--hl-line-focus) var(--strip), 0 0 0 calc(var(--hl-line-focus) * 2) var(--strip-fg);
 }
 
 .icon {

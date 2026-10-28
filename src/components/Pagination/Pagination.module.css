@@ -68,7 +68,7 @@
 @media (hover: hover) {
   .btn:hover:not(:disabled):not([aria-current]) { background: var(--hl-color-surface-hover); }
 }
-.btn:active:not(:disabled) { transform: scale(0.92); }
+.btn:active:not(:disabled) { transform: scale(var(--hl-press-scale-strong)); }
 .btn[aria-current="page"] { color: var(--hl-color-accent-fg); }
 .btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .btn:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }

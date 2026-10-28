@@ -1,12 +1,13 @@
+/* Inline, not inline-flex, so a long link wraps with the sentence and each line keeps its underline. */
 .root {
   position: relative;
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--hl-space-1);
+  display: inline;
   color: var(--hl-color-fg);
   font-weight: var(--hl-weight-medium);
   text-decoration: none;
   border-radius: var(--hl-radius-xs);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -32,12 +33,14 @@
 }
 
 .standalone {
-  min-height: var(--hl-hit-min);
+  display: inline-flex;
   align-items: center;
+  min-height: var(--hl-hit-min);
 }
 
 .arrow {
-  align-self: center;
+  margin-inline-start: var(--hl-space-1);
+  vertical-align: middle;
   width: 0.85em;
   height: 0.85em;
   transition: transform var(--hl-motion-base) var(--hl-ease-spring);
