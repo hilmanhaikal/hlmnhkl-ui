@@ -320,6 +320,20 @@
   /* How far each row tilts per row away from the middle, so a wheel reads as a drum. */
   --hl-wheel-tilt: 18deg;
   --hl-wheel-w: 64px;
+  /* CalendarHeatmap: one day's square, the gap, the weekday column, and four shades as a share of the text colour */
+  --hl-heatmap-cell: 12px;
+  --hl-heatmap-gap: 3px;
+  --hl-heatmap-label: 32px;
+  --hl-heatmap-1: 22%;
+  --hl-heatmap-2: 45%;
+  --hl-heatmap-3: 70%;
+  --hl-heatmap-4: 100%;
+  /* WeekSchedule: one hour's height, the time column, and the width below which it shows one day at a time */
+  --hl-schedule-hour: 56px;
+  --hl-schedule-gutter: 56px;
+  --hl-schedule-min-w: 520px;
+  /* How far a later, overlapping event steps in, so the one under it keeps its title in view */
+  --hl-schedule-indent: 16px;
 
   /* Smarter inputs */
   --hl-pin-w: 44px;
@@ -329,6 +343,15 @@
   --hl-number-w: 168px;
   --hl-motion-repeat-delay: 400ms;
   --hl-motion-repeat: 70ms;
+  /* Colour picker. White and black are colour maths, so they stay pure in both themes. */
+  --hl-picker-area-h: 168px;
+  --hl-picker-hue-h: 12px;
+  --hl-swatch: 28px;
+  --hl-picker-white: #ffffff;
+  --hl-picker-black: #000000;
+  /* Signature pad: its height, and the ink's base width (a pen's pressure makes it thinner or bolder) */
+  --hl-signature-h: 180px;
+  --hl-ink-w: 2.5px;
 
   /* Media */
   --hl-blur: 16px;
@@ -498,4 +521,8 @@
   /* Countdown: min width of one number column */
   --hl-countdown-cell: 72px;
   --hl-countdown-cell-sm: 52px;
+
+  /* Touch lists: one swipe action's width, and how far a pull must go before it refreshes */
+  --hl-swipe-action-w: 80px;
+  --hl-pull-distance: 72px;
 }

@@ -100,6 +100,7 @@ export const TrashIcon = (p: IconProps) => (
   </Svg>
 )
 export const EditIcon = (p: IconProps) => <Svg {...p}><path d="M4 20h4L19 9l-4-4L4 16v4z" /></Svg>
+export const UndoIcon = (p: IconProps) => <Svg {...p}><path d="M9 14L4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11" /></Svg>
 export const ShareIcon = (p: IconProps) => (
   <Svg {...p}>
     <path d="M12 15V4M8 8l4-4 4 4" />
@@ -173,5 +174,10 @@ export const RetryIcon = (p: IconProps) => (
   <Svg {...p}>
     <path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3" />
     <path d="M19.5 4.5v4h-4" />
+  </Svg>
+)
+export const GripIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M5 9h14M5 15h14" />
   </Svg>
 )

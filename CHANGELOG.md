@@ -2,6 +2,49 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.21.0 · 29 Oct 2026
+
+Twelve new components, in four sets. All twelve are in Pro.
+
+### Added
+
+Touch lists:
+
+- SwipeActions: swipe a row sideways to show its actions, as in a mail app. Past half way it stays open, and `fullSwipe` runs the outer action. Tab reaches the actions, so no swipe is needed.
+- PullToRefresh: pull a list down from the top to load what is new. A ring draws in as you pull, then turns into a spinner. A Refresh button appears on keyboard focus.
+- SortableList: put a list in order by dragging its handles. Space, the arrow keys and Escape do the same from the keyboard, and each step is announced.
+
+Photos:
+
+- ImageCropper: crop and zoom a photo in a fixed frame, round for avatars. Drag, pinch, the wheel or the keys move it, and the photo always covers the frame. `onCropAreaChange` and `getCropArea` give the area in the photo's own pixels.
+- CompareSlider: a before and after with a divider you drag. The divider is a slider, so the arrow keys, Home and End move it too.
+- MasonryGrid: items of mixed heights packed into columns. Reading order and Tab order go row by row, as the eye does.
+
+Inputs:
+
+- ColorPicker: an area for saturation and brightness, a hue bar, a hex field and preset swatches. The area works with the arrow keys and says where it is.
+- SignaturePad: sign with a finger, pen or mouse, with Undo and Clear. `typeInstead` adds a typed name for people who cannot draw. The PNG is dark ink in both themes.
+- EmojiPicker: about 400 emoji in groups, with search, arrow keys across the grid and recently used ones.
+
+Data and time:
+
+- CalendarHeatmap: activity per day as a grid of shades, like a contribution graph. Each day can be reached with the arrow keys, and a month table gives the same numbers.
+- WeekSchedule: a week of events by the hour, with a line for now. Events that overlap share the width or step in on top. On a phone it shows one day at a time.
+- VirtualList: draws only the rows on screen, so 10,000 rows scroll smoothly. The keys still reach every row, and `scrollToIndex` jumps to one.
+
+Tokens:
+
+- `--hl-swipe-action-w`, `--hl-pull-distance`.
+- `--hl-picker-area-h`, `--hl-picker-hue-h`, `--hl-swatch`, `--hl-picker-white`, `--hl-picker-black`, `--hl-signature-h`, `--hl-ink-w`.
+- `--hl-heatmap-cell`, `--hl-heatmap-gap`, `--hl-heatmap-label`, `--hl-heatmap-1` to `--hl-heatmap-4`.
+- `--hl-schedule-hour`, `--hl-schedule-gutter`, `--hl-schedule-min-w`, `--hl-schedule-indent`.
+
+`add`, `diff` and `update` list any of these your `tokens.css` is missing.
+
+## 0.20.3 · 29 Oct 2026
+
+Docs site only. No changes to the library.
+
 ## 0.20.2 · 29 Oct 2026
 
 ### Changed
