@@ -2,6 +2,17 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.21.1 · 30 Oct 2026
+
+### Fixed
+
+- VideoPlayer: captions sat under the controls, at the very edge of the video. The player now draws them itself, just above the controls while they show and lower when they hide, and larger in full screen.
+- VideoPlayer and AudioPlayer: the buttons' hover and on fills were as big as the whole 44px touch area and touched each other. The fill is now a small circle inside the touch area, with a gap between buttons.
+
+### Changed
+
+- VideoPlayer: a toggle that is on, such as captions, is now a solid light circle with a dark icon, instead of a fill with a dot under it.
+
 ## 0.21.0 · 29 Oct 2026
 
 Twelve new components, in four sets. All twelve are in Pro.
