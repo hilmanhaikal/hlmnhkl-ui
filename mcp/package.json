@@ -1,0 +1,26 @@
+{
+  "name": "hlmnhkl-ui-mcp",
+  "version": "0.24.0",
+  "description": "A read-only MCP server for hlmnhkl/ui: AI coding tools look up components, props and install steps.",
+  "license": "MIT",
+  "homepage": "https://ui.hlmnhkl.my/mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hilmanhaikal/hlmnhkl-ui.git",
+    "directory": "mcp"
+  },
+  "type": "module",
+  "bin": {
+    "hlmnhkl-ui-mcp": "index.js"
+  },
+  "files": [
+    "index.js",
+    "mcp-docs.json"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.3.1"
+  }
+}

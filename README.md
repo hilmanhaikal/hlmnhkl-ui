@@ -54,6 +54,14 @@ Every copied file starts with one line naming hlmnhkl/ui and the MIT licence, so
 
 **With an AI assistant:** point it at [llms.txt](https://ui.hlmnhkl.my/llms.txt) (every component and the rules) or [llms-full.txt](https://ui.hlmnhkl.my/llms-full.txt) (props, keyboard notes and an example for each free component). There is also a [registry.json](https://ui.hlmnhkl.my/registry.json).
 
+**MCP server:** let Claude Code, Cursor, VS Code or any MCP tool look up components, props and install steps. It only reads, runs on your computer and collects nothing. It is its own small package, `hlmnhkl-ui-mcp`, so `add` never downloads it. In Claude Code:
+
+```sh
+claude mcp add hlmnhkl-ui -- npx -y hlmnhkl-ui-mcp@latest
+```
+
+Setup for other tools: [MCP server](https://ui.hlmnhkl.my/mcp).
+
 ## What you get
 
 - **The source, not a package.** The command copies plain files into your app. Change anything; there is no update to wait for.

@@ -2,6 +2,13 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.24.0 · 30 Oct 2026
+
+### Added
+
+- `hlmnhkl-ui-mcp`: a read-only MCP server, so Claude Code, Cursor, VS Code and other AI tools can look up components, their props and install steps. Run with `npx -y hlmnhkl-ui-mcp@latest`. It answers from a docs file inside its package, makes no network requests, cannot write files or run commands, and shows Pro items as a name and one line. It needs Node 20 or later. Setup: https://ui.hlmnhkl.my/mcp
+- It is its own package, with one dependency (`@modelcontextprotocol/server`, exactly 2.3.1). `hlmnhkl-ui` itself still has none, so `add` downloads nothing more.
+
 ## 0.23.1 · 30 Oct 2026
 
 ### Fixed
