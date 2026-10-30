@@ -4,7 +4,7 @@
   min-width: 0;
 }
 
-.root[data-disabled] { opacity: 0.6; }
+.root[data-disabled] { opacity: var(--hl-disabled-opacity); }
 
 .label {
   margin-bottom: var(--hl-space-3);

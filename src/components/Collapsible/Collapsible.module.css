@@ -29,7 +29,7 @@
   .trigger:hover:not(:disabled) { background: var(--hl-color-surface-hover); }
 }
 .trigger:active:not(:disabled) { transform: scale(var(--hl-press-scale)); }
-.trigger:disabled { opacity: 0.45; cursor: not-allowed; }
+.trigger:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
 .trigger:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
 
 .label {

@@ -64,7 +64,7 @@
 .field[data-disabled] {
   background: var(--hl-color-surface-sunken);
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: var(--hl-disabled-opacity);
 }
 
 .adorn {

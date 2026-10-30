@@ -522,7 +522,41 @@
   --hl-countdown-cell: 72px;
   --hl-countdown-cell-sm: 52px;
 
+  /* Data grid: scroll area height, a column's default, smallest and largest width, one keyboard
+     resize step, resize handle hit width (a touch screen widens it to --hl-hit-min), the tallest
+     a filter's checkbox list grows, and the sort order badge */
+  --hl-datagrid-h: 480px;
+  --hl-datagrid-col-w: 160px;
+  --hl-datagrid-col-min: 96px;
+  --hl-datagrid-col-max: 640px;
+  --hl-datagrid-resize-step: 16px;
+  --hl-datagrid-resize-hit: 12px;
+  --hl-datagrid-options-h: 320px;
+  --hl-datagrid-order: 16px;
+
   /* Touch lists: one swipe action's width, and how far a pull must go before it refreshes */
   --hl-swipe-action-w: 80px;
   --hl-pull-distance: 72px;
+}
+
+:root,
+[data-theme="light"] {
+  /* SmoothScroll: the share of the distance left that a wheel glide covers each frame. 1 is native. */
+  --hl-scroll-ease: 0.1;
+  /* ScrollDraft and TextRise: where an element's top starts and ends its progress, as a share of the screen height */
+  --hl-draft-start: 0.85;
+  --hl-draft-end: 0.4;
+  /* TextRise: how many words of the progress each word takes to arrive, and room for descenders in its mask */
+  --hl-rise-span: 3;
+  --hl-rise-room: 0.14em;
+  /* ScrollRuler: its width, and the page pixels between two short ticks (a number every five) */
+  --hl-ruler-w: 48px;
+  --hl-ruler-step: 100px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  [data-theme] {
+    --hl-scroll-ease: 1;
+  }
 }

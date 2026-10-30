@@ -48,6 +48,8 @@ export type RetimeProps = {
   size?: 'sm' | 'md'
   /** Text for each speed, so you can translate it. */
   labels?: Partial<RetimeLabels>
+  /** Fills the row, with the speeds sharing it evenly, as in a settings panel. */
+  fullWidth?: boolean
   /** Extra class for the root element. */
   className?: string
 }
@@ -60,6 +62,7 @@ export function Retime({
   remember = true,
   size = 'md',
   labels: labelsProp,
+  fullWidth,
   className,
 }: RetimeProps) {
   const labels = { ...defaultLabels, ...labelsProp }
@@ -106,6 +109,7 @@ export function Retime({
       value={speed}
       onValueChange={(v) => setSpeed(v as RetimeSpeed)}
       options={(['off', 'slower', 'normal', 'faster'] as const).map((s) => ({ value: s, label: labels[s] }))}
+      fullWidth={fullWidth}
       className={className}
     />
   )

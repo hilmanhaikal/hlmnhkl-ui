@@ -2,6 +2,34 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.22.0 · 30 Oct 2026
+
+Five new Pro components, a test suite that checks every component on every pull request, and the fixes it found.
+
+### Added
+
+- DataGrid: a grid for thousands of rows that draws only the rows on screen. Sort (Shift for more columns), resize and pin columns, select rows with a count bar and actions, search, and filter by text, number or a set of values. The WAI-ARIA grid keyboard pattern throughout, and it renders on the server.
+- SmoothScroll: weighted scrolling for the mouse wheel and trackpad. Keys, the scrollbar, links, find in page, phones and reduced motion stay native, and it never moves a page that a dialog has locked.
+- ScrollDraft: sets `--draft` from 0 to 1 as a box scrolls into view, and draws any SVG line inside it with `pathLength="1"`.
+- TextRise: words that rise one after another behind a baseline, on load or with the scroll. Screen readers hear one plain sentence.
+- ScrollRuler: a ruler down the edge of the page that reads where you are and how fast you move.
+- Retime `fullWidth`: fills the row, with the speeds sharing it evenly.
+- Tokens `--hl-scroll-ease`, `--hl-draft-start`, `--hl-draft-end`, `--hl-rise-span`, `--hl-rise-room`, `--hl-ruler-w`, `--hl-ruler-step`, and `--hl-datagrid-h`, `--hl-datagrid-col-w`, `--hl-datagrid-col-min`, `--hl-datagrid-col-max`, `--hl-datagrid-resize-step`, `--hl-datagrid-resize-hit`, `--hl-datagrid-options-h`, `--hl-datagrid-order`.
+
+### Fixed
+
+- Dialog, Sheet and Drawer: in Safari on iPhone and Mac, closing gave focus back to the page instead of the button that opened them, because Safari does not focus a button when it is pressed. It now goes back to that button.
+- Badge, Button, Calendar, CopyButton, Countdown, Kbd, OnionSkin, QrCode, SegmentedControl, Tag, ToggleGroup and AnimatedNumber stretched to the full width of a column layout. They keep their own width now; `fullWidth` still fills the row.
+- SegmentedControl: when something does stretch it, the options share the room instead of leaving an empty end.
+- Every disabled control uses `--hl-disabled-opacity`. Sixteen components still had their own value.
+- Touch targets of at least 44px for the Combobox toggle, the Breadcrumb "Show full path" button and the NotificationInbox tabs.
+- ColorPicker: focus on the picked swatch is now visible.
+- Blocks and templates: the NotificationsCenter bar no longer covers a focused row, and its phone layout, the Checkout "Place order" button and the SaaS starter's "Sign in" link keep their full size.
+
+## 0.21.2 · 30 Oct 2026
+
+Docs site only. No changes to the library.
+
 ## 0.21.1 · 30 Oct 2026
 
 ### Fixed

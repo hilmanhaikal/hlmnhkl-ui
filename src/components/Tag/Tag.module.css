@@ -1,5 +1,6 @@
 .root {
   display: inline-flex;
+  width: fit-content;
   align-items: center;
   max-width: 100%;
   height: var(--hl-control-h-sm);

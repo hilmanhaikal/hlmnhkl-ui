@@ -70,7 +70,7 @@
 }
 .btn:active:not(:disabled) { transform: scale(var(--hl-press-scale-strong)); }
 .btn[aria-current="page"] { color: var(--hl-color-accent-fg); }
-.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
 .btn:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
 
 .edge {

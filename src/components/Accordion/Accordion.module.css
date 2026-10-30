@@ -38,7 +38,7 @@
 @media (hover: hover) {
   .trigger:hover:not(:disabled) { background: var(--hl-color-surface-hover); }
 }
-.trigger:disabled { opacity: 0.45; cursor: not-allowed; }
+.trigger:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
 
 .trigger:focus-visible {
   outline: none;

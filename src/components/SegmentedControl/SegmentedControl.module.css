@@ -1,6 +1,8 @@
 .root {
   position: relative;
   display: inline-flex;
+  /* Its own width in a column layout too; fullWidth (.full) still fills the row. */
+  width: fit-content;
   padding: var(--hl-space-1);
   border: var(--hl-line) solid var(--hl-color-border);
   border-radius: var(--hl-radius-control);
@@ -30,7 +32,9 @@
     width var(--hl-motion-slow) var(--hl-ease-out);
 }
 
+/* Options share any room the track has beyond its own width, so a stretched track never ends in an empty gap. */
 .item {
+  flex: 1 0 auto;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -71,7 +75,7 @@
 }
 .item:active:not(:disabled) { transform: scale(var(--hl-press-scale)); }
 .item[data-on] { color: var(--hl-color-fg); }
-.item:disabled { opacity: 0.4; cursor: not-allowed; }
+.item:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
 
 .item:focus-visible {
   outline: none;

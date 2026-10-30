@@ -1,5 +1,6 @@
 .root {
   display: inline-flex;
+  width: fit-content;
   align-items: center;
   gap: var(--hl-space-2);
   max-width: 100%;

@@ -10,7 +10,7 @@
   justify-content: space-between;
 }
 
-.root[data-disabled] { opacity: 0.5; }
+.root[data-disabled] { opacity: var(--hl-disabled-opacity); }
 
 .track {
   --w: var(--hl-switch-w);

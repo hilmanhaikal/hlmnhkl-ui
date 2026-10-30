@@ -2,6 +2,7 @@
   --s: var(--hl-control-h-md);
   position: relative;
   display: inline-flex;
+  width: fit-content;
   align-items: center;
   justify-content: center;
   gap: var(--hl-space-3);

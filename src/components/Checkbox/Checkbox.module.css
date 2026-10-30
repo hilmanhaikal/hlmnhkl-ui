@@ -6,7 +6,7 @@
   padding-block: var(--hl-space-4);
 }
 
-.root[data-disabled] { opacity: 0.5; }
+.root[data-disabled] { opacity: var(--hl-disabled-opacity); }
 
 .boxWrap {
   position: relative;

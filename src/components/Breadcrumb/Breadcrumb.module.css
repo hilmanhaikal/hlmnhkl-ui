@@ -66,11 +66,17 @@
 }
 
 .more {
+  justify-content: center;
   border: 0;
   background: transparent;
   font-size: inherit;
   cursor: pointer;
   letter-spacing: var(--hl-tracking-wide);
+}
+
+/* The dots alone are too narrow to tap. */
+@media (pointer: coarse) {
+  .more { min-width: var(--hl-hit-min); }
 }
 
 @media (hover: hover) {

@@ -46,7 +46,7 @@
   .tab:hover:not(:disabled) { color: var(--hl-color-fg); background: var(--hl-color-surface-hover); }
 }
 .tab[aria-selected="true"] { color: var(--hl-color-fg); }
-.tab:disabled { opacity: 0.4; cursor: not-allowed; }
+.tab:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
 
 .tab:focus-visible {
   outline: none;

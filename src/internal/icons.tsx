@@ -181,3 +181,4 @@ export const GripIcon = (p: IconProps) => (
     <path d="M5 9h14M5 15h14" />
   </Svg>
 )
+export const FilterIcon = (p: IconProps) => <Svg {...p}><path d="M4.5 6h15l-5.75 7v5.5l-3.5-2V13z" /></Svg>

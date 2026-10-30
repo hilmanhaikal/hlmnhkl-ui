@@ -61,7 +61,7 @@
   .root:hover:not(:disabled) .icon { transform: scale(1.08); }
 }
 .root:active:not(:disabled) { transform: scale(var(--hl-press-scale-strong)); transition-duration: var(--hl-motion-instant); }
-.root:disabled { opacity: 0.45; cursor: not-allowed; }
+.root:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
 
 @media (hover: hover) {
   .ghost:hover:not(:disabled) { background: var(--hl-color-surface-hover); }

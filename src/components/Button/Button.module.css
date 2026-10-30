@@ -2,6 +2,8 @@
   --h: var(--hl-control-h-md);
   position: relative;
   display: inline-grid;
+  /* Its own width in a column layout too; fullWidth (.full) still fills the row. */
+  width: fit-content;
   grid-template-columns: minmax(0, auto);
   place-items: center;
   max-width: 100%;
@@ -55,7 +57,7 @@
 .root:disabled,
 .root[aria-disabled="true"]:not([data-loading]) {
   cursor: not-allowed;
-  opacity: 0.45;
+  opacity: var(--hl-disabled-opacity);
 }
 
 .root[data-loading] {
