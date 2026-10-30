@@ -2,6 +2,12 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.23.0 · 30 Oct 2026
+
+### Changed
+
+- Dark theme: a near-black page instead of dark grey, with each raised layer a step lighter. `--hl-color-bg` is `#0a0a0a`, `--hl-color-surface` `#111111`, `--hl-color-surface-raised` `#1c1c1c`, `--hl-color-surface-sunken` `#070707`, `--hl-color-surface-hover` `#1a1a1a`, `--hl-color-surface-active` `#222222`, `--hl-color-border` `#262626` and `--hl-color-inverse-fg` `#0a0a0a`. Text colours are the same, so their contrast only goes up. To get the new look, copy these values into the two dark blocks of your `tokens.css`.
+
 ## 0.22.1 · 30 Oct 2026
 
 ### Fixed

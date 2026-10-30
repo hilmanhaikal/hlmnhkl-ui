@@ -215,21 +215,21 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --hl-color-bg: #161616;
-    --hl-color-surface: #1e1e1e;
-    --hl-color-surface-sunken: #121212;
-    --hl-color-surface-hover: #262626;
-    --hl-color-surface-active: #2e2e2e;
-    --hl-color-surface-raised: #2c2c2c;
+    --hl-color-bg: #0a0a0a;
+    --hl-color-surface: #111111;
+    --hl-color-surface-sunken: #070707;
+    --hl-color-surface-hover: #1a1a1a;
+    --hl-color-surface-active: #222222;
+    --hl-color-surface-raised: #1c1c1c;
     --hl-color-overlay: rgb(0 0 0 / 0.6);
     --hl-color-fg: #ececec;
     --hl-color-fg-muted: #ababab;
     --hl-color-fg-subtle: #949494;
     --hl-color-fg-disabled: #5a5a5a;
-    --hl-color-border: #2e2e2e;
+    --hl-color-border: #262626;
     --hl-color-border-strong: #707070;
     --hl-color-inverse: #ececec;
-    --hl-color-inverse-fg: #161616;
+    --hl-color-inverse-fg: #0a0a0a;
     --hl-color-inverse-hover: var(--hl-gray-300);
     --hl-color-shimmer: rgb(255 255 255 / 0.06);
     --hl-color-success: #4cc97a;
@@ -250,24 +250,24 @@
   }
 }
 
-/* Dark theme (forced). Never pure black: a dark grey page, raised surfaces a step lighter, and a soft
-   white for text, so it does not glare. */
+/* Dark theme (forced). Near black, never pure black: raised surfaces a step lighter, and a soft white
+   for text, so it does not glare. */
 [data-theme="dark"] {
-  --hl-color-bg: #161616;
-  --hl-color-surface: #1e1e1e;
-  --hl-color-surface-sunken: #121212;
-  --hl-color-surface-hover: #262626;
-  --hl-color-surface-active: #2e2e2e;
-  --hl-color-surface-raised: #2c2c2c;
+  --hl-color-bg: #0a0a0a;
+  --hl-color-surface: #111111;
+  --hl-color-surface-sunken: #070707;
+  --hl-color-surface-hover: #1a1a1a;
+  --hl-color-surface-active: #222222;
+  --hl-color-surface-raised: #1c1c1c;
   --hl-color-overlay: rgb(0 0 0 / 0.6);
   --hl-color-fg: #ececec;
   --hl-color-fg-muted: #ababab;
   --hl-color-fg-subtle: #949494;
   --hl-color-fg-disabled: #5a5a5a;
-  --hl-color-border: #2e2e2e;
+  --hl-color-border: #262626;
   --hl-color-border-strong: #707070;
   --hl-color-inverse: #ececec;
-  --hl-color-inverse-fg: #161616;
+  --hl-color-inverse-fg: #0a0a0a;
   --hl-color-inverse-hover: var(--hl-gray-300);
   --hl-color-shimmer: rgb(255 255 255 / 0.06);
   --hl-color-success: #4cc97a;
