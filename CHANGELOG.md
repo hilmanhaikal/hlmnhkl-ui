@@ -2,6 +2,12 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.23.1 · 30 Oct 2026
+
+### Fixed
+
+- PinInput: with an empty box before it, Tab could never leave the group, because focus on a later box is sent back to the first empty one. The group is now one Tab stop, at the box that takes the next character. Left, Right, Home and End still move between boxes.
+
 ## 0.23.0 · 30 Oct 2026
 
 ### Changed
