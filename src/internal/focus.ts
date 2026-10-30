@@ -48,6 +48,9 @@ export function useFocusTrap(
     const first = initialFocus?.current ?? list.find((el) => !el.hasAttribute('data-skip-initial-focus')) ?? list[0] ?? root
     first.focus({ preventScroll: true })
 
+    // Safari's plain Tab skips buttons, so it can jump from the middle of the layer to the page behind,
+    // or off the page. A Tab that lands outside goes back to the end it wrapped past.
+    let check = 0
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return
       const items = focusables(root)
@@ -65,10 +68,19 @@ export function useFocusTrap(
       } else if (!e.shiftKey && current === lastEl) {
         e.preventDefault()
         firstEl.focus()
+      } else {
+        const back = e.shiftKey
+        clearTimeout(check)
+        check = window.setTimeout(() => {
+          if (root.contains(document.activeElement)) return
+          const now = focusables(root)
+          now[back ? now.length - 1 : 0]?.focus({ preventScroll: true })
+        })
       }
     }
     root.addEventListener('keydown', onKey)
     return () => {
+      clearTimeout(check)
       root.removeEventListener('keydown', onKey)
       // Give focus back only if it is still in the layer, so a click elsewhere keeps its own focus.
       const now = document.activeElement

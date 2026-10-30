@@ -2,6 +2,12 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.22.1 · 30 Oct 2026
+
+### Fixed
+
+- Dialog, Sheet, Drawer and every layer that holds focus: in Safari, plain Tab skips buttons, so it could jump out of the layer to the page behind or off the page. Focus now wraps back to the other end. Native radio groups still move with the arrow keys as before.
+
 ## 0.22.0 · 30 Oct 2026
 
 Five new Pro components, a test suite that checks every component on every pull request, and the fixes it found.
