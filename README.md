@@ -65,7 +65,7 @@ Setup for other tools: [MCP server](https://ui.hlmnhkl.my/mcp).
 ## What you get
 
 - **The source, not a package.** The command copies plain files into your app. Change anything; there is no update to wait for.
-- **59 free components**, from Button, Dialog, Select and Table to Toast and Retime, one speed setting for every animation. See [COMPONENTS.md](COMPONENTS.md).
+- **63 free components**, from Button, Dialog, Select and Table to Toast and Retime, one speed setting for every animation. See [COMPONENTS.md](COMPONENTS.md).
 - **One look, set by tokens.** Every colour, size and timing comes from one file, `tokens.css`. Colour appears only to mean something: good, caution or bad.
 - **Light and dark.** Dark follows the system, or set `data-theme="dark"` on `<html>`.
 - **Accessible.** Keyboard support per the WAI-ARIA patterns, visible focus, screen reader labels, and reduced motion. On touch screens every control gives at least a 44px target, even the small sizes; only the six PIN boxes and the seven calendar days get narrower when the row has no room, about 36px wide on a 320px phone. CalendarHeatmap's days are small by design, since a year must fit on screen; its month table gives the same numbers at full size.

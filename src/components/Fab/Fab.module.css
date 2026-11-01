@@ -1,0 +1,172 @@
+/* In the thumb zone: the bottom corner of the screen, clear of the home indicator and a notch. */
+.root {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + var(--hl-fab-gap));
+  z-index: var(--hl-z-sticky);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--hl-space-4);
+  pointer-events: none;
+}
+
+.end { right: calc(env(safe-area-inset-right) + var(--hl-fab-gap)); }
+
+.center {
+  left: 50%;
+  align-items: center;
+  translate: -50% 0;
+}
+
+.contained { position: absolute; }
+.contained.end { right: var(--hl-fab-gap); }
+.contained { bottom: var(--hl-fab-gap); }
+
+.fab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-width: var(--hl-fab-size);
+  height: var(--hl-fab-size);
+  padding: 0 calc((var(--hl-fab-size) - var(--hl-icon-md)) / 2);
+  border: 0;
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-accent);
+  color: var(--hl-color-accent-fg);
+  box-shadow: var(--hl-shadow-3);
+  font: inherit;
+  font-weight: var(--hl-weight-medium);
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--hl-motion-fast) var(--hl-ease-out),
+    scale var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+@media (hover: hover) {
+  .fab:hover { background: var(--hl-color-inverse-hover); }
+}
+
+.fab:active { scale: var(--hl-press-scale); }
+.fab:focus-visible { outline: none; box-shadow: var(--hl-shadow-3), var(--hl-focus-ring); }
+
+.icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--hl-icon-md);
+  height: var(--hl-icon-md);
+  transition: rotate var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.icon > svg { width: 100%; height: 100%; }
+
+/* Open: the icon turns a quarter, the way a plus becomes a cross. */
+.root[data-open] .icon { rotate: 45deg; }
+
+/* The label pours away into the icon: its column closes, so the pill shrinks to a circle around the icon. */
+.labelWrap {
+  display: grid;
+  grid-template-columns: 0fr;
+  transition: grid-template-columns var(--hl-motion-slower) var(--hl-ease-in-out);
+}
+
+.fab[data-extended] .labelWrap { grid-template-columns: 1fr; }
+
+.label {
+  min-width: 0;
+  overflow: hidden;
+  padding-inline-start: 0;
+  white-space: nowrap;
+  opacity: 0;
+  transition:
+    opacity var(--hl-motion-base) var(--hl-ease-out),
+    padding var(--hl-motion-slower) var(--hl-ease-in-out);
+}
+
+.fab[data-extended] .label {
+  padding-inline: var(--hl-space-3) var(--hl-space-2);
+  opacity: 1;
+  transition-delay: 0s, 0s;
+}
+
+/* The actions pour up out of the button, the nearest first, each a short step after the last. */
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--hl-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.center .actions { align-items: center; }
+
+.actions li {
+  opacity: 0;
+  translate: 0 var(--hl-shift-md);
+  scale: 0.6;
+  transform-origin: 100% 100%;
+  transition:
+    opacity var(--hl-motion-base) var(--hl-ease-out),
+    translate var(--hl-motion-slow) var(--hl-ease-spring),
+    scale var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.center .actions li { transform-origin: 50% 100%; }
+
+.root[data-open] .actions li {
+  opacity: 1;
+  translate: none;
+  scale: 1;
+  transition-delay: calc(var(--i) * var(--hl-motion-stagger) * 2);
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hl-space-4);
+  min-height: var(--hl-hit-min);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--hl-color-fg);
+  font: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.actionLabel {
+  padding: var(--hl-space-2) var(--hl-space-4);
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-surface);
+  box-shadow: var(--hl-shadow-2);
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-medium);
+  white-space: nowrap;
+}
+
+/* Lined up under the button's centre: a smaller circle in the same column. */
+.actionIcon {
+  display: grid;
+  place-items: center;
+  width: var(--hl-hit-min);
+  height: var(--hl-hit-min);
+  margin-inline-end: calc((var(--hl-fab-size) - var(--hl-hit-min)) / 2);
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-surface);
+  box-shadow: var(--hl-shadow-2);
+}
+
+.actionIcon > svg { width: var(--hl-icon-sm); height: var(--hl-icon-sm); }
+
+@media (hover: hover) {
+  .action:hover .actionIcon,
+  .action:hover .actionLabel { background: var(--hl-color-surface-hover); }
+}
+
+.action:focus-visible { outline: none; }
+.action:focus-visible .actionIcon { box-shadow: var(--hl-shadow-2), var(--hl-focus-ring); }

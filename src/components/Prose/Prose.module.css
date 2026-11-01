@@ -1,0 +1,115 @@
+/* A line of about 68 characters, the length an eye can follow back to the next line without losing it.
+   :where keeps every rule at zero weight, so a class you add inside always wins. */
+.root {
+  max-width: var(--hl-prose-w);
+  color: var(--hl-color-fg);
+  font-size: var(--hl-text-md);
+  line-height: var(--hl-leading-normal);
+  overflow-wrap: break-word;
+}
+
+.root > :where(:first-child) { margin-top: 0; }
+.root > :where(:last-child) { margin-bottom: 0; }
+
+.root :where(p, ul, ol, blockquote, pre, figure, table, hr) { margin: 0 0 var(--hl-space-6); }
+
+/* A heading sits close to the text it opens and well clear of the text before it. */
+.root :where(h2, h3, h4) {
+  margin: var(--hl-space-10) 0 var(--hl-space-4);
+  font-weight: var(--hl-weight-semibold);
+  letter-spacing: var(--hl-tracking-tight);
+  line-height: var(--hl-leading-tight);
+  text-wrap: balance;
+}
+
+.root :where(h2) { font-size: var(--hl-text-2xl); }
+.root :where(h3) { font-size: var(--hl-text-xl); }
+.root :where(h4) { font-size: var(--hl-text-lg); }
+.root :where(h2, h3, h4) + :where(h3, h4) { margin-top: var(--hl-space-5); }
+
+.root :where(strong) { font-weight: var(--hl-weight-semibold); }
+
+.root :where(a) {
+  color: var(--hl-color-fg);
+  font-weight: var(--hl-weight-medium);
+  text-decoration: underline;
+  text-decoration-color: var(--hl-color-border-strong);
+  text-decoration-thickness: var(--hl-line);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+@media (hover: hover) {
+  .root :where(a):hover { text-decoration-color: currentColor; }
+}
+
+.root :where(a):focus-visible { outline: none; border-radius: var(--hl-radius-xs); box-shadow: var(--hl-focus-ring); }
+
+.root :where(ul, ol) { padding-left: var(--hl-space-6); }
+.root :where(li) { margin-bottom: var(--hl-space-2); padding-left: var(--hl-space-1); }
+.root :where(li) > :where(ul, ol) { margin: var(--hl-space-2) 0 0; }
+.root :where(li)::marker { color: var(--hl-color-fg-subtle); }
+
+/* A quote sits on a soft panel of its own, not behind a line down its side. */
+.root :where(blockquote) {
+  padding: var(--hl-space-5) var(--hl-space-6);
+  border-radius: var(--hl-radius-md);
+  background: var(--hl-color-surface-sunken);
+  color: var(--hl-color-fg-muted);
+}
+
+.root :where(blockquote) > :where(:last-child) { margin-bottom: 0; }
+
+.root :where(code) {
+  padding: 0.1em 0.35em;
+  border-radius: var(--hl-radius-xs);
+  background: var(--hl-color-surface-sunken);
+  font-family: var(--hl-font-mono);
+  font-size: 0.9em;
+}
+
+.root :where(pre) {
+  overflow-x: auto;
+  padding: var(--hl-space-5);
+  border-radius: var(--hl-radius-md);
+  background: var(--hl-code-bg);
+  color: var(--hl-code-fg);
+  font-size: var(--hl-text-sm);
+  line-height: var(--hl-leading-normal);
+}
+
+.root :where(pre) :where(code) { padding: 0; background: none; font-size: inherit; }
+
+.root :where(img, video) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--hl-radius-md);
+}
+
+.root :where(figcaption) {
+  margin-top: var(--hl-space-3);
+  color: var(--hl-color-fg-muted);
+  font-size: var(--hl-text-sm);
+}
+
+.root :where(hr) {
+  height: 0;
+  border: 0;
+  border-top: var(--hl-line) solid var(--hl-color-border);
+}
+
+.root :where(table) {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: var(--hl-text-sm);
+}
+
+.root :where(th, td) {
+  padding: var(--hl-space-3) var(--hl-space-4);
+  border-bottom: var(--hl-line) solid var(--hl-color-border);
+  text-align: left;
+}
+
+.root :where(th) { font-weight: var(--hl-weight-semibold); }

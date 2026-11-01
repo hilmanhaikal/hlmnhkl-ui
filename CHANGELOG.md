@@ -2,6 +2,36 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.27.0 · 2 Nov 2026
+
+Four new free components: a floating action button for the thumb zone, a theme toggle, styles for long text, and a table of contents.
+
+### Added
+
+- Fab: one main action floating at the bottom of the screen, in reach of the thumb and clear of the home indicator. `extended` shows a label that pours away into the icon as the page scrolls down and back on the way up. `actions` pours a short stack of actions up out of the button; focus moves to the first, and Esc or a tap outside closes them. `position` puts it at the end or the centre, and `contained` keeps it inside a panel. Tokens `--hl-fab-size` and `--hl-fab-gap`.
+- ThemeToggle: one button between the light and dark theme, the sun turning into the moon. On its own it sets data-theme on the page and remembers the choice; `theme` and `onThemeChange` let your app keep it instead. `themeScript()` goes in the head so a saved dark theme never flashes light on load. With no saved choice it follows the system.
+- Prose: styles plain HTML from Markdown or a CMS for reading, on a line about 68 characters long: headings, lists, links, quotes on a soft panel, code, pictures and tables. Every rule has zero weight, so a class you add inside wins. Token `--hl-prose-w`.
+- TableOfContents: the sections of a page as links to their headings, each a frame on a strip, filled once read and ringed where you are. A click scrolls there, smoothly unless motion is reduced, moves focus to the heading and keeps one history entry. `backToTop` adds a way up.
+
+## 0.26.0 · 1 Nov 2026
+
+Navbar float becomes a liquid pill: it morphs into the middle as the page scrolls, and on a phone it can pour down to the bottom of the screen.
+
+### Changed
+
+- Navbar `float`: instead of a card inset from the edges, the bar's edges close in until it hugs its contents, a pill in the middle of the screen, 16px clear of the top. Its height never changes, so nothing under it moves.
+- Navbar menu: once the bar is a pill, the menu opens as a card of its own under it. Before, it opened onto the page with no paper behind it.
+
+### Added
+
+- Navbar `centerBrand`: under 640px wide, the brand sits in the middle, with the actions on the left and the menu button on the right.
+- Navbar `dockAfter`: the id of an element, such as the hero. Once it has scrolled past, on a phone, the pill pours down to the bottom of the screen, in reach of the thumb: it stretches like a drop as it falls, lands with a small squash and settles. Its menu then opens upward. It pours back up when the element returns. With reduced motion it simply moves.
+- Token `--hl-motion-pour`: the length of that trip, 760ms, and 0 with reduced motion.
+
+### Fixed
+
+- Navbar `float` never lifted inside a wrapper with no box of its own, such as an Astro island. It now reads the nearest ancestor that has one.
+
 ## 0.25.1 · 1 Nov 2026
 
 Two fixes found while building a real site with the library.

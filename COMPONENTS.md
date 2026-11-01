@@ -63,3 +63,7 @@ Status: **done** means built, typed, in the docs site with demos, keyboard and s
 | 57 | InputGroup | Forms | done | a field with text, an icon or a button joined to either side, one border and focus ring, side text read with the field |
 | 58 | AvatarGroup | Data display | done | stacked Avatars, max then "+N" named "N more", the group names everyone, fans out on hover; own folder, Avatar still re-exports it |
 | 59 | CodeBlock | Data display | done | TSX, HTML, CSS and shell colouring from --hl-code-* tokens, title row, copy button, optional line numbers, keyboard-scrollable pre; the docs site uses it |
+| 60 | Fab | Actions | done | one main action in the thumb zone above the home indicator; extended label pours into the icon on scroll down; actions pour up out of it, focus moves in, Esc returns it |
+| 61 | ThemeToggle | Actions | done | sun turns into moon; sets data-theme and remembers it, or controlled; themeScript in head stops a dark flash; follows the system with no saved choice |
+| 62 | Prose | Layout | done | styles plain HTML from Markdown or a CMS for reading on a 68ch line; quotes on a soft panel; zero-weight rules so your classes win |
+| 63 | TableOfContents | Navigation | done | a page's sections as a strip of frames, read, here and ahead; smooth scroll that respects reduced motion, focus moves to the heading, shareable #ids, optional back to top |

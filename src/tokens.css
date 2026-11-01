@@ -72,6 +72,8 @@
   --hl-leading-tight: 1.2;
   --hl-leading-snug: 1.4;
   --hl-leading-normal: 1.6;
+  /* Prose: the longest line of reading text, about the most an eye follows back to the next line */
+  --hl-prose-w: 68ch;
   --hl-weight-regular: 400;
   --hl-weight-medium: 500;
   --hl-weight-semibold: 600;
@@ -166,6 +168,8 @@
   --hl-motion-base: calc(220ms * var(--hl-motion-scale));
   --hl-motion-slow: calc(360ms * var(--hl-motion-scale));
   --hl-motion-slower: calc(600ms * var(--hl-motion-scale));
+  /* Navbar dock: the trip to and from the bottom of the screen, long enough to read as liquid */
+  --hl-motion-pour: calc(760ms * var(--hl-motion-scale));
   --hl-motion-stagger: calc(30ms * var(--hl-motion-scale));
   --hl-motion-delay-tooltip: 400ms;
   --hl-motion-shimmer: 1400ms;
@@ -296,6 +300,7 @@
     --hl-motion-base: 0ms;
     --hl-motion-slow: 0ms;
     --hl-motion-slower: 0ms;
+    --hl-motion-pour: 0ms;
     --hl-motion-stagger: 0ms;
     --hl-motion-shimmer: 0ms;
     --hl-motion-spin: 1600ms;
@@ -378,6 +383,9 @@
   --hl-navbar-h: 64px;
   /* Navbar float: how far the page scrolls while the bar lifts into a floating card */
   --hl-navbar-float-run: 160px;
+  /* Fab: the round button's size, and its gap from the bottom and side of the screen */
+  --hl-fab-size: 56px;
+  --hl-fab-gap: 16px;
   --hl-sidebar-w: 248px;
   --hl-sidebar-w-collapsed: 64px;
   --hl-tabbar-h: 64px;
