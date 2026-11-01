@@ -7,7 +7,6 @@
   border-radius: var(--hl-radius-panel);
   background: var(--hl-color-surface);
   box-shadow: var(--hl-shadow-1);
-  overflow: hidden;
   transition:
     transform var(--hl-motion-slow) var(--hl-ease-spring),
     box-shadow var(--hl-motion-slow) var(--hl-ease-out),
@@ -20,6 +19,11 @@
     box-shadow: var(--hl-shadow-3);
     border-color: var(--hl-color-border-strong);
   }
+
+  /* The lift moves the card off a pointer on its lower edge, and it would drop back and lift again.
+     This fills the gap below while it is up: twice the lift, since the spring overshoots. The card
+     does not clip, so the strip can reach out. */
+  .interactive:hover::after { content: ""; position: absolute; inset: 100% 0 calc(var(--hl-shift-sm) * -2); }
 }
 
 .interactive:active { transform: translateY(0) scale(0.995); transition-duration: var(--hl-motion-fast); }
@@ -31,6 +35,7 @@
 .media {
   overflow: hidden;
   border-bottom: var(--hl-line) solid var(--hl-color-border);
+  border-radius: calc(var(--hl-radius-panel) - var(--hl-line)) calc(var(--hl-radius-panel) - var(--hl-line)) 0 0;
 }
 
 .media > * { transition: transform var(--hl-motion-slower) var(--hl-ease-out); }

@@ -39,6 +39,7 @@
 .field[data-disabled] { opacity: 0.6; background: var(--hl-color-surface-sunken); }
 
 .step {
+  position: relative;
   display: grid;
   place-items: center;
   flex: none;
@@ -63,6 +64,8 @@
   .step:hover:not(:disabled) { background: var(--hl-color-surface-hover); }
 }
 .step:active:not(:disabled) { transform: scale(var(--hl-press-scale-strong)); transition-duration: var(--hl-motion-instant); }
+/* The press shrinks the button, so an invisible layer keeps the whole box under a mouse released at its edge. */
+.step:active:not(:disabled)::after { content: ""; position: absolute; inset: -9%; }
 .step:disabled { color: var(--hl-color-fg-disabled); cursor: not-allowed; }
 
 .control {

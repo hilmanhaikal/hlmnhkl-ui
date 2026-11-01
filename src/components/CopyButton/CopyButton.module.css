@@ -35,6 +35,8 @@
   .root:hover { background: var(--hl-color-surface-hover); }
 }
 .root:active { transform: scale(var(--hl-press-scale-strong)); transition-duration: var(--hl-motion-instant); }
+/* The press shrinks the button, so the hit area grows to keep the whole box under a mouse released at its edge. */
+.root:active::after { inset: -9%; }
 .root:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
 .root[data-copied] { border-color: var(--hl-color-fg); }
 .root[data-failed] { border-color: var(--hl-color-danger); color: var(--hl-color-danger); }

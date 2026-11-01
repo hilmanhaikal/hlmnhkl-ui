@@ -44,6 +44,7 @@
 }
 
 .btn {
+  position: relative;
   display: grid;
   place-items: center;
   flex: none;
@@ -69,6 +70,8 @@
   .btn:hover:not(:disabled):not([aria-current]) { background: var(--hl-color-surface-hover); }
 }
 .btn:active:not(:disabled) { transform: scale(var(--hl-press-scale-strong)); }
+/* The press shrinks the button, so an invisible layer keeps the whole box under a mouse released at its edge. */
+.btn:active:not(:disabled)::after { content: ""; position: absolute; inset: -9%; }
 .btn[aria-current="page"] { color: var(--hl-color-accent-fg); }
 .btn:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
 .btn:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }

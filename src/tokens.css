@@ -217,7 +217,7 @@
   :root:not([data-theme="light"]) {
     --hl-color-bg: #0a0a0a;
     --hl-color-surface: #111111;
-    --hl-color-surface-sunken: #070707;
+    --hl-color-surface-sunken: #141414;
     --hl-color-surface-hover: #1a1a1a;
     --hl-color-surface-active: #222222;
     --hl-color-surface-raised: #1c1c1c;
@@ -255,7 +255,7 @@
 [data-theme="dark"] {
   --hl-color-bg: #0a0a0a;
   --hl-color-surface: #111111;
-  --hl-color-surface-sunken: #070707;
+  --hl-color-surface-sunken: #141414;
   --hl-color-surface-hover: #1a1a1a;
   --hl-color-surface-active: #222222;
   --hl-color-surface-raised: #1c1c1c;
@@ -376,6 +376,8 @@
   --hl-palette-top: 12vh;
   --hl-palette-list-max-h: 360px;
   --hl-navbar-h: 64px;
+  /* Navbar float: how far the page scrolls while the bar lifts into a floating card */
+  --hl-navbar-float-run: 160px;
   --hl-sidebar-w: 248px;
   --hl-sidebar-w-collapsed: 64px;
   --hl-tabbar-h: 64px;
@@ -541,7 +543,8 @@
 
 :root,
 [data-theme="light"] {
-  /* SmoothScroll: the share of the distance left that a wheel glide covers each frame. 1 is native. */
+  /* Scroll motion: the share of the distance left that an eased part covers each frame. Lower is
+     heavier; 1 follows the scroll at once. */
   --hl-scroll-ease: 0.1;
   /* ScrollDraft and TextRise: where an element's top starts and ends its progress, as a share of the screen height */
   --hl-draft-start: 0.85;
@@ -549,9 +552,57 @@
   /* TextRise: how many words of the progress each word takes to arrive, and room for descenders in its mask */
   --hl-rise-span: 3;
   --hl-rise-room: 0.14em;
-  /* ScrollRuler: its width, and the page pixels between two short ticks (a number every five) */
-  --hl-ruler-w: 48px;
-  --hl-ruler-step: 100px;
+  /* TextRise ink: how many words of the progress each word takes to darken */
+  --hl-ink-span: 8;
+  /* ScrollStory: the stage's share of the width and its height, the scroll length of one step (each with
+     a narrow-screen size, where the stage pins to the top), and the share of a step's length the change
+     between two steps takes (the rest holds still) */
+  --hl-story-stage-w: 55%;
+  --hl-story-stage-h: 72svh;
+  --hl-story-stage-h-narrow: 46svh;
+  --hl-story-step-h: 70svh;
+  --hl-story-step-h-narrow: 45svh;
+  --hl-story-turn: 0.4;
+  --hl-story-turn-narrow: 0.8;
+  /* ScrollStory: room above the stage for a sticky header of your own */
+  --hl-story-top: 0px;
+  /* StackScroll: where the first card sticks, how much of each card peeks out above the next, the
+     scroll between two cards, how much smaller and greyer each layer below gets, the most a moving
+     card tilts back with speed (degrees), and the depth of that tilt */
+  --hl-stack-top: var(--hl-space-10);
+  --hl-stack-offset: var(--hl-space-4);
+  --hl-stack-gap: 25svh;
+  --hl-stack-shrink: 0.04;
+  --hl-stack-dim: 0.6;
+  --hl-stack-lean: 6;
+  --hl-stack-perspective: 1200px;
+  /* ScrollTrack: room above the pinned row for a sticky header, a panel's width (and on a narrow
+     screen, where it is a sideways swipe), the gap between panels, and the most the panels lean
+     with speed (degrees) */
+  --hl-track-top: 0px;
+  --hl-track-panel-w: 40%;
+  --hl-track-panel-w-narrow: 85%;
+  --hl-track-gap: var(--hl-space-6);
+  --hl-track-lean: 3;
+  /* Parallax: how far the nearest layer travels either side of its place (and on a narrow screen),
+     and the gap between items */
+  --hl-parallax-range: 120px;
+  --hl-parallax-range-narrow: 48px;
+  --hl-parallax-gap: var(--hl-space-5);
+  /* ScrollTone: the band around the middle of the screen, as a share of its height, in which the
+     paper and ink change from one section's tone to the next */
+  --hl-tone-band: 0.3;
+  /* ScrollExpand: room above for a sticky header, the frame's height, the scroll it takes to open,
+     the strip it starts as (a share of the frame's height), how far in from each side it starts (a
+     share of the width), and the extra zoom it starts with */
+  --hl-expand-top: 0px;
+  --hl-expand-h: 80svh;
+  --hl-expand-run: 80svh;
+  --hl-expand-strip: 0.12;
+  --hl-expand-side: 0.18;
+  --hl-expand-zoom: 0.15;
+  /* ScrollExpand through: how far the camera pushes in once the picture fills the screen */
+  --hl-expand-push: 0.25;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -559,4 +610,22 @@
   [data-theme] {
     --hl-scroll-ease: 1;
   }
+}
+
+/* CodeBlock: syntax colours, monochrome like the rest. Set on every [data-theme], so they follow the
+   colours of the theme they sit in and need no dark copy. Set --hl-code-string for a colour accent. */
+:root,
+[data-theme] {
+  /* TextRise ink: the grey a word starts from, part way from the page to the text. It meets 3:1, the
+     contrast for large text, so ink is for text 24px and up. */
+  --hl-ink-from: color-mix(in oklab, var(--hl-color-fg) 45%, var(--hl-color-bg));
+  --hl-code-bg: var(--hl-color-surface-sunken);
+  --hl-code-fg: var(--hl-color-fg);
+  --hl-code-keyword: var(--hl-color-fg);
+  --hl-code-tag: var(--hl-color-fg);
+  --hl-code-attr: var(--hl-color-fg-subtle);
+  --hl-code-string: var(--hl-color-fg-muted);
+  --hl-code-number: var(--hl-color-fg-muted);
+  --hl-code-comment: var(--hl-color-fg-subtle);
+  --hl-code-gutter: var(--hl-color-fg-subtle);
 }

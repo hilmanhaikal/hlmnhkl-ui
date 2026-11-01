@@ -61,6 +61,8 @@
   .root:hover:not(:disabled) .icon { transform: scale(1.08); }
 }
 .root:active:not(:disabled) { transform: scale(var(--hl-press-scale-strong)); transition-duration: var(--hl-motion-instant); }
+/* The press shrinks the button, so the hit area grows to keep the whole box under a mouse released at its edge. */
+.root:active:not(:disabled)::after { inset: -9%; }
 .root:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
 
 @media (hover: hover) {

@@ -61,7 +61,9 @@
   animation: nudge var(--hl-motion-slow) var(--hl-ease-out);
 }
 
-.field[data-disabled] {
+/* Also when a disabled fieldset turns it off, so it looks off like the controls beside it. */
+.field[data-disabled],
+.field:has(input:disabled) {
   background: var(--hl-color-surface-sunken);
   cursor: not-allowed;
   opacity: var(--hl-disabled-opacity);

@@ -1,0 +1,146 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.label {
+  margin-bottom: var(--hl-space-3);
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-medium);
+  color: var(--hl-color-fg);
+}
+
+/* One border and one radius around the field and both cells. */
+.group {
+  --h: var(--hl-hit-min);
+  --r: var(--hl-radius-md);
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-height: var(--h);
+  border: var(--hl-line) solid var(--hl-color-border-strong);
+  border-radius: var(--r);
+  background: var(--hl-color-surface);
+  transition:
+    border-color var(--hl-motion-fast) var(--hl-ease-out),
+    box-shadow var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.sm { --h: var(--hl-control-h-sm); }
+.lg { --h: var(--hl-control-h-lg); }
+
+@media (pointer: coarse) {
+  .group { min-height: max(var(--h), var(--hl-hit-min)); }
+}
+
+@media (hover: hover) {
+  .group:hover:not([data-disabled]) { border-color: var(--hl-color-fg-muted); }
+}
+
+/* The ring is the field's: a focused button in a cell shows its own ring instead. */
+.group:has(.input:focus) {
+  border-color: var(--hl-color-fg);
+  box-shadow: 0 0 0 var(--hl-halo) var(--hl-color-surface-active);
+}
+
+/* Red border, plus the thicker line, so the error does not rely on colour. It stays red on hover and
+   focus, as on Input, so the class is repeated to win over those rules. */
+.group.group[data-invalid] {
+  border-color: var(--hl-color-danger);
+  border-width: var(--hl-line-thick);
+}
+
+.group[data-disabled],
+.group:has(.input:disabled) {
+  background: var(--hl-color-surface-sunken);
+  opacity: var(--hl-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0 var(--hl-space-5);
+  border: 0;
+  border-radius: var(--r);
+  background: transparent;
+  outline: none;
+  font: inherit;
+  font-size: var(--hl-text-input);
+  color: var(--hl-color-fg);
+}
+
+.sm .input { padding: 0 var(--hl-space-4); }
+
+@media (pointer: fine) {
+  .sm .input { font-size: var(--hl-text-sm); }
+}
+
+.input::placeholder { color: var(--hl-color-fg-subtle); }
+.input:disabled { cursor: not-allowed; }
+
+.addon {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: var(--hl-space-3);
+  padding: 0 var(--hl-space-4);
+  background: var(--hl-color-surface-sunken);
+  color: var(--hl-color-fg-muted);
+  font-size: var(--hl-text-sm);
+  white-space: nowrap;
+  cursor: text;
+}
+
+.addon > svg { flex: none; font-size: var(--hl-icon-md); }
+
+.addon[data-side="prefix"] {
+  border-inline-end: var(--hl-line) solid var(--hl-color-border);
+  border-start-start-radius: calc(var(--r) - var(--hl-line));
+  border-end-start-radius: calc(var(--r) - var(--hl-line));
+}
+
+.addon[data-side="suffix"] {
+  border-inline-start: var(--hl-line) solid var(--hl-color-border);
+  border-start-end-radius: calc(var(--r) - var(--hl-line));
+  border-end-end-radius: calc(var(--r) - var(--hl-line));
+}
+
+/* A cell that holds a button: no shade or padding, the button fills the cell and takes its corners. */
+.addon:has(> :is(button, a)) {
+  padding: 0;
+  background: transparent;
+  cursor: auto;
+}
+
+.addon.addon > :is(button, a) {
+  align-self: stretch;
+  height: auto;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.addon.addon > :is(button, a):focus-visible { box-shadow: var(--hl-focus-ring); z-index: 1; }
+
+.addon[data-side="prefix"] > :first-child {
+  border-start-start-radius: calc(var(--r) - var(--hl-line));
+  border-end-start-radius: calc(var(--r) - var(--hl-line));
+}
+
+.addon[data-side="suffix"] > :last-child {
+  border-start-end-radius: calc(var(--r) - var(--hl-line));
+  border-end-end-radius: calc(var(--r) - var(--hl-line));
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

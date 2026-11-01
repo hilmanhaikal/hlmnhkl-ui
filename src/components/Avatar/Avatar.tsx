@@ -1,6 +1,6 @@
 'use client'
 
-import { Children, useState, type ReactElement, type ReactNode } from 'react'
+import { useState } from 'react'
 import { cx } from '../../internal/cx'
 import styles from './Avatar.module.css'
 
@@ -41,46 +41,15 @@ export function Avatar({ name, src, size = 'md', status, className }: AvatarProp
           src={src}
           alt=""
           data-loaded={state === 'loaded' || undefined}
+          // A server-rendered image can finish before React hydrates, so its load event is gone by then.
+          ref={(img) => {
+            if (img?.complete && state === 'loading') setState(img.naturalWidth ? 'loaded' : 'error')
+          }}
           onLoad={() => setState('loaded')}
           onError={() => setState('error')}
         />
       )}
       {status && <span className={styles.status} data-status={status} aria-hidden="true" />}
     </span>
-  )
-}
-
-export type AvatarGroupProps = {
-  /** The Avatar elements to stack. */
-  children: ReactNode
-  /** Avatars shown before the "+N" counter. */
-  max?: number
-  /** Size of the "+N" counter. Set it to match the avatars inside. */
-  size?: AvatarProps['size']
-  /** Screen reader name for the group. Undefined says "N people". */
-  label?: string
-  /** Extra class for the root element. */
-  className?: string
-}
-
-export function AvatarGroup({ children, max = 4, size = 'md', label, className }: AvatarGroupProps) {
-  const all = Children.toArray(children) as ReactElement<AvatarProps>[]
-  const shown = all.slice(0, max)
-  const extra = all.length - shown.length
-  return (
-    <div className={cx(styles.group, className)} role="group" aria-label={label ?? `${all.length} people`}>
-      {shown.map((child, i) => (
-        <span key={i} className={styles.slot} style={{ ['--i' as string]: i }}>
-          {child}
-        </span>
-      ))}
-      {extra > 0 && (
-        <span className={styles.slot} style={{ ['--i' as string]: shown.length }}>
-          <span className={cx(styles.root, styles[size], styles.more)} role="img" aria-label={`and ${extra} more`}>
-            <span className={styles.fallback} aria-hidden="true">+{extra}</span>
-          </span>
-        </span>
-      )}
-    </div>
   )
 }

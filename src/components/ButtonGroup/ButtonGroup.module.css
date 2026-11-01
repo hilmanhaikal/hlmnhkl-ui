@@ -1,0 +1,51 @@
+.root {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  isolation: isolate;
+}
+
+.vertical {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Both classes, so these win over each button's own radius whatever order the styles load in. */
+.root.root > * {
+  position: relative;
+  flex: none;
+  margin: 0;
+  border-radius: 0;
+}
+
+/* Neighbours overlap by one line, so two borders read as one. */
+.horizontal.horizontal > * + * { margin-inline-start: calc(var(--hl-line) * -1); }
+.vertical.vertical > * + * { margin-block-start: calc(var(--hl-line) * -1); }
+/* min-width, not width: a button keeps its own size, and the narrower ones grow to the widest. */
+.vertical.vertical > * { min-width: 100%; }
+
+.horizontal.horizontal > :first-child {
+  border-start-start-radius: var(--hl-radius-control);
+  border-end-start-radius: var(--hl-radius-control);
+}
+
+.horizontal.horizontal > :last-child {
+  border-start-end-radius: var(--hl-radius-control);
+  border-end-end-radius: var(--hl-radius-control);
+}
+
+.vertical.vertical > :first-child {
+  border-start-start-radius: var(--hl-radius-md);
+  border-start-end-radius: var(--hl-radius-md);
+}
+
+.vertical.vertical > :last-child {
+  border-end-start-radius: var(--hl-radius-md);
+  border-end-end-radius: var(--hl-radius-md);
+}
+
+/* The hovered and the focused button rise above their neighbours, so the full edge and focus ring show. */
+@media (hover: hover) {
+  .root > :hover { z-index: 1; }
+}
+.root > :focus-visible { z-index: 2; }

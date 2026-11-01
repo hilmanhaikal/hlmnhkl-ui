@@ -1,0 +1,74 @@
+/* One card: a header row (title or tabs, and copy) over the code. */
+.root {
+  min-width: 0;
+  overflow: hidden;
+  border: var(--hl-line) solid var(--hl-color-border);
+  border-radius: var(--hl-radius-md);
+  background: var(--hl-code-bg);
+  color: var(--hl-code-fg);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hl-space-3);
+  min-height: var(--hl-control-h-md);
+  padding: 0 var(--hl-space-2) 0 var(--hl-space-4);
+  border-bottom: var(--hl-line) solid var(--hl-color-border);
+}
+
+.title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--hl-font-mono);
+  font-size: var(--hl-text-xs);
+  color: var(--hl-color-fg-subtle);
+}
+
+.copy { flex: none; margin-left: auto; }
+
+.pre {
+  margin: 0;
+  padding: var(--hl-space-4) var(--hl-space-5);
+  overflow-x: auto;
+  font-family: var(--hl-font-mono);
+  font-size: var(--hl-text-sm);
+  line-height: var(--hl-leading-normal);
+  tab-size: 2;
+}
+
+/* The ring goes on the whole block: the root clips its corners, so a ring on the pre would be cut. */
+.pre:focus-visible { outline: none; }
+.root:has(.pre:focus-visible) { box-shadow: var(--hl-focus-ring); }
+
+.pre[data-lines] {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--hl-space-5);
+  padding-left: 0;
+}
+
+/* Sticks to the left edge while long lines scroll, and is left out when the code is selected. */
+.gutter {
+  position: sticky;
+  left: 0;
+  padding: 0 var(--hl-space-4) 0 var(--hl-space-5);
+  border-right: var(--hl-line) solid var(--hl-color-border);
+  background: var(--hl-code-bg);
+  color: var(--hl-code-gutter);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+
+.code { font: inherit; }
+
+.keyword { color: var(--hl-code-keyword); font-weight: var(--hl-weight-semibold); }
+.tag { color: var(--hl-code-tag); font-weight: var(--hl-weight-semibold); }
+.attr { color: var(--hl-code-attr); }
+.string { color: var(--hl-code-string); }
+.number { color: var(--hl-code-number); }
+.comment { color: var(--hl-code-comment); font-style: italic; }

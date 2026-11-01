@@ -37,8 +37,11 @@
 .track[data-hidden] { display: none; }
 
 .root[data-active] .track,
-.root[data-dragging] .track,
-.track:hover { opacity: 1; }
+.root[data-dragging] .track { opacity: 1; }
+
+@media (hover: hover) {
+  .track:hover { opacity: 1; }
+}
 
 .thumb {
   position: absolute;

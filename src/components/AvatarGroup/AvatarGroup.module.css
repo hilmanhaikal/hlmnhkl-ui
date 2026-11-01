@@ -1,0 +1,53 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  padding-left: var(--hl-space-3);
+}
+
+/* The slot takes the hover and never moves; only the face inside lifts. A lifted slot would slide out
+   from under the pointer and drop back, and at an overlap two neighbours would take turns. */
+.slot {
+  display: inline-flex;
+  margin-left: calc(var(--hl-space-3) * -1);
+  border-radius: var(--hl-radius-full);
+  animation: slotIn var(--hl-motion-slow) var(--hl-ease-spring) backwards;
+  animation-delay: calc(var(--i) * var(--hl-motion-stagger) * 2);
+  transition: margin var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.face {
+  display: inline-flex;
+  border-radius: var(--hl-radius-full);
+  box-shadow: 0 0 0 var(--hl-line-focus) var(--hl-color-bg);
+  transition: transform var(--hl-motion-base) var(--hl-ease-spring);
+}
+
+@media (hover: hover) {
+  .root:hover .slot { margin-left: calc(var(--hl-space-1) * -1); }
+  .slot:hover .face { transform: translateY(calc(var(--hl-shift-sm) * -1)); }
+}
+
+.more {
+  --size: var(--hl-avatar-md);
+  display: inline-grid;
+  place-items: center;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-surface);
+  box-shadow: inset 0 0 0 var(--hl-line) var(--hl-color-border-strong), 0 0 0 var(--hl-line-focus) var(--hl-color-bg);
+  color: var(--hl-color-fg);
+  font-size: calc(var(--size) * 0.32);
+  font-weight: var(--hl-weight-medium);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--hl-tracking-tight);
+  user-select: none;
+}
+
+.sm { --size: var(--hl-avatar-sm); }
+.lg { --size: var(--hl-avatar-lg); }
+.xl { --size: var(--hl-avatar-xl); }
+
+@keyframes slotIn {
+  from { opacity: 0; transform: translateX(calc(var(--hl-shift-md) * -1)) scale(0.8); }
+}

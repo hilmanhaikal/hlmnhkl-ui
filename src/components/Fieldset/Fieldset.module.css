@@ -1,0 +1,34 @@
+.root {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: var(--hl-space-2);
+  font-size: var(--hl-text-md);
+  font-weight: var(--hl-weight-semibold);
+  line-height: var(--hl-leading-snug);
+  color: var(--hl-color-fg);
+}
+
+.description {
+  margin: 0;
+  font-size: var(--hl-text-sm);
+  line-height: var(--hl-leading-snug);
+  color: var(--hl-color-fg-muted);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hl-space-5);
+  margin-top: var(--hl-space-5);
+}
+
+/* Native disabled reaches every control inside, and each one dims itself; only the group's own text
+   dims here, so no control fades twice. */
+.root:disabled > :is(.legend, .description) { opacity: var(--hl-disabled-opacity); }
+.root:disabled .fields { cursor: not-allowed; }

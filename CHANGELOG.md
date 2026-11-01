@@ -2,6 +2,60 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.25.1 · 1 Nov 2026
+
+Two fixes found while building a real site with the library.
+
+### Fixed
+
+- Avatar: a picture that finished loading before the page became interactive no longer stays hidden behind the initials. This happened with server-rendered pages, such as Astro and Next.js.
+- PinInput: a focused box that already holds a character no longer shows the browser's blue selection. The character is still selected, so the next key replaces it, and the focus ring marks the box.
+
+## 0.25.0 · 1 Nov 2026
+
+Nine new free components, six new scroll motion pieces in Pro, charts that show their table in place, and fixes for hover that wobbled and presses that lost clicks.
+
+### Added
+
+- ScrollStory (Pro): steps scroll past a stage that stays in view. One frame travels across the stage, changing place and size for each step, and its pictures advance like film through a gate. The step in view reads in full ink. `snap` lets the page settle on the nearest step.
+- StackScroll (Pro): cards stick and pile up as you scroll. The ones underneath shrink and grey out like an onion skin, and a fast scroll tilts the moving card back until the page settles.
+- ScrollTrack (Pro): a row of panels pinned in place that moves sideways as you scroll down, with a tick for each panel. Under 640px wide, and with reduced motion, it is a sideways swipe that snaps to each panel.
+- Parallax (Pro): pictures at different depths move at different speeds, as a loose collage or in columns that drift apart. Set your own depths with `depths`.
+- ScrollTone (Pro): the paper behind a run of sections changes from one tone to the next around each boundary. Use the theme's tones or your own pair of colours. All the text changes ink with the paper, so it always reads on what is behind it.
+- ScrollExpand (Pro): a picture or video opens from a thin strip to the full frame as the section pins. With `through` it goes on to fill the whole screen and pushes in, as if you go inside it.
+- TextRise `effect="ink"`: a paragraph turns from grey to full ink word by word as you read down it. For text 24px and up, since the grey meets the 3:1 contrast for large text.
+- Navbar `float`: with `sticky`, the bar lifts into a floating card as the page scrolls, and returns to a full-width bar at the top.
+- Tokens for all of these: `--hl-story-*`, `--hl-stack-*`, `--hl-track-*`, `--hl-parallax-*`, `--hl-tone-*`, `--hl-expand-*`, `--hl-ink-from`, `--hl-ink-span` and `--hl-navbar-float-run`. The `-top` tokens leave room for a sticky header of your own.
+
+- Toggle: one button that stays pressed or not, with `aria-pressed`. Text or icon only.
+- AlertDialog: asks one question before an action that cannot be undone. Focus starts on Cancel, Esc cancels, and a tap outside never closes it. On phones it docks to the bottom with Cancel nearest the thumb.
+- Fieldset: a real fieldset and legend for related fields, with a description and one error for the set. Disabled turns off every field inside.
+- CheckboxGroup: checkboxes with one shared value, a label, a description and an error.
+- Meter: a value in a known range, like storage used. Low, high and best ranges set its tone, always shown as a word and an icon too.
+- ButtonGroup: buttons joined into one bar, across or down, each keeping its own focus ring.
+- InputGroup: an input with text, an icon or a button attached at either side, inside one border.
+- CodeBlock: code with quiet syntax colours, an optional file name and line numbers, and a copy button. Tokens `--hl-code-bg`, `--hl-code-fg`, `--hl-code-keyword`, `--hl-code-tag`, `--hl-code-attr`, `--hl-code-string`, `--hl-code-number`, `--hl-code-comment` and `--hl-code-gutter`.
+- AvatarGroup has its own folder now. `import { AvatarGroup } from './ui/components/Avatar'` still works. Its name lists everyone, the hidden people too, and the counter reads "3 more".
+
+### Fixed
+
+- Hover no longer wobbles at an edge. An item that lifted on hover could slide out from under a still pointer, drop back and lift again: Card (`interactive`), AvatarGroup, and Dialog's close button, which turned as a square. The lifted part now keeps the pointer, or only the inside moves.
+- A mouse click near the edge of a button that shrinks when pressed was lost, because the button shrank away from the pointer. IconButton, CopyButton, Pagination, NumberInput, Calendar, ChatThread, FileUpload, Lightbox, Marquee, AudioPlayer and VideoPlayer keep their full click area while pressed. Taps were never affected.
+- Input looks disabled when a disabled fieldset turns it off, like the other controls.
+- ScrollArea: the scrollbar no longer stays shown after a tap on phones.
+- Card: a card with `media` no longer clips its content. Only the media's own top corners are rounded.
+
+### Changed
+
+- Navbar: the links in the bar look 32px tall with less side padding, so the hover fill is lighter. Each still has a 44px hit area. Links in the phone menu keep their full height.
+- Chart and CalendarHeatmap: a Chart and Table switch (Calendar and Table for the heatmap) beside the title replaces the "Show data table" button. The table takes the chart's place at the same size and scrolls inside, so the page never grows. Screen readers still get the table on the chart view. **Breaking:** the `labels` keys `showTable` and `hideTable` are now `view`, `chart` and `table` on Chart, and `view`, `calendar` and `table` on CalendarHeatmap.
+- Dark theme: `--hl-color-surface-sunken` is #141414, up from #070707, which was all but invisible on the #0a0a0a page. Wells, empty tiles, the Kanban columns and WeekSchedule's today column now show in dark.
+- TextRise and ScrollDraft ease with the scroll like the new pieces, so a wheel notch glides instead of setting a chunk at once. `--hl-scroll-ease` sets the weight for all of them.
+
+### Removed
+
+- SmoothScroll and ScrollRuler. They were made for this library's own site, and the site keeps them. Every scroll part now eases on its own, so a page does not need SmoothScroll for the weight. If you copied them in earlier, your copies keep working. The tokens `--hl-ruler-w` and `--hl-ruler-step` are gone with them.
+
 ## 0.24.0 · 30 Oct 2026
 
 ### Added

@@ -1,0 +1,94 @@
+.root {
+  --h: var(--hl-control-h-md);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hl-space-3);
+  flex: none;
+  min-height: var(--h);
+  padding: 0 var(--hl-space-6);
+  border: var(--hl-line) solid var(--hl-color-border-strong);
+  border-radius: var(--hl-radius-control);
+  background: var(--hl-color-surface);
+  color: var(--hl-color-fg);
+  font-size: var(--hl-text-md);
+  font-weight: var(--hl-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--hl-motion-fast) var(--hl-ease-out),
+    border-color var(--hl-motion-fast) var(--hl-ease-out),
+    color var(--hl-motion-fast) var(--hl-ease-out),
+    box-shadow var(--hl-motion-fast) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+/* Invisible hit area, as in Button, so the small size still gets a 44px target. */
+.root::after {
+  content: "";
+  position: absolute;
+  inset-block: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset-inline: 0;
+}
+
+@media (pointer: coarse) {
+  .root::after { inset-inline: min(0px, calc((100% - var(--hl-hit-min)) / 2)); }
+}
+
+.sm { --h: var(--hl-control-h-sm); padding: 0 var(--hl-space-5); font-size: var(--hl-text-sm); }
+.lg { --h: var(--hl-control-h-lg); padding: 0 var(--hl-space-8); font-size: var(--hl-text-lg); }
+
+.iconOnly {
+  width: var(--h);
+  padding: 0;
+  border-radius: var(--hl-radius-full);
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  font-size: var(--hl-icon-md);
+}
+
+.iconOnly .icon { font-size: var(--hl-icon-lg); }
+.iconOnly.sm .icon { font-size: var(--hl-icon-md); }
+
+@media (hover: hover) {
+  .root:hover:not(:disabled):not([data-on]) { background: var(--hl-color-surface-hover); }
+  .root[data-on]:hover:not(:disabled) { background: var(--hl-color-inverse-hover); }
+}
+
+.root:focus-visible {
+  outline: none;
+  box-shadow: var(--hl-focus-ring);
+}
+
+.root:active:not(:disabled) {
+  transform: scale(var(--hl-press-scale));
+  transition-duration: var(--hl-motion-instant);
+}
+
+.iconOnly:active:not(:disabled) { transform: scale(var(--hl-press-scale-strong)); }
+/* The press shrinks the button, so the hit area grows to keep the whole box under a mouse released at its edge. */
+.iconOnly:active:not(:disabled)::after { inset: -9%; }
+
+/* A solid fill, so the pressed state never rests on a faint shade. */
+.root[data-on] {
+  border-color: var(--hl-color-accent);
+  background: var(--hl-color-accent);
+  color: var(--hl-color-accent-fg);
+  animation: pop var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.root:disabled {
+  cursor: not-allowed;
+  opacity: var(--hl-disabled-opacity);
+}
+
+@keyframes pop {
+  50% { transform: scale(calc(2 - var(--hl-press-scale))); }
+}

@@ -87,15 +87,18 @@
   color: var(--hl-color-fg-muted);
   font-size: var(--hl-icon-lg);
   cursor: pointer;
-  transition:
-    background-color var(--hl-motion-fast) var(--hl-ease-out),
-    transform var(--hl-motion-slow) var(--hl-ease-spring);
+  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
 }
 
+/* Only the icon turns and presses. The button is square to the pointer even though it looks round,
+   so turning it would move its corners out from under the pointer and make it flicker. */
+.close svg { transition: transform var(--hl-motion-slow) var(--hl-ease-spring); }
+
 @media (hover: hover) {
-  .close:hover { background: var(--hl-color-surface-hover); color: var(--hl-color-fg); transform: rotate(90deg); }
+  .close:hover { background: var(--hl-color-surface-hover); color: var(--hl-color-fg); }
+  .close:hover svg { transform: rotate(90deg); }
 }
-.close:active { transform: rotate(90deg) scale(var(--hl-press-scale)); }
+.close:active svg { transform: rotate(90deg) scale(var(--hl-press-scale)); }
 .close:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
 
 .body {

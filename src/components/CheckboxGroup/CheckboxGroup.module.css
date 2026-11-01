@@ -1,0 +1,30 @@
+.group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: var(--hl-space-2);
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-medium);
+}
+
+.description {
+  margin: 0 0 var(--hl-space-2);
+  font-size: var(--hl-text-sm);
+  color: var(--hl-color-fg-muted);
+}
+
+.items { display: flex; }
+.vertical { flex-direction: column; }
+.horizontal { flex-wrap: wrap; column-gap: var(--hl-space-7); }
+
+/* Native disabled reaches every box, and each Checkbox dims itself; only the group's own text dims
+   here, so no box fades twice. */
+.group[data-disabled] > :is(.legend, .description) { opacity: var(--hl-disabled-opacity); }
+
+/* Each Checkbox's drawn box: red edges on the empty ones, like a RadioGroup with an error. */
+.group[data-invalid] [data-state="off"] { border-color: var(--hl-color-danger); }
