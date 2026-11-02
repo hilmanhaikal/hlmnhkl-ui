@@ -2,6 +2,51 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.29.0 · 2 Nov 2026
+
+Glass: a second Pro theme that turns the parts floating over the page to frosted glass, and a lens for the Navbar pill.
+
+### Added
+
+- Glass theme (`themes/glass.css`, Pro). Set `data-theme-style="glass"` on `<html>` and the Navbar pill, Dialog, Sheet, Popover, DropdownMenu, ContextMenu, Toast and the Fab's actions show the page through, blurred. Content, Tooltip and the Fab button stay solid. The tint is 85%, the lowest at which muted text still reads 4.5:1 with pure black or white under the glass.
+- Glass turns back to the solid surface with `prefers-reduced-transparency`, `prefers-contrast: more`, in browsers without `backdrop-filter`, or with `data-glass="off"` on `<html>` (Safari cannot report reduced transparency, so give people that switch).
+- GlassLens (Pro): render it once and, in Chromium browsers, the Navbar pill gets a clear rim that bends the page under it. Other browsers keep the frosted pill.
+
+### Changed
+
+- Navbar, Dialog, Sheet, Popover, DropdownMenu, ContextMenu, Toast and Fab read `--hl-glass-bg`, `--hl-glass-filter` and `--hl-glass-edge`, which fall back to their surface and border. Without the theme nothing changes.
+
+## 0.28.0 · 2 Nov 2026
+
+Colour comes to hlmnhkl/ui: one blue accent for what is chosen or on, a survey map's colours for charts, and four new chart types for dashboards.
+
+### Changed
+
+- The accent is marking blue instead of black, the layout dye a machinist uses to check a fit: primary buttons, switches, checked and selected states, the current tab, progress and the selected day. Light `#1f5aa6` (white on it is 6.8:1), dark `#7fa8e6`. Text, borders and surfaces stay black, white and grey. Set `--hl-color-accent` to your own colour, or back to black for an all-monochrome look.
+- Chart series take a survey map's own colours, in a fixed order: navy, contour brown, survey green, revision purple, chart ochre, with a lighter step of each for dark mode. Checked for colour-blind separation and 3:1 against the surface in both themes. Dash, marker and texture still tell series apart too.
+
+- Brand themes (Slate, Forest, Clay, Plum) set the new `--hl-color-accent-hover` for their hover, and no longer take over the first chart colour, which would have sat next to a near twin (Forest's green beside survey green, Clay beside contour brown).
+
+### Added
+
+- Token `--hl-color-accent-hover`, for the hover of anything filled with the accent. Before, these borrowed the grey inverse hover.
+- BarChart `stacked`: one bar per category, the series on top of each other with a gap of paper between them, and a total in the tooltip.
+- BarChart `orientation="horizontal"`: a row per category, for rankings and long names. The plot grows with the rows.
+- ScatterChart: two numbers per point, each group its own colour and marker shape. The nearest point within reach shows on hover, and the arrow keys read the points from left to right.
+- FunnelChart: steps from first to last, with each step's number, its share of the first, and the share carried on from the step before written on its row.
+- BulletChart: a measure against its target, with grey bands for the ranges behind the bar.
+- HeatmapChart: any two categories on a grid, the number as depth of one colour. Hover, or the arrow keys, write the cell's value under the grid.
+
+## 0.27.1 · 2 Nov 2026
+
+Fixes for ScrollStory and Navbar on phones, found on a real iPhone.
+
+### Fixed
+
+- ScrollStory on a narrow screen: a step's title no longer hides under the pinned picture, text that has slid under the picture no longer shows again in the band above it, and the last step no longer leaves half a screen of empty space after it.
+- ScrollStory `snap` on a narrow screen: steps now scroll freely, since a flick's momentum made the browser land several steps ahead and skip the ones between.
+- Navbar `dockAfter`: after a fast scroll to the top, the bar no longer hangs low on the screen while it finishes the trip back. Only the pill glides; once it has opened into the full bar, it goes straight to its place.
+
 ## 0.27.0 · 2 Nov 2026
 
 Four new free components: a floating action button for the thumb zone, a theme toggle, styles for long text, and a table of contents.

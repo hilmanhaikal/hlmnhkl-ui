@@ -59,7 +59,7 @@
 
 @media (hover: hover) {
   .root:hover:not(:disabled):not([data-on]) { background: var(--hl-color-surface-hover); }
-  .root[data-on]:hover:not(:disabled) { background: var(--hl-color-inverse-hover); }
+  .root[data-on]:hover:not(:disabled) { background: var(--hl-color-accent-hover); }
 }
 
 .root:focus-visible {

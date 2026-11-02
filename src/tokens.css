@@ -36,9 +36,13 @@
   --hl-color-inverse-fg: var(--hl-gray-0);
   --hl-color-inverse-hover: var(--hl-gray-700);
   --hl-color-shimmer: rgb(255 255 255 / 0.7);
-  /* Accent: the foreground by default, so the library stays monochrome */
-  --hl-color-accent: var(--hl-color-inverse);
-  --hl-color-accent-fg: var(--hl-color-inverse-fg);
+  /* Accent: marking blue, the layout dye a machinist wipes on a part to check its fit, for what is chosen
+     or on: primary buttons, checked and selected states, the current tab, progress. Blue because most
+     apps use it for the main action, so it reads at once. Everything else stays black, white and grey.
+     White on it is 6.8:1. */
+  --hl-color-accent: #1f5aa6;
+  --hl-color-accent-fg: #ffffff;
+  --hl-color-accent-hover: #194a8a;
 
   /* Status: always paired with an icon or word */
   --hl-color-success: #12733a;
@@ -235,6 +239,9 @@
     --hl-color-inverse: #ececec;
     --hl-color-inverse-fg: #0a0a0a;
     --hl-color-inverse-hover: var(--hl-gray-300);
+    --hl-color-accent: #7fa8e6;
+    --hl-color-accent-fg: #0a0a0a;
+    --hl-color-accent-hover: #9bbcec;
     --hl-color-shimmer: rgb(255 255 255 / 0.06);
     --hl-color-success: #4cc97a;
     --hl-color-warning: #f2b33d;
@@ -273,6 +280,9 @@
   --hl-color-inverse: #ececec;
   --hl-color-inverse-fg: #0a0a0a;
   --hl-color-inverse-hover: var(--hl-gray-300);
+  --hl-color-accent: #7fa8e6;
+  --hl-color-accent-fg: #0a0a0a;
+  --hl-color-accent-hover: #9bbcec;
   --hl-color-shimmer: rgb(255 255 255 / 0.06);
   --hl-color-success: #4cc97a;
   --hl-color-warning: #f2b33d;
@@ -411,15 +421,18 @@
   /* A cell's widest, so long text wraps and a sideways-scrolling table stays readable. */
   --hl-table-cell-max: 320px;
 
-  /* Charts: series differ by shade, dash and marker, never colour alone */
+  /* Charts: series differ by colour, dash and marker, never colour alone. The colours are a survey map's
+     own code, in a fixed order: navy (the accent's family), contour brown, survey green, revision purple,
+     chart ochre. Checked for colour-blind separation (8.0 or more for adjacent pairs) and 3:1 against the surface, in both
+     themes. A sixth series folds into "Other" or a second chart; it never gets a made-up colour. */
   --hl-chart-h: 260px;
   --hl-chart-donut: 220px;
   --hl-chart-area-opacity: 0.14;
-  --hl-chart-1: var(--hl-gray-950);
-  --hl-chart-2: var(--hl-gray-600);
-  --hl-chart-3: #8a8a8a;
-  --hl-chart-4: var(--hl-gray-800);
-  --hl-chart-5: var(--hl-gray-500);
+  --hl-chart-1: #2f64b4;
+  --hl-chart-2: #b36324;
+  --hl-chart-3: #2f9a6e;
+  --hl-chart-4: #8a52c2;
+  --hl-chart-5: #a8861a;
   --hl-chart-dash-1: none;
   --hl-chart-dash-2: 6 4;
   --hl-chart-dash-3: 1.5 3.5;
@@ -434,22 +447,23 @@
   --hl-editor-min-h: 160px;
 }
 
+/* The same five colours, a step lighter for the dark surface, checked there on their own. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --hl-chart-1: var(--hl-gray-50);
-    --hl-chart-2: var(--hl-gray-400);
-    --hl-chart-3: #707070;
-    --hl-chart-4: var(--hl-gray-200);
-    --hl-chart-5: var(--hl-gray-500);
+    --hl-chart-1: #638fdb;
+    --hl-chart-2: #c97638;
+    --hl-chart-3: #3ea97a;
+    --hl-chart-4: #a873d6;
+    --hl-chart-5: #b0902a;
   }
 }
 
 [data-theme="dark"] {
-  --hl-chart-1: var(--hl-gray-50);
-  --hl-chart-2: var(--hl-gray-400);
-  --hl-chart-3: #707070;
-  --hl-chart-4: var(--hl-gray-200);
-  --hl-chart-5: var(--hl-gray-500);
+  --hl-chart-1: #638fdb;
+  --hl-chart-2: #c97638;
+  --hl-chart-3: #3ea97a;
+  --hl-chart-4: #a873d6;
+  --hl-chart-5: #b0902a;
 }
 
 @media (prefers-reduced-motion: reduce) {

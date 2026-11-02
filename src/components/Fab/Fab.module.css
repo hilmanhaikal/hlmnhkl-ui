@@ -45,7 +45,7 @@
 }
 
 @media (hover: hover) {
-  .fab:hover { background: var(--hl-color-inverse-hover); }
+  .fab:hover { background: var(--hl-color-accent-hover); }
 }
 
 .fab:active { scale: var(--hl-press-scale); }
@@ -142,7 +142,9 @@
 .actionLabel {
   padding: var(--hl-space-2) var(--hl-space-4);
   border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface);
+  background: var(--hl-glass-bg, var(--hl-color-surface));
+  -webkit-backdrop-filter: var(--hl-glass-filter, none);
+  backdrop-filter: var(--hl-glass-filter, none);
   box-shadow: var(--hl-shadow-2);
   font-size: var(--hl-text-sm);
   font-weight: var(--hl-weight-medium);
@@ -157,7 +159,9 @@
   height: var(--hl-hit-min);
   margin-inline-end: calc((var(--hl-fab-size) - var(--hl-hit-min)) / 2);
   border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface);
+  background: var(--hl-glass-bg, var(--hl-color-surface));
+  -webkit-backdrop-filter: var(--hl-glass-filter, none);
+  backdrop-filter: var(--hl-glass-filter, none);
   box-shadow: var(--hl-shadow-2);
 }
 

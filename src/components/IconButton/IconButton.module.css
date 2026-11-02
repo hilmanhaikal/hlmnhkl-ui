@@ -74,5 +74,5 @@
 }
 .primary { background: var(--hl-color-accent); color: var(--hl-color-accent-fg); }
 @media (hover: hover) {
-  .primary:hover:not(:disabled) { background: var(--hl-color-inverse-hover); }
+  .primary:hover:not(:disabled) { background: var(--hl-color-accent-hover); }
 }

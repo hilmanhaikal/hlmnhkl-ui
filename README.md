@@ -1,6 +1,6 @@
 # hlmnhkl/ui
 
-React components, measured down to the part you never see: the 44px tap area, the 2px focus ring, the timing of every move. Black, white and grey, and copied into your app so the code is yours.
+React components, measured down to the part you never see: the 44px tap area, the 2px focus ring, the timing of every move. Black, white and grey with one blue accent, and copied into your app so the code is yours.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-dark.png">
@@ -74,7 +74,7 @@ Setup for other tools: [MCP server](https://ui.hlmnhkl.my/mcp).
 
 ## Pro
 
-71 more components (such as DataGrid, Calendar, Chart, KanbanBoard and Combobox), page blocks, full templates and brand themes are coming as hlmnhkl/ui Pro. You can see them on the [docs site](https://ui.hlmnhkl.my).
+72 more components (such as DataGrid, Calendar, Chart, KanbanBoard and Combobox), page blocks, full templates and brand themes are coming as hlmnhkl/ui Pro. You can see them on the [docs site](https://ui.hlmnhkl.my).
 
 ## Licence
 
