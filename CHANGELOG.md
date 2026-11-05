@@ -2,6 +2,12 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.32.2 · 5 Nov 2026
+
+### Changed
+
+- Sheet: pulled up past the top, it stretches like a sheet on a phone. Its surface carries on below its bottom edge, so lifting it never opens a gap at the bottom of the screen.
+
 ## 0.32.1 · 5 Nov 2026
 
 ### Added

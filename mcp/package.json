@@ -1,6 +1,6 @@
 {
   "name": "hlmnhkl-ui-mcp",
-  "version": "0.32.1",
+  "version": "0.32.2",
   "description": "A read-only MCP server for hlmnhkl/ui: AI coding tools look up components, props and install steps.",
   "license": "MIT",
   "homepage": "https://ui.hlmnhkl.my/mcp",

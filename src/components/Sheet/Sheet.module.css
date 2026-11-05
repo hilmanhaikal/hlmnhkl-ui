@@ -32,6 +32,23 @@
   transition: transform var(--hl-motion-slow) var(--hl-ease-spring);
 }
 
+/* Pulled up past the top, the sheet stretches like a sheet on a phone: its own surface carries on
+   below its bottom edge, so lifting it never opens a gap at the bottom of the screen. Below the
+   screen at rest, and gone with the sheet when it closes. */
+.sheet::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: calc(-1 * var(--hl-line));
+  right: calc(-1 * var(--hl-line));
+  height: 100%;
+  border-inline: var(--hl-line) solid var(--hl-glass-edge, var(--hl-color-border));
+  background: var(--hl-glass-bg, var(--hl-color-surface));
+  -webkit-backdrop-filter: var(--hl-glass-filter, none);
+  backdrop-filter: var(--hl-glass-filter, none);
+  pointer-events: none;
+}
+
 .sheet[data-dragging],
 .sheet[data-fluid] { transition: none; }
 
