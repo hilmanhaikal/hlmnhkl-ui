@@ -38,6 +38,7 @@
 
 /* All toasts sit at the bottom; --y, --s and --dx move each into place */
 .toast {
+  --dx: 0px;
   position: absolute;
   left: 0;
   right: 0;
@@ -64,6 +65,8 @@
 }
 
 .toast[data-dragging] { transition: none; }
+/* A spring is moving it from the hand: only the fade stays with CSS. */
+.toast[data-fluid] { transition: opacity var(--hl-motion-base) var(--hl-ease-out); }
 .toast[data-hidden] { opacity: 0; pointer-events: none; }
 
 .toast[data-behind] {
@@ -81,6 +84,8 @@
 .toast[data-leaving="down"] { animation: toastOutDown var(--hl-motion-slow) var(--hl-ease-in-out) forwards; }
 .toast[data-leaving="left"] { animation: toastOutLeft var(--hl-motion-slow) var(--hl-ease-out) forwards; }
 .toast[data-leaving="right"] { animation: toastOutRight var(--hl-motion-slow) var(--hl-ease-out) forwards; }
+/* Thrown away: the spring carries it off at the hand's speed, so it only fades. */
+.toast[data-fluid][data-leaving] { animation: toastFade var(--hl-motion-slow) var(--hl-ease-out) forwards; }
 
 .icon {
   display: inline-flex;
@@ -175,4 +180,8 @@
 
 @keyframes toastOutRight {
   to { opacity: 0; transform: translate(110%, var(--y)); }
+}
+
+@keyframes toastFade {
+  to { opacity: 0; }
 }

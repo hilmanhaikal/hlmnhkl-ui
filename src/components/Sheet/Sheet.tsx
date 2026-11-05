@@ -2,6 +2,7 @@
 
 import { useId, useRef, type PointerEvent, type ReactNode, type RefObject } from 'react'
 import { cx } from '../../internal/cx'
+import { rubber, speedTracker, useFling } from '../../internal/spring'
 import { useFocusTrap } from '../../internal/focus'
 import { XIcon } from '../../internal/icons'
 import { useDismiss, useScrollLock } from '../../internal/layers'
@@ -31,15 +32,17 @@ export type SheetProps = {
 }
 
 const CLOSE_RATIO = 0.3
-const CLOSE_VELOCITY = 0.5
+// px per second: a flick down this fast closes the sheet from anywhere.
+const CLOSE_SPEED = 500
 
 export function Sheet({ open, onOpenChange, title, description, children, footer, closeLabel = 'Close', initialFocus, className }: SheetProps) {
   const id = useId()
   const panelRef = useRef<HTMLDivElement>(null)
-  const drag = useRef<{ y: number; t: number; dy: number; pointer: number } | null>(null)
+  const drag = useRef<{ y: number; dy: number; pointer: number; speed: ReturnType<typeof speedTracker> } | null>(null)
   const { mounted, state } = usePresence(open, 'slow')
   const openRef = useRef(open)
   openRef.current = open
+  const { at, paint, fling, stop } = useFling(panelRef, open, 'y')
 
   useScrollLock(open)
   useDismiss(open, [panelRef], () => onOpenChange(false))
@@ -48,7 +51,10 @@ export function Sheet({ open, onOpenChange, title, description, children, footer
   const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('button')) return
     if (e.pointerType === 'mouse' && e.button !== 0) return
-    drag.current = { y: e.clientY, t: performance.now(), dy: 0, pointer: e.pointerId }
+    stop()
+    // Caught mid-spring, it carries on from where it is.
+    drag.current = { y: e.clientY - at.current, dy: at.current, pointer: e.pointerId, speed: speedTracker() }
+    drag.current.speed.add(at.current)
     e.currentTarget.setPointerCapture(e.pointerId)
     panelRef.current?.setAttribute('data-dragging', '')
   }
@@ -58,8 +64,9 @@ export function Sheet({ open, onOpenChange, title, description, children, footer
     const panel = panelRef.current
     if (!d || !panel || d.pointer !== e.pointerId) return
     const raw = e.clientY - d.y
-    d.dy = raw > 0 ? raw : raw * 0.15
-    panel.style.transform = `translateY(${d.dy}px)`
+    d.dy = raw >= 0 ? raw : rubber(raw, panel.offsetHeight)
+    d.speed.add(d.dy)
+    paint(d.dy)
   }
 
   const onPointerUp = (e: PointerEvent<HTMLDivElement>) => {
@@ -69,16 +76,17 @@ export function Sheet({ open, onOpenChange, title, description, children, footer
     if (!d || !panel) return
     e.currentTarget.releasePointerCapture(d.pointer)
     panel.removeAttribute('data-dragging')
-    const velocity = d.dy / Math.max(1, performance.now() - d.t)
-    if (d.dy > panel.offsetHeight * CLOSE_RATIO || (velocity > CLOSE_VELOCITY && d.dy > 24)) {
+    const cancelled = e.type === 'pointercancel'
+    const speed = cancelled ? 0 : d.speed.speed()
+    const h = panel.offsetHeight
+    if (!cancelled && (d.dy > h * CLOSE_RATIO || (speed > CLOSE_SPEED && d.dy > 24))) {
+      fling(h, speed)
       onOpenChange(false)
-      // The close animation starts from the dragged spot. If the parent keeps it open, spring back.
+      // If the parent keeps it open, it springs back.
       requestAnimationFrame(() => {
-        if (openRef.current) panel.style.transform = ''
+        if (openRef.current) fling(0, 0)
       })
-    } else {
-      panel.style.transform = ''
-    }
+    } else fling(0, speed)
   }
 
   if (!mounted) return null

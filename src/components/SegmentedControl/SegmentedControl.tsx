@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
+import { useStretch } from '../../internal/liquid'
 import { useControllable } from '../../internal/useControllable'
 import styles from './SegmentedControl.module.css'
 
@@ -41,6 +42,7 @@ export function SegmentedControl({
   const refs = useRef<Array<HTMLButtonElement | null>>([])
   const [pill, setPill] = useState<{ x: number; w: number } | null>(null)
   const [ready, setReady] = useState(false)
+  const pillRef = useRef<HTMLSpanElement>(null)
   const index = options.findIndex((o) => o.value === value)
   // With no match, the first enabled segment takes the tab stop
   const tabStop = index >= 0 && !options[index].disabled ? index : options.findIndex((o) => !o.disabled)
@@ -68,6 +70,9 @@ export function SegmentedControl({
       return () => cancelAnimationFrame(r)
     }
   }, [pill, ready])
+
+  // The pill stretches toward the new choice and settles there.
+  useStretch(pillRef, pill, index, ready, (b) => `translateX(${b.x}px)`)
 
   const move = (from: number, dir: 1 | -1) => {
     let i = from
@@ -100,6 +105,7 @@ export function SegmentedControl({
     >
       {pill && (
         <span
+          ref={pillRef}
           className={styles.pill}
           data-ready={ready || undefined}
           style={{ transform: `translateX(${pill.x}px)`, width: pill.w }}

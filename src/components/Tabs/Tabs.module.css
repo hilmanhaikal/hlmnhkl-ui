@@ -69,6 +69,11 @@
     width var(--hl-motion-slow) var(--hl-ease-out);
 }
 
+/* A new tab stretches the underline instead (internal/liquid.ts). */
+.indicator[data-liquid] {
+  transition: none;
+}
+
 .panel {
   padding-top: var(--hl-space-6);
   border-radius: var(--hl-radius-sm);

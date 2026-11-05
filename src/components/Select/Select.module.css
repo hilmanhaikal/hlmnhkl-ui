@@ -103,6 +103,12 @@
   pointer-events: none;
 }
 
+/* Liquid (internal/liquid.ts) grows the list out of the field instead; the fade stands down. */
+.list[data-liquid],
+.list[data-liquid][data-state="closed"] {
+  animation: none;
+}
+
 .highlight {
   position: absolute;
   top: 0;

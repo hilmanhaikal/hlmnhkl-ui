@@ -25,11 +25,16 @@
   box-shadow: var(--hl-shadow-2), 0 0 0 var(--hl-line) var(--hl-color-border);
 }
 
-/* No spring on the pill: it is pressed often, and an overshoot on every press feels wobbly. */
+/* A resize slides the pill plainly; a new choice stretches it (internal/liquid.ts), which only goes
+   2% past and settles, so a pill pressed often still never wobbles. */
 .pill[data-ready] {
   transition:
     transform var(--hl-motion-slow) var(--hl-ease-out),
     width var(--hl-motion-slow) var(--hl-ease-out);
+}
+
+.pill[data-liquid] {
+  transition: none;
 }
 
 /* Options share any room the track has beyond its own width, so a stretched track never ends in an empty gap. */

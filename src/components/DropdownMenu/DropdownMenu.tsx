@@ -14,6 +14,7 @@ import {
   type Ref,
 } from 'react'
 import { useDismiss } from '../../internal/layers'
+import { useLiquid } from '../../internal/liquid'
 import { mergeRefs } from '../../internal/mergeRefs'
 import { Portal } from '../../internal/Portal'
 import { useFloating, type Align } from '../../internal/useFloating'
@@ -61,6 +62,8 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
   const typeahead = useRef({ text: '', at: 0 })
   const { mounted, state } = usePresence(open, 'fast')
   const floating = useFloating(anchorRef, menuRef, { open: mounted, side: 'bottom', align, offset: 6 })
+  // The menu grows out of its button and folds back into it.
+  useLiquid(menuRef, anchorRef, state, mounted && floating.ready)
 
   const close = (focusTrigger = true) => {
     setOpen(false)

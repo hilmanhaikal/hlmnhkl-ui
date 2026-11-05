@@ -174,6 +174,10 @@
   --hl-motion-slower: calc(600ms * var(--hl-motion-scale));
   /* Navbar dock: the trip to and from the bottom of the screen, long enough to read as liquid */
   --hl-motion-pour: calc(760ms * var(--hl-motion-scale));
+  /* Liquid: a shape growing into another (a button into its menu), the length of --hl-ease-liquid */
+  --hl-motion-liquid: calc(520ms * var(--hl-motion-scale));
+  /* Fluid: the swing of the spring that carries a let-go sheet, row or photo on at the hand's speed */
+  --hl-motion-fling: calc(280ms * var(--hl-motion-scale));
   --hl-motion-stagger: calc(30ms * var(--hl-motion-scale));
   --hl-motion-delay-tooltip: 400ms;
   --hl-motion-shimmer: 1400ms;
@@ -186,6 +190,9 @@
      for small pops like a badge). A bigger overshoot reads as wobbly once it is on every control. */
   --hl-ease-spring: cubic-bezier(0.3, 1.2, 0.5, 1);
   --hl-ease-bounce: cubic-bezier(0.3, 1.3, 0.5, 1);
+  /* A real spring (stiffness 300, damping 26), sampled every 25ms: it carries momentum, goes 2% past
+     and settles. Most of the move is done in the first 200ms. */
+  --hl-ease-liquid: linear(0, 0.09, 0.264, 0.455, 0.628, 0.768, 0.871, 0.941, 0.984, 1.008, 1.019, 1.022, 1.02, 1.017, 1.012, 1.009, 1.005, 1.003, 1.001, 1, 1, 1);
   --hl-ease-linear: linear;
 
   /* Movement distances */
@@ -311,6 +318,8 @@
     --hl-motion-slow: 0ms;
     --hl-motion-slower: 0ms;
     --hl-motion-pour: 0ms;
+    --hl-motion-liquid: 0ms;
+    --hl-motion-fling: 0ms;
     --hl-motion-stagger: 0ms;
     --hl-motion-shimmer: 0ms;
     --hl-motion-spin: 1600ms;

@@ -22,6 +22,12 @@
   pointer-events: none;
 }
 
+/* Liquid (internal/liquid.ts) grows the panel out of its trigger instead; the pop stands down. */
+.panel[data-liquid],
+.panel[data-liquid][data-state="closed"] {
+  animation: none;
+}
+
 .head {
   display: flex;
   align-items: center;

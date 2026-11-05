@@ -24,6 +24,12 @@
   pointer-events: none;
 }
 
+/* Liquid (internal/liquid.ts) grows the menu out of its button instead; the fade stands down. */
+.menu[data-liquid],
+.menu[data-liquid][data-state="closed"] {
+  animation: none;
+}
+
 .item {
   display: flex;
   align-items: center;

@@ -20,6 +20,8 @@ export function useFloating(
   { open, side = 'bottom', align = 'center', offset = 8, matchWidth = false }: Options,
 ) {
   const [pos, setPos] = useState<{ top: number; left: number; side: Side; width?: number } | null>(null)
+  // Measured since this open began.
+  const [fresh, setFresh] = useState(false)
 
   const update = useCallback(() => {
     const a = anchorRef.current
@@ -50,10 +52,16 @@ export function useFloating(
     left = Math.min(Math.max(MARGIN, left), Math.max(MARGIN, vw - fw - MARGIN))
     top = Math.min(Math.max(MARGIN, top), Math.max(MARGIN, vh - fh - MARGIN))
     setPos({ top, left, side: s, width })
+    setFresh(true)
   }, [anchorRef, floatingRef, side, align, offset, matchWidth])
 
   useLayoutEffect(() => {
-    if (!open) return
+    // Closed: the next open is not ready until it has been measured again, so nothing reads a stale
+    // place. The place itself stays, so a layer that stays on screen never flashes.
+    if (!open) {
+      setFresh(false)
+      return
+    }
     update()
     const f = floatingRef.current
     const ro = new ResizeObserver(update)
@@ -72,5 +80,6 @@ export function useFloating(
     ? { position: 'fixed', top: pos.top, left: pos.left, width: pos.width }
     : { position: 'fixed', top: 0, left: 0, opacity: 0, pointerEvents: 'none' }
 
-  return { style, side: pos?.side ?? side, update }
+  // ready: the layer is in its place, so a part can measure it there (for its opening animation).
+  return { style, side: pos?.side ?? side, update, ready: pos !== null && fresh }
 }

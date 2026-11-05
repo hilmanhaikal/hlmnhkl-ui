@@ -1,4 +1,4 @@
-export type MotionToken = 'instant' | 'fast' | 'base' | 'slow' | 'slower' | 'delay-tooltip'
+export type MotionToken = 'instant' | 'fast' | 'base' | 'slow' | 'slower' | 'liquid' | 'fling' | 'delay-tooltip'
 
 // Reads a duration token at run time, so reduced motion (0ms) and Retime's speed are honoured by JS
 // timers too.
@@ -19,7 +19,7 @@ export function motionMs(token: MotionToken): number {
   return readMotionMs(token)
 }
 
-export function easing(name: 'out' | 'in' | 'in-out' | 'spring' | 'bounce'): string {
+export function easing(name: 'out' | 'in' | 'in-out' | 'spring' | 'bounce' | 'liquid'): string {
   if (typeof window === 'undefined') return 'ease'
   return getComputedStyle(document.documentElement).getPropertyValue(`--hl-ease-${name}`).trim() || 'ease'
 }

@@ -14,6 +14,7 @@ import { cx } from '../../internal/cx'
 import { useFocusTrap } from '../../internal/focus'
 import { XIcon } from '../../internal/icons'
 import { useDismiss } from '../../internal/layers'
+import { useLiquid } from '../../internal/liquid'
 import { mergeRefs } from '../../internal/mergeRefs'
 import { Portal } from '../../internal/Portal'
 import { useControllable } from '../../internal/useControllable'
@@ -67,6 +68,8 @@ export function Popover({
   const panelRef = useRef<HTMLDivElement>(null)
   const { mounted, state } = usePresence(open, 'fast')
   const floating = useFloating(anchorRef, panelRef, { open: mounted, side, align, offset: 8 })
+  // The panel grows out of its trigger and folds back into it.
+  useLiquid(panelRef, anchorRef, state, mounted && floating.ready)
 
   useDismiss(open, [anchorRef, panelRef], () => setOpen(false))
   useFocusTrap(panelRef, open && mounted)

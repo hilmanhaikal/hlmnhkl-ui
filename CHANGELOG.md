@@ -2,6 +2,57 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.32.0 · 5 Nov 2026
+
+Fluid: things follow the hand. Let go of a sheet, row, toast or photo and it carries on at the speed you let go with, then settles. The last of three motion batches.
+
+### Added
+
+- Drawer: on touch, swipe it toward its edge to close it. Up and down still scroll. A mouse does not drag it.
+- Token `--hl-motion-fling`: how long one swing of the let-go spring lasts. Retime scales it, and reduced motion sets it to 0.
+
+### Changed
+
+- Sheet, Drawer, SwipeActions, Toast, PullToRefresh and Lightbox: a let-go keeps the hand's speed, read from the last tenth of a second instead of the whole drag. A flick counts as well as a long pull.
+- Past an edge a drag stretches, less the further it goes: a sheet pulled up, a row swiped the wrong way, the first or last photo, a refresh pulled past its line. PullToRefresh no longer stops dead at twice the line.
+- Caught mid-spring, a sheet, drawer, row, toast or photo carries on from where it is instead of jumping.
+- Toast: a thrown toast flies off the way it was thrown and fades.
+- Lightbox: a quick flick changes the photo or closes it, however short.
+- Reduced motion keeps every gesture and its result and drops the glide.
+
+## 0.31.0 · 5 Nov 2026
+
+Magnetic: the right place pulls. Slider marks, list gaps and panel snap places draw what you drag onto them. The second of three motion batches.
+
+### Added
+
+- Slider and RangeSlider `marks`: values a dragged thumb is drawn onto as it passes, shown as dots on the track. Let go near one and the thumb lands on it; you can still stop between marks. Page Up and Page Down jump from mark to mark.
+- ResizablePanels `snap`: places, in percent of the group, that a dragged handle is drawn to and lands on.
+
+### Changed
+
+- SortableList: the dragged row is drawn into the gap it is nearest to, and the other rows make room as soon as it gets closer to a new gap than its old one.
+- KanbanBoard: the dragged card is drawn into the slot it will land in.
+- Slider: a click glides the thumb to the spot instead of jumping. Your `onValueChange` gets only the final value.
+- Slider and RangeSlider: the value bubble stays a moment after a click or a let-go, so you can read it.
+- ResizablePanels: a plain click on a handle no longer moves it, and a folded panel stays folded when you let go.
+- The pull acts while dragging, so it works by finger and mouse alike. Arrow keys still move one step. Reduced motion keeps the pull and the landing and drops the glide.
+- Carousel and ScrollTrack keep the browser's own scroll snap, which already draws a swipe onto the nearest slide with the phone's real momentum.
+
+## 0.30.0 · 5 Nov 2026
+
+Liquid: menus grow out of what opened them, and highlights stretch toward the new choice. The first of three motion batches (liquid, magnetic, fluid).
+
+### Changed
+
+- DropdownMenu, Popover and Select grow out of their trigger, starting as its own shape at the panel's edge nearest it, and fold back into it on close. ContextMenu grows out of the spot you pressed, and a submenu out of the item that opened it. Only a clip changes, so text never stretches, and the shadow grows in with the panel.
+- SegmentedControl, ToggleGroup (single) and Tabs: the pill or underline stretches toward the new choice, leading edge first, then settles. A resize still slides it plainly, and a ToggleGroup pill moving to another row slides as before.
+- With reduced motion, or where the browser lacks clip-path or `linear()` easing, each part keeps its old fade or slide.
+
+### Added
+
+- Token `--hl-ease-liquid`: a real spring (2% past, then settles) as a CSS `linear()` easing, for your own liquid moves. Token `--hl-motion-liquid` (520ms) is its length; reduced motion sets it to 0ms.
+
 ## 0.29.0 · 2 Nov 2026
 
 Glass: a second Pro theme that turns the parts floating over the page to frosted glass, and a lens for the Navbar pill.

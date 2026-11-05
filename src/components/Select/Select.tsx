@@ -4,6 +4,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent
 import { cx } from '../../internal/cx'
 import { CheckIcon, ChevronDownIcon } from '../../internal/icons'
 import { useDismiss } from '../../internal/layers'
+import { useLiquid } from '../../internal/liquid'
 import { Portal } from '../../internal/Portal'
 import { useControllable } from '../../internal/useControllable'
 import { useFloating } from '../../internal/useFloating'
@@ -72,7 +73,9 @@ export function Select({
   const optionRefs = useRef<Array<HTMLDivElement | null>>([])
   const typeahead = useRef({ text: '', at: 0 })
   const { mounted, state } = usePresence(open, 'fast')
-  const { style, side } = useFloating(triggerRef, listRef, { open: mounted, side: 'bottom', align: 'start', offset: 6, matchWidth: true })
+  const { style, side, ready } = useFloating(triggerRef, listRef, { open: mounted, side: 'bottom', align: 'start', offset: 6, matchWidth: true })
+  // The list grows out of the field and folds back into it.
+  useLiquid(listRef, triggerRef, state, mounted && ready)
   const [hl, setHl] = useState<{ top: number; height: number } | null>(null)
 
   const selectedIndex = options.findIndex((o) => o.value === value)

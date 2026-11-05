@@ -14,6 +14,7 @@ import {
 } from 'react'
 import { CheckCircleIcon, ErrorIcon, InfoIcon, XIcon } from '../../internal/icons'
 import { motionMs } from '../../internal/motion'
+import { speedTracker, spring } from '../../internal/spring'
 import { Spinner } from '../Spinner'
 import styles from './Toast.module.css'
 
@@ -58,6 +59,8 @@ export type ToastProviderProps = {
 let nextId = 1
 const GAP = 8
 const PEEK = 10
+// px per second: a toast thrown sideways this fast goes, however short the throw.
+const THROW_SPEED = 600
 
 export function ToastProvider({ children, visible = 3, label = 'Notifications', dismissLabel = 'Dismiss' }: ToastProviderProps) {
   const [items, setItems] = useState<Item[]>([])
@@ -179,9 +182,25 @@ const icons: Record<ToastVariant, ReactNode> = {
 
 function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, dismissLabel }: ItemProps) {
   const ref = useRef<HTMLLIElement>(null)
-  const swipe = useRef<{ x: number; t: number; dx: number } | null>(null)
-  const [dx, setDx] = useState(0)
+  const swipe = useRef<{ x: number; dx: number; speed: ReturnType<typeof speedTracker> } | null>(null)
+  const [dragging, setDragging] = useState(false)
   const [hover, setHover] = useState(false)
+  // Where the toast is drawn sideways, set straight on --dx so a spring does not render every frame.
+  const at = useRef(0)
+  const stop = useRef(() => {})
+  useEffect(() => () => stop.current(), [])
+  const paint = (v: number) => {
+    at.current = v
+    ref.current?.style.setProperty('--dx', `${v}px`)
+  }
+  const fling = (to: number, speed: number) => {
+    const el = ref.current
+    stop.current()
+    el?.setAttribute('data-fluid', '')
+    stop.current = spring(at.current, to, speed, paint, () => {
+      if (to === 0) el?.removeAttribute('data-fluid')
+    })
+  }
 
   useLayoutEffect(() => {
     const el = ref.current
@@ -194,7 +213,7 @@ function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, dism
     return () => ro.disconnect()
   }, [])
 
-  const paused = expanded || hover || swipe.current !== null || item.leaving !== false
+  const paused = expanded || hover || dragging || item.leaving !== false
   const remaining = useRef(item.duration ?? 5000)
   useEffect(() => {
     remaining.current = item.duration ?? 5000
@@ -221,22 +240,34 @@ function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, dism
   }, [paused, item.variant, item.duration])
 
   const onPointerDown = (e: PointerEvent<HTMLLIElement>) => {
-    if ((e.target as HTMLElement).closest('button')) return
-    swipe.current = { x: e.clientX, t: performance.now(), dx: 0 }
+    if ((e.target as HTMLElement).closest('button') || item.leaving) return
+    stop.current()
+    // Caught mid-spring, it carries on from where it is.
+    swipe.current = { x: e.clientX - at.current, dx: at.current, speed: speedTracker() }
+    swipe.current.speed.add(at.current)
     e.currentTarget.setPointerCapture(e.pointerId)
+    setDragging(true)
   }
   const onPointerMove = (e: PointerEvent<HTMLLIElement>) => {
-    if (!swipe.current) return
-    swipe.current.dx = e.clientX - swipe.current.x
-    setDx(swipe.current.dx)
+    const s = swipe.current
+    if (!s) return
+    s.dx = e.clientX - s.x
+    s.speed.add(s.dx)
+    paint(s.dx)
   }
-  const onPointerUp = () => {
+  const onPointerUp = (e: PointerEvent<HTMLLIElement>) => {
     const s = swipe.current
     swipe.current = null
+    setDragging(false)
     if (!s) return
-    const v = Math.abs(s.dx) / Math.max(1, performance.now() - s.t)
-    if (Math.abs(s.dx) > 80 || (v > 0.6 && Math.abs(s.dx) > 20)) onDismiss(s.dx < 0 ? 'left' : 'right')
-    else setDx(0)
+    const speed = e.type === 'pointercancel' ? 0 : s.speed.speed()
+    const thrown = Math.abs(speed) > THROW_SPEED && Math.abs(s.dx) > 20
+    if (e.type !== 'pointercancel' && (Math.abs(s.dx) > 80 || thrown)) {
+      // It leaves the way it was thrown, or the way it was pulled when let go slowly.
+      const way = Math.sign(thrown ? speed : s.dx)
+      fling(way * (ref.current?.offsetWidth ?? 0) * 1.1, speed)
+      onDismiss(way < 0 ? 'left' : 'right')
+    } else fling(0, speed)
   }
 
   const stackedY = expanded ? -y : -Math.min(index, 3) * PEEK
@@ -247,13 +278,12 @@ function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, dism
       ref={ref}
       className={styles.toast}
       data-leaving={item.leaving || undefined}
-      data-dragging={swipe.current ? true : undefined}
+      data-dragging={dragging || undefined}
       data-hidden={hidden || undefined}
       data-behind={(!expanded && index > 0) || undefined}
       style={{
         ['--y' as string]: `${stackedY}px`,
         ['--s' as string]: scale,
-        ['--dx' as string]: `${dx}px`,
         zIndex: 100 - Math.max(index, 0),
       }}
       aria-hidden={hidden || undefined}

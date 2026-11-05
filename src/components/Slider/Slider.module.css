@@ -116,13 +116,40 @@
   pointer-events: none;
   opacity: 0;
   transform: translate(-50%, var(--hl-shift-sm)) scale(0.8);
+  /* It stays a beat after a click or a let-go, so the value can be read before it fades. */
   transition:
-    opacity var(--hl-motion-fast) var(--hl-ease-out),
-    transform var(--hl-motion-base) var(--hl-ease-spring);
+    opacity var(--hl-motion-fast) var(--hl-ease-out) var(--hl-motion-base),
+    transform var(--hl-motion-base) var(--hl-ease-spring) var(--hl-motion-base);
 }
 
 .input:active:not(:disabled) + .bubble,
-.input:focus-visible + .bubble {
+.input:focus-visible + .bubble,
+.trackWrap[data-gliding] .bubble {
   opacity: 1;
   transform: translate(-50%, 0) scale(1);
+  transition-delay: 0s;
+}
+
+/* Marks: dots on the track where the thumb's centre lands for each value. They never take a press, and
+   the one under the chosen value hides, so a dot never sits on the thumb at rest. */
+.marks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mark {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--m));
+  width: var(--hl-space-2);
+  height: var(--hl-space-2);
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-border-strong);
+  translate: -50% -50%;
+  transition: opacity var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.mark[data-on] {
+  opacity: 0;
 }
