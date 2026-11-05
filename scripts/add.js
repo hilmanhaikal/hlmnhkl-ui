@@ -55,6 +55,7 @@ function parseArgs(argv) {
     if (arg === '--help' || arg === '-h' || arg === 'help') {
       console.log(USAGE)
       console.log('\nA name can be a component (Button), a block (Dashboard), a template or a theme (forest).')
+      console.log(`A name can also be a shared helper, to build your own parts on it: ${Object.keys(HELPERS).join(', ')}.`)
       console.log('When two kinds share a name, add the kind: blocks/Settings, templates/Settings.')
       process.exit(0)
     } else if (arg === '--to' || arg === '--kind') {
@@ -115,6 +116,10 @@ const keyOf = (item) => `${item.kind}:${item.name}`
 const label = (item) => (item.kind === 'component' ? item.name : `${item.name} (${item.kind})`)
 const kebab = (name) => name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 
+// Shared helpers an app can add on its own, to build its own parts the way the library builds them.
+// Each is a file in src/internal; what it imports from src/internal comes with it.
+const HELPERS = { 'scroll-frame': 'scrollFrame.ts' }
+
 // Every name that can be copied, in every kind.
 function listItems() {
   return KINDS.flatMap((k) => {
@@ -139,6 +144,8 @@ function lookup(raw, all) {
   if (hits.length > 1) {
     fail(`"${raw}" is more than one thing: ${hits.map(label).join(', ')}. Add the kind, for example ${kindOf(hits[1].kind).folder}/${hits[1].name}.`)
   }
+  const helper = Object.keys(HELPERS).find((h) => h.replace(/-/g, '') === name.toLowerCase())
+  if (helper && !prefix) return { kind: 'helper', name: helper, file: join(INTERNAL, HELPERS[helper]) }
   const pro = proComponents().find((p) => p.toLowerCase() === name.toLowerCase())
   if (pro) fail(`${pro} is in hlmnhkl/ui Pro, so it is not in this package. See ${SITE}/${raw.toLowerCase()}`, false)
   const close = suggest(name, all)
@@ -218,6 +225,11 @@ function plan(items) {
   }
   while (queue.length) {
     const item = queue.shift()
+    // A helper is one internal file: it travels with the internal files, not as an item.
+    if (item.kind === 'helper') {
+      visitInternal(item.file)
+      continue
+    }
     const key = keyOf(item)
     if (picked.has(key)) continue
     picked.set(key, item)
@@ -359,6 +371,7 @@ function runList(opts) {
     if (free.length) console.log(`  ${free.join(', ')}`)
     if (pro.length) console.log(`  Pro: ${pro.join(', ')}`)
   }
+  if (!wanted) console.log(`Helpers (${Object.keys(HELPERS).length})\n  ${Object.keys(HELPERS).join(', ')}`)
   console.log(`\nAdd one: npx hlmnhkl-ui add <name>. Every page: ${SITE}`)
 }
 

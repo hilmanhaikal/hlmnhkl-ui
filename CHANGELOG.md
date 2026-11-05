@@ -2,6 +2,12 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
 
+## 0.32.1 · 5 Nov 2026
+
+### Added
+
+- `npx hlmnhkl-ui add scroll-frame`: the frame loop every scroll part runs on, on its own, to build your own scroll effect the same way. `diff` and `update` know it, and `list` shows it under Helpers.
+
 ## 0.32.0 · 5 Nov 2026
 
 Fluid: things follow the hand. Let go of a sheet, row, toast or photo and it carries on at the speed you let go with, then settles. The last of three motion batches.
