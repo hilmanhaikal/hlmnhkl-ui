@@ -1,0 +1,151 @@
+/* The anchor keeps the button's place in the page. The shell is the panel's final box, laid out from
+   the start, so nothing inside it reflows while it grows. */
+.anchor {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.shell {
+  position: absolute;
+  z-index: var(--hl-z-popover);
+  width: min(var(--hl-panel-w-sm), calc(100vw - var(--hl-space-5) * 2));
+}
+
+.shell[data-width="md"] { width: min(var(--hl-panel-w-md), calc(100vw - var(--hl-space-5) * 2)); }
+
+/* Shut, only the button takes the pointer: the rest of the box is empty space over the page. */
+.shell:not([data-open]) { pointer-events: none; }
+.shell:not([data-open]) .trigger { pointer-events: auto; }
+
+.shell[data-corner="tl"] { top: 0; left: 0; }
+.shell[data-corner="tr"] { top: 0; right: 0; }
+.shell[data-corner="bl"] { bottom: 0; left: 0; }
+.shell[data-corner="br"] { bottom: 0; right: 0; }
+
+/* Opening, the edges travel on the liquid curve and settle on the panel's box. Closing is quicker. */
+.surface {
+  position: absolute;
+  inset: var(--t) var(--r) var(--b) var(--l);
+  border: var(--hl-line) solid var(--hl-color-border);
+  border-radius: var(--pill);
+  background: var(--hl-color-surface);
+  box-shadow: var(--hl-shadow-1);
+  transition:
+    inset var(--hl-motion-fast) var(--hl-ease-out),
+    border-radius var(--hl-motion-fast) var(--hl-ease-out),
+    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.content {
+  position: relative;
+  clip-path: inset(var(--t) var(--r) var(--b) var(--l) round var(--pill));
+  transition: clip-path var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.shell[data-open] .surface {
+  border-radius: var(--hl-radius-panel);
+  box-shadow: var(--hl-shadow-3);
+  transition:
+    inset var(--hl-motion-base) var(--hl-ease-liquid),
+    border-radius var(--hl-motion-base) var(--hl-ease-liquid),
+    box-shadow var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.shell[data-open] .content {
+  clip-path: inset(var(--t) var(--r) var(--b) var(--l) round var(--hl-radius-panel));
+  transition: clip-path var(--hl-motion-base) var(--hl-ease-liquid);
+}
+
+.shell:not([data-open]):has(.trigger:focus-visible) .surface { box-shadow: var(--hl-focus-ring); }
+
+@media (hover: hover) {
+  .shell:not([data-open]):has(.trigger:hover) .surface { background: var(--hl-color-surface-hover); }
+}
+
+.trigger {
+  position: absolute;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hl-space-3);
+  height: var(--hl-control-h-lg);
+  padding: 0 var(--hl-space-6);
+  border: 0;
+  border-radius: var(--hl-radius-full);
+  background: transparent;
+  color: var(--hl-color-fg);
+  font: inherit;
+  font-weight: var(--hl-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.icon {
+  display: inline-grid;
+  font-size: var(--hl-icon-md);
+}
+
+.icon svg {
+  width: var(--hl-icon-md);
+  height: var(--hl-icon-md);
+}
+
+.shell[data-corner="tl"] .trigger { top: 0; left: 0; }
+.shell[data-corner="tr"] .trigger { top: 0; right: 0; }
+.shell[data-corner="bl"] .trigger { bottom: 0; left: 0; }
+.shell[data-corner="br"] .trigger { bottom: 0; right: 0; }
+
+.shell[data-open] .trigger:focus-visible { box-shadow: inset 0 0 0 var(--hl-line-focus) var(--hl-color-fg); }
+
+/* The panel's content clears the button's row, which is now its title, above or below it. */
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hl-space-3);
+  padding: calc(var(--hl-control-h-lg) + var(--hl-space-3)) var(--hl-space-6) var(--hl-space-6);
+  outline: none;
+}
+
+/* Shut, the panel leaves the accessibility tree and the tab order, once the fold has finished. */
+.shell:not([data-open]) .panel {
+  visibility: hidden;
+  transition: visibility 0s linear var(--hl-motion-fast);
+}
+
+.shell[data-corner^="b"] .panel { padding: var(--hl-space-6) var(--hl-space-6) calc(var(--hl-control-h-lg) + var(--hl-space-3)); }
+
+.close {
+  position: absolute;
+  top: var(--hl-space-1);
+  right: var(--hl-space-1);
+  display: grid;
+  place-items: center;
+  width: var(--hl-hit-min);
+  height: var(--hl-hit-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--hl-radius-full);
+  background: transparent;
+  color: var(--hl-color-fg-muted);
+  cursor: pointer;
+}
+
+.close svg {
+  width: var(--hl-icon-md);
+  height: var(--hl-icon-md);
+}
+
+.shell[data-corner="tr"] .close,
+.shell[data-corner="br"] .close { right: auto; left: var(--hl-space-1); }
+
+.shell[data-corner^="b"] .close { top: auto; bottom: var(--hl-space-1); }
+
+@media (hover: hover) {
+  .close:hover { background: var(--hl-color-surface-hover); color: var(--hl-color-fg); }
+}
+
+.close:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--hl-line-focus) var(--hl-color-fg); }

@@ -6,11 +6,12 @@ const stack: Array<{ id: symbol; hint: boolean }> = []
 export function useDismiss(
   active: boolean,
   refs: Array<RefObject<HTMLElement | null>>,
-  onDismiss: (reason: 'escape' | 'outside') => void,
-  /** hint: a tooltip-like layer. It takes Esc first, but clicks pass to the layer below it. */
-  options: { outside?: boolean; hint?: boolean } = {},
+  onDismiss: (reason: 'escape' | 'outside', event: Event) => void,
+  /** hint: a tooltip-like layer. It takes Esc first, but clicks pass to the layer below it. focusOut: focus moving
+      outside it, while no layer is open above it, counts as outside too. */
+  options: { outside?: boolean; hint?: boolean; focusOut?: boolean } = {},
 ) {
-  const { outside = true, hint = false } = options
+  const { outside = true, hint = false, focusOut = false } = options
   const cb = useRef(onDismiss)
   cb.current = onDismiss
   const refsRef = useRef(refs)
@@ -26,7 +27,7 @@ export function useDismiss(
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isTop()) {
         e.stopPropagation()
-        cb.current('escape')
+        cb.current('escape', e)
       }
     }
     const onPointer = (e: PointerEvent) => {
@@ -35,17 +36,25 @@ export function useDismiss(
       if (refsRef.current.some((r) => r.current?.contains(target))) return
       // Things like the toast stack sit above every layer and never count as outside.
       if (target instanceof Element && target.closest('[data-hl-layer-ignore]')) return
-      cb.current('outside')
+      cb.current('outside', e)
+    }
+    const onFocus = (e: FocusEvent) => {
+      if (!focusOut || !isTopForPointer()) return
+      const target = e.target as Node
+      if (refsRef.current.some((r) => r.current?.contains(target))) return
+      cb.current('outside', e)
     }
     document.addEventListener('keydown', onKey)
     document.addEventListener('pointerdown', onPointer)
+    document.addEventListener('focusin', onFocus)
     return () => {
       document.removeEventListener('keydown', onKey)
       document.removeEventListener('pointerdown', onPointer)
+      document.removeEventListener('focusin', onFocus)
       const i = stack.findIndex((l) => l.id === id)
       if (i >= 0) stack.splice(i, 1)
     }
-  }, [active, outside, hint])
+  }, [active, outside, hint, focusOut])
 }
 
 let lockCount = 0

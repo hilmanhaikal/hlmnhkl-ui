@@ -161,3 +161,68 @@
 @keyframes fadeOut { to { opacity: 0; } }
 @keyframes sheetIn { from { transform: translateY(100%); } }
 @keyframes sheetOut { to { transform: translateY(100%); } }
+
+/* With detents. The sheet is as tall as its highest height and slides to show more or less of itself.
+   The dim follows the height, and only the highest height takes the page behind. */
+.overlay[data-detents] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.overlay[data-detents][data-top] { pointer-events: auto; }
+
+.sheet[data-detents] {
+  max-height: none;
+  transition: none;
+  touch-action: none;
+}
+
+.sheet[data-detents][data-dragging] { user-select: none; }
+.sheet[data-detents]:not([data-top]) .body { overflow: hidden; }
+.sheet[data-detents][data-top] .body { touch-action: pan-y; }
+
+/* The grabber is the control for the height. Its width shows it: short when low, long when full. */
+.grabber {
+  display: grid;
+  flex: none;
+  place-items: center;
+  align-self: center;
+  width: calc(var(--hl-hit-min) * 2);
+  height: var(--hl-hit-min);
+  border-radius: var(--hl-radius-full);
+  cursor: grab;
+  outline: none;
+}
+
+.sheet[data-dragging] .grabber { cursor: grabbing; }
+.grabber:focus-visible { box-shadow: var(--hl-focus-ring); }
+
+.pill {
+  display: block;
+  width: var(--hl-handle-w);
+  height: var(--hl-handle-h);
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-border-strong);
+  transition:
+    width var(--hl-motion-base) var(--hl-ease-liquid),
+    background-color var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.grabber[data-detent="peek"] .pill { width: var(--hl-handle-w-short); }
+.grabber[data-detent="full"] .pill { width: var(--hl-handle-w-active); }
+.grabber:focus-visible .pill { background: var(--hl-color-accent); }
+
+@media (hover: hover) {
+  .grabber:hover .pill { background: var(--hl-color-fg-muted); }
+}
+
+.sheet[data-detents] .header { padding-top: 0; }
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

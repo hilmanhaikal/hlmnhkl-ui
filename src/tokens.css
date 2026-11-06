@@ -142,6 +142,8 @@
   --hl-mini-button: 24px;
   --hl-handle-w: 40px;
   --hl-handle-w-active: 56px;
+  /* A sheet's grabber at its lowest height. Its width shows the height: short, then --hl-handle-w, then -active */
+  --hl-handle-w-short: 24px;
   --hl-handle-h: 5px;
   --hl-empty-icon: 64px;
   --hl-empty-w: 420px;
@@ -180,6 +182,9 @@
   --hl-motion-fling: calc(280ms * var(--hl-motion-scale));
   --hl-motion-stagger: calc(30ms * var(--hl-motion-scale));
   --hl-motion-delay-tooltip: 400ms;
+  /* Hold to confirm: how long a press must last. A timer, not motion, so reduced motion keeps it */
+  --hl-hold-time: 1500ms;
+  --hl-hold-stroke: 2px;
   --hl-motion-shimmer: 1400ms;
   --hl-motion-spin: 800ms;
   --hl-motion-indeterminate: 1500ms;
@@ -407,9 +412,12 @@
   --hl-fab-gap: 16px;
   --hl-sidebar-w: 248px;
   --hl-sidebar-w-collapsed: 64px;
-  --hl-tabbar-h: 64px;
+  --hl-tabbar-h: 56px;
   --hl-tabbar-pill-w: 56px;
   --hl-tabbar-pill-h: 30px;
+  /* With labels on the chosen tab only: its share of the row against the others' 1, and how long its label may run */
+  --hl-tabbar-active-grow: 2.4;
+  --hl-tabbar-label-max: 12ch;
   --hl-scrollbar-w: 6px;
   --hl-scrollbar-w-active: 10px;
   --hl-scrollbar-min: 24px;

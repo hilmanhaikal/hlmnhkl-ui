@@ -24,7 +24,7 @@ Status: **done** means built, typed, in the docs site with demos, keyboard and s
 | 18 | Popover | Overlays | done | non-modal dialog |
 | 19 | DropdownMenu | Overlays | done | menu button pattern, staggered items |
 | 20 | Dialog | Overlays | done | focus trap, docks to bottom on phones |
-| 21 | Sheet | Overlays | done | bottom sheet, drag to close |
+| 21 | Sheet | Overlays | done | bottom sheet, drag to close; detents (low, half, full) with a grabber that is a slider, modal only at full, a flick moves one height |
 | 22 | Toast | Overlays | done | stack, swipe, auto dismiss with pause |
 | 23 | Alert (and banner) | Feedback | done | dismiss folds height |
 | 24 | EmptyState | Feedback | done | staggered entrance |
@@ -67,3 +67,5 @@ Status: **done** means built, typed, in the docs site with demos, keyboard and s
 | 61 | ThemeToggle | Actions | done | sun turns into moon; sets data-theme and remembers it, or controlled; themeScript in head stops a dark flash; follows the system with no saved choice |
 | 62 | Prose | Layout | done | styles plain HTML from Markdown or a CMS for reading on a 68ch line; quotes on a soft panel; zero-weight rules so your classes win |
 | 63 | TableOfContents | Navigation | done | a page's sections as a strip of frames, read, here and ahead; smooth scroll that respects reduced motion, focus moves to the heading, shareable #ids, optional back to top |
+| 64 | HoldToConfirm | Actions | done | hold to run a risky action; a line burns along the edge out both ways from the finger; early release runs it back; one tap or key press opens Cancel and Confirm in place |
+| 65 | MorphButton | Actions | done | the button's surface grows into its own panel from where it sits; the label stays and names the dialog; focus in, Esc and outside tap close, focus returns |

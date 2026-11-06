@@ -25,7 +25,7 @@ if (typeof document !== 'undefined') {
 
 // Where focus should go back to: the focused element, unless it is the page or a box around the
 // control that was just pressed. Then that control.
-function returnTarget(): HTMLElement | null {
+export function returnTarget(): HTMLElement | null {
   const active = document.activeElement as HTMLElement | null
   const pressed = lastPressed && lastPressed.isConnected ? lastPressed : null
   if (pressed && (!active || active === document.body || (active !== pressed && active.contains(pressed)))) return pressed

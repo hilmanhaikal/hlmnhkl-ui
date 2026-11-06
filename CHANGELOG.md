@@ -1,247 +1,263 @@
 # Changelog
 
-What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first. Changes to the docs site itself are not listed.
+What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
+
+## 0.33.0 · 6 Nov 2026
+
+Three new ways to act, and more ways to lay out the tab bar.
+
+### Added
+
+- HoldToConfirm: press and hold a risky action. A line burns along the button's edge, out both ways from your finger, and the action runs when the ends meet. Let go early and it runs back. One tap, Enter or Space opens a Cancel and Confirm step in place instead.
+- MorphButton: a button that grows into its own panel from where it sits. Its label stays put and becomes the panel's title, and the page never moves.
+- Sheet `detents`: the sheet rests at low, half or full height. A flick moves it one height and never skips one. Below full, the page behind stays usable.
+- Sheet: with detents, the grabber is a real control. Its width shows the height, and arrow keys, Home, End or a tap change it.
+- BottomTabBar `variant="dock"`: a floating, rounded bar above the bottom edge.
+- BottomTabBar `labels="active"`: only the chosen tab shows its label, beside its icon.
+- BottomTabBar `action`: one main action, as a round button beside the tabs or raised in the centre (`actionPlacement="centre"`).
+- BottomTabBar `shrinkOnScroll`: the dock shrinks to the chosen tab as you scroll down, and opens again as you scroll up or tap it.
+- Tokens `--hl-handle-w-short`, `--hl-hold-time` (1500ms), `--hl-hold-stroke`, `--hl-tabbar-active-grow` and `--hl-tabbar-label-max`.
+
+### Changed
+
+- BottomTabBar: the chosen tab is marked by full ink and its icon hops once, with no pill behind it. The bar is 56px tall (`--hl-tabbar-h`), down from 64px.
+
+## 0.32.3 · 6 Nov 2026
+
+Docs site only. No changes to the library.
 
 ## 0.32.2 · 5 Nov 2026
 
 ### Changed
 
-- Sheet: pulled up past the top, it stretches like a sheet on a phone. Its surface carries on below its bottom edge, so lifting it never opens a gap at the bottom of the screen.
+- Sheet: pulled up past the top, it stretches like a sheet on a phone. Lifting it never opens a gap at the bottom.
 
 ## 0.32.1 · 5 Nov 2026
 
 ### Added
 
-- `npx hlmnhkl-ui add scroll-frame`: the frame loop every scroll part runs on, on its own, to build your own scroll effect the same way. `diff` and `update` know it, and `list` shows it under Helpers.
+- `npx hlmnhkl-ui add scroll-frame`: the frame loop that every scroll part uses, to build your own scroll effect. `list` shows it under Helpers.
 
 ## 0.32.0 · 5 Nov 2026
 
-Fluid: things follow the hand. Let go of a sheet, row, toast or photo and it carries on at the speed you let go with, then settles. The last of three motion batches.
+Fluid: things follow the hand. Let go of a sheet, row, toast or photo and it carries on at your speed, then settles.
 
 ### Added
 
-- Drawer: on touch, swipe it toward its edge to close it. Up and down still scroll. A mouse does not drag it.
-- Token `--hl-motion-fling`: how long one swing of the let-go spring lasts. Retime scales it, and reduced motion sets it to 0.
+- Drawer: on touch, swipe it toward its edge to close it.
+- Token `--hl-motion-fling`: the length of the let-go spring. It is 0 with reduced motion.
 
 ### Changed
 
-- Sheet, Drawer, SwipeActions, Toast, PullToRefresh and Lightbox: a let-go keeps the hand's speed, read from the last tenth of a second instead of the whole drag. A flick counts as well as a long pull.
-- Past an edge a drag stretches, less the further it goes: a sheet pulled up, a row swiped the wrong way, the first or last photo, a refresh pulled past its line. PullToRefresh no longer stops dead at twice the line.
-- Caught mid-spring, a sheet, drawer, row, toast or photo carries on from where it is instead of jumping.
+- Sheet, Drawer, SwipeActions, Toast, PullToRefresh and Lightbox: a quick flick now throws them as far as a long drag.
+- Dragging past an edge stretches, less the further you go. PullToRefresh no longer stops dead.
+- Sheet, Drawer, SwipeActions, Toast and Lightbox: caught mid-spring, they carry on from where they are instead of jumping.
 - Toast: a thrown toast flies off the way it was thrown and fades.
 - Lightbox: a quick flick changes the photo or closes it, however short.
-- Reduced motion keeps every gesture and its result and drops the glide.
+- Reduced motion keeps every gesture and its result, and drops the glide.
 
 ## 0.31.0 · 5 Nov 2026
 
-Magnetic: the right place pulls. Slider marks, list gaps and panel snap places draw what you drag onto them. The second of three motion batches.
+Magnetic: the right place pulls. Slider marks, list gaps and panel snap places draw what you drag onto them.
 
 ### Added
 
-- Slider and RangeSlider `marks`: values a dragged thumb is drawn onto as it passes, shown as dots on the track. Let go near one and the thumb lands on it; you can still stop between marks. Page Up and Page Down jump from mark to mark.
-- ResizablePanels `snap`: places, in percent of the group, that a dragged handle is drawn to and lands on.
+- Slider and RangeSlider `marks`: values that a dragged thumb is drawn onto. Dots show on the track. Page Up and Page Down jump between marks.
+- ResizablePanels `snap`: places, in percent of the group, that a dragged handle lands on.
 
 ### Changed
 
-- SortableList: the dragged row is drawn into the gap it is nearest to, and the other rows make room as soon as it gets closer to a new gap than its old one.
-- KanbanBoard: the dragged card is drawn into the slot it will land in.
-- Slider: a click glides the thumb to the spot instead of jumping. Your `onValueChange` gets only the final value.
-- Slider and RangeSlider: the value bubble stays a moment after a click or a let-go, so you can read it.
+- SortableList and KanbanBoard: the dragged item is drawn into the gap or slot it will land in.
+- Slider: a click glides the thumb to the spot. Your `onValueChange` gets only the final value.
+- Slider and RangeSlider: the value bubble stays a moment after a click or let-go.
 - ResizablePanels: a plain click on a handle no longer moves it, and a folded panel stays folded when you let go.
-- The pull acts while dragging, so it works by finger and mouse alike. Arrow keys still move one step. Reduced motion keeps the pull and the landing and drops the glide.
-- Carousel and ScrollTrack keep the browser's own scroll snap, which already draws a swipe onto the nearest slide with the phone's real momentum.
+- Reduced motion keeps the pull and the landing, and drops the glide.
 
 ## 0.30.0 · 5 Nov 2026
 
-Liquid: menus grow out of what opened them, and highlights stretch toward the new choice. The first of three motion batches (liquid, magnetic, fluid).
-
-### Changed
-
-- DropdownMenu, Popover and Select grow out of their trigger, starting as its own shape at the panel's edge nearest it, and fold back into it on close. ContextMenu grows out of the spot you pressed, and a submenu out of the item that opened it. Only a clip changes, so text never stretches, and the shadow grows in with the panel.
-- SegmentedControl, ToggleGroup (single) and Tabs: the pill or underline stretches toward the new choice, leading edge first, then settles. A resize still slides it plainly, and a ToggleGroup pill moving to another row slides as before.
-- With reduced motion, or where the browser lacks clip-path or `linear()` easing, each part keeps its old fade or slide.
+Liquid: menus grow out of what opened them, and highlights stretch toward the new choice.
 
 ### Added
 
-- Token `--hl-ease-liquid`: a real spring (2% past, then settles) as a CSS `linear()` easing, for your own liquid moves. Token `--hl-motion-liquid` (520ms) is its length; reduced motion sets it to 0ms.
+- Tokens `--hl-ease-liquid` and `--hl-motion-liquid`: a spring easing and its length, for your own liquid moves. The length is 0ms with reduced motion.
+
+### Changed
+
+- DropdownMenu, Popover and Select: they grow out of their trigger and fold back into it on close.
+- ContextMenu: it grows out of the spot you pressed. A submenu grows out of the item that opened it.
+- SegmentedControl, ToggleGroup (single) and Tabs: the pill or underline stretches toward the new choice.
+- With reduced motion, or in browsers without clip-path or `linear()` easing, each part keeps its old fade or slide.
 
 ## 0.29.0 · 2 Nov 2026
 
-Glass: a second Pro theme that turns the parts floating over the page to frosted glass, and a lens for the Navbar pill.
+Glass: a second Pro theme that turns floating parts into frosted glass, and a lens for the Navbar pill.
 
 ### Added
 
-- Glass theme (`themes/glass.css`, Pro). Set `data-theme-style="glass"` on `<html>` and the Navbar pill, Dialog, Sheet, Popover, DropdownMenu, ContextMenu, Toast and the Fab's actions show the page through, blurred. Content, Tooltip and the Fab button stay solid. The tint is 85%, the lowest at which muted text still reads 4.5:1 with pure black or white under the glass.
-- Glass turns back to the solid surface with `prefers-reduced-transparency`, `prefers-contrast: more`, in browsers without `backdrop-filter`, or with `data-glass="off"` on `<html>` (Safari cannot report reduced transparency, so give people that switch).
-- GlassLens (Pro): render it once and, in Chromium browsers, the Navbar pill gets a clear rim that bends the page under it. Other browsers keep the frosted pill.
+- Glass theme (`themes/glass.css`, Pro). Set `data-theme-style="glass"` on `<html>`. Navbar pill, Dialog, Sheet, Popover, DropdownMenu, ContextMenu, Toast and the Fab's actions show the page through, blurred.
+- Glass turns solid with `prefers-reduced-transparency`, `prefers-contrast: more`, without `backdrop-filter`, or with `data-glass="off"` on `<html>`. Safari cannot report reduced transparency, so give people that switch.
+- GlassLens (Pro): render it once and, in Chromium browsers, the Navbar pill gets a clear rim that bends the page under it.
 
 ### Changed
 
-- Navbar, Dialog, Sheet, Popover, DropdownMenu, ContextMenu, Toast and Fab read `--hl-glass-bg`, `--hl-glass-filter` and `--hl-glass-edge`, which fall back to their surface and border. Without the theme nothing changes.
+- Navbar, Dialog, Sheet, Popover, DropdownMenu, ContextMenu, Toast and Fab read `--hl-glass-bg`, `--hl-glass-filter` and `--hl-glass-edge`. Without the theme nothing changes.
 
 ## 0.28.0 · 2 Nov 2026
 
-Colour comes to hlmnhkl/ui: one blue accent for what is chosen or on, a survey map's colours for charts, and four new chart types for dashboards.
-
-### Changed
-
-- The accent is marking blue instead of black, the layout dye a machinist uses to check a fit: primary buttons, switches, checked and selected states, the current tab, progress and the selected day. Light `#1f5aa6` (white on it is 6.8:1), dark `#7fa8e6`. Text, borders and surfaces stay black, white and grey. Set `--hl-color-accent` to your own colour, or back to black for an all-monochrome look.
-- Chart series take a survey map's own colours, in a fixed order: navy, contour brown, survey green, revision purple, chart ochre, with a lighter step of each for dark mode. Checked for colour-blind separation and 3:1 against the surface in both themes. Dash, marker and texture still tell series apart too.
-
-- Brand themes (Slate, Forest, Clay, Plum) set the new `--hl-color-accent-hover` for their hover, and no longer take over the first chart colour, which would have sat next to a near twin (Forest's green beside survey green, Clay beside contour brown).
+Colour comes to hlmnhkl/ui: one blue accent, new chart colours, and four new chart types.
 
 ### Added
 
-- Token `--hl-color-accent-hover`, for the hover of anything filled with the accent. Before, these borrowed the grey inverse hover.
-- BarChart `stacked`: one bar per category, the series on top of each other with a gap of paper between them, and a total in the tooltip.
-- BarChart `orientation="horizontal"`: a row per category, for rankings and long names. The plot grows with the rows.
-- ScatterChart: two numbers per point, each group its own colour and marker shape. The nearest point within reach shows on hover, and the arrow keys read the points from left to right.
-- FunnelChart: steps from first to last, with each step's number, its share of the first, and the share carried on from the step before written on its row.
-- BulletChart: a measure against its target, with grey bands for the ranges behind the bar.
-- HeatmapChart: any two categories on a grid, the number as depth of one colour. Hover, or the arrow keys, write the cell's value under the grid.
+- Token `--hl-color-accent-hover`: the hover of anything filled with the accent.
+- BarChart `stacked`: series stacked in one bar per category, with a total in the tooltip.
+- BarChart `orientation="horizontal"`: a row per category, for rankings and long names.
+- ScatterChart: two numbers per point, with a colour and marker shape per group.
+- FunnelChart: steps from first to last, with each step's number and shares.
+- BulletChart: a measure against its target, with bands for the ranges.
+- HeatmapChart: two categories on a grid, with the number shown as depth of one colour.
+
+### Changed
+
+- The accent is now blue instead of black: primary buttons, switches, checked and selected states, the current tab, progress and the selected day. Set `--hl-color-accent` to your own colour, or back to black.
+- Chart series use a new set of colours in a fixed order, with a lighter step of each in dark mode.
+- Brand themes (Slate, Forest, Clay, Plum) set `--hl-color-accent-hover`. They no longer take over the first chart colour.
 
 ## 0.27.1 · 2 Nov 2026
 
-Fixes for ScrollStory and Navbar on phones, found on a real iPhone.
-
 ### Fixed
 
-- ScrollStory on a narrow screen: a step's title no longer hides under the pinned picture, text that has slid under the picture no longer shows again in the band above it, and the last step no longer leaves half a screen of empty space after it.
-- ScrollStory `snap` on a narrow screen: steps now scroll freely, since a flick's momentum made the browser land several steps ahead and skip the ones between.
-- Navbar `dockAfter`: after a fast scroll to the top, the bar no longer hangs low on the screen while it finishes the trip back. Only the pill glides; once it has opened into the full bar, it goes straight to its place.
+- ScrollStory on a narrow screen: a step's title no longer hides under the pinned picture, text no longer shows again above it, and the last step leaves no empty space.
+- ScrollStory `snap` on a narrow screen: steps now scroll freely, so a flick no longer skips steps.
+- Navbar `dockAfter`: after a fast scroll to the top, the bar no longer hangs low on the screen.
 
 ## 0.27.0 · 2 Nov 2026
 
-Four new free components: a floating action button for the thumb zone, a theme toggle, styles for long text, and a table of contents.
+Four new free components: a floating action button, a theme toggle, styles for long text, and a table of contents.
 
 ### Added
 
-- Fab: one main action floating at the bottom of the screen, in reach of the thumb and clear of the home indicator. `extended` shows a label that pours away into the icon as the page scrolls down and back on the way up. `actions` pours a short stack of actions up out of the button; focus moves to the first, and Esc or a tap outside closes them. `position` puts it at the end or the centre, and `contained` keeps it inside a panel. Tokens `--hl-fab-size` and `--hl-fab-gap`.
-- ThemeToggle: one button between the light and dark theme, the sun turning into the moon. On its own it sets data-theme on the page and remembers the choice; `theme` and `onThemeChange` let your app keep it instead. `themeScript()` goes in the head so a saved dark theme never flashes light on load. With no saved choice it follows the system.
-- Prose: styles plain HTML from Markdown or a CMS for reading, on a line about 68 characters long: headings, lists, links, quotes on a soft panel, code, pictures and tables. Every rule has zero weight, so a class you add inside wins. Token `--hl-prose-w`.
-- TableOfContents: the sections of a page as links to their headings, each a frame on a strip, filled once read and ringed where you are. A click scrolls there, smoothly unless motion is reduced, moves focus to the heading and keeps one history entry. `backToTop` adds a way up.
+- Fab: one main action floating at the bottom of the screen, in reach of the thumb. Props: `extended`, `actions`, `position` and `contained`. Tokens `--hl-fab-size` and `--hl-fab-gap`.
+- ThemeToggle: one button between light and dark. It sets `data-theme` and remembers the choice. Use `theme` and `onThemeChange` to keep the state in your app. Put `themeScript()` in the head to avoid a flash.
+- Prose: styles plain HTML from Markdown or a CMS for reading. Token `--hl-prose-w`.
+- TableOfContents: the sections of a page as links to their headings. `backToTop` adds a way up.
 
 ## 0.26.0 · 1 Nov 2026
 
-Navbar float becomes a liquid pill: it morphs into the middle as the page scrolls, and on a phone it can pour down to the bottom of the screen.
-
-### Changed
-
-- Navbar `float`: instead of a card inset from the edges, the bar's edges close in until it hugs its contents, a pill in the middle of the screen, 16px clear of the top. Its height never changes, so nothing under it moves.
-- Navbar menu: once the bar is a pill, the menu opens as a card of its own under it. Before, it opened onto the page with no paper behind it.
+Navbar float becomes a liquid pill. On a phone it can move down to the bottom of the screen.
 
 ### Added
 
-- Navbar `centerBrand`: under 640px wide, the brand sits in the middle, with the actions on the left and the menu button on the right.
-- Navbar `dockAfter`: the id of an element, such as the hero. Once it has scrolled past, on a phone, the pill pours down to the bottom of the screen, in reach of the thumb: it stretches like a drop as it falls, lands with a small squash and settles. Its menu then opens upward. It pours back up when the element returns. With reduced motion it simply moves.
-- Token `--hl-motion-pour`: the length of that trip, 760ms, and 0 with reduced motion.
+- Navbar `centerBrand`: under 640px wide, the brand sits in the middle.
+- Navbar `dockAfter`: the id of an element, such as the hero. Once it has scrolled past, on a phone, the pill moves to the bottom of the screen and its menu opens upward.
+- Token `--hl-motion-pour`: the length of that move. It is 0 with reduced motion.
+
+### Changed
+
+- Navbar `float`: instead of a card, the bar closes in to a pill in the middle of the screen. Its height never changes.
+- Navbar menu: once the bar is a pill, the menu opens as its own card under it.
 
 ### Fixed
 
-- Navbar `float` never lifted inside a wrapper with no box of its own, such as an Astro island. It now reads the nearest ancestor that has one.
+- Navbar `float` never lifted inside a wrapper with no box of its own, such as an Astro island.
 
 ## 0.25.1 · 1 Nov 2026
 
-Two fixes found while building a real site with the library.
-
 ### Fixed
 
-- Avatar: a picture that finished loading before the page became interactive no longer stays hidden behind the initials. This happened with server-rendered pages, such as Astro and Next.js.
-- PinInput: a focused box that already holds a character no longer shows the browser's blue selection. The character is still selected, so the next key replaces it, and the focus ring marks the box.
+- Avatar: a picture that loaded before the page became interactive no longer stays hidden behind the initials. This happened with server-rendered pages.
+- PinInput: a focused box that holds a character no longer shows the browser's blue selection.
 
 ## 0.25.0 · 1 Nov 2026
 
-Nine new free components, six new scroll motion pieces in Pro, charts that show their table in place, and fixes for hover that wobbled and presses that lost clicks.
+Nine new free components, six new scroll parts in Pro, and charts that show their table in place.
 
 ### Added
 
-- ScrollStory (Pro): steps scroll past a stage that stays in view. One frame travels across the stage, changing place and size for each step, and its pictures advance like film through a gate. The step in view reads in full ink. `snap` lets the page settle on the nearest step.
-- StackScroll (Pro): cards stick and pile up as you scroll. The ones underneath shrink and grey out like an onion skin, and a fast scroll tilts the moving card back until the page settles.
-- ScrollTrack (Pro): a row of panels pinned in place that moves sideways as you scroll down, with a tick for each panel. Under 640px wide, and with reduced motion, it is a sideways swipe that snaps to each panel.
-- Parallax (Pro): pictures at different depths move at different speeds, as a loose collage or in columns that drift apart. Set your own depths with `depths`.
-- ScrollTone (Pro): the paper behind a run of sections changes from one tone to the next around each boundary. Use the theme's tones or your own pair of colours. All the text changes ink with the paper, so it always reads on what is behind it.
-- ScrollExpand (Pro): a picture or video opens from a thin strip to the full frame as the section pins. With `through` it goes on to fill the whole screen and pushes in, as if you go inside it.
-- TextRise `effect="ink"`: a paragraph turns from grey to full ink word by word as you read down it. For text 24px and up, since the grey meets the 3:1 contrast for large text.
-- Navbar `float`: with `sticky`, the bar lifts into a floating card as the page scrolls, and returns to a full-width bar at the top.
-- Tokens for all of these: `--hl-story-*`, `--hl-stack-*`, `--hl-track-*`, `--hl-parallax-*`, `--hl-tone-*`, `--hl-expand-*`, `--hl-ink-from`, `--hl-ink-span` and `--hl-navbar-float-run`. The `-top` tokens leave room for a sticky header of your own.
-
-- Toggle: one button that stays pressed or not, with `aria-pressed`. Text or icon only.
-- AlertDialog: asks one question before an action that cannot be undone. Focus starts on Cancel, Esc cancels, and a tap outside never closes it. On phones it docks to the bottom with Cancel nearest the thumb.
-- Fieldset: a real fieldset and legend for related fields, with a description and one error for the set. Disabled turns off every field inside.
-- CheckboxGroup: checkboxes with one shared value, a label, a description and an error.
-- Meter: a value in a known range, like storage used. Low, high and best ranges set its tone, always shown as a word and an icon too.
-- ButtonGroup: buttons joined into one bar, across or down, each keeping its own focus ring.
-- InputGroup: an input with text, an icon or a button attached at either side, inside one border.
-- CodeBlock: code with quiet syntax colours, an optional file name and line numbers, and a copy button. Tokens `--hl-code-bg`, `--hl-code-fg`, `--hl-code-keyword`, `--hl-code-tag`, `--hl-code-attr`, `--hl-code-string`, `--hl-code-number`, `--hl-code-comment` and `--hl-code-gutter`.
-- AvatarGroup has its own folder now. `import { AvatarGroup } from './ui/components/Avatar'` still works. Its name lists everyone, the hidden people too, and the counter reads "3 more".
-
-### Fixed
-
-- Hover no longer wobbles at an edge. An item that lifted on hover could slide out from under a still pointer, drop back and lift again: Card (`interactive`), AvatarGroup, and Dialog's close button, which turned as a square. The lifted part now keeps the pointer, or only the inside moves.
-- A mouse click near the edge of a button that shrinks when pressed was lost, because the button shrank away from the pointer. IconButton, CopyButton, Pagination, NumberInput, Calendar, ChatThread, FileUpload, Lightbox, Marquee, AudioPlayer and VideoPlayer keep their full click area while pressed. Taps were never affected.
-- Input looks disabled when a disabled fieldset turns it off, like the other controls.
-- ScrollArea: the scrollbar no longer stays shown after a tap on phones.
-- Card: a card with `media` no longer clips its content. Only the media's own top corners are rounded.
+- ScrollStory (Pro): steps scroll past a stage that stays in view. `snap` settles the page on the nearest step.
+- StackScroll (Pro): cards stick and pile up as you scroll.
+- ScrollTrack (Pro): a row of panels that moves sideways as you scroll down. On narrow screens it is a sideways swipe.
+- Parallax (Pro): pictures move at different speeds. Set your own depths with `depths`.
+- ScrollTone (Pro): the paper behind a run of sections changes tone as you scroll.
+- ScrollExpand (Pro): a picture or video opens from a thin strip to the full frame as you scroll. `through` goes on to fill the screen.
+- TextRise `effect="ink"`: a paragraph turns from grey to full ink word by word as you read. For text 24px and up.
+- Navbar `float`: with `sticky`, the bar lifts into a floating card as the page scrolls.
+- Tokens for the new scroll parts: `--hl-story-*`, `--hl-stack-*`, `--hl-track-*`, `--hl-parallax-*`, `--hl-tone-*`, `--hl-expand-*`, `--hl-ink-from`, `--hl-ink-span` and `--hl-navbar-float-run`.
+- Toggle: one button that stays pressed or not.
+- AlertDialog: asks one question before an action that cannot be undone. On phones it docks to the bottom.
+- Fieldset: a fieldset and legend for related fields, with a description and one error.
+- CheckboxGroup: checkboxes with one shared value, label, description and error.
+- Meter: a value in a known range, like storage used.
+- ButtonGroup: buttons joined into one bar, across or down.
+- InputGroup: an input with text, an icon or a button attached inside one border.
+- CodeBlock: code with syntax colours, a file name, line numbers and a copy button. Tokens `--hl-code-bg`, `--hl-code-fg`, `--hl-code-keyword`, `--hl-code-tag`, `--hl-code-attr`, `--hl-code-string`, `--hl-code-number`, `--hl-code-comment` and `--hl-code-gutter`.
+- AvatarGroup has its own folder. `import { AvatarGroup } from './ui/components/Avatar'` still works.
 
 ### Changed
 
-- Navbar: the links in the bar look 32px tall with less side padding, so the hover fill is lighter. Each still has a 44px hit area. Links in the phone menu keep their full height.
-- Chart and CalendarHeatmap: a Chart and Table switch (Calendar and Table for the heatmap) beside the title replaces the "Show data table" button. The table takes the chart's place at the same size and scrolls inside, so the page never grows. Screen readers still get the table on the chart view. **Breaking:** the `labels` keys `showTable` and `hideTable` are now `view`, `chart` and `table` on Chart, and `view`, `calendar` and `table` on CalendarHeatmap.
-- Dark theme: `--hl-color-surface-sunken` is #141414, up from #070707, which was all but invisible on the #0a0a0a page. Wells, empty tiles, the Kanban columns and WeekSchedule's today column now show in dark.
-- TextRise and ScrollDraft ease with the scroll like the new pieces, so a wheel notch glides instead of setting a chunk at once. `--hl-scroll-ease` sets the weight for all of them.
+- Chart and CalendarHeatmap: a Chart and Table switch beside the title replaces the "Show data table" button. Breaking: the `labels` keys `showTable` and `hideTable` are now `view`, `chart` and `table` on Chart, and `view`, `calendar` and `table` on CalendarHeatmap.
+- Navbar: links in the bar look 32px tall with less side padding. Each still has a 44px hit area.
+- Dark theme: `--hl-color-surface-sunken` is `#141414`, up from `#070707`, so wells, empty tiles and Kanban columns now show.
+- TextRise and ScrollDraft ease with the scroll, like the new parts. `--hl-scroll-ease` sets the weight for all of them.
+
+### Fixed
+
+- Hover no longer wobbles at an edge in Card (`interactive`), AvatarGroup and Dialog's close button.
+- IconButton, CopyButton, Pagination, NumberInput, Calendar, ChatThread, FileUpload, Lightbox, Marquee, AudioPlayer and VideoPlayer: a mouse click near the edge is no longer lost while pressed.
+- Input looks disabled when a disabled fieldset turns it off.
+- ScrollArea: the scrollbar no longer stays shown after a tap on phones.
+- Card: a card with `media` no longer clips its content.
 
 ### Removed
 
-- SmoothScroll and ScrollRuler. They were made for this library's own site, and the site keeps them. Every scroll part now eases on its own, so a page does not need SmoothScroll for the weight. If you copied them in earlier, your copies keep working. The tokens `--hl-ruler-w` and `--hl-ruler-step` are gone with them.
+- SmoothScroll and ScrollRuler, and the tokens `--hl-ruler-w` and `--hl-ruler-step`. Every scroll part now eases on its own. Copies you made earlier keep working.
 
 ## 0.24.0 · 30 Oct 2026
 
 ### Added
 
-- `hlmnhkl-ui-mcp`: a read-only MCP server, so Claude Code, Cursor, VS Code and other AI tools can look up components, their props and install steps. Run with `npx -y hlmnhkl-ui-mcp@latest`. It answers from a docs file inside its package, makes no network requests, cannot write files or run commands, and shows Pro items as a name and one line. It needs Node 20 or later. Setup: https://ui.hlmnhkl.my/mcp
-- It is its own package, with one dependency (`@modelcontextprotocol/server`, exactly 2.3.1). `hlmnhkl-ui` itself still has none, so `add` downloads nothing more.
+- `hlmnhkl-ui-mcp`: a read-only MCP server, so AI tools can look up components, props and install steps. Run `npx -y hlmnhkl-ui-mcp@latest`. It needs Node 20 or later. Setup: https://ui.hlmnhkl.my/mcp
 
 ## 0.23.1 · 30 Oct 2026
 
 ### Fixed
 
-- PinInput: with an empty box before it, Tab could never leave the group, because focus on a later box is sent back to the first empty one. The group is now one Tab stop, at the box that takes the next character. Left, Right, Home and End still move between boxes.
+- PinInput: Tab could not leave the group when an earlier box was empty. The group is now one Tab stop.
 
 ## 0.23.0 · 30 Oct 2026
 
 ### Changed
 
-- Dark theme: a near-black page instead of dark grey, with each raised layer a step lighter. `--hl-color-bg` is `#0a0a0a`, `--hl-color-surface` `#111111`, `--hl-color-surface-raised` `#1c1c1c`, `--hl-color-surface-sunken` `#070707`, `--hl-color-surface-hover` `#1a1a1a`, `--hl-color-surface-active` `#222222`, `--hl-color-border` `#262626` and `--hl-color-inverse-fg` `#0a0a0a`. Text colours are the same, so their contrast only goes up. To get the new look, copy these values into the two dark blocks of your `tokens.css`.
+- Dark theme: a near-black page, with each raised layer a step lighter. To get it, copy the new values into the two dark blocks of your `tokens.css`. Changed tokens: `--hl-color-bg`, `--hl-color-surface`, `--hl-color-surface-raised`, `--hl-color-surface-sunken`, `--hl-color-surface-hover`, `--hl-color-surface-active`, `--hl-color-border` and `--hl-color-inverse-fg`.
 
 ## 0.22.1 · 30 Oct 2026
 
 ### Fixed
 
-- Dialog, Sheet, Drawer and every layer that holds focus: in Safari, plain Tab skips buttons, so it could jump out of the layer to the page behind or off the page. Focus now wraps back to the other end. Native radio groups still move with the arrow keys as before.
+- Dialog, Sheet, Drawer and other layers that hold focus: in Safari, Tab could jump out of the layer. Focus now wraps back.
 
 ## 0.22.0 · 30 Oct 2026
 
-Five new Pro components, a test suite that checks every component on every pull request, and the fixes it found.
+Five new Pro components, and many fixes.
 
 ### Added
 
-- DataGrid: a grid for thousands of rows that draws only the rows on screen. Sort (Shift for more columns), resize and pin columns, select rows with a count bar and actions, search, and filter by text, number or a set of values. The WAI-ARIA grid keyboard pattern throughout, and it renders on the server.
-- SmoothScroll: weighted scrolling for the mouse wheel and trackpad. Keys, the scrollbar, links, find in page, phones and reduced motion stay native, and it never moves a page that a dialog has locked.
-- ScrollDraft: sets `--draft` from 0 to 1 as a box scrolls into view, and draws any SVG line inside it with `pathLength="1"`.
-- TextRise: words that rise one after another behind a baseline, on load or with the scroll. Screen readers hear one plain sentence.
-- ScrollRuler: a ruler down the edge of the page that reads where you are and how fast you move.
-- Retime `fullWidth`: fills the row, with the speeds sharing it evenly.
+- DataGrid (Pro): a grid for thousands of rows. Sort, resize and pin columns, select rows, search and filter. It renders on the server.
+- SmoothScroll (Pro): weighted scrolling for the mouse wheel and trackpad.
+- ScrollDraft (Pro): sets `--draft` from 0 to 1 as a box scrolls into view, to draw an SVG line.
+- TextRise (Pro): words that rise one after another, on load or with the scroll.
+- ScrollRuler (Pro): a ruler down the edge of the page that shows where you are.
+- Retime `fullWidth`: fills the row.
 - Tokens `--hl-scroll-ease`, `--hl-draft-start`, `--hl-draft-end`, `--hl-rise-span`, `--hl-rise-room`, `--hl-ruler-w`, `--hl-ruler-step`, and `--hl-datagrid-h`, `--hl-datagrid-col-w`, `--hl-datagrid-col-min`, `--hl-datagrid-col-max`, `--hl-datagrid-resize-step`, `--hl-datagrid-resize-hit`, `--hl-datagrid-options-h`, `--hl-datagrid-order`.
 
 ### Fixed
 
-- Dialog, Sheet and Drawer: in Safari on iPhone and Mac, closing gave focus back to the page instead of the button that opened them, because Safari does not focus a button when it is pressed. It now goes back to that button.
-- Badge, Button, Calendar, CopyButton, Countdown, Kbd, OnionSkin, QrCode, SegmentedControl, Tag, ToggleGroup and AnimatedNumber stretched to the full width of a column layout. They keep their own width now; `fullWidth` still fills the row.
-- SegmentedControl: when something does stretch it, the options share the room instead of leaving an empty end.
-- Every disabled control uses `--hl-disabled-opacity`. Sixteen components still had their own value.
-- Touch targets of at least 44px for the Combobox toggle, the Breadcrumb "Show full path" button and the NotificationInbox tabs.
-- ColorPicker: focus on the picked swatch is now visible.
-- Blocks and templates: the NotificationsCenter bar no longer covers a focused row, and its phone layout, the Checkout "Place order" button and the SaaS starter's "Sign in" link keep their full size.
+- Dialog, Sheet and Drawer: in Safari, closing now returns focus to the button that opened them.
+- Badge, Button, Calendar, CopyButton, Countdown, Kbd, OnionSkin, QrCode, SegmentedControl, Tag, ToggleGroup and AnimatedNumber no longer stretch to the full width of a column. `fullWidth` still fills the row.
+- SegmentedControl: when stretched, the options share the room.
+- Every disabled control uses `--hl-disabled-opacity`.
+- Combobox toggle, Breadcrumb "Show full path" button and NotificationInbox tabs: touch targets are at least 44px.
+- ColorPicker: focus on the picked swatch is visible.
+- Blocks and templates: the NotificationsCenter bar no longer covers a focused row. Its phone layout, the Checkout "Place order" button and the SaaS starter's "Sign in" link keep their full size.
 
 ## 0.21.2 · 30 Oct 2026
 
@@ -249,53 +265,34 @@ Docs site only. No changes to the library.
 
 ## 0.21.1 · 30 Oct 2026
 
-### Fixed
-
-- VideoPlayer: captions sat under the controls, at the very edge of the video. The player now draws them itself, just above the controls while they show and lower when they hide, and larger in full screen.
-- VideoPlayer and AudioPlayer: the buttons' hover and on fills were as big as the whole 44px touch area and touched each other. The fill is now a small circle inside the touch area, with a gap between buttons.
-
 ### Changed
 
-- VideoPlayer: a toggle that is on, such as captions, is now a solid light circle with a dark icon, instead of a fill with a dot under it.
+- VideoPlayer: a toggle that is on, such as captions, is a solid light circle with a dark icon.
+
+### Fixed
+
+- VideoPlayer: captions no longer sit under the controls.
+- VideoPlayer and AudioPlayer: hover and on fills are a small circle with a gap between buttons.
 
 ## 0.21.0 · 29 Oct 2026
 
-Twelve new components, in four sets. All twelve are in Pro.
+Twelve new components, all in Pro.
 
 ### Added
 
-Touch lists:
-
-- SwipeActions: swipe a row sideways to show its actions, as in a mail app. Past half way it stays open, and `fullSwipe` runs the outer action. Tab reaches the actions, so no swipe is needed.
-- PullToRefresh: pull a list down from the top to load what is new. A ring draws in as you pull, then turns into a spinner. A Refresh button appears on keyboard focus.
-- SortableList: put a list in order by dragging its handles. Space, the arrow keys and Escape do the same from the keyboard, and each step is announced.
-
-Photos:
-
-- ImageCropper: crop and zoom a photo in a fixed frame, round for avatars. Drag, pinch, the wheel or the keys move it, and the photo always covers the frame. `onCropAreaChange` and `getCropArea` give the area in the photo's own pixels.
-- CompareSlider: a before and after with a divider you drag. The divider is a slider, so the arrow keys, Home and End move it too.
-- MasonryGrid: items of mixed heights packed into columns. Reading order and Tab order go row by row, as the eye does.
-
-Inputs:
-
-- ColorPicker: an area for saturation and brightness, a hue bar, a hex field and preset swatches. The area works with the arrow keys and says where it is.
-- SignaturePad: sign with a finger, pen or mouse, with Undo and Clear. `typeInstead` adds a typed name for people who cannot draw. The PNG is dark ink in both themes.
-- EmojiPicker: about 400 emoji in groups, with search, arrow keys across the grid and recently used ones.
-
-Data and time:
-
-- CalendarHeatmap: activity per day as a grid of shades, like a contribution graph. Each day can be reached with the arrow keys, and a month table gives the same numbers.
-- WeekSchedule: a week of events by the hour, with a line for now. Events that overlap share the width or step in on top. On a phone it shows one day at a time.
-- VirtualList: draws only the rows on screen, so 10,000 rows scroll smoothly. The keys still reach every row, and `scrollToIndex` jumps to one.
-
-Tokens:
-
-- `--hl-swipe-action-w`, `--hl-pull-distance`.
-- `--hl-picker-area-h`, `--hl-picker-hue-h`, `--hl-swatch`, `--hl-picker-white`, `--hl-picker-black`, `--hl-signature-h`, `--hl-ink-w`.
-- `--hl-heatmap-cell`, `--hl-heatmap-gap`, `--hl-heatmap-label`, `--hl-heatmap-1` to `--hl-heatmap-4`.
-- `--hl-schedule-hour`, `--hl-schedule-gutter`, `--hl-schedule-min-w`, `--hl-schedule-indent`.
-
-`add`, `diff` and `update` list any of these your `tokens.css` is missing.
+- SwipeActions: swipe a row sideways to show its actions. `fullSwipe` runs the outer action.
+- PullToRefresh: pull a list down from the top to load what is new.
+- SortableList: put a list in order by dragging its handles, or with the keyboard.
+- ImageCropper: crop and zoom a photo in a fixed frame, round for avatars. `onCropAreaChange` and `getCropArea` give the area in the photo's pixels.
+- CompareSlider: a before and after with a divider you drag.
+- MasonryGrid: items of mixed heights packed into columns.
+- ColorPicker: saturation and brightness area, hue bar, hex field and preset swatches.
+- SignaturePad: sign with a finger, pen or mouse. `typeInstead` adds a typed name.
+- EmojiPicker: about 400 emoji in groups, with search and recently used ones.
+- CalendarHeatmap: activity per day as a grid of shades.
+- WeekSchedule: a week of events by the hour. On a phone it shows one day at a time.
+- VirtualList: draws only the rows on screen. `scrollToIndex` jumps to one.
+- Tokens `--hl-swipe-action-w`, `--hl-pull-distance`, `--hl-picker-area-h`, `--hl-picker-hue-h`, `--hl-swatch`, `--hl-picker-white`, `--hl-picker-black`, `--hl-signature-h`, `--hl-ink-w`, `--hl-heatmap-cell`, `--hl-heatmap-gap`, `--hl-heatmap-label`, `--hl-heatmap-1` to `--hl-heatmap-4`, `--hl-schedule-hour`, `--hl-schedule-gutter`, `--hl-schedule-min-w` and `--hl-schedule-indent`. `add`, `diff` and `update` list any your `tokens.css` is missing.
 
 ## 0.20.3 · 29 Oct 2026
 
@@ -305,56 +302,57 @@ Docs site only. No changes to the library.
 
 ### Changed
 
-- Blocks and templates name people by their role ("Design lead", "Web engineer", "You") and businesses by what they are ("Your app", "A logistics team"), instead of made-up names. Avatars show the role's initials and emails are role addresses at example.com. Real places stay.
-- MentionInput and NotificationInbox: the examples in their prop notes use roles too.
+- Blocks and templates name people by role ("Design lead", "You") and businesses by what they are, instead of made-up names. Emails are role addresses at example.com.
 
 ## 0.20.1 · 28 Oct 2026
 
 ### Changed
 
-- `add`, `diff` and `update` now check your `tokens.css` against the latest one. If yours lacks tokens the components use (for example `--hl-disabled-opacity`, `--hl-check-scale` and `--hl-check-peak-scale` from 0.20.0), they list the names and the lines to copy. Your file is never changed, and nothing is printed when no token is missing.
+- `add`, `diff` and `update` check your `tokens.css` against the latest one. If tokens are missing, they list the names and lines to copy. Your file is never changed.
 
 ## 0.20.0 · 28 Oct 2026
 
-A full bug audit of every component, block and template, at 320, 390, 768 and 1280 wide, in light and dark. Every fix below was checked in the browser before and after.
+A full bug audit of every component, block and template.
 
 ### Added
 
-- Calendar, DatePicker and DateRangePicker `today`: the date to treat as today. Without it, today follows the clock and moves on at midnight.
-- CopyButton `failedLabel` (default "Could not copy"): shown and announced when copying fails.
-- Tokens `--hl-disabled-opacity` (`0.5`), `--hl-check-scale` and `--hl-check-peak-scale`. The two scales become `1` under reduced motion.
+- Calendar, DatePicker and DateRangePicker `today`: the date to treat as today.
+- CopyButton `failedLabel` (default "Could not copy"): shown when copying fails.
+- Tokens `--hl-disabled-opacity` (`0.5`), `--hl-check-scale` and `--hl-check-peak-scale`.
 
 ### Changed
 
-- Disabled controls use one opacity, `--hl-disabled-opacity`. Before, it was 0.3 to 0.6 depending on the component.
-- On touch screens, small Buttons and IconButtons, Inputs, SegmentedControl items, Calendar month buttons and the DateRangePicker icons give at least a 44px target without looking bigger. A tap area never covers the button next to it. On a mouse, IconButton's tap area is now the size of the button.
-- Long labels end in "…" instead of spilling out: Button, Badge, Tag, BottomTabBar, SegmentedControl. Long words wrap in Accordion, Collapsible, Timeline, EmptyState and Stepper.
-- Navbar: links that do not fit move into the menu, measured live, instead of running under the actions.
-- Pagination always shows 7 slots, and a "…" always stands for at least 2 pages.
+- Disabled controls use one opacity, `--hl-disabled-opacity`. Before, it was 0.3 to 0.6.
+- On touch screens, small Buttons and IconButtons, Inputs, SegmentedControl items, Calendar month buttons and DateRangePicker icons give at least a 44px target.
+- Button, Badge, Tag, BottomTabBar and SegmentedControl: long labels end in "…". Accordion, Collapsible, Timeline, EmptyState and Stepper wrap long words.
+- Navbar: links that do not fit move into the menu.
+- Pagination always shows 7 slots, and "…" stands for at least 2 pages.
 - Two-digit years read from 80 years back to 20 years ahead: `85` is 1985, `30` is 2030.
 - ContextMenu and Menubar: on a phone, a submenu that fits on neither side opens under its item.
 - Lightbox arrows use `aria-disabled`, so focus stays on them at the first and last picture.
-- VideoPlayer: at 320px wide the time moves under the seek bar, so every control fits.
+- VideoPlayer: at 320px wide the time moves under the seek bar.
 
 ### Fixed
 
-- TimePicker: the wheels only scroll up and down. Typing "1" in 12-hour mode picks 1, not 12.
-- RichTextEditor: adding a link inside a form no longer reloads the page. Pasting from Google Docs keeps the real bold and no longer makes everything bold.
-- KanbanBoard: a dragged card follows the pointer and lands in its slot. On a phone the board no longer makes the page wider than the screen.
+- TimePicker: typing "1" in 12-hour mode picks 1, not 12.
+- RichTextEditor: adding a link in a form no longer reloads the page. Pasting from Google Docs no longer makes everything bold.
+- KanbanBoard: a dragged card follows the pointer. On a phone the board no longer widens the page.
 - Dialog, Drawer, Sheet: a double click on a footer button no longer fires twice.
 - MentionInput no longer reports people who were not mentioned.
-- Combobox: the Escape that clears the text no longer also closes a Dialog around it. SearchInput's shortcut no longer pulls focus out of an open Dialog. Select no longer opens on Ctrl, Cmd or Alt keys.
+- Combobox: the Escape that clears the text no longer closes a Dialog around it.
+- SearchInput: its shortcut no longer pulls focus out of an open Dialog.
+- Select no longer opens on Ctrl, Cmd or Alt keys.
 - Toast announces the same message again when it repeats.
 - Alert banner: links and buttons inside it are readable.
 - Button and Spinner announce the loading state.
 - NumberInput steps from the number being typed, and a disabled stepper no longer counts.
 - PinInput: Delete and Cut clear a box, and six boxes fit on one line at 320px.
-- TagInput: commas make tags on Android keyboards, and a pasted list split by new lines makes one tag per line.
+- TagInput: commas make tags on Android keyboards, and a pasted list makes one tag per line.
 - Switch with a `name` submits its value in a form.
 - CurrencyInput: Backspace right after a comma deletes the digit before it.
 - RangeSlider: thumbs on the same value can be dragged apart either way.
 - Textarea and Input reset their height, count and floating label with the form.
-- FileUpload shows 999,999 bytes as "1 MB", not "1,000 kB".
+- FileUpload shows 999,999 bytes as "1 MB".
 - TreeView: the first click after a drop works, and focus stays on an item moved by keyboard.
 - Carousel: Play works while focus is inside.
 - Calendar fits at 320px, and today moves on at midnight.
@@ -364,140 +362,136 @@ A full bug audit of every component, block and template, at 320, 390, 768 and 12
 - ResizablePanels: a collapsed panel stays collapsed on ArrowLeft and Home.
 - VideoPlayer plays new `sources` when they change.
 - Chart: the tooltip reads values aloud only while using the keyboard.
-- Tag, Navbar, Breadcrumb, Sidebar, Stat, Link, ProgressBar, Collapsible and Pagination fixes for focus, wrapping, ARIA values and overflow.
+- Tag, Navbar, Breadcrumb, Sidebar, Stat, Link, ProgressBar, Collapsible and Pagination: fixes for focus, wrapping, ARIA values and overflow.
 - Blocks: Checkout locks the cart while placing the order. Inbox and Schedule use one date for today. AppShell's Profile item opens a page. EventPage's calendar file downloads in Safari. Booking, TwoStepVerification, Onboarding, ProjectBoard and Schedule fit at 320px.
 
 ## 0.19.0 · 19 Oct 2026
 
 ### Added
 
-- `npx hlmnhkl-ui init`: sets a project up in one step. It adds `tokens.css` and `base.css`, writes `hlmnhkl-ui.json` with your folder, and shows the import lines. Later commands use that folder, so `--to` is only needed once.
-- `npx hlmnhkl-ui list`: shows every component, block, template and theme, free and Pro. `--kind blocks` shows one kind.
-- `npx hlmnhkl-ui diff <name>`: shows what changed between your copy and the latest version, line by line, like `git diff`.
-- `npx hlmnhkl-ui update <name>`: shows the changes, asks, then replaces your copy. `--yes` skips the question; without a terminal it stops instead of guessing. `tokens.css` and `base.css` are never replaced.
-- Every copied file starts with one line naming hlmnhkl/ui and its licence, so the MIT notice travels with the code. `diff` and `update` ignore that line.
-- `llms.txt`, `llms-full.txt` and `registry.json` on the docs site, so AI coding assistants can find, describe and install components. Pro items show a name and one line only.
+- `npx hlmnhkl-ui init`: sets a project up in one step. It adds `tokens.css` and `base.css`, writes `hlmnhkl-ui.json` with your folder, and shows the import lines.
+- `npx hlmnhkl-ui list`: shows every component, block, template and theme. `--kind blocks` shows one kind.
+- `npx hlmnhkl-ui diff <name>`: shows what changed between your copy and the latest version.
+- `npx hlmnhkl-ui update <name>`: shows the changes, asks, then replaces your copy. `--yes` skips the question. `tokens.css` and `base.css` are never replaced.
+- Every copied file starts with one line naming hlmnhkl/ui and its licence.
+- `llms.txt`, `llms-full.txt` and `registry.json` on the docs site, so AI coding assistants can find and install components.
 
 ### Changed
 
-- `add` now uses the folder in `hlmnhkl-ui.json` when there is no `--to`. A bare name still works: `npx hlmnhkl-ui button` is the same as `add button`.
+- `add` uses the folder in `hlmnhkl-ui.json` when there is no `--to`. A bare name still works: `npx hlmnhkl-ui button` is the same as `add button`.
 
 ### Fixed
 
-- Toast: its hidden screen reader announcers no longer add 1px of scroll under the page.
+- Toast: its hidden announcers no longer add 1px of scroll under the page.
 
 ## 0.18.0 · 18 Oct 2026
 
 ### Added
 
-- TreeView `onMove`: drag items into folders. A small card with the name follows the pointer, the folder it would land in is ringed, and a closed folder held under it opens after a moment. On touch, hold an item first, so a quick swipe still scrolls. With the keyboard, Space picks an item up, Up and Down choose a folder or the top level, and Space drops; Escape cancels. Every step is announced. A folder never goes into itself or a folder inside it. The moved row glides to its new place.
-- `moveNode(nodes, id, folderId)`, to apply a move to your tree data in one line.
-- Token `--hl-tree-open-delay` (`800ms`): how long a closed folder waits under a dragged item before it opens. Reduced motion keeps it, since it is about intent, not motion.
+- TreeView `onMove`: drag items into folders, by pointer, touch or keyboard.
+- `moveNode(nodes, id, folderId)`: applies a move to your tree data in one line.
+- Token `--hl-tree-open-delay` (`800ms`): how long a closed folder waits under a dragged item before it opens.
 
 ### Changed
 
-- TreeView: a node with `children: []` is a folder you can drop into, even while empty. With `onMove`, Space picks up and Enter selects; without it, Space still selects.
+- TreeView: a node with `children: []` is a folder you can drop into. With `onMove`, Space picks up and Enter selects. Without it, Space still selects.
 
 ### Fixed
 
-- The page did not scroll with the mouse wheel while the pointer was over a Table or a ScrollArea. They now only stop sideways scroll from spilling over, so a swipe at the edge does not go back a page, and the wheel scrolls the page as normal.
+- The page did not scroll with the mouse wheel while the pointer was over a Table or a ScrollArea.
 
 ## 0.17.0 · 18 Oct 2026
 
 ### Added
 
-- Skeleton `variant="sketch"`: the same shapes as dashed pencil outlines with no fill, for a quieter wait. Text becomes dashed baselines. The lines fade gently instead of shimmering, and hold still with reduced motion.
-- Token `--hl-color-surface-raised`: the surface for something that sits on a track, such as a sliding pill or a slider thumb. In light it is the surface; in dark it is a step lighter.
+- Skeleton `variant="sketch"`: dashed pencil outlines with no fill, for a quieter wait.
+- Token `--hl-color-surface-raised`: the surface for something on a track, such as a sliding pill or slider thumb.
 
 ### Changed
 
-- Dark mode depth: SegmentedControl and ToggleGroup pills and Slider and RangeSlider thumbs use the raised surface, so they stand out by fill. `--hl-shadow-1` and `--hl-shadow-2` are faint in dark (20% and 15%), so buttons and pills no longer look embossed. Larger shadows for menus and dialogs stay.
+- Dark mode: SegmentedControl and ToggleGroup pills and Slider and RangeSlider thumbs use the raised surface. `--hl-shadow-1` and `--hl-shadow-2` are fainter.
 
 ## 0.16.0 · 18 Oct 2026
 
 ### Added
 
-- Table `groupBy`: gathers rows under a header per group, such as each invoice's status, with a row count. Turning groups on or off makes the table split apart and close up again, and a row that changes group glides into it. Groups keep their order; the sort applies inside each group. Each group is its own row group with a row header, so screen readers announce it.
-- **Route** (Pro): progress as a journey. Stops sit on a road, drawn in ink behind the marker and dashed ahead, and the marker glides between them. `value` can sit between two stops, such as 1.5. Along a line or down the page. Screen readers hear where it is, such as "On the way from Packed to Shipped".
-- Token `--hl-wheel-tilt` (`18deg`): how far each wheel row tilts per row away from the middle.
+- Table `groupBy`: gathers rows under a header per group, with a row count.
+- Route (Pro): progress as a journey, with stops on a road and a marker. `value` can sit between two stops, such as 1.5.
+- Token `--hl-wheel-tilt` (`18deg`): how far each wheel row tilts.
 
 ### Changed
 
-- TimePicker wheels turn like a drum: rows tilt back and fade as they leave the middle. Hours and minutes go round, so 59 rolls on to 00 by scroll or keyboard, taking the short way. Screen readers still hear each option once.
+- TimePicker: wheels turn like a drum. Hours and minutes go round, so 59 rolls on to 00.
 
 ## 0.15.2 · 18 Oct 2026
 
 ### Removed
 
-- Pro block List and detail. Team members covers the same people, and Inbox and Orders show the same list and detail pattern.
-- Pro theme Ink. It was close to the default look; Slate covers a cool blue-grey.
-
-### Changed
-
-- Pro previews are twice as sharp, saved as AVIF at about the same weight as before. Locked block pages now have the same Preview and Code switch as components: Preview is the screenshot, Code is the Pro lock.
+- Pro block List and detail. Team members, Inbox and Orders cover it.
+- Pro theme Ink. Slate covers a cool blue-grey.
 
 ## 0.15.1 · 18 Oct 2026
 
 ### Fixed
 
-- Safari no longer shows a small dot where a hidden line starts: beside the Stepper number, and in Checkbox, CopyButton, ProgressRing, PasswordInput (the eye's slash) and Table row checkboxes. A hidden line used to be a zero-length dash, and Safari still drew its round ends.
-- Tabs fit a narrow phone more often: under 480px each tab has a little less room on its sides, so a short row no longer scrolls sideways by a few pixels. Every tab is now at least 44px wide, so none is too small to tap.
+- Safari no longer shows a small dot where a hidden line starts in Stepper, Checkbox, CopyButton, ProgressRing, PasswordInput and Table row checkboxes.
+- Tabs fit a narrow phone more often. Every tab is at least 44px wide.
 
 ## 0.15.0 · 17 Oct 2026
 
 ### Added
 
-- **Retime**, a new Motion component. One control sets the speed of every animation in the library: Off, Slower, Normal or Faster. It remembers the choice. Reduced motion in the system still wins.
-- **OnionSkin**, a new Motion component. When a value changes, the old one stays for a moment as a faint grey ghost and lifts away while the new one settles. Screen readers hear "Changed from X to Y".
-- **Register** and `morph()`, a new Motion component. Give the same `mark` to an element before and after a change, run the change in `morph()`, and the element glides from where it was to where it lands. Without browser support, or with reduced motion, the change happens at once.
-- Input and SearchInput `size="sm"`: a 32px field for toolbars and dense side panels. On a touch screen its text stays 16px, so phones do not zoom.
-- Token `--hl-motion-scale` (default `1`). Every duration token is now its base times this number, so `1.5` is slower and `0` is no motion. JS timers read it too.
-- Token `--hl-press-scale-strong` (`0.9`): small controls such as icon buttons, checkboxes and steppers press deeper, so the tap is felt.
-- Token `--hl-blur-sm` (`6px`) for small things settling in, such as an avatar loading.
+- Retime (Motion): one control sets the speed of every animation: Off, Slower, Normal or Faster. It remembers the choice.
+- OnionSkin (Motion): when a value changes, the old one stays as a faint ghost for a moment.
+- Register and `morph()` (Motion): give the same `mark` to an element before and after a change, run the change in `morph()`, and the element glides to its new place.
+- Input and SearchInput `size="sm"`: a 32px field for toolbars. On touch its text stays 16px.
+- Token `--hl-motion-scale` (default `1`). Every duration is its base times this number. `0` is no motion.
+- Token `--hl-press-scale-strong` (`0.9`): small controls press deeper.
+- Token `--hl-blur-sm` (`6px`) for small things settling in.
 
 ### Changed
 
-- **The npm package and the public repo now hold only the 50 free components.** The other 53 are in Pro. `npx hlmnhkl-ui add combobox` (or any Pro name) now says it is in Pro instead of "not found". The public repo is the library only; the docs are at ui.hlmnhkl.my.
-- Calmer springs. `--hl-ease-spring` now goes about 1% past its target instead of 10%, and `--hl-ease-bounce` about 3% instead of 18%. Motion still settles softly, but no longer wobbles when it is on every control.
-- Dark theme is softer: the page is `#161616`, not near black, raised surfaces are a step lighter, and text is `#ececec`, so it does not glare.
-- Theme tokens now also apply under `[data-theme="light"]` and `[data-theme="dark"]` on any element, not only on `:root`. A part of the page can have its own theme.
-- Marquee: `pauseButton` is now `false` by default. The row still stops while it is hovered, has keyboard focus, or is pressed and held on a touch screen, and it stops with reduced motion.
-- AudioPlayer has a new layout: play, title and controls on top, and the timeline across the full width below, with the elapsed time on the left and the length on the right. A long title ends in an ellipsis.
-- Press scales and small sizes in many components now use tokens instead of fixed numbers, so reduced motion turns them off.
+- The npm package and the public repo hold only the 50 free components. The other 53 are in Pro. `npx hlmnhkl-ui add combobox` (or any Pro name) says it is in Pro.
+- `--hl-ease-spring` and `--hl-ease-bounce` overshoot much less, so motion no longer wobbles.
+- Dark theme is softer: the page is `#161616`, and text is `#ececec`.
+- Theme tokens also apply under `[data-theme="light"]` and `[data-theme="dark"]` on any element, so a part of the page can have its own theme.
+- Marquee: `pauseButton` is now `false` by default.
+- AudioPlayer: new layout, with play, title and controls on top and the timeline below.
+- Press scales and small sizes use tokens, so reduced motion turns them off.
 
 ### Fixed
 
-- The sliding pill or underline in SegmentedControl, Tabs, Pagination, Navbar and ToggleGroup no longer bounces past its place or swells past its size. It glides and settles with no overshoot, which felt wobbly on controls pressed often. Carousel dots, ResizablePanels and Sheet also change size with no overshoot.
-- Calendar: a range can no longer span a disabled day. The selected circle stays on its day while a popover scales in. The month view keeps focus on the year buttons when they are clicked. Selected months stay readable on hover. Moving to a shorter month keeps the last day instead of day 28.
+- The sliding pill or underline in SegmentedControl, Tabs, Pagination, Navbar and ToggleGroup no longer bounces past its place. Carousel dots, ResizablePanels and Sheet also change size with no overshoot.
+- Calendar: a range can no longer span a disabled day. Moving to a shorter month keeps the last day. Selected months stay readable on hover.
 - Calendar typed dates: th-TH no longer adds 543 years, and ar-EG and fa-IR dates parse back.
 - DatePicker and DateRangePicker no longer show an error when the field loses focus without a change.
 - Combobox, MultiSelect, TagInput, MentionInput, InlineEdit and SearchInput ignore Enter while an input method (Chinese, Japanese, Korean) is picking a word.
-- NumberInput reads a minus sign written as U+2212 (sv, nb, fi).
-- Alert: closing it moves focus to the next control, not to the page body.
-- Breadcrumb: after the "…" button expands the trail, focus moves to the first link it showed.
+- NumberInput reads a minus sign written as U+2212.
+- Alert: closing it moves focus to the next control.
+- Breadcrumb: after "…" expands the trail, focus moves to the first link it showed.
 - Accordion: arrow keys in a nested accordion no longer move the outer one.
-- Tabs and ToggleGroup always keep one tab stop, even when the value matches no enabled item.
-- SegmentedControl: arrow keys move from the focused option, not from the chosen one.
+- Tabs and ToggleGroup always keep one tab stop.
+- SegmentedControl: arrow keys move from the focused option.
 - TreeView: disabled branches no longer open or close.
-- DropdownMenu and ContextMenu: Tab closes the menu and returns focus to the trigger. Long menus scroll instead of running off the screen.
-- Tooltip and HoverCard: Esc closes only them, not a dialog behind them. A click inside a HoverCard no longer closes a dialog behind it.
-- Toast: error toasts are announced right away (`role="alert"`). Tapping a toast no longer closes an open dialog. Hidden toasts in the stack cannot be focused.
-- Dialogs and sheets no longer make the page jump sideways when they hide the scrollbar.
+- DropdownMenu and ContextMenu: Tab closes the menu and returns focus to the trigger. Long menus scroll.
+- Tooltip and HoverCard: Esc closes only them, not a dialog behind them.
+- Toast: error toasts are announced right away. Tapping a toast no longer closes an open dialog.
+- Dialogs and sheets no longer make the page jump sideways.
 - Sheet springs back if it is dragged down but the app keeps it open.
-- Pagination scrolls inside itself on a narrow phone and keeps the current page in view.
-- Table and Chart data tables can be scrolled with the keyboard when they are wider than their box.
-- DonutChart: a tap on a slice now shows its value on touch screens.
+- Pagination scrolls inside itself on a narrow phone.
+- Table and Chart data tables can be scrolled with the keyboard.
+- DonutChart: a tap on a slice shows its value on touch screens.
 - Carousel: an index past the last slide no longer makes every slide inert.
-- Image: with `width` and `height` but no `ratio`, the space is reserved; with neither, the image sets its own height. A missing `src` shows the fallback.
+- Image: with `width` and `height` but no `ratio`, the space is reserved. A missing `src` shows the fallback.
 - Rating: on touch screens each tap picks a whole star.
 - Radio: `role="radiogroup"`, and each radio is marked invalid when the group has an error.
 - Switch keeps your own `aria-describedby` next to its description.
-- Divider with a label: the label is read by screen readers.
-- KanbanBoard: column counts read once, moves are announced politely, and a drag is cleaned up if the board unmounts.
-- Stat: a change too small to show reads as flat, not as "up 0%".
+- Divider with a label: screen readers read the label.
+- KanbanBoard: column counts read once, and moves are announced politely.
+- Stat: a change too small to show reads as flat, not "up 0%".
 - ChatThread, CommentThread and NotificationInbox skip the time for an invalid date instead of crashing.
-- RichTextEditor: shortcut labels no longer differ between server and client render.
-- Timeline shows its events without JS, and reveals them a little earlier when scrolling.
+- RichTextEditor: shortcut labels no longer differ between server and client.
+- Timeline shows its events without JS.
 - ScrollArea and Tabs scroll at once with reduced motion.
 - VideoPlayer: a tap on the centre wakes the controls, and the time updates when playback starts.
 - Buttons inside Calendar, Collapsible, Navbar, Menubar, Sidebar, Stepper, Tabs, TimePicker, Toolbar and BottomTabBar use the page font and colour.
@@ -507,37 +501,36 @@ A full bug audit of every component, block and template, at 320, 390, 768 and 12
 
 ### Fixed
 
-- Table lost its column headers when it was narrower than 560px, even in the default `layout="scroll"`. The rule that hides an empty head was meant only for `layout="stack"` but reached every table. Headers show again.
+- Table lost its column headers under 560px, even in the default `layout="scroll"`. Headers show again.
 
 ## 0.14.6 · 16 Oct 2026
 
 ### Added
 
-- Table `layout` prop: `'scroll'` (default) or `'stack'`. Use `'stack'` for tables that read better as cards on a phone, such as a list of orders.
-- Token `--hl-table-cell-max`, a cell's widest, so long text wraps inside its column.
+- Table `layout` prop: `'scroll'` (default) or `'stack'`. Use `'stack'` for tables that read better as cards on a phone.
+- Token `--hl-table-cell-max`, a cell's widest, so long text wraps in its column.
 
 ### Changed
 
-- Table on a narrow screen now keeps its columns and scrolls sideways, with the first column in place and a fade on the edge that has more. Before, it always turned rows into cards; that is now `layout="stack"`.
+- Table on a narrow screen keeps its columns and scrolls sideways. Before, it turned rows into cards. That is now `layout="stack"`.
 
 ### Fixed
 
-- Table cards (`layout="stack"`) no longer show an empty band above them when the table has no sort buttons or select-all box.
+- Table cards (`layout="stack"`) no longer show an empty band when there are no sort buttons or select-all box.
 
 ## 0.14.5 · 16 Oct 2026
 
 ### Added
 
-- Token `--hl-text-input` for text typed into a field. It matches `--hl-text-md`, and on a touch screen it is at least 16px.
+- Token `--hl-text-input` for text typed into a field. It is at least 16px on a touch screen.
 
 ### Fixed
 
-- iPhone Safari no longer zooms in when a field is tapped. Input, Textarea, Combobox, MultiSelect, TagInput, NumberInput, MentionInput, InlineEdit, RichTextEditor, ChatThread and CommentThread use `--hl-text-input`, so their text is at least 16px on touch screens.
+- iPhone Safari no longer zooms in when a field is tapped. Affects Input, Textarea, Combobox, MultiSelect, TagInput, NumberInput, MentionInput, InlineEdit, RichTextEditor, ChatThread and CommentThread.
 - Accordion questions were blue on iPhone Safari. They now use the text colour.
-
-- DescriptionList no longer squeezes to almost nothing inside a centred or shrink-to-fit box, where values broke after every letter. It now fills its parent.
-- Tooltip now works on touch screens: a tap shows the tip, and it fades about 1.5 seconds after the finger lifts.
-- HoverCard now works on touch screens: the first tap on the link opens the card, a second tap follows the link, and a tap anywhere else closes it.
+- DescriptionList no longer squeezes to almost nothing in a centred or shrink-to-fit box.
+- Tooltip works on touch screens: a tap shows the tip.
+- HoverCard works on touch screens: the first tap opens the card, a second follows the link, and a tap elsewhere closes it.
 
 ## 0.14.4 · 14 Oct 2026
 
@@ -553,21 +546,21 @@ Docs site only. No changes to the library.
 
 ## 0.14.1 · 14 Oct 2026
 
-Docs only. No changes to the library.
+Docs site only. No changes to the library.
 
 ## 0.14.0 · 14 Oct 2026
 
 Works in Next.js, and no uppercase labels.
 
-### Fixed
-
-- Components work in the Next.js App Router. Every component with its own state or click handling starts with `'use client'`, so a server page can render it. Simple ones such as Badge, Card, Stack and Grid stay server-safe.
-
 ### Changed
 
-- Chart: the data table now grows open and shut smoothly. While closed, screen readers can still read it.
+- Chart: the data table opens and shuts smoothly.
 - No uppercase labels: Sidebar, DropdownMenu, ContextMenu, Menubar and CommandPalette group labels, Table headers, Divider text and Countdown units use sentence case. The blocks and templates follow.
 - The backup code field in the Two-step verification block no longer forces capitals.
+
+### Fixed
+
+- Components work in the Next.js App Router. Components with state or click handling start with `'use client'`.
 
 ## 0.13.0 · 14 Oct 2026
 
@@ -575,13 +568,13 @@ One command to install, and no sticky hover on phones.
 
 ### Added
 
-- Install with one command from your app's folder: `npx hlmnhkl-ui@latest add button` (or `pnpm dlx`, `yarn dlx`, `bunx`). Files go to `src/ui` unless you pass `--to`.
+- Install with one command: `npx hlmnhkl-ui@latest add button` (or `pnpm dlx`, `yarn dlx`, `bunx`). Files go to `src/ui` unless you pass `--to`.
 - Names work in kebab case too, such as `date-picker`.
 
 ### Fixed
 
-- Hover styles no longer stay on after a tap on touch screens. They now apply only on devices that can hover. Press and focus styles are unchanged.
-- The VideoPlayer seek thumb now shows on touch screens. Before, it appeared only on hover.
+- Hover styles no longer stay on after a tap on touch screens.
+- The VideoPlayer seek thumb shows on touch screens.
 
 ## 0.12.0 · 14 Oct 2026
 
@@ -589,7 +582,7 @@ A licence.
 
 ### Added
 
-- MIT licence for the components, tokens and the add command: use them in any project, free or paid.
+- MIT licence for the components, tokens and the add command.
 - Blocks, templates and themes have their own Pro licence (LICENSE-PRO.md). Until Pro is on sale, they may not be copied or used.
 
 ## 0.11.7 · 14 Oct 2026
@@ -626,17 +619,16 @@ Templates and themes.
 
 ### Added
 
-- 4 templates, each a full app with working navigation between its pages: SaaS starter (sign in, sign up, onboarding, dashboard, settings, billing), Workspace (projects, board, schedule, inbox, files, search), Admin console (members, invites, projects, analytics, audit log, purchases) and Marketing site (landing, pricing, changelog, help, contact, book a demo).
+- 4 templates, each a full app with working navigation: SaaS starter, Workspace, Admin console and Marketing site.
 - 5 brand themes (Slate, Forest, Ink, Clay, Plum), each in light and dark, plus Compact and Comfortable density. Apply them with `data-theme-brand` and `data-density`.
 - `npm run add` copies blocks, templates and themes too, with the components they need.
-- Select `hideLabel` keeps the label for screen readers only, for lists with one column heading.
-- Sidebar `headerCollapsed` shows something small, such as a logo, while collapsed.
-- The Tessera sample app has its own logo in the AppShell block and all four templates.
+- Select `hideLabel`: keeps the label for screen readers only.
+- Sidebar `headerCollapsed`: shows something small, such as a logo, while collapsed.
 
 ### Fixed
 
 - A collapsed Sidebar no longer clips the header text.
-- Team members shows one "Role" heading instead of a label on every row, and Remove lines up with the role.
+- Team members shows one "Role" heading instead of a label on every row.
 
 ## 0.10.0 · 14 Oct 2026
 
@@ -644,21 +636,20 @@ Templates and themes.
 
 ### Added
 
-- 22 blocks: Forgot password, Two-step verification, Onboarding, Profile, Team members, Billing, Notifications center, Inbox, Project board, Schedule, Data table, Analytics report, File manager, Search results, Orders, Booking, Checkout, Invoice, Help centre, Contact form, Pricing table and Event page. 30 blocks in total.
+- 22 blocks, 30 in total: Forgot password, Two-step verification, Onboarding, Profile, Team members, Billing, Notifications center, Inbox, Project board, Schedule, Data table, Analytics report, File manager, Search results, Orders, Booking, Checkout, Invoice, Help centre, Contact form, Pricing table and Event page.
 - KanbanBoard `onCardOpen`: a click or Enter opens a card.
-- RadioGroup `error`, shown the same way as field errors.
+- RadioGroup `error`, shown like field errors.
 - CommandPalette items take a `tag`, such as "Pro".
 
 ### Changed
 
 - Blocks, templates and themes are part of hlmnhkl/ui Pro, coming soon.
-- All blocks use one made-up SaaS app, Tessera, as sample content, so they read like pages of one product.
-- Breadcrumb items without `href` are real buttons, so the keyboard can reach them.
+- Breadcrumb items without `href` are real buttons.
 - Card `title` accepts any content.
 
 ### Fixed
 
-- Dropdowns and pickers opened inside a Dialog, Drawer or Sheet now appear on top instead of behind it.
+- Dropdowns and pickers opened inside a Dialog, Drawer or Sheet appear on top of it.
 - InlineEdit no longer wraps early in narrow spaces.
 - The unread dot in NotificationInbox lines up with the avatar.
 
@@ -690,10 +681,10 @@ English only.
 - DescriptionList, RelativeTime and Countdown.
 - InlineEdit and MentionInput.
 - ChatThread, CommentThread, and NotificationInbox with a bell.
-- VideoPlayer and AudioPlayer with their own controls and keyboard shortcuts.
-- QrCode with its own encoder: versions 1 to 40, all four error correction levels, and download as SVG.
-- Tour: a guided spotlight walkthrough of a page.
-- `npm run add -- Button --to ../my-app/src/ui` copies components and everything they need into your project. It never overwrites your files unless you ask.
+- VideoPlayer and AudioPlayer.
+- QrCode, with download as SVG.
+- Tour: a guided walkthrough of a page.
+- `npm run add -- Button --to ../my-app/src/ui` copies components and what they need into your project. It never overwrites your files unless you ask.
 
 ### Changed
 
@@ -709,21 +700,20 @@ Malaysian inputs and nine component gaps closed.
 
 ### Added
 
-- IcInput: MyKad number with dashes added as you type, a birth date and place code check, and helpers to read the birth date.
+- IcInput: MyKad number with dashes added as you type, and helpers to read the birth date.
 - PhoneInput: a fixed +60 prefix, mobile and landline formats, and an E.164 value such as `+60123456789`.
 - CurrencyInput: RM amounts with separators as you type and exact values in sen.
 - AddressFields: address lines, postcode, city and the 13 states and 3 federal territories.
-- Grid `steps="halves"` steps 4 columns to 2 to 1.
-- Button `href` renders a link with the same look.
+- Grid `steps="halves"`: steps 4 columns to 2 to 1.
+- Button `href`: renders a link with the same look.
 - Sidebar `collapsible` and `fill`, Card `fill`, Checkbox `error` and Split `stacked`.
-- EmptyState `headingLevel` now takes 1, so it can be the page title.
+- EmptyState `headingLevel` now takes 1.
 
 ### Changed
 
 - Button with `aria-disabled` looks disabled but keeps focus, and ignores clicks.
 - Split leaves no gap when there is no sidebar.
 - SearchInput hides its "/" hint on touch screens.
-- The blocks use these new props instead of their own workarounds.
 
 ## 0.6.0 · 14 Oct 2026
 
@@ -731,12 +721,12 @@ Colour where it means something.
 
 ### Added
 
-- Status colour tokens: `--hl-color-success`, `--hl-color-warning`, `--hl-color-danger` and soft versions. Used only where colour means good, caution or bad, always with an icon or word.
+- Status colour tokens: `--hl-color-success`, `--hl-color-warning`, `--hl-color-danger` and soft versions.
 - Badge `tone`: `neutral`, `success`, `warning`, `danger`.
 
 ### Changed
 
-- Stat shows good changes in green and worse changes in red, and keeps its arrows.
+- Stat shows good changes in green and worse changes in red.
 - Alert success, warning and error get a soft tinted background and a coloured icon.
 - Toast success and error icons are green and red.
 - Field errors show a red border and red message in every form field.
@@ -749,7 +739,7 @@ Layout primitives and the first eight blocks.
 ### Added
 
 - Layout primitives: Stack, Cluster, Grid, Container, Split, Center, AspectRatio, VisuallyHidden.
-- Blocks, whole pages to copy: app shell, phone shell, sign in, sign up, dashboard, settings, list and detail, status pages.
+- Blocks: app shell, phone shell, sign in, sign up, dashboard, settings, list and detail, status pages.
 
 ### Fixed
 
@@ -774,7 +764,7 @@ Layout primitives and the first eight blocks.
 - Combobox and MultiSelect skip disabled options while you type.
 - Select puts its `id` on the button, so `<label htmlFor>` works.
 - RangeSlider no longer shows values like 0.30000000000000004.
-- Also fixed: Checkbox, Chart, DropdownMenu, KanbanBoard, the field error message, SegmentedControl, TagInput, Marquee, Pagination, Tabs and TreeView.
+- Fixes in Checkbox, Chart, DropdownMenu, KanbanBoard, field error messages, SegmentedControl, TagInput, Marquee, Pagination, Tabs and TreeView.
 
 ## 0.3.0 · 14 Oct 2026
 
@@ -791,7 +781,7 @@ The library gets its name.
 ### Changed
 
 - Renamed from Monochrome UI to hlmnhkl/ui. The package is `@hlmnhkl/ui`, and tokens now start with `--hl-`.
-- Active items in CommandPalette, Sidebar, Navbar and TreeView use a filled background instead of a line on the left edge.
+- CommandPalette, Sidebar, Navbar and TreeView: the active item uses a filled background instead of a line on the left edge.
 
 ## 0.1.0 · 13 Oct 2026
 
@@ -799,5 +789,5 @@ First release.
 
 ### Added
 
-- 73 animated components across actions, forms, dates and time, navigation, layout, overlays, feedback, data display, charts and media.
+- 73 animated components.
 - Light and dark themes, reduced motion, and keyboard and screen reader support on every component.
