@@ -109,6 +109,10 @@
 /* Segments touch, so the box itself is the 44px target. The floor sits on the content, so the
    overflow check still sees the natural width, and tight mode shrinks no further than 44px. */
 @media (pointer: coarse) {
+  .item,
+  .sm .item {
+    min-height: var(--hl-hit-min);
+  }
   .text,
   .icon:only-child {
     min-width: calc(var(--hl-hit-min) - var(--pad) * 2);

@@ -598,6 +598,29 @@
   /* RulerScrubber: the space between two ticks, and its height (the speed arc's too) */
   --hl-ruler-tick-gap: 12px;
   --hl-ruler-h: 120px;
+  /* SwipeDeck: the card's width and least height, and the share of its width a drag must pass to throw it */
+  --hl-deck-w: 332px;
+  --hl-deck-card-h: 404px;
+  --hl-deck-throw: 0.35;
+  /* SplitFlap: one cell's width and height, as a share of its letter size, and its two halves */
+  --hl-flap-w: 0.92em;
+  --hl-flap-h: 1.36em;
+  --hl-flap-top: var(--hl-color-surface-sunken);
+  --hl-flap-bottom: var(--hl-color-surface-hover);
+}
+
+/* In the dark the top half is the lighter one, as on a lit board. Both are set again here, so a dark
+   part inside a light page takes its own greys. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --hl-flap-top: var(--hl-color-surface-active);
+    --hl-flap-bottom: var(--hl-color-surface-hover);
+  }
+}
+
+[data-theme="dark"] {
+  --hl-flap-top: var(--hl-color-surface-active);
+  --hl-flap-bottom: var(--hl-color-surface-hover);
 }
 
 :root,

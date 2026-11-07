@@ -2,6 +2,25 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.35.0 · 7 Nov 2026
+
+Three live parts: a pill that grows into a card, a deck you throw, and a board that flips.
+
+### Added
+
+- LivePill: a small status pill for something live, such as a download or a delivery. Tap it and its surface grows into a card from its own spot, and its words stay on the same pixels as the card's last row. It sits at the bottom in thumb reach (`placement="bottom"`), or at the top. `progress` makes the pill its own progress bar. `alert` opens it by itself and it shrinks back after 5 seconds, unless a hand or focus is on it. `news` and `alert` are said once; a ticking number never is.
+- SwipeDeck: a stack of cards you throw to either side to decide. A small ruler under the card has two throw marks that pull it in. A card goes past 35% of its width, or with a flick over 600 px a second that moved at least 40px; a slow, short drag comes back. The next card rises as you pull, and the button for that side fills toward it. Undo plays the throw in reverse. Arrow Left, Arrow Right and Backspace work too, and `onDecide` runs once per card.
+- SplitFlap: letters and numbers that flip into place like a station board. Each cell runs forward through its drum, fast and then slower, and lands with no bounce; a whole change ends inside a second. The board grows or shrinks with the liquid morph when the text gets longer or shorter. The text is said once, when it has landed.
+- Tokens `--hl-deck-w`, `--hl-deck-card-h`, `--hl-deck-throw`, `--hl-flap-w`, `--hl-flap-h`, `--hl-flap-top` and `--hl-flap-bottom`.
+
+### Fixed
+
+- SegmentedControl: on touch screens every segment is now 44px tall at `sm` and `md`, so the box itself is the target. On a desktop it looks the same as before.
+
+## 0.34.1 · 7 Nov 2026
+
+Tests only. No changes to the library.
+
 ## 0.34.0 · 7 Nov 2026
 
 Three ways to set a value by hand. Each one is drawn onto its marks, coasts after a flick and settles without a bounce.

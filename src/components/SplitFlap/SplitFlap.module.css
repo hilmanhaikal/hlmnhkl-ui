@@ -1,0 +1,107 @@
+.root {
+  display: inline-flex;
+  vertical-align: middle;
+  font-size: var(--hl-text-xl);
+  font-weight: var(--hl-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.root[data-size='sm'] {
+  font-size: var(--hl-text-md);
+}
+
+.root[data-size='lg'] {
+  font-size: var(--hl-text-4xl);
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.board {
+  display: inline-flex;
+  gap: var(--hl-space-1);
+  border-radius: var(--hl-radius-xs);
+}
+
+.root[data-size='lg'] .board {
+  gap: var(--hl-space-2);
+}
+
+.cell {
+  position: relative;
+  display: block;
+  inline-size: var(--hl-flap-w);
+  block-size: var(--hl-flap-h);
+  perspective: calc(var(--hl-flap-h) * 3);
+  color: var(--hl-color-fg);
+}
+
+/* Two halves with a hairline seam between them, where the page shows through. */
+.top,
+.bottom,
+.front,
+.back {
+  position: absolute;
+  inset-inline: 0;
+  block-size: calc(50% - var(--hl-line) / 2);
+  overflow: hidden;
+}
+
+.top,
+.front {
+  top: 0;
+  border-radius: var(--hl-radius-xs) var(--hl-radius-xs) 0 0;
+  background: var(--hl-flap-top);
+}
+
+.bottom,
+.back {
+  bottom: 0;
+  border-radius: 0 0 var(--hl-radius-xs) var(--hl-radius-xs);
+  background: var(--hl-flap-bottom);
+}
+
+.glyph {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  block-size: var(--hl-flap-h);
+  line-height: var(--hl-flap-h);
+  text-align: center;
+}
+
+.bottom .glyph,
+.back .glyph {
+  top: auto;
+  bottom: 0;
+}
+
+/* The falling flap turns on the seam, so after half a turn its back lies over the bottom half. */
+.flap {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 1;
+  block-size: calc(50% - var(--hl-line) / 2);
+  transform-origin: 50% calc(100% + var(--hl-line) / 2);
+  transform-style: preserve-3d;
+}
+
+.front,
+.back {
+  block-size: 100%;
+  backface-visibility: hidden;
+}
+
+.back {
+  top: 0;
+  bottom: auto;
+  transform: rotateX(180deg);
+}

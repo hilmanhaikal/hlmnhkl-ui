@@ -1,0 +1,238 @@
+.root {
+  display: grid;
+  gap: var(--hl-space-5);
+  inline-size: 100%;
+  /* Clipped sideways only, at the deck's own outer edge (the screen edge on a phone), so a thrown card
+     never makes the page scroll sideways and a tilted one keeps its corners. */
+  overflow-x: clip;
+}
+
+/* Room above for the corner of a tilted card. */
+.stage {
+  padding-block: var(--hl-space-7) var(--hl-space-6);
+}
+
+.deck {
+  --rise: 0;
+  position: relative;
+  display: grid;
+  max-inline-size: var(--hl-deck-w);
+  margin-inline: auto;
+  border-radius: var(--hl-radius-panel);
+  outline: none;
+}
+
+.deck:focus-visible {
+  box-shadow: var(--hl-focus-ring);
+}
+
+.card {
+  position: relative;
+  z-index: 3;
+  grid-area: 1 / 1;
+  display: grid;
+  min-block-size: var(--hl-deck-card-h);
+  border: var(--hl-line) solid var(--hl-color-border);
+  border-radius: var(--hl-radius-panel);
+  background: var(--hl-color-surface-raised);
+  box-shadow: var(--hl-shadow-2);
+  transform-origin: 50% 100%;
+  /* A sideways drag throws the card; up and down still scrolls the page. */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+
+.deck[data-dragging] .card[data-depth='0'] {
+  cursor: grabbing;
+  box-shadow: var(--hl-shadow-3);
+}
+
+/* The cards behind rise with the pull: one step up as the top card nears its mark. */
+.card[data-depth='1'] {
+  z-index: 2;
+  transform: translateY(calc((1 - var(--rise)) * var(--hl-space-3))) scale(calc(0.94 + 0.06 * var(--rise)));
+  box-shadow: var(--hl-shadow-1);
+  cursor: default;
+}
+
+.card[data-depth='2'] {
+  z-index: 1;
+  transform: translateY(calc(var(--hl-space-5) - var(--rise) * var(--hl-space-3))) scale(calc(0.88 + 0.06 * var(--rise)));
+  box-shadow: none;
+  cursor: default;
+}
+
+.deck:not([data-dragging]) .card[data-depth='1'],
+.deck:not([data-dragging]) .card[data-depth='2'] {
+  transition: transform var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.empty {
+  grid-area: 1 / 1;
+  display: grid;
+  place-content: center;
+  min-block-size: var(--hl-deck-card-h);
+  padding: var(--hl-space-6);
+  border: var(--hl-line) dashed var(--hl-color-border-strong);
+  border-radius: var(--hl-radius-panel);
+  color: var(--hl-color-fg-muted);
+  text-align: center;
+}
+
+/* The ruler under the card: a knob follows it, and the two throw marks pull it in. */
+.ruler {
+  position: relative;
+  inline-size: 100%;
+  max-inline-size: var(--hl-deck-w);
+  block-size: var(--hl-space-6);
+  margin-inline: auto;
+  background: linear-gradient(var(--hl-color-border), var(--hl-color-border)) center / 100% var(--hl-line) no-repeat;
+}
+
+.mark,
+.centre {
+  position: absolute;
+  top: 50%;
+  inline-size: var(--hl-line-thick);
+  block-size: var(--hl-space-5);
+  background: var(--hl-color-border-strong);
+  translate: -50% -50%;
+  transition:
+    background-color var(--hl-motion-fast) var(--hl-ease-out),
+    inline-size var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.centre {
+  left: 50%;
+  block-size: var(--hl-space-3);
+}
+
+.mark[data-side='left'] {
+  left: calc(50% - var(--hl-deck-throw) * 100%);
+}
+
+.mark[data-side='right'] {
+  left: calc(50% + var(--hl-deck-throw) * 100%);
+}
+
+.mark[data-armed] {
+  inline-size: calc(var(--hl-line-thick) * 2);
+  background: var(--hl-color-accent);
+}
+
+.knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  inline-size: var(--hl-space-4);
+  block-size: var(--hl-space-4);
+  margin: calc(var(--hl-space-4) / -2);
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-fg);
+}
+
+.knob[data-armed] {
+  background: var(--hl-color-accent);
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--hl-space-4);
+  align-items: center;
+  max-inline-size: var(--hl-deck-w);
+  inline-size: 100%;
+  margin-inline: auto;
+}
+
+.choice {
+  --fill: 0;
+  position: relative;
+  display: grid;
+  min-block-size: var(--hl-control-h-lg);
+  padding: 0;
+  border: var(--hl-line) solid var(--hl-color-border-strong);
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-surface);
+  color: var(--hl-color-fg);
+  font: inherit;
+  font-weight: var(--hl-weight-semibold);
+  overflow: clip;
+  transform: scale(calc(1 + var(--fill) * 0.08));
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.word {
+  display: grid;
+  place-items: center;
+  padding-inline: var(--hl-space-5);
+  white-space: nowrap;
+}
+
+/* The fill pours in from the button's inner edge toward the side the card goes, and the word under it turns to its ink. */
+.fill {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  background: var(--hl-color-inverse);
+  color: var(--hl-color-inverse-fg);
+  clip-path: inset(0 0 0 calc((1 - var(--fill)) * 100%));
+}
+
+.choice[data-side='end'] .fill,
+.choice[data-side='start']:dir(rtl) .fill {
+  clip-path: inset(0 calc((1 - var(--fill)) * 100%) 0 0);
+}
+
+.choice[data-side='end']:dir(rtl) .fill {
+  clip-path: inset(0 0 0 calc((1 - var(--fill)) * 100%));
+}
+
+.choice[aria-disabled] {
+  border-color: var(--hl-color-border);
+  color: var(--hl-color-fg-disabled);
+  cursor: not-allowed;
+}
+
+@media (hover: hover) {
+  .choice:not([aria-disabled]):hover {
+    background: var(--hl-color-surface-hover);
+  }
+}
+
+.choice:focus-visible,
+.undo:focus-visible {
+  outline: none;
+  box-shadow: var(--hl-focus-ring);
+}
+
+.undo {
+  display: grid;
+  place-items: center;
+  inline-size: var(--hl-control-h-lg);
+  block-size: var(--hl-control-h-lg);
+  padding: 0;
+  border: 0;
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-surface-sunken);
+  color: var(--hl-color-fg);
+  font-size: var(--hl-icon-lg);
+  cursor: pointer;
+}
+
+.undo[aria-disabled] {
+  color: var(--hl-color-fg-disabled);
+  cursor: not-allowed;
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

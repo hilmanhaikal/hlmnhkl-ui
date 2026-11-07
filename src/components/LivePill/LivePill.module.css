@@ -1,0 +1,191 @@
+.root {
+  /* The row is the pill plus the card's inner padding, so the label keeps its pixels as the card grows round it. */
+  --pill-pad: calc(var(--hl-space-6) - (var(--hl-hit-min) - var(--hl-text-sm) * var(--hl-leading-normal)) / 2);
+  position: relative;
+  inline-size: 100%;
+  max-inline-size: var(--hl-panel-w-sm);
+  block-size: var(--pill-row, calc(var(--hl-hit-min) + var(--pill-pad)));
+  /* Only the pill takes taps; the clear row either side of it lets them through to the page. */
+  pointer-events: none;
+}
+
+.root[data-fixed] {
+  position: fixed;
+  z-index: var(--hl-z-sticky);
+  inset-inline: var(--hl-space-5);
+  inline-size: auto;
+  margin-inline: auto;
+}
+
+.root[data-fixed][data-placement='bottom'] {
+  bottom: calc(var(--hl-space-5) + env(safe-area-inset-bottom));
+}
+
+.root[data-fixed][data-placement='top'] {
+  top: calc(var(--hl-space-5) + env(safe-area-inset-top));
+}
+
+.shell {
+  --pill-bg: var(--hl-color-surface-sunken);
+  --pill-fg: var(--hl-color-fg);
+  --pill-muted: var(--hl-color-fg-muted);
+  --pill-line: var(--hl-color-border);
+  --pill-key: var(--hl-color-border-strong);
+  --pill-fill: var(--hl-color-inverse);
+  --pill-fill-fg: var(--hl-color-inverse-fg);
+  position: absolute;
+  inset-inline: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--hl-radius-sheet);
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  box-shadow: inset 0 0 0 var(--hl-line) var(--pill-key);
+  pointer-events: auto;
+  clip-path: var(--pill-shut);
+}
+
+.shell[data-tone='ink'] {
+  --pill-bg: var(--hl-color-inverse);
+  --pill-fg: var(--hl-color-inverse-fg);
+  --pill-muted: color-mix(in srgb, var(--pill-fg) 62%, var(--pill-bg));
+  --pill-line: color-mix(in srgb, var(--pill-fg) 18%, var(--pill-bg));
+  --pill-key: transparent;
+  --pill-fill: var(--hl-color-surface);
+  --pill-fill-fg: var(--hl-color-fg);
+}
+
+/* Shut, it closes fast and falls away. Open, the surface pours out of the pill on the liquid curve. */
+.shell[data-measured] {
+  transition: clip-path var(--hl-motion-fast) var(--hl-ease-in);
+}
+
+.shell[data-open] {
+  z-index: 1;
+  clip-path: inset(0 0 0 0 round var(--hl-radius-sheet));
+  transition: clip-path var(--hl-motion-liquid) var(--hl-ease-liquid);
+}
+
+/* Before it is measured (the first paint of a server page), only the pill's words show. */
+.shell:not([data-measured]):not([data-open]) {
+  visibility: hidden;
+}
+
+.shell:not([data-measured]):not([data-open]) .button {
+  visibility: visible;
+}
+
+.root[data-placement='bottom'] .shell {
+  bottom: 0;
+  flex-direction: column-reverse;
+}
+
+.root[data-placement='top'] .shell {
+  top: 0;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+}
+
+.root[data-placement='bottom'] .row {
+  padding-block-end: var(--pill-pad);
+}
+
+.root[data-placement='top'] .row {
+  padding-block-start: var(--pill-pad);
+}
+
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--hl-hit-min);
+  max-inline-size: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--hl-radius-full);
+  background: transparent;
+  color: inherit;
+  box-shadow: inset 0 0 0 var(--hl-line) var(--pill-key);
+  font: inherit;
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: clip;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.button:focus-visible {
+  outline: var(--hl-line-focus) solid var(--hl-color-accent);
+  outline-offset: calc(var(--hl-line-focus) * -2);
+}
+
+/* Open, the pill stops being a chip: its outline goes, and its words read as the card's last row. */
+.shell[data-open] .button {
+  box-shadow: inset 0 0 0 var(--hl-line) transparent;
+}
+
+.stack {
+  display: grid;
+}
+
+.face {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hl-space-3);
+  block-size: var(--hl-hit-min);
+  padding-inline: var(--hl-space-5);
+}
+
+.face svg {
+  flex: none;
+  font-size: var(--hl-icon-md);
+}
+
+/* The pill as its own progress bar: words under the fill turn to the fill's own ink. */
+.over {
+  background: var(--pill-fill);
+  color: var(--pill-fill-fg);
+  clip-path: inset(0 calc(100% - var(--p) * 100%) 0 0);
+  transition:
+    clip-path var(--hl-motion-slow) var(--hl-ease-out),
+    opacity var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.over:dir(rtl) {
+  clip-path: inset(0 0 0 calc(100% - var(--p) * 100%));
+}
+
+.shell[data-open] .over {
+  opacity: 0;
+}
+
+.body {
+  padding: var(--hl-space-2) var(--hl-space-6) var(--hl-space-6);
+  opacity: 0;
+  transition: opacity var(--hl-motion-instant) var(--hl-ease-in);
+}
+
+.root[data-placement='bottom'] .body {
+  padding: var(--hl-space-6) var(--hl-space-6) var(--hl-space-2);
+}
+
+.shell[data-open] .body {
+  opacity: 1;
+  transition: opacity var(--hl-motion-base) var(--hl-ease-out) var(--hl-motion-fast);
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
