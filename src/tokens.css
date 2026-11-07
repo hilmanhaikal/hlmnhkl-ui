@@ -361,8 +361,15 @@
   --hl-schedule-hour: 56px;
   --hl-schedule-gutter: 56px;
   --hl-schedule-min-w: 520px;
-  /* How far a later, overlapping event steps in, so the one under it keeps its title in view */
+  /* Unused since 0.34.0, when overlapping events moved into lanes. Kept so overrides of it do not break. */
   --hl-schedule-indent: 16px;
+  /* One stripe and its gap on a hatched event, and how far an event lifts on hover */
+  --hl-schedule-hatch: var(--hl-dot);
+  --hl-schedule-lift: var(--hl-space-1);
+  /* The narrowest a lane gets on a day with overlaps. When the busy days cannot get this, fewer days show. */
+  --hl-schedule-lane-min: 112px;
+  /* The narrowest a day with no overlaps gets, so a quiet week keeps all seven days from --hl-schedule-min-w up */
+  --hl-schedule-day-min: 64px;
 
   /* Smarter inputs */
   --hl-pin-w: 44px;
@@ -578,6 +585,19 @@
   /* Touch lists: one swipe action's width, and how far a pull must go before it refreshes */
   --hl-swipe-action-w: 80px;
   --hl-pull-distance: 72px;
+
+  /* Magnetic marks on Dial, RulerScrubber and PickerWheel: how far a mark reaches, and a strong one,
+     each as a share of the gap between two marks */
+  --hl-magnet-reach: 0.35;
+  --hl-magnet-strong: 1.5;
+  /* Dial: the knob, the ring round it, and the speed arc's radius and the length of one step on its rim */
+  --hl-dial-size: 208px;
+  --hl-dial-ring: 244px;
+  --hl-dial-arc-radius: 620px;
+  --hl-dial-arc-gap: 20px;
+  /* RulerScrubber: the space between two ticks, and its height (the speed arc's too) */
+  --hl-ruler-tick-gap: 12px;
+  --hl-ruler-h: 120px;
 }
 
 :root,

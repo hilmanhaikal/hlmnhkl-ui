@@ -1,0 +1,31 @@
+.roll {
+  display: inline-grid;
+  overflow: hidden;
+  /* Room for descenders inside the clip, given back below so the line keeps its height. */
+  padding-block-end: var(--hl-rise-room);
+  margin-block-end: calc(var(--hl-rise-room) * -1);
+  font-variant-numeric: tabular-nums;
+}
+
+.in {
+  grid-area: 1 / 1;
+  animation: rollUp var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.in[data-dir='down'] {
+  animation-name: rollDown;
+}
+
+@keyframes rollUp {
+  from {
+    transform: translateY(40%);
+    opacity: 0;
+  }
+}
+
+@keyframes rollDown {
+  from {
+    transform: translateY(-40%);
+    opacity: 0;
+  }
+}

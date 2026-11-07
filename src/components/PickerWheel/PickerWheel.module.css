@@ -1,0 +1,123 @@
+.root {
+  display: grid;
+  gap: var(--hl-space-5);
+  width: 100%;
+  color: var(--hl-color-fg);
+}
+
+.head {
+  display: grid;
+  justify-items: center;
+  gap: var(--hl-space-1);
+  text-align: center;
+}
+
+.label {
+  font-size: var(--hl-text-sm);
+  color: var(--hl-color-fg-muted);
+}
+
+.readout {
+  font-size: var(--hl-text-4xl);
+  font-weight: var(--hl-weight-semibold);
+  letter-spacing: var(--hl-tracking-tight);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.detail {
+  font-size: var(--hl-text-sm);
+  color: var(--hl-color-fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.wheel {
+  display: flex;
+  justify-content: center;
+}
+
+.column {
+  /* The drum's radius, so each row of --hl-hit-min turns by --hl-wheel-tilt. */
+  --wheel-r: calc(var(--hl-hit-min) / 2 / tan(var(--hl-wheel-tilt) / 2));
+  position: relative;
+  flex: none;
+  width: var(--hl-wheel-w);
+  height: calc(var(--hl-wheel-rows) * var(--hl-hit-min));
+  perspective: calc(var(--wheel-r) * 7);
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  mask-image: linear-gradient(180deg, transparent, var(--hl-color-fg) 30%, var(--hl-color-fg) 70%, transparent);
+}
+
+.column[data-wide] {
+  width: calc(var(--hl-wheel-w) * 2);
+}
+
+.column[data-moving] {
+  cursor: grabbing;
+}
+
+/* One band across the columns. Each column's part swells as a row is drawn into it. */
+.band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: calc(var(--hl-hit-min) - var(--hl-space-3) + var(--hl-space-3) * var(--grip, 1));
+  transform: translateY(-50%);
+  background: var(--hl-color-surface-sunken);
+}
+
+.column:first-child .band {
+  border-radius: var(--hl-radius-md) 0 0 var(--hl-radius-md);
+}
+
+.column:last-child .band {
+  border-radius: 0 var(--hl-radius-md) var(--hl-radius-md) 0;
+}
+
+.column:only-child .band {
+  border-radius: var(--hl-radius-md);
+}
+
+.column:focus-visible .band {
+  border-radius: var(--hl-radius-md);
+  box-shadow: var(--hl-focus-ring);
+}
+
+.drum {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--wheel-r) * -1));
+}
+
+.row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: var(--hl-hit-min);
+  margin-top: calc(var(--hl-hit-min) / -2);
+  display: grid;
+  place-items: center;
+  font-size: var(--hl-text-xl);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  backface-visibility: hidden;
+  transform: rotateX(calc(var(--d) * -1 * var(--hl-wheel-tilt))) translateZ(var(--wheel-r));
+}
+
+.row[data-strong]::after {
+  content: '';
+  position: absolute;
+  right: var(--hl-space-2);
+  width: var(--hl-space-2);
+  height: var(--hl-space-2);
+  border-radius: var(--hl-radius-full);
+  background: currentColor;
+}

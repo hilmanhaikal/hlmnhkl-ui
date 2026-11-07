@@ -2,6 +2,34 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.34.0 · 7 Nov 2026
+
+Three ways to set a value by hand. Each one is drawn onto its marks, coasts after a flick and settles without a bounce.
+
+### Added
+
+- Dial: turn a round dial to set a value. Every step pulls the dial in, and `strong` marks pull from further away. Three looks share one API: `variant="printed"` (the scale is printed on the knob and turns under a fixed index), `"mercury"` (a solid knob that reaches for a few named levels) and `"arc"` (the rim of a large dial, swiped sideways). A double click can go back to `resetValue`.
+- RulerScrubber: drag a ruler under a fixed needle to set a number, or flick it and it coasts. While it moves, the ticks near the needle lean toward it; at rest the ruler lies flat. `strongLabel` puts a tag under the strong marks.
+- PickerWheel: a 3D wheel for any list, in one column or several. Rows are free between, drawn in near one, and strong rows pull harder. Each column is a spin button; Up goes to the next value, as the WAI-ARIA pattern says. Type to jump to a row.
+- TimeWheel and DateWheel: PickerWheel set up for a time, in 12 or 24 hours, and for a date with each month's real length.
+- All three: `onScrub` gives the value while it still moves, and `haptics` buzzes on each step on Android phones. Off unless you ask.
+- All three: a plain mouse wheel scrolls the page. Only a wheel column with focus, or a sideways swipe on the ruler and the arc, moves them.
+- Tokens `--hl-magnet-reach`, `--hl-magnet-strong`, `--hl-dial-size`, `--hl-dial-ring`, `--hl-dial-arc-radius`, `--hl-dial-arc-gap`, `--hl-ruler-tick-gap` and `--hl-ruler-h`.
+- WeekSchedule: `kind` (`'soft'`, `'solid'` or `'hatched'`) and `done` on each event, named with `labels.kinds` and shown in a key under the week.
+- Tokens `--hl-schedule-lane-min`, `--hl-schedule-day-min`, `--hl-schedule-hatch` and `--hl-schedule-lift`.
+
+### Changed
+
+- WeekSchedule: events at the same time sit side by side, never on top, and a busy day gets wider so every title has room. No title is ever cut or ends in "…".
+- WeekSchedule: a week with no overlaps or short events keeps all seven days from `--hl-schedule-min-w` up. When the days do not fit, fewer show with a day strip; on a phone, one day.
+- WeekSchedule: titles break only between words, times are short ("9–10 am"), and an event under 40 minutes takes one line.
+- WeekSchedule: on hover an event keeps its fill, lifts and gets a clear edge. The now line and today are in the accent colour.
+- WeekSchedule: focus stays in the schedule when its day stops showing, and with a few days shown the panel is named for the date range. `--hl-schedule-indent` is no longer used.
+
+## 0.33.1 · 7 Nov 2026
+
+Docs site only. No changes to the library.
+
 ## 0.33.0 · 6 Nov 2026
 
 Three new ways to act, and more ways to lay out the tab bar.
