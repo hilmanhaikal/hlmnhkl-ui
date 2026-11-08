@@ -147,8 +147,16 @@
   margin-inline: auto;
 }
 
+/* Registered so the fill can ease back after a throw instead of snapping off in one frame. */
+@property --fill {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
 .choice {
   --fill: 0;
+  transition: --fill var(--hl-motion-base) var(--hl-ease-out);
   position: relative;
   display: grid;
   min-block-size: var(--hl-control-h-lg);
@@ -170,6 +178,10 @@
   place-items: center;
   padding-inline: var(--hl-space-5);
   white-space: nowrap;
+}
+
+.root:has(.deck[data-dragging]) .choice {
+  transition: none;
 }
 
 /* The fill pours in from the button's inner edge toward the side the card goes, and the word under it turns to its ink. */

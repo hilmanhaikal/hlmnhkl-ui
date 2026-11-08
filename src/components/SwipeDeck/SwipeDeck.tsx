@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
+import { flushSync } from 'react-dom'
 import { cx } from '../../internal/cx'
 import { clamp, magnetTo, pull, speedTracker, springTo } from '../../internal/feel'
 import { UndoIcon } from '../../internal/icons'
@@ -133,8 +134,10 @@ export function SwipeDeck<T>({
 
   const finish = (side: Side) => {
     stop.current = () => {}
+    // The next card must be in place before the top card's transform resets, or the thrown card
+    // shows in the middle for a frame.
+    flushSync(() => commit(side))
     paint(0)
-    commit(side)
   }
 
   const fly = (side: Side, velocity: number) => {

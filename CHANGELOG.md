@@ -2,6 +2,14 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.35.2 · 9 Nov 2026
+
+A smoother throw in SwipeDeck.
+
+### Fixed
+
+- SwipeDeck: a thrown card no longer shows in the middle for a frame before the next card appears, and the Pass or Save button's fill now fades out after a throw instead of switching off at once. While you drag it still follows your finger, and with reduced motion it switches off at once.
+
 ## 0.35.1 · 9 Nov 2026
 
 A clearer first step, and a safe way to take outside pull requests.

@@ -9,6 +9,10 @@ React components, measured down to the part you never see: the 44px tap area, th
 
 **[Docs](https://ui.hlmnhkl.my)** · [Installation](https://ui.hlmnhkl.my/installation) · [Components](https://ui.hlmnhkl.my/button) · [What's new](https://ui.hlmnhkl.my/changelog)
 
+<img alt="Four hlmnhkl/ui controls in use: a Dial turned to a new oven temperature, a RulerScrubber dragged and landing on a mark, a SwipeDeck card thrown right and the next thrown left, and a SplitFlap board flipping to new times." src="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/signature.gif" width="600">
+
+Controls that feel like real ones: Dial, RulerScrubber, SwipeDeck, SplitFlap and more. Plus the everyday parts every app needs: buttons, inputs, sheets, tables, menus and 60 more.
+
 ## Install
 
 From your app's folder, set it up once, then copy the components you need:
