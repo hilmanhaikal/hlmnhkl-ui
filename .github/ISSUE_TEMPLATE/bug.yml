@@ -1,0 +1,26 @@
+name: Bug
+description: Something does not work as the docs say
+body:
+  - type: input
+    id: part
+    attributes:
+      label: Component
+      placeholder: Dial
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to see it
+      placeholder: "1. npx hlmnhkl-ui add dial\n2. ..."
+  - type: input
+    id: where
+    attributes:
+      label: Browser and device
+      placeholder: Safari on iPhone 15

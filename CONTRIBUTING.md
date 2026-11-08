@@ -1,8 +1,23 @@
 # Working on hlmnhkl/ui
 
-This repo is the free part of hlmnhkl/ui. It is copied from a private repo on each release, so a pull request here is read but not merged directly. Issues are welcome. The docs live at https://ui.hlmnhkl.my.
+This repo is the free part of hlmnhkl/ui, under the MIT licence. Issues and pull requests are welcome. The docs live at https://ui.hlmnhkl.my.
+
+## How a pull request gets in
+
+1. Fork this repo, change one component (or `src/internal/`), and open a pull request. The template has a short checklist.
+2. A check runs: the guard (only component code and docs may change, no new packages, no install scripts, and new lines are scanned for code a UI part never needs, such as network calls, stored data or eval), then the type check. Your first pull request waits for the owner to start the check.
+3. The owner reviews every line. This repo is copied from a private source on each release, so an accepted change is applied there with you kept as the author.
+4. On the next release your change ships, the repo is updated, and the pull request is closed as merged with a thank-you and the version number.
+
+Pro components are not open to outside changes.
+
+## Working locally
 
 To check a change: `npm install`, then `npm run typecheck`. To try a component in your own app: `node scripts/add.js <name> --to ../your-app/src/ui`.
+
+## Security
+
+Never put a security problem in a public issue. Report it privately: see SECURITY.md.
 
 ## Rules for new components
 

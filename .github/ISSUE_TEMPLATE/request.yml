@@ -1,0 +1,14 @@
+name: Component request
+description: Ask for a new component or a change to one
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What do you need it for
+      description: The task in your app, not only the look
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: An example from a real app, if you have one

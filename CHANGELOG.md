@@ -2,6 +2,18 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.35.1 · 9 Nov 2026
+
+A clearer first step, and a safe way to take outside pull requests.
+
+### Fixed
+
+- `init` now says where to paste the two CSS imports and gives the path from there: `import './ui/tokens.css'` in `src/main.tsx`, not `./src/ui/tokens.css`.
+
+### Changed
+
+- The public repo takes pull requests for free components. A check runs on each one, and the package refuses to publish with dependencies, install scripts or files it does not list. See CONTRIBUTING.md.
+
 ## 0.35.0 · 7 Nov 2026
 
 Three live parts: a pill that grows into a card, a deck you throw, and a board that flips.

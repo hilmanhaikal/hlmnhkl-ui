@@ -41,6 +41,17 @@ const KINDS = [
   { key: 'theme', plural: 'Themes', folder: 'themes', pro: true, single: true },
 ].map((k) => ({ ...k, dir: join(SRC, k.folder) }))
 
+// The import lines as they read from the app's entry file. A folder inside src/ is written
+// relative to src/ (Vite, Next and most setups keep the entry there), so it can be pasted as is.
+function fromEntry(folder, both = true) {
+  const clean = folder.replace(/^\.\//, '').replace(/\/$/, '')
+  const inSrc = clean.startsWith('src/')
+  const rel = inSrc ? clean.slice(4) : clean
+  const where = inSrc ? 'in your entry file inside src/ (for example src/main.tsx):' : 'in a file at your project root:'
+  const lines = [`import './${rel}/tokens.css'`, ...(both ? [`import './${rel}/base.css'`] : [])]
+  return `${where}\n${lines.map((l) => `       ${l}`).join('\n')}`
+}
+
 function fail(message, usage = true) {
   console.error(`Error: ${message}`)
   if (usage) console.error(`\n${USAGE}`)
@@ -352,7 +363,7 @@ function runInit(opts) {
     if (!opts.dryRun) writeFileSync(config, `${JSON.stringify({ to: folder }, null, 2)}\n`)
     console.log(`  ${CONFIG}: added, so later commands put files in ${folder}`)
   }
-  console.log(`\nNext:\n  1. Import both once at your app root, tokens first:\n       import './${folder.replace(/^\.\//, '')}/tokens.css'\n       import './${folder.replace(/^\.\//, '')}/base.css'`)
+  console.log(`\nNext:\n  1. Import both once, tokens first, ${fromEntry(folder)}`)
   console.log(`  2. Add your first component: npx hlmnhkl-ui add button`)
   console.log(`  See everything there is: npx hlmnhkl-ui list, or ${SITE}`)
 }
@@ -417,7 +428,7 @@ function runAdd(opts) {
     for (const s of skipped) console.log(`  ${s}`)
     if (skipped.some((s) => /^(tokens|base)\.css /.test(s))) console.log('  tokens.css and base.css are never replaced, so your theme edits stay.')
   }
-  if (tokensNew) console.log(`Next: import ${join(opts.to || readConfig()?.to || DEFAULT_TO, 'tokens.css')} once at your app root (or run init).`)
+  if (tokensNew) console.log(`Next: import tokens.css once ${fromEntry(opts.to || readConfig()?.to || DEFAULT_TO, false)} (or run init).`)
   if (items.some((i) => i.kind === 'theme')) console.log('Themes: import each one after tokens.css, then set data-theme-brand or data-density on <html>.')
 }
 

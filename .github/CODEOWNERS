@@ -1,0 +1,6 @@
+# Every change needs the owner's review. The paths below can run code on a machine or change what ships.
+* @hilmanhaikal
+/.github/ @hilmanhaikal
+/scripts/ @hilmanhaikal
+/package.json @hilmanhaikal
+/package-lock.json @hilmanhaikal
