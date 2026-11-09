@@ -12,7 +12,7 @@ import {
 } from 'react'
 import { prefersReducedMotion } from '../../internal/motion'
 import { cx } from '../../internal/cx'
-import { useStretch } from '../../internal/liquid'
+import { useFlow } from '../../internal/liquidMatter'
 import { useControllable } from '../../internal/useControllable'
 import styles from './Tabs.module.css'
 
@@ -92,9 +92,9 @@ export function TabList({ label, className, children }: TabListProps) {
     }
   }, [bar, ready])
 
-  // The underline stretches toward the new tab and settles under it.
+  // The underline flows to the new tab: it runs ahead, splits, and what is left drains after it.
   const barRef = useRef<HTMLSpanElement>(null)
-  useStretch(barRef, bar, value, ready, (b) => `translateX(${b.x}px)`)
+  useFlow(listRef, barRef, bar, value, ready, styles.liquid, true)
 
   // Automatic activation, per the WAI-ARIA tabs pattern
   const onKeyDown = (e: KeyboardEvent) => {

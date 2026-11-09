@@ -33,7 +33,7 @@
   left: 0;
   height: var(--hl-hit-min);
   z-index: -1;
-  border-radius: var(--hl-radius-full);
+  border-radius: var(--hl-radius-md);
   background: var(--hl-color-accent);
 }
 
@@ -52,7 +52,7 @@
   height: var(--hl-hit-min);
   padding: 0 var(--hl-space-3);
   border: 0;
-  border-radius: var(--hl-radius-full);
+  border-radius: var(--hl-radius-md);
   background: transparent;
   color: inherit;
   font: inherit;

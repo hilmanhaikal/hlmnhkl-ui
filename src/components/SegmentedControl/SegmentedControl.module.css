@@ -25,15 +25,42 @@
   box-shadow: var(--hl-shadow-2), 0 0 0 var(--hl-line) var(--hl-color-border);
 }
 
-/* A resize slides the pill plainly; a new choice stretches it (internal/liquid.ts), which only goes
-   2% past and settles, so a pill pressed often still never wobbles. */
+/* A resize slides the pill plainly. A new choice flows it (internal/liquidMatter.ts useFlow): while
+   it flows the pill hides and .liquid draws it, then the pill is back in its place, exact. */
 .pill[data-ready] {
   transition:
     transform var(--hl-motion-slow) var(--hl-ease-out),
     width var(--hl-motion-slow) var(--hl-ease-out);
 }
 
-.pill[data-liquid] {
+.pill[data-flowing] {
+  opacity: 0;
+  transition: none;
+}
+
+.liquid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* While it flows, every label is muted and a copy in the chosen colour shows through the liquid. */
+.root[data-flowing] > .item { color: var(--hl-color-fg-muted); transition: none; }
+
+.ink {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ink .item {
+  position: absolute;
+  color: var(--hl-color-fg);
   transition: none;
 }
 

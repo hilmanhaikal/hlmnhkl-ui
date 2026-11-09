@@ -86,7 +86,7 @@
 .toast[data-leaving="right"] { animation: toastOutRight var(--hl-motion-slow) var(--hl-ease-out) forwards; }
 /* Thrown away: the spring carries it off at the hand's speed, so it only fades. */
 .toast[data-fluid][data-leaving] { animation: toastFade var(--hl-motion-slow) var(--hl-ease-out) forwards; }
-/* The morph (internal/liquid.ts) grows it in and folds it away instead. */
+/* The bud (Toast.tsx) grows it in and flows it away instead. */
 .toast[data-liquid]:not([data-leaving]),
 .toast[data-liquid][data-leaving="down"] { animation: none; }
 
@@ -188,3 +188,15 @@
 @keyframes toastFade {
   to { opacity: 0; }
 }
+
+/* A drop budding out of the origin or the window's edge (Toast.tsx bud), drawn over the page while it moves. */
+.bud {
+  position: fixed;
+  inset: 0;
+  z-index: var(--hl-z-toast);
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+

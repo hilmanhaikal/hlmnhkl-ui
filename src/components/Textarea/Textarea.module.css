@@ -35,10 +35,20 @@
   line-height: var(--hl-leading-normal);
   outline: none;
   overflow-y: hidden;
+  --hl-flow-edge: var(--hl-color-fg);
   transition:
     height var(--hl-motion-base) var(--hl-ease-out),
     border-color var(--hl-motion-fast) var(--hl-ease-out),
-    box-shadow var(--hl-motion-base) var(--hl-ease-out);
+    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+/* Holds the drawn edge (internal/liquidMore.ts), which a textarea cannot. */
+.box { position: relative; }
+
+.edge {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
 }
 
 .textarea::placeholder { color: var(--hl-color-fg-subtle); }
@@ -46,15 +56,21 @@
   .textarea:hover { border-color: var(--hl-color-fg-muted); }
 }
 
-.textarea:focus {
-  border-color: var(--hl-color-fg);
-  box-shadow: 0 0 0 var(--hl-halo) var(--hl-color-surface-active);
+/* Focused: the dark edge flows round, then Textarea.tsx sets data-edge and this 2px edge holds it. It
+   is the field's focus indicator, so it lands at once; a blur fades it. */
+.textarea[data-edge] {
+  border-color: var(--hl-flow-edge);
+  box-shadow: inset 0 0 0 calc(var(--hl-line-focus) - var(--hl-line)) var(--hl-flow-edge);
+  transition: height var(--hl-motion-base) var(--hl-ease-out);
 }
 
 .textarea[data-invalid] {
+  --hl-flow-edge: var(--hl-color-danger);
   border-color: var(--hl-color-danger);
   border-width: var(--hl-line-thick);
 }
+
+.textarea[data-invalid][data-edge] { box-shadow: inset 0 0 0 calc(var(--hl-line-focus) - var(--hl-line-thick)) var(--hl-flow-edge); }
 
 .textarea:disabled {
   background: var(--hl-color-surface-sunken);

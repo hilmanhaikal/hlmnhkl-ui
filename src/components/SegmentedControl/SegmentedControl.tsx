@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { useStretch } from '../../internal/liquid'
+import { useFlow } from '../../internal/liquidMatter'
 import { useControllable } from '../../internal/useControllable'
 import styles from './SegmentedControl.module.css'
 
@@ -71,8 +71,37 @@ export function SegmentedControl({
     }
   }, [pill, ready])
 
-  // The pill stretches toward the new choice and settles there.
-  useStretch(pillRef, pill, index, ready, (b) => `translateX(${b.x}px)`)
+  // The pill flows to the new choice. The labels stay put; under the liquid they take the chosen
+  // colour, from a copy of the row clipped to the same outline.
+  const inkRef = useRef<HTMLDivElement | null>(null)
+  const ink = (outline: string | null) => {
+    const root = rootRef.current
+    if (!outline || !root) {
+      inkRef.current?.remove()
+      inkRef.current = null
+      return
+    }
+    if (!inkRef.current) {
+      const layer = document.createElement('div')
+      layer.className = styles.ink
+      layer.setAttribute('aria-hidden', 'true')
+      layer.inert = true
+      for (const el of refs.current) {
+        if (!el) continue
+        const copy = el.cloneNode(true) as HTMLElement
+        copy.removeAttribute('id')
+        copy.style.left = `${el.offsetLeft}px`
+        copy.style.top = `${el.offsetTop}px`
+        copy.style.width = `${el.offsetWidth}px`
+        copy.style.height = `${el.offsetHeight}px`
+        layer.append(copy)
+      }
+      root.append(layer)
+      inkRef.current = layer
+    }
+    inkRef.current.style.clipPath = `path('${outline}')`
+  }
+  useFlow(rootRef, pillRef, pill, index, ready, styles.liquid, false, ink)
 
   const move = (from: number, dir: 1 | -1) => {
     let i = from

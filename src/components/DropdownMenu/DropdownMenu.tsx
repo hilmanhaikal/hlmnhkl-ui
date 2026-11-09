@@ -15,6 +15,7 @@ import {
 } from 'react'
 import { useDismiss } from '../../internal/layers'
 import { useLiquid } from '../../internal/liquid'
+import { useBead } from '../../internal/liquidMore'
 import { mergeRefs } from '../../internal/mergeRefs'
 import { Portal } from '../../internal/Portal'
 import { useFloating, type Align } from '../../internal/useFloating'
@@ -64,6 +65,8 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
   const floating = useFloating(anchorRef, menuRef, { open: mounted, side: 'bottom', align, offset: 6 })
   // The menu grows out of its button and folds back into it.
   useLiquid(menuRef, anchorRef, state, mounted && floating.ready)
+  // The hover fill is a bead that follows the pointer from item to item.
+  useBead(menuRef, mounted, styles.bead)
 
   const close = (focusTrigger = true) => {
     setOpen(false)

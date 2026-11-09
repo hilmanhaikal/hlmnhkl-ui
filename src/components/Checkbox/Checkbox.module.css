@@ -41,19 +41,17 @@
   color: var(--hl-color-accent-fg);
   transition:
     border-color var(--hl-motion-fast) var(--hl-ease-out),
-    box-shadow var(--hl-motion-fast) var(--hl-ease-out),
-    transform var(--hl-motion-slow) var(--hl-ease-spring);
+    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
 }
 
 @media (hover: hover) {
   .input:hover:not(:disabled) + .box { border-color: var(--hl-color-fg); }
 }
-.input:active:not(:disabled) + .box { transform: scale(var(--hl-press-scale-strong)); transition-duration: var(--hl-motion-instant); }
 .input:focus-visible + .box { box-shadow: var(--hl-focus-ring); }
 .root[data-invalid] .box[data-state="off"] { border-color: var(--hl-color-danger); }
 
-/* The checked fill covers the border too. It grows from the press point in Checkbox.tsx; here it only
-   holds the end state, so reduced motion lands on it at once. */
+/* The checked fill covers the border too. Ink pours into it in Checkbox.tsx (internal/liquidMore.ts);
+   here it only holds the end state, so reduced motion lands on it at once. */
 .fill {
   position: absolute;
   inset: calc(var(--hl-line-thick) * -1);
@@ -64,6 +62,15 @@
 
 .box[data-state="on"] .fill,
 .box[data-state="mixed"] .fill { clip-path: none; }
+
+.pour {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.box[data-pouring] .fill { visibility: hidden; }
+.box[data-pouring] :is(.tick, .dash) { transition: none; }
 
 .mark {
   position: relative;

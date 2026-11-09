@@ -18,8 +18,7 @@
   cursor: pointer;
   transition:
     background-color var(--hl-motion-fast) var(--hl-ease-out),
-    border-color var(--hl-motion-base) var(--hl-ease-out),
-    transform var(--hl-motion-slow) var(--hl-ease-spring);
+    border-color var(--hl-motion-base) var(--hl-ease-out);
 }
 
 .root::after {
@@ -34,18 +33,30 @@
 @media (hover: hover) {
   .root:hover { background: var(--hl-color-surface-hover); }
 }
-.root:active { transform: scale(var(--hl-press-scale-strong)); transition-duration: var(--hl-motion-instant); }
-/* The press shrinks the button, so the hit area grows to keep the whole box under a mouse released at its edge. */
-.root:active::after { inset: -9%; }
 .root:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
 .root[data-copied] { border-color: var(--hl-color-fg); }
 .root[data-failed] { border-color: var(--hl-color-danger); color: var(--hl-color-danger); }
 
+/* With a label, CopyButton.tsx sets --cap-shift so the icon sits on the middle of the capitals. */
 .icons {
+  position: relative;
   display: grid;
   width: var(--hl-icon-md);
   height: var(--hl-icon-md);
+  translate: 0 var(--cap-shift, 0px);
 }
+
+/* The copy, pour and check are drawn by internal/liquidMore.ts while they move; the icons below are
+   the resting states, so they swap at once. Reduced motion shows only the swap. */
+.pour {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.icons[data-pouring] :is(.copy, .check) { visibility: hidden; }
 
 .copy,
 .check,
@@ -55,8 +66,8 @@
   height: 100%;
 }
 
-.copy,
-.fail {
+.fail,
+.root[data-failed] .copy {
   transition:
     opacity var(--hl-motion-fast) var(--hl-ease-out),
     transform var(--hl-motion-slow) var(--hl-ease-spring);
@@ -71,19 +82,15 @@
   /* Hidden just before the path starts. A zero-length dash would leave its round ends as a dot in Safari. */
   stroke-dasharray: 1 2;
   stroke-dashoffset: 1.01;
-  transition: stroke-dashoffset var(--hl-motion-base) var(--hl-ease-in);
 }
 
 .fail { opacity: 0; transform: scale(0.4); }
 
-.root[data-copied] .copy,
+.root[data-copied] .copy { opacity: 0; }
 .root[data-failed] .copy { opacity: 0; transform: scale(0.4) rotate(-45deg); }
 .root[data-failed] .fail { opacity: 1; transform: none; }
 
-.root[data-copied] .check {
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset var(--hl-motion-slow) var(--hl-ease-out) var(--hl-motion-instant);
-}
+.root[data-copied] .check { stroke-dashoffset: 0; }
 
 .labels {
   display: grid;

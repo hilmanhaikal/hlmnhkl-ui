@@ -4,7 +4,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentProp
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
 import { mergeRefs } from '../../internal/mergeRefs'
-import { easing, motionMs, prefersReducedMotion } from '../../internal/motion'
+import { pour, type Pour } from '../../internal/liquidMore'
 import { useControllable } from '../../internal/useControllable'
 import styles from './Checkbox.module.css'
 
@@ -62,29 +62,37 @@ export function Checkbox({
 
   const state = mixed ? 'mixed' : checked ? 'on' : 'off'
 
-  // The fill grows from where the box was pressed, or from its middle for a key or a tap on the label,
-  // and shrinks back the same way.
-  const fillRef = useRef<HTMLSpanElement>(null)
-  const pressedAt = useRef<{ x: number; y: number } | null>(null)
+  // Ink pours in from the side that was pressed (a key fills it evenly from below), levels, and then
+  // the mark draws. Clearing drains it the same way.
+  const boxRef = useRef<HTMLSpanElement>(null)
+  const pressedAt = useRef<{ x: number; t: number } | null>(null)
+  const pouring = useRef<Pour | null>(null)
   const filled = state !== 'off'
-  const wasFilled = useRef(filled)
+  const was = useRef({ filled, state })
   useLayoutEffect(() => {
-    if (wasFilled.current === filled) return
-    wasFilled.current = filled
-    const fill = fillRef.current
+    const prev = was.current
+    was.current = { filled, state }
+    if (prev.filled === filled) return
+    const box = boxRef.current
     const at = pressedAt.current
     pressedAt.current = null
-    if (!fill || prefersReducedMotion() || typeof fill.animate !== 'function') return
-    const box = fill.getBoundingClientRect()
-    const x = at ? Math.max(0, Math.min(box.width, at.x - box.left)) : box.width / 2
-    const y = at ? Math.max(0, Math.min(box.height, at.y - box.top)) : box.height / 2
-    const r = Math.hypot(Math.max(x, box.width - x), Math.max(y, box.height - y))
-    const shapes = [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`]
-    fill.animate({ clipPath: filled ? shapes : shapes.reverse() }, { duration: motionMs('slow'), easing: easing('morph') })
-  }, [filled])
+    if (!box) return
+    const r = box.getBoundingClientRect()
+    const side = at && performance.now() - at.t < 1000 ? Math.max(-1, Math.min(1, (at.x - r.left - r.width / 2) / (r.width / 2))) : 0
+    const mark = box.querySelector<SVGPathElement>(prev.state === 'mixed' || state === 'mixed' ? '[data-mark="dash"]' : '[data-mark="tick"]')
+    pouring.current = pour(box, mark, filled ? 1 : 0, side, styles.pour, pouring.current)
+  }, [filled, state])
+  useLayoutEffect(() => () => pouring.current?.stop(), [])
 
   return (
-    <div className={cx(styles.root, className)} data-disabled={disabled || undefined} data-invalid={error ? true : undefined}>
+    <div
+      className={cx(styles.root, className)}
+      data-disabled={disabled || undefined}
+      data-invalid={error ? true : undefined}
+      onPointerDown={(e) => {
+        pressedAt.current = { x: e.clientX, t: performance.now() }
+      }}
+    >
       <span className={styles.boxWrap}>
         <input
           ref={mergeRefs(inner, ref)}
@@ -100,21 +108,18 @@ export function Checkbox({
             setMixed(false)
             setChecked(true)
           }}
-          onPointerDown={(e) => {
-            pressedAt.current = { x: e.clientX, y: e.clientY }
-            onPointerDown?.(e)
-          }}
+          onPointerDown={onPointerDown}
           onKeyDown={(e) => {
             pressedAt.current = null
             onKeyDown?.(e)
           }}
           {...rest}
         />
-        <span className={styles.box} data-state={state} aria-hidden="true">
-          <span ref={fillRef} className={styles.fill} />
+        <span ref={boxRef} className={styles.box} data-state={state} aria-hidden="true">
+          <span className={styles.fill} data-pour-fill />
           <svg viewBox="0 0 16 16" className={styles.mark}>
-            <path className={styles.tick} d="M3.5 8.5l3 3 6-7" pathLength="1" />
-            <path className={styles.dash} d="M4 8h8" pathLength="1" />
+            <path className={styles.tick} d="M3.5 8.5l3 3 6-7" pathLength="1" data-mark="tick" />
+            <path className={styles.dash} d="M4 8h8" pathLength="1" data-mark="dash" />
           </svg>
         </span>
       </span>

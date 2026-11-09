@@ -163,7 +163,7 @@ export function Dial({
       <span id={labelId} className={styles.label}>
         {label}
       </span>
-      <Roll text={formatValue(shown)} className={styles.readout} />
+      <Roll text={formatValue(shown)} className={styles.readout} still={sc.moving} />
       {detail && (
         <span id={detailId} className={styles.detail}>
           {detail}
@@ -253,23 +253,34 @@ export function Dial({
   }
 
   const turned = ((sc.at - min) / (max - min || 1)) * SWEEP
-  // Every step gets a tick while they fit round the knob; past that only the labelled and strong ones.
-  const ticks = all.length <= 49 ? all : all.filter((v) => labelled.includes(v) || strongSet.has(v))
+  // The face prints min, the middle and max unless marks say otherwise; the keys still jump by marks.
+  const printed = marks ? labelled : [...new Set([min, roundTo((min + max) / 2, step, min), top])]
+  // A longer tick every ten steps on a long scale, so the amount can be counted at a glance.
+  const tenth = all.length > 20 ? step * 10 : 0
+  const isMajor = (v: number) => printed.includes(v) || (tenth > 0 && Math.abs((v - min) / tenth - Math.round((v - min) / tenth)) < 1e-6)
+  // Every step gets a tick while they fit round the knob (thinner past 49); past that only the long ones.
+  const dense = all.length > 49
+  const ticks = all.length <= 121 ? all : all.filter((v) => isMajor(v) || strongSet.has(v))
   return (
     <div className={cx(styles.root, styles.printed, className)} {...rest}>
       {head}
       <div className={styles.bezel}>
         <span className={styles.index} aria-hidden />
+        {/* How much: the ring fills from min (where the face has turned it) up to the index. */}
+        <svg className={styles.fill} aria-hidden>
+          {/* A negative dash length is invalid and draws the whole ring, so the arc is clamped and left out at min. */}
+          {turned > 0.5 && <circle pathLength={360} strokeDasharray={`${Math.min(turned, 360)} 360`} />}
+        </svg>
         <div className={styles.knob} {...slider}>
           <div className={styles.face} style={{ transform: `rotate(${turned}deg)` }} aria-hidden>
             {ticks.map((v) => {
               const at = (-(v - min) / (max - min || 1)) * SWEEP
               const p = pull(sc.at - v, step)
-              const major = labelled.includes(v)
+              const major = isMajor(v)
               return (
                 <span key={v} className={styles.spoke} style={{ transform: `rotate(${at}deg)` }}>
-                  <i className={styles.tick} data-major={major || undefined} data-strong={strongSet.has(v) || undefined} data-current={v === shown || undefined} style={{ background: ink(p, 'var(--hl-color-border-strong)', 'var(--hl-color-accent)'), transform: `scaleY(${1 + p * 0.5})` }} />
-                  {major && (
+                  <i className={styles.tick} data-major={major || undefined} data-fine={(dense && !major) || undefined} data-strong={strongSet.has(v) || undefined} data-current={v === shown || undefined} style={{ background: ink(p, 'var(--hl-color-border-strong)', 'var(--hl-color-accent)'), transform: `scaleY(${1 + p * 0.5})` }} />
+                  {printed.includes(v) && (
                     <span className={styles.numAt} style={{ transform: `translateY(var(--num-r)) rotate(${-(at + turned)}deg)` }}>
                       <span className={styles.num} style={{ color: ink(p), transform: `translate(-50%, -50%) scale(${1 + p * 0.45})`, fontWeight: `calc(var(--hl-weight-medium) + (var(--hl-weight-semibold) - var(--hl-weight-medium)) * ${p.toFixed(3)})` }}>
                         {markText(v)}
@@ -281,6 +292,8 @@ export function Dial({
             })}
             <span className={styles.cap} />
           </div>
+          {/* The grip: an indent on the cap that points at the value under the index, so it reads as a knob to turn. */}
+          <span className={styles.grip} aria-hidden />
         </div>
       </div>
     </div>

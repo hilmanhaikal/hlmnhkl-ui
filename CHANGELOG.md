@@ -2,6 +2,25 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.37.0 · 9 Nov 2026
+
+Parts move like soft liquid. A button gives under your finger, a switch sends a drop ahead, menus follow you with a bead, and a toast rises out of the screen.
+
+### Changed
+
+- Pagination: page buttons and the moving highlight are rounded rectangles (12px), like the rest of the navigation, instead of pills.
+- Dial (printed): a tick for every step with a longer one every ten, a thin ink arc on the ring that shows how much, labels at min, the middle and max, and a grip line on the knob's cap. Keys, touch and glide are unchanged.
+- Button: the edge is soft. It dents 2px where you press and follows the finger (from the middle for Enter or Space), a wet spot spreads under the press, a mouse near the edge pulls it out 1px, and a let-go sends one small wave round the edge before it rests exact. The label never moves and the button no longer shrinks. New tokens `--hl-press-depth`, `--hl-press-wet-dark` and `--hl-press-wet-light`.
+- Switch: the thumb pinches off a drop that runs to the far end, then flows after it and swallows it. It no longer widens while pressed.
+- SegmentedControl: the pill flows to the new segment on a neck that breaks on a long move, and what is left drains after it and joins by 60% of the move. Labels stay put and take the chosen colour exactly under the liquid. A change caught half way flows on from the shape on screen.
+- Tabs: the underline runs to the new tab, splits on a long move, and what is left drains after it.
+- Toast: a drop rises out of the screen edge under the stack, hangs on a neck that breaks, and grows into the toast; a dismiss flows back into the edge. New optional `origin` (an element or a point): within 240px of the toast, the drop buds out of it instead.
+- Checkbox: ink pours in from the side you tap (Space fills it evenly from below), rises with a soft meniscus and levels, then the tick draws. Clearing drains it. The box no longer shrinks when pressed.
+- Input, Textarea and Select: on focus (for Select, also on opening) a dark edge flows both ways round the field from where you clicked, or from the start edge for a key, and meets on the far side in 300ms. The settled 2px edge is the field's focus indicator, in place of the halo and, on Select, the focus ring. A blur fades it.
+- CopyButton: a drop falls from where you press into the copy icon and fills it, the back square slides under, and the filled square turns into the check in one shape, then plays back. With a label, the icon sits on the middle of the capitals. The button no longer shrinks when pressed.
+- MorphButton: the panel opens toward the side that fits inside the box it sits in, so a demo or a card never cuts it off.
+- DropdownMenu, ContextMenu and Menubar: the hover fill is a bead that follows the pointer and the arrow keys. The next item settles in about 100ms; a jump of two or more stretches a short neck. Keyboard and screen reader use are unchanged.
+
 ## 0.36.0 · 9 Nov 2026
 
 Every part now moves on one morph curve. Things grow from where you tapped, and closing is as quick as opening.

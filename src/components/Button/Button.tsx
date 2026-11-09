@@ -1,7 +1,8 @@
 'use client'
 
-import type { ComponentPropsWithRef, MouseEvent, ReactNode, Ref } from 'react'
+import type { ComponentPropsWithRef, FocusEvent, KeyboardEvent, MouseEvent, PointerEvent, ReactNode, Ref } from 'react'
 import { cx } from '../../internal/cx'
+import { useSoftPress } from '../../internal/softPress'
 import { Spinner } from '../Spinner'
 import styles from './Button.module.css'
 
@@ -40,11 +41,19 @@ export function Button({
   children,
   type = 'button',
   onClick,
+  onPointerDown,
+  onPointerMove,
+  onPointerLeave,
+  onKeyDown,
+  onKeyUp,
+  onBlur,
   'aria-disabled': ariaDisabledProp,
   ref,
   ...rest
 }: ButtonProps) {
   const inert = loading || Boolean(rest.disabled) || ariaDisabledProp === true || ariaDisabledProp === 'true'
+  // The edge is soft: it dents where pressed and springs back (internal/softPress.ts).
+  const soft = useSoftPress({ layer: styles.soft, fill: styles.softFill, ring: styles.softRing, wet: styles.wet }, inert, href === undefined ? [' ', 'Enter'] : ['Enter'])
   const shared = {
     className: cx(styles.root, styles[variant], styles[size], fullWidth && styles.full, className),
     'data-loading': loading || undefined,
@@ -57,6 +66,30 @@ export function Button({
         return
       }
       onClick?.(e)
+    },
+    onPointerDown: (e: PointerEvent<HTMLButtonElement>) => {
+      soft.onPointerDown(e)
+      onPointerDown?.(e)
+    },
+    onPointerMove: (e: PointerEvent<HTMLButtonElement>) => {
+      soft.onPointerMove(e)
+      onPointerMove?.(e)
+    },
+    onPointerLeave: (e: PointerEvent<HTMLButtonElement>) => {
+      soft.onPointerLeave()
+      onPointerLeave?.(e)
+    },
+    onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => {
+      soft.onKeyDown(e)
+      onKeyDown?.(e)
+    },
+    onKeyUp: (e: KeyboardEvent<HTMLButtonElement>) => {
+      soft.onKeyUp(e)
+      onKeyUp?.(e)
+    },
+    onBlur: (e: FocusEvent<HTMLButtonElement>) => {
+      soft.onBlur()
+      onBlur?.(e)
     },
   }
   const inner = (

@@ -32,11 +32,13 @@
   border: var(--hl-line) solid var(--hl-color-border-strong);
   border-radius: var(--hl-radius-md);
   background: var(--hl-color-surface);
+  position: relative;
   text-align: left;
   cursor: pointer;
+  --hl-flow-edge: var(--hl-color-fg);
   transition:
     border-color var(--hl-motion-fast) var(--hl-ease-out),
-    box-shadow var(--hl-motion-base) var(--hl-ease-out),
+    box-shadow var(--hl-motion-fast) var(--hl-ease-out),
     transform var(--hl-motion-slow) var(--hl-ease-spring);
 }
 
@@ -45,15 +47,24 @@
 }
 .trigger:active:not(:disabled) { transform: scale(var(--hl-press-scale)); }
 
-.trigger:focus-visible,
-.trigger[data-open] {
-  outline: none;
-  border-color: var(--hl-color-fg);
-  box-shadow: 0 0 0 var(--hl-halo) var(--hl-color-surface-active);
+.trigger:focus-visible { outline: none; }
+
+/* Open or keyboard focused: the dark edge flows round from where the field was pressed
+   (internal/liquidMore.ts), then Select.tsx sets data-edge and this 2px edge holds it. It is the
+   field's focus indicator in place of the ring, so it lands at once. */
+.trigger[data-edge] {
+  border-color: var(--hl-flow-edge);
+  box-shadow: inset 0 0 0 calc(var(--hl-line-focus) - var(--hl-line)) var(--hl-flow-edge);
+  transition: transform var(--hl-motion-slow) var(--hl-ease-spring);
 }
 
-.trigger:focus-visible { box-shadow: var(--hl-focus-ring); }
-.trigger[data-invalid] { border-color: var(--hl-color-danger); border-width: var(--hl-line-thick); }
+.edge {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+.trigger[data-invalid] { --hl-flow-edge: var(--hl-color-danger); border-color: var(--hl-color-danger); border-width: var(--hl-line-thick); }
+.trigger[data-invalid][data-edge] { box-shadow: inset 0 0 0 calc(var(--hl-line-focus) - var(--hl-line-thick)) var(--hl-flow-edge); }
 .trigger:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; background: var(--hl-color-surface-sunken); }
 
 .value {

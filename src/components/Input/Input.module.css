@@ -28,9 +28,10 @@
   border-radius: var(--hl-radius-md);
   background: var(--hl-color-surface);
   cursor: text;
+  --hl-flow-edge: var(--hl-color-fg);
   transition:
     border-color var(--hl-motion-fast) var(--hl-ease-out),
-    box-shadow var(--hl-motion-base) var(--hl-ease-out),
+    box-shadow var(--hl-motion-fast) var(--hl-ease-out),
     background-color var(--hl-motion-fast) var(--hl-ease-out);
 }
 
@@ -49,9 +50,22 @@
   .field:hover { border-color: var(--hl-color-fg-muted); }
 }
 
-.field:focus-within {
-  border-color: var(--hl-color-fg);
-  box-shadow: 0 0 0 var(--hl-halo) var(--hl-color-surface-active);
+/* Focused: the dark edge flows round from where the field was pressed (internal/liquidMore.ts), then
+   Input.tsx sets data-edge and this 2px edge holds it. It is the field's focus indicator, so it lands
+   at once; a blur fades it. */
+.field[data-edge] {
+  border-color: var(--hl-flow-edge);
+  box-shadow: inset 0 0 0 calc(var(--hl-line-focus) - var(--hl-line)) var(--hl-flow-edge);
+  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+.field[data-invalid] { --hl-flow-edge: var(--hl-color-danger); }
+.field[data-invalid][data-edge] { box-shadow: inset 0 0 0 calc(var(--hl-line-focus) - var(--hl-line-thick)) var(--hl-flow-edge); }
+
+.edge {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
 }
 
 /* Red border, plus the thicker line and the nudge, so the error does not rely on colour. */

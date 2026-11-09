@@ -68,7 +68,7 @@ export function MorphButton({
         break
       }
     const c = clip?.getBoundingClientRect()
-    return { clip, left: Math.max(0, c?.left ?? 0), right: Math.min(window.innerWidth, c?.right ?? window.innerWidth) }
+    return { clip, left: Math.max(0, c?.left ?? 0), right: Math.min(window.innerWidth, c?.right ?? window.innerWidth), top: c?.top ?? 0, bottom: c?.bottom ?? window.innerHeight }
   }
 
   useLayoutEffect(() => {
@@ -100,13 +100,16 @@ export function MorphButton({
     const a = anchorRef.current?.getBoundingClientRect()
     const s = shellRef.current
     if (!a || !s) return
-    const { left: L, right: R } = sides()
+    const { left: L, right: R, top: T, bottom: B } = sides()
     const right = R - EDGE - a.left
     const left = a.right - L - EDGE
-    const below = window.innerHeight - EDGE - a.top
-    const above = a.bottom - EDGE
+    // Up or down: first the way that fits both its box and the screen, then the way that fits its box
+    // (a card that clips it would cut it; the page can still scroll), then the way with more room.
+    const below = { box: B - a.top, screen: window.innerHeight - EDGE - a.top }
+    const above = { box: a.bottom - T, screen: a.bottom - EDGE }
+    const fits = (r: { box: number; screen: number }, both: boolean) => r.box >= box.ph && (!both || r.screen >= box.ph)
+    const up = fits(below, true) ? false : fits(above, true) ? true : fits(below, false) ? false : fits(above, false) ? true : above.box > below.box
     const flipX = right < box.pw && left > right
-    const up = below < box.ph && above > below
     setCorner(`${up ? 'b' : 't'}${flipX ? 'r' : 'l'}` as Corner)
     setRoom(Math.max(box.tw, flipX ? left : right))
   }

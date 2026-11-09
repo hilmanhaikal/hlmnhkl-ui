@@ -40,7 +40,7 @@
   border-radius: var(--hl-radius-full);
   background: var(--hl-color-accent);
   clip-path: inset(var(--in) calc(var(--w) - var(--in) - var(--thumb) + var(--hl-line) * 2) var(--in) var(--in) round var(--hl-radius-full));
-  transition: clip-path var(--hl-motion-slow) var(--hl-ease-morph);
+  transition: clip-path var(--hl-motion-base) var(--hl-ease-morph);
 }
 
 .track[data-on]::before { clip-path: inset(0 round var(--hl-radius-full)); }
@@ -66,10 +66,20 @@
   height: var(--thumb);
   border-radius: var(--hl-radius-full);
   background: var(--hl-color-border-strong);
-  transition:
-    transform var(--hl-motion-slow) var(--hl-ease-spring),
-    width var(--hl-motion-base) var(--hl-ease-out),
-    background-color var(--hl-motion-base) var(--hl-ease-out);
+  /* Its move is drawn by .liquid (Switch.tsx); CSS holds the end state. */
+  transition: background-color var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.thumb[data-flowing] { opacity: 0; }
+
+.liquid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
 }
 
 /* Both on and off pass 3:1 contrast */
@@ -80,12 +90,6 @@
 
 .track[data-on] .thumb {
   transform: translateX(calc(var(--w) - var(--thumb) - var(--pad) * 2));
-}
-
-.track:active:not(:disabled) .thumb { width: calc(var(--thumb) + var(--hl-switch-stretch)); }
-
-.track[data-on]:active:not(:disabled) .thumb {
-  transform: translateX(calc(var(--w) - var(--thumb) - var(--pad) * 2 - var(--hl-switch-stretch)));
 }
 
 .text {

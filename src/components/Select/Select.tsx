@@ -5,6 +5,7 @@ import { cx } from '../../internal/cx'
 import { CheckIcon, ChevronDownIcon } from '../../internal/icons'
 import { useDismiss } from '../../internal/layers'
 import { useLiquid } from '../../internal/liquid'
+import { useEdgeFlow } from '../../internal/liquidMore'
 import { Portal } from '../../internal/Portal'
 import { useControllable } from '../../internal/useControllable'
 import { useFloating } from '../../internal/useFloating'
@@ -76,6 +77,8 @@ export function Select({
   const { style, side, ready } = useFloating(triggerRef, listRef, { open: mounted, side: 'bottom', align: 'start', offset: 6, matchWidth: true })
   // The list grows out of the field and folds back into it.
   useLiquid(listRef, triggerRef, state, mounted && ready)
+  // Open or keyboard focused, the field's dark edge (its focus indicator) flows round it from where it was pressed, or from its start edge for a key.
+  useEdgeFlow(triggerRef, triggerRef, ':is([data-open], :focus-visible)', styles.edge)
   const [hl, setHl] = useState<{ top: number; height: number } | null>(null)
 
   const selectedIndex = options.findIndex((o) => o.value === value)

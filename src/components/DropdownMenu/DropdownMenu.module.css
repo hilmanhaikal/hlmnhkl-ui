@@ -13,6 +13,7 @@
   backdrop-filter: var(--hl-glass-filter, none);
   box-shadow: var(--hl-shadow-3);
   outline: none;
+  isolation: isolate;
   transform-origin: top left;
   animation: menuIn var(--hl-motion-base) var(--hl-ease-out);
 }
@@ -44,7 +45,25 @@
   animation: itemIn var(--hl-motion-slow) var(--hl-ease-out) backwards;
   animation-delay: calc(var(--i) * var(--hl-motion-stagger));
   transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+  --hl-bead: var(--hl-color-surface-hover);
 }
+
+.item[data-destructive]:not([aria-disabled]) { --hl-bead: var(--hl-color-danger-soft); }
+
+/* The bead (internal/liquidMore.ts): while the highlight moves between items, the panel carries
+   data-bead and an SVG draws it under the items; at rest the focused item's own fill is back. */
+.bead {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.menu[data-bead] .item { transition: none; }
+.menu[data-bead] .item:focus,
+.menu[data-bead] .item[data-destructive]:not([aria-disabled]):is(:focus, :active) { background: transparent; }
 
 .item:focus { background: var(--hl-color-surface-hover); }
 .item:focus-visible { box-shadow: inset 0 0 0 var(--hl-line-focus) var(--hl-color-fg); }

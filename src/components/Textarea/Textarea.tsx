@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
+import { useEdgeFlow } from '../../internal/liquidMore'
 import { mergeRefs } from '../../internal/mergeRefs'
 import styles from './Textarea.module.css'
 
@@ -47,6 +48,9 @@ export function Textarea({
   const errorId = `${fieldId}-error`
   const countId = `${fieldId}-count`
   const inner = useRef<HTMLTextAreaElement>(null)
+  // Focus draws the dark edge round the field from where it was pressed, or from its start edge for a key.
+  const boxRef = useRef<HTMLDivElement>(null)
+  useEdgeFlow(inner, boxRef, ':focus', styles.edge)
   const countRef = useRef<HTMLSpanElement>(null)
 
   const resize = useCallback(() => {
@@ -101,23 +105,25 @@ export function Textarea({
           <span id={countId} ref={countRef} className={styles.count} aria-live="off" />
         )}
       </div>
-      <textarea
-        id={fieldId}
-        ref={mergeRefs(inner, ref)}
-        rows={minRows}
-        className={styles.textarea}
-        data-invalid={error ? true : undefined}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy || undefined}
-        value={value}
-        defaultValue={defaultValue}
-        maxLength={maxLength}
-        onChange={(e) => {
-          resize()
-          onChange?.(e)
-        }}
-        {...rest}
-      />
+      <div ref={boxRef} className={styles.box}>
+        <textarea
+          id={fieldId}
+          ref={mergeRefs(inner, ref)}
+          rows={minRows}
+          className={styles.textarea}
+          data-invalid={error ? true : undefined}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy || undefined}
+          value={value}
+          defaultValue={defaultValue}
+          maxLength={maxLength}
+          onChange={(e) => {
+            resize()
+            onChange?.(e)
+          }}
+          {...rest}
+        />
+      </div>
       <FieldMessage helpId={helpId} errorId={errorId} help={help} error={error} />
     </div>
   )

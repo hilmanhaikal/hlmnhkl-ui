@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
+import { useEdgeFlow } from '../../internal/liquidMore'
 import { mergeRefs } from '../../internal/mergeRefs'
 import styles from './Input.module.css'
 
@@ -63,6 +64,9 @@ export function Input({
   const filled = value !== undefined ? String(value) !== '' : innerFilled
   const floating = labelPlacement === 'floating'
   const inner = useRef<HTMLInputElement>(null)
+  // Focus draws the dark edge round the field from where it was pressed, or from its start edge for a key.
+  const fieldRef = useRef<HTMLDivElement>(null)
+  useEdgeFlow(fieldRef, fieldRef, ':focus-within', styles.edge)
 
   // A native form reset changes the value without an onChange
   useEffect(() => {
@@ -92,6 +96,7 @@ export function Input({
         </label>
       )}
       <div
+        ref={fieldRef}
         className={cx(styles.field, styles[size], floating && styles.floating)}
         data-filled={filled || undefined}
         data-invalid={error ? true : undefined}

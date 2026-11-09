@@ -209,6 +209,11 @@
   --hl-press-scale: 0.97;
   /* Small controls (icon buttons, checkboxes, steppers) press deeper so the tap is felt. */
   --hl-press-scale-strong: 0.9;
+  /* A press dents a button's edge this deep, and a wet spot spreads under it: darker on a light fill,
+     lighter on a dark one. */
+  --hl-press-depth: 2px;
+  --hl-press-wet-dark: color-mix(in srgb, var(--hl-gray-950) 18%, transparent);
+  --hl-press-wet-light: color-mix(in srgb, var(--hl-gray-0) 24%, transparent);
   --hl-pop-scale: 0.96;
   /* A check mark or small icon grows in from this size, and a ticked box bumps up to the peak. */
   --hl-check-scale: 0.4;

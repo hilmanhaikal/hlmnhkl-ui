@@ -69,9 +69,20 @@
     width var(--hl-motion-slow) var(--hl-ease-out);
 }
 
-/* A new tab stretches the underline instead (internal/liquid.ts). */
-.indicator[data-liquid] {
+/* A new tab flows the underline instead (internal/liquidMatter.ts useFlow): .liquid draws it meanwhile. */
+.indicator[data-flowing] {
+  opacity: 0;
   transition: none;
+}
+
+.liquid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
 }
 
 .panel {

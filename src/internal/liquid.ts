@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, type RefObject } from 'react'
 import { returnTarget } from './focus'
-import { easing, motionMs, prefersReducedMotion } from './motion'
+import { bezier } from './feel'
+import { easing, morphCurve, motionMs, prefersReducedMotion } from './motion'
 
 // Liquid: a panel grows out of what opened it. It starts as the opener's own shape (its width and its
 // corners) at the panel's edge nearest the opener, then fills out to the whole panel; on close it
@@ -145,18 +146,67 @@ export function useDialogMorph(panel: RefObject<HTMLElement | null>, open: boole
   useLayoutEffect(() => () => run.current?.cancel(), [])
 }
 
-/** A highlight's place in its row: its left edge, width, and (for rows that wrap) its top. */
+/** A highlight's place in its row: its start edge (left, or top on the y axis), its length, and (for rows that wrap) its top. */
 export type StretchBox = { x: number; w: number; y?: number }
 
+// The leading edge moves over this share of the time; the trailing edge starts the rest of the way in.
+const LEAD = 0.75
+const runs = new WeakMap<HTMLElement, Animation>()
+
+// Where a stretch caught half way has the highlight now.
+function placeNow(node: HTMLElement, axis: 'x' | 'y'): StretchBox {
+  const s = getComputedStyle(node)
+  const m = new DOMMatrixReadOnly(s.transform === 'none' ? undefined : s.transform)
+  return axis === 'x' ? { x: m.m41, w: parseFloat(s.width), y: m.m42 } : { x: m.m42, w: parseFloat(s.height) }
+}
+
 /**
- * Liquid highlight: when the choice changes, the edge nearest the new choice leaves first and the far
- * edge follows, so the highlight stretches toward the choice, then settles there like a drop. Runs
- * only on a change of choice, never when the row is resized, and only along one row. `place` turns a
- * box into the highlight's transform, as the part draws it.
+ * Moves a highlight with two edges: the one nearest the new place leaves first and the far one
+ * catches up, both on the morph curve, so it stretches toward the choice and settles there. A move
+ * caught half way turns from where it is. `place` turns a box into the highlight's transform.
  */
-export function useStretch(el: RefObject<HTMLElement | null>, box: StretchBox | null, choice: unknown, ready: boolean, place: (b: StretchBox) => string) {
+export function stretch(node: HTMLElement, from: StretchBox, to: StretchBox, place: (b: StretchBox) => string, axis: 'x' | 'y' = 'x') {
+  const last = runs.get(node) ?? null
+  const start = live(last) ? placeNow(node, axis) : from
+  last?.cancel()
+  const ms = motionMs('base')
+  if (!ms || prefersReducedMotion() || !able()) return
+  const size = axis === 'x' ? 'width' : 'height'
+  const ease = bezier(morphCurve())
+  const ahead = to.x + to.w / 2 >= start.x + start.w / 2
+  const frames: Keyframe[] = []
+  for (let i = 0; i <= 12; i++) {
+    const t = i / 12
+    const lead = ease(Math.min(1, t / LEAD))
+    const trail = ease(Math.max(0, (t - 1 + LEAD) / LEAD))
+    const a = start.x + (to.x - start.x) * (ahead ? trail : lead)
+    const b = start.x + start.w + (to.x + to.w - start.x - start.w) * (ahead ? lead : trail)
+    frames.push({ transform: place({ x: a, w: b - a, y: to.y }), [size]: `${b - a}px` })
+  }
+  node.dataset.liquid = ''
+  const run = node.animate(frames, { duration: ms })
+  runs.set(node, run)
+  // Only the latest stretch takes the mark off: a cancelled one settles later, mid-way through the next.
+  const done = () => {
+    if (runs.get(node) === run) delete node.dataset.liquid
+  }
+  run.finished.then(done, done)
+}
+
+/**
+ * Liquid highlight: when the choice changes, the highlight stretches toward it (see stretch). Runs
+ * only on a change of choice; a resize simply follows. Along one row, or one column with axis 'y'.
+ */
+export function useStretch(
+  el: RefObject<HTMLElement | null>,
+  box: StretchBox | null,
+  choice: unknown,
+  ready: boolean,
+  place: (b: StretchBox) => string,
+  axis: 'x' | 'y' = 'x',
+) {
   const last = useRef<{ box: StretchBox; choice: unknown } | null>(null)
-  const current = useRef<Animation | null>(null)
+  const moved = useRef<HTMLElement | null>(null)
   useLayoutEffect(() => {
     const node = el.current
     const prev = last.current
@@ -169,30 +219,20 @@ export function useStretch(el: RefObject<HTMLElement | null>, box: StretchBox | 
     }
     if (prev && prev.box.x === box.x && prev.box.w === box.w && prev.box.y === box.y) return
     last.current = { box, choice }
-    if (!node || !prev || !ready || prev.choice === choice || prefersReducedMotion() || !able()) return
-    const from = prev.box
-    if ((from.y ?? 0) !== (box.y ?? 0)) return
-    const right = box.x > from.x
-    const lead = right ? box.x + box.w : box.x
-    const trail = right ? from.x + (box.x - from.x) * 0.2 : from.x + from.w - (from.x + from.w - (box.x + box.w)) * 0.2
-    const mid = right ? { x: trail, w: lead - trail, y: box.y } : { x: lead, w: trail - lead, y: box.y }
-    node.dataset.liquid = ''
-    const run = node.animate(
-      [
-        { transform: place(from), width: `${from.w}px`, easing: easing('out') },
-        { transform: place(mid), width: `${mid.w}px`, offset: 0.3, easing: easing('morph') },
-        { transform: place(box), width: `${box.w}px` },
-      ],
-      { duration: motionMs('morph') },
-    )
-    current.current = run
-    // Only the latest stretch takes the mark off: a cancelled one settles later, mid-way through the next.
-    const done = () => {
-      if (current.current === run) delete node.dataset.liquid
+    if (!node || !prev || !ready) return
+    if (prev.choice === choice || (prev.box.y ?? 0) !== (box.y ?? 0)) {
+      runs.get(node)?.cancel()
+      return
     }
-    run.finished.then(done, done)
-    return () => run.cancel()
+    moved.current = node
+    stretch(node, prev.box, box, place, axis)
     // Keyed on the choice and the box; `place` is a pure formatter.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [choice, box?.x, box?.w, box?.y, ready])
+  useLayoutEffect(
+    () => () => {
+      if (moved.current) runs.get(moved.current)?.cancel()
+    },
+    [],
+  )
 }
