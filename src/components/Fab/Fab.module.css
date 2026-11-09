@@ -69,7 +69,7 @@
 .labelWrap {
   display: grid;
   grid-template-columns: 0fr;
-  transition: grid-template-columns var(--hl-motion-slower) var(--hl-ease-in-out);
+  transition: grid-template-columns var(--hl-motion-morph) var(--hl-ease-morph);
 }
 
 .fab[data-extended] .labelWrap { grid-template-columns: 1fr; }
@@ -82,7 +82,7 @@
   opacity: 0;
   transition:
     opacity var(--hl-motion-base) var(--hl-ease-out),
-    padding var(--hl-motion-slower) var(--hl-ease-in-out);
+    padding var(--hl-motion-morph) var(--hl-ease-morph);
 }
 
 .fab[data-extended] .label {

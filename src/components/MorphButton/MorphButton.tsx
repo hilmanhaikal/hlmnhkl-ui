@@ -58,15 +58,40 @@ export function MorphButton({
   const triggerRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
 
+  // The box it opens in: the nearest ancestor that clips (a card, a scroller, a demo frame), else the
+  // window. The panel never grows past its sides, so it fits whatever it sits in, not only the screen.
+  const sides = () => {
+    let clip: Element | null = null
+    for (let e = anchorRef.current?.parentElement; e && e !== document.body; e = e.parentElement)
+      if (getComputedStyle(e).overflowX !== 'visible') {
+        clip = e
+        break
+      }
+    const c = clip?.getBoundingClientRect()
+    return { clip, left: Math.max(0, c?.left ?? 0), right: Math.min(window.innerWidth, c?.right ?? window.innerWidth) }
+  }
+
   useLayoutEffect(() => {
     const t = triggerRef.current
     const s = shellRef.current
     if (!t || !s) return
     const measure = () => setBox({ tw: t.offsetWidth, th: t.offsetHeight, pw: s.offsetWidth, ph: s.offsetHeight })
+    // Shut, the panel's box is already no wider than the room it has, so it never overflows its box.
+    const fit = () => {
+      if (s.dataset.open !== undefined) return
+      const a = anchorRef.current!.getBoundingClientRect(), { left, right } = sides()
+      setRoom(Math.max(t.offsetWidth, s.dataset.corner?.endsWith('r') ? a.right - left - EDGE : right - EDGE - a.left))
+    }
     measure()
-    const ro = new ResizeObserver(measure)
+    fit()
+    const ro = new ResizeObserver(() => {
+      measure()
+      fit()
+    })
     ro.observe(t)
     ro.observe(s)
+    const clip = sides().clip
+    if (clip) ro.observe(clip)
     return () => ro.disconnect()
   }, [])
 
@@ -75,8 +100,9 @@ export function MorphButton({
     const a = anchorRef.current?.getBoundingClientRect()
     const s = shellRef.current
     if (!a || !s) return
-    const right = window.innerWidth - EDGE - a.left
-    const left = a.right - EDGE
+    const { left: L, right: R } = sides()
+    const right = R - EDGE - a.left
+    const left = a.right - L - EDGE
     const below = window.innerHeight - EDGE - a.top
     const above = a.bottom - EDGE
     const flipX = right < box.pw && left > right

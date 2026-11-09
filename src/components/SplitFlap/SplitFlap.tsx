@@ -129,7 +129,8 @@ export function SplitFlap({ value, length = 0, size = 'md', chars = SPLIT_FLAP_C
     const n0 = list.length
     const n1 = target.length
     const radius = getComputedStyle(b).borderRadius || '0px'
-    const liquid = { duration: readMotionMs('liquid'), easing: easing('liquid') }
+    const grow = { duration: readMotionMs('morph'), easing: easing('morph') }
+    const shrink = { duration: readMotionMs('morph-out'), easing: easing('morph') }
     let left = 0
     const landed = () => {
       if (--left === 0) done()
@@ -143,8 +144,8 @@ export function SplitFlap({ value, length = 0, size = 'md', chars = SPLIT_FLAP_C
         list.push(c)
         b.append(c.root)
       }
-      const grow = b.offsetWidth - before
-      const a = b.animate({ clipPath: [`inset(0 ${grow}px 0 0 round ${radius})`, `inset(0 0 0 0 round ${radius})`] }, liquid)
+      const wider = b.offsetWidth - before
+      const a = b.animate({ clipPath: [`inset(0 ${wider}px 0 0 round ${radius})`, `inset(0 0 0 0 round ${radius})`] }, grow)
       anims.current.add(a)
       a.finished.then(() => anims.current.delete(a), () => {})
     }
@@ -154,7 +155,7 @@ export function SplitFlap({ value, length = 0, size = 'md', chars = SPLIT_FLAP_C
       const keep = list.slice(0, n1)
       const box = b.getBoundingClientRect()
       const edge = keep.length ? keep[keep.length - 1].root.getBoundingClientRect().right : box.left
-      const a = b.animate({ clipPath: [`inset(0 0 0 0 round ${radius})`, `inset(0 ${box.right - edge}px 0 0 round ${radius})`] }, { ...liquid, fill: 'forwards' })
+      const a = b.animate({ clipPath: [`inset(0 0 0 0 round ${radius})`, `inset(0 ${box.right - edge}px 0 0 round ${radius})`] }, { ...shrink, fill: 'forwards' })
       left++
       const end = () => {
         shrinkEnd.current = null
@@ -180,7 +181,7 @@ export function SplitFlap({ value, length = 0, size = 'md', chars = SPLIT_FLAP_C
       // The falling flap: the old letter's top half in front, the new letter's bottom half behind.
       const flap = fromHtml(`<span class="${styles.flap}">${halfHtml(styles.front, prev)}${halfHtml(styles.back, next)}</span>`)
       cell.root.append(flap)
-      const a = flap.animate([{ transform: 'rotateX(0deg)' }, { transform: 'rotateX(-180deg)' }], { duration: fold, easing: easing('in') })
+      const a = flap.animate([{ transform: 'rotateX(0deg)' }, { transform: 'rotateX(-180deg)' }], { duration: fold, easing: easing('morph') })
       anims.current.add(a)
       const end = () => {
         anims.current.delete(a)

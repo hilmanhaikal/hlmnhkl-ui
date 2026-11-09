@@ -1,13 +1,13 @@
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
-import { createScrub, type Reach, type ScrubOptions } from './feel'
-import { readMotionMs } from './motion'
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
+import { createScrub, type ScrubOptions } from './feel'
+import { morphCurve, readMotionMs } from './motion'
 
 // The React side of feel.ts for Dial, RulerScrubber and PickerWheel: pointer, keys and wheel in, the
 // drawn position out. The motion itself lives in feel.ts.
 
 type Last = { x: number; y: number }
 
-export type UseScrubOptions = Pick<ScrubOptions, 'min' | 'max' | 'edge' | 'attract' | 'land' | 'coast' | 'maxSpeed' | 'rest'> & {
+export type UseScrubOptions = Pick<ScrubOptions, 'min' | 'max' | 'edge' | 'land' | 'coast' | 'maxSpeed'> & {
   /** The value from props: a change from outside glides there. */
   value: number
   onSettle: (value: number) => void
@@ -42,7 +42,8 @@ export function useScrub(o: UseScrubOptions) {
     scrub.current = createScrub({
       value: o.value,
       land: (p) => opt.current.land(p),
-      period: () => readMotionMs('fling'),
+      duration: () => readMotionMs('morph-out'),
+      curve: morphCurve,
       onFrame: setAt,
       onMoving: setMoving,
       onMark: (v) => {
@@ -54,12 +55,7 @@ export function useScrub(o: UseScrubOptions) {
     })
   }
   const s = scrub.current
-  const reach = useRef<Reach>({})
-  useLayoutEffect(() => {
-    const el = ref.current
-    reach.current = { reach: tokenNumber(el, '--hl-magnet-reach') || undefined, strong: tokenNumber(el, '--hl-magnet-strong') || undefined }
-  }, [])
-  s.update({ min: o.min, max: o.max, edge: o.edge, attract: o.attract, coast: o.coast, maxSpeed: o.maxSpeed, rest: o.rest })
+  s.update({ min: o.min, max: o.max, edge: o.edge, coast: o.coast, maxSpeed: o.maxSpeed })
 
   // A value set from outside (a controlled prop, a reset) glides there. So does one the parent kept
   // or changed when it came to rest.
@@ -132,8 +128,6 @@ export function useScrub(o: UseScrubOptions) {
     go: (to: number) => s.go(to),
     place: (to: number) => s.place(to),
     target: () => s.target,
-    /** How far marks reach, from --hl-magnet-reach and --hl-magnet-strong. */
-    reach: () => reach.current,
     handlers: { onPointerDown, onPointerMove, onPointerUp, onPointerCancel: onPointerUp, onKeyDown },
   }
 }

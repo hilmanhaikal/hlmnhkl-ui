@@ -3,7 +3,8 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
 import { flushSync } from 'react-dom'
 import { cx } from '../../internal/cx'
-import { clamp, magnetTo, pull, speedTracker, springTo } from '../../internal/feel'
+import { clamp, pull, speedTracker } from '../../internal/feel'
+import { release } from '../../internal/fling'
 import { UndoIcon } from '../../internal/icons'
 import { easing, readMotionMs } from '../../internal/motion'
 import { tokenNumber } from '../../internal/useScrub'
@@ -46,8 +47,6 @@ const FLICK = 600
 const FLICK_MIN = 40
 const TILT = 0.06
 const TILT_MAX = 14
-// How far round each throw mark it draws the card in, as a share of the distance to the mark.
-const MARK_REACH = 0.3
 // The speed a card leaves at, or comes back at on undo, when no hand threw it.
 const THROW_SPEED = 1800
 
@@ -94,7 +93,7 @@ export function SwipeDeck<T>({
   const widthOf = () => top.current?.offsetWidth || deck.current?.offsetWidth || 300
   const share = useRef(0.35)
   const line = () => widthOf() * share.current
-  const reduced = () => readMotionMs('fling') === 0
+  const reduced = () => readMotionMs('morph-out') === 0
 
   const paint = (x: number) => {
     at.current = x
@@ -167,12 +166,12 @@ export function SwipeDeck<T>({
       return
     }
     const speed = side * Math.max(Math.abs(velocity), THROW_SPEED)
-    stop.current = springTo({ from: at.current, to: offStage(side), velocity: speed, period: readMotionMs('fling'), rest: 2, onFrame: paint, onDone: () => finish(side) })
+    stop.current = release(at.current, offStage(side), speed, paint, () => finish(side))
   }
 
   const back = (velocity = 0) => {
     stop.current()
-    stop.current = springTo({ from: at.current, to: 0, velocity, period: readMotionMs('fling'), damping: 1, rest: 0.5, onFrame: paint })
+    stop.current = release(at.current, 0, velocity, paint)
   }
 
   const undo = () => {
@@ -217,7 +216,7 @@ export function SwipeDeck<T>({
       return
     }
     paint(offStage(side))
-    stop.current = springTo({ from: offStage(side), to: 0, velocity: -side * THROW_SPEED, period: readMotionMs('fling'), damping: 1, rest: 0.5, onFrame: paint, onDone: playQueue })
+    stop.current = release(offStage(side), 0, -side * THROW_SPEED, paint, playQueue)
   }, [done.length])
 
   useLayoutEffect(() => {
@@ -253,8 +252,7 @@ export function SwipeDeck<T>({
     }
     const raw = d.base + dx
     d.speed.add(raw, e.timeStamp)
-    const T = line()
-    paint(magnetTo(raw, [-T, T], T * MARK_REACH))
+    paint(raw)
   }
 
   const letGo = (e: PointerEvent<HTMLDivElement>, cancelled: boolean) => {

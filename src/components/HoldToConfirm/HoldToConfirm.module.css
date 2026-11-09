@@ -17,10 +17,19 @@
   background: var(--hl-color-surface);
   box-shadow: inset 0 0 0 var(--hl-line-thick) var(--hl-color-border-strong);
   transition:
-    width var(--hl-motion-base) var(--hl-ease-liquid),
-    height var(--hl-motion-base) var(--hl-ease-liquid),
-    border-radius var(--hl-motion-base) var(--hl-ease-liquid),
-    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+    width var(--hl-motion-morph-out) var(--hl-ease-morph),
+    height var(--hl-motion-morph-out) var(--hl-ease-morph),
+    border-radius var(--hl-motion-morph-out) var(--hl-ease-morph),
+    box-shadow var(--hl-motion-fast) var(--hl-ease-morph);
+}
+
+/* The pill grows into its confirm step on the morph curve, and folds back a little quicker. */
+.shell[data-phase="step"] {
+  transition:
+    width var(--hl-motion-morph) var(--hl-ease-morph),
+    height var(--hl-motion-morph) var(--hl-ease-morph),
+    border-radius var(--hl-motion-morph) var(--hl-ease-morph),
+    box-shadow var(--hl-motion-fast) var(--hl-ease-morph);
 }
 
 .shell:has(.main:focus-visible) {
@@ -109,7 +118,7 @@
 
 .step[inert] {
   visibility: hidden;
-  transition: visibility 0s linear var(--hl-motion-base);
+  transition: visibility 0s linear var(--hl-motion-morph-out);
 }
 
 .cancel,

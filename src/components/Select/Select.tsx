@@ -72,7 +72,7 @@ export function Select({
   const listRef = useRef<HTMLDivElement>(null)
   const optionRefs = useRef<Array<HTMLDivElement | null>>([])
   const typeahead = useRef({ text: '', at: 0 })
-  const { mounted, state } = usePresence(open, 'fast')
+  const { mounted, state } = usePresence(open, 'morph-out')
   const { style, side, ready } = useFloating(triggerRef, listRef, { open: mounted, side: 'bottom', align: 'start', offset: 6, matchWidth: true })
   // The list grows out of the field and folds back into it.
   useLiquid(listRef, triggerRef, state, mounted && ready)

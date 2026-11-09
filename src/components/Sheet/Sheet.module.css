@@ -3,10 +3,10 @@
   inset: 0;
   z-index: var(--hl-z-dialog);
   background: var(--hl-color-overlay);
-  animation: fadeIn var(--hl-motion-slow) var(--hl-ease-out);
+  animation: fadeIn var(--hl-motion-morph) var(--hl-ease-morph);
 }
 
-.overlay[data-state="closed"] { animation: fadeOut var(--hl-motion-slow) var(--hl-ease-in-out) forwards; }
+.overlay[data-state="closed"] { animation: fadeOut var(--hl-motion-morph-out) var(--hl-ease-morph) forwards; }
 
 .sheet {
   position: fixed;
@@ -28,8 +28,8 @@
   box-shadow: var(--hl-shadow-4);
   outline: none;
   padding-bottom: env(safe-area-inset-bottom);
-  animation: sheetIn var(--hl-motion-slower) var(--hl-ease-out);
-  transition: transform var(--hl-motion-slow) var(--hl-ease-spring);
+  animation: sheetIn var(--hl-motion-morph) var(--hl-ease-morph);
+  transition: transform var(--hl-motion-morph-out) var(--hl-ease-morph);
 }
 
 /* Pulled up past the top, the sheet stretches like a sheet on a phone: its own surface carries on
@@ -52,12 +52,12 @@
 .sheet[data-dragging],
 .sheet[data-fluid] { transition: none; }
 
-/* A spring is carrying it from the hand, so the CSS close must not start over from the top. */
+/* A glide is carrying it from the hand, so the CSS close must not start over from the top. */
 .sheet[data-fluid][data-state="closed"] { animation: none; }
 
 /* No "from" frame: the close starts where a drag left the sheet */
 .sheet[data-state="closed"] {
-  animation: sheetOut var(--hl-motion-slow) var(--hl-ease-in-out) forwards;
+  animation: sheetOut var(--hl-motion-morph-out) var(--hl-ease-morph) forwards;
   pointer-events: none;
 }
 

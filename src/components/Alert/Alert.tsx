@@ -62,7 +62,7 @@ export function Alert({ variant = 'info', title, children, onDismiss, dismissLab
         { height: `${h}px`, opacity: 0, transform: 'scale(0.98)', offset: 0.45 },
         { height: '0px', opacity: 0, transform: 'scale(0.98)', paddingTop: '0px', paddingBottom: '0px', marginTop: '0px', marginBottom: '0px', borderWidth: '0px' },
       ],
-      { duration: ms, easing: easing('in-out'), fill: 'forwards' },
+      { duration: ms, easing: easing('morph'), fill: 'forwards' },
     )
     anim.onfinish = finish
   }

@@ -174,12 +174,14 @@
   --hl-motion-base: calc(220ms * var(--hl-motion-scale));
   --hl-motion-slow: calc(360ms * var(--hl-motion-scale));
   --hl-motion-slower: calc(600ms * var(--hl-motion-scale));
-  /* Navbar dock: the trip to and from the bottom of the screen, long enough to read as liquid */
-  --hl-motion-pour: calc(760ms * var(--hl-motion-scale));
-  /* Liquid: a shape growing into another (a button into its menu), the length of --hl-ease-liquid */
-  --hl-motion-liquid: calc(520ms * var(--hl-motion-scale));
-  /* Fluid: the swing of the spring that carries a let-go sheet, row or photo on at the hand's speed */
-  --hl-motion-fling: calc(280ms * var(--hl-motion-scale));
+  /* Morph: every move between two states. A surface grows out of what opened it in 600ms and folds
+     back in 480ms, both on --hl-ease-morph played forward, so a close starts moving at once */
+  --hl-motion-morph: calc(600ms * var(--hl-motion-scale));
+  --hl-motion-morph-out: calc(480ms * var(--hl-motion-scale));
+  /* Older names, kept so apps that use them still work. They are the morph now */
+  --hl-motion-pour: var(--hl-motion-morph);
+  --hl-motion-liquid: var(--hl-motion-morph);
+  --hl-motion-fling: var(--hl-motion-morph-out);
   --hl-motion-stagger: calc(30ms * var(--hl-motion-scale));
   --hl-motion-delay-tooltip: 400ms;
   /* Hold to confirm: how long a press must last. A timer, not motion, so reduced motion keeps it */
@@ -188,16 +190,17 @@
   --hl-motion-shimmer: 1400ms;
   --hl-motion-spin: 800ms;
   --hl-motion-indeterminate: 1500ms;
-  --hl-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --hl-ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  /* Morph: the one curve for every move. Fast away, long soft landing, no overshoot, like an iPhone
+     sheet. Opening and closing both play it forward */
+  --hl-ease-morph: cubic-bezier(0.32, 0.72, 0, 1);
+  /* Older names, kept so apps that use them still work. They are the morph now */
+  --hl-ease-out: var(--hl-ease-morph);
+  --hl-ease-in: var(--hl-ease-morph);
+  --hl-ease-spring: var(--hl-ease-morph);
+  --hl-ease-bounce: var(--hl-ease-morph);
+  --hl-ease-liquid: var(--hl-ease-morph);
+  /* Only for loops that breathe back and forth (a shimmer, a spinner's pulse), never for a move */
   --hl-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  /* Springs settle, they do not wobble: spring goes about 1% past its target, bounce about 3% (only
-     for small pops like a badge). A bigger overshoot reads as wobbly once it is on every control. */
-  --hl-ease-spring: cubic-bezier(0.3, 1.2, 0.5, 1);
-  --hl-ease-bounce: cubic-bezier(0.3, 1.3, 0.5, 1);
-  /* A real spring (stiffness 300, damping 26), sampled every 25ms: it carries momentum, goes 2% past
-     and settles. Most of the move is done in the first 200ms. */
-  --hl-ease-liquid: linear(0, 0.09, 0.264, 0.455, 0.628, 0.768, 0.871, 0.941, 0.984, 1.008, 1.019, 1.022, 1.02, 1.017, 1.012, 1.009, 1.005, 1.003, 1.001, 1, 1, 1);
   --hl-ease-linear: linear;
 
   /* Movement distances */
@@ -322,9 +325,8 @@
     --hl-motion-base: 0ms;
     --hl-motion-slow: 0ms;
     --hl-motion-slower: 0ms;
-    --hl-motion-pour: 0ms;
-    --hl-motion-liquid: 0ms;
-    --hl-motion-fling: 0ms;
+    --hl-motion-morph: 0ms;
+    --hl-motion-morph-out: 0ms;
     --hl-motion-stagger: 0ms;
     --hl-motion-shimmer: 0ms;
     --hl-motion-spin: 1600ms;
@@ -586,10 +588,6 @@
   --hl-swipe-action-w: 80px;
   --hl-pull-distance: 72px;
 
-  /* Magnetic marks on Dial, RulerScrubber and PickerWheel: how far a mark reaches, and a strong one,
-     each as a share of the gap between two marks */
-  --hl-magnet-reach: 0.35;
-  --hl-magnet-strong: 1.5;
   /* Dial: the knob, the ring round it, and the speed arc's radius and the length of one step on its rim */
   --hl-dial-size: 208px;
   --hl-dial-ring: 244px;

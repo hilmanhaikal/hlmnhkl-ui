@@ -13,7 +13,7 @@ Status: **done** means built, typed, in the docs site with demos, keyboard and s
 | 7 | Select | Forms | done | custom listbox, select-only combobox pattern |
 | 8 | Checkbox | Forms | done | drawn tick, mixed state |
 | 9 | Radio (RadioGroup) | Forms | done | native radios in a fieldset |
-| 10 | Switch | Forms | done | spring thumb |
+| 10 | Switch | Forms | done | the thumb glides on the morph curve |
 | 11 | SegmentedControl | Forms | done | sliding pill, radiogroup pattern |
 | 12 | Slider | Forms | done | native range, value bubble |
 | 13 | Tabs | Navigation | done | sliding underline |
@@ -69,9 +69,9 @@ Status: **done** means built, typed, in the docs site with demos, keyboard and s
 | 63 | TableOfContents | Navigation | done | a page's sections as a strip of frames, read, here and ahead; smooth scroll that respects reduced motion, focus moves to the heading, shareable #ids, optional back to top |
 | 64 | HoldToConfirm | Actions | done | hold to run a risky action; a line burns along the edge out both ways from the finger; early release runs it back; one tap or key press opens Cancel and Confirm in place |
 | 65 | MorphButton | Actions | done | the button's surface grows into its own panel from where it sits; the label stays and names the dialog; focus in, Esc and outside tap close, focus returns |
-| 66 | Dial | Forms | done | turn to set a value; every step is a magnetic mark, strong marks pull harder; three looks in one API: a printed knob (default), mercury levels and a sideways speed arc; slider keys, no mouse wheel by default |
+| 66 | Dial | Forms | done | turn to set a value; follows the hand, a let-go glides onto a step, strong marks stand out; three looks in one API: a printed knob (default), mercury levels and a sideways speed arc; slider keys, no mouse wheel by default |
 | 67 | RulerScrubber | Forms | done | drag a ruler under a fixed needle, or flick it and it coasts; ticks lean toward the needle only while it moves, flat at rest; strong marks with a tag; pan-y, sideways wheel only |
-| 68 | PickerWheel | Forms | done | a true 3D cylinder for any list, one or many columns; rows are marks, strong rows pull harder; one spin button per column in a labelled group (APG keys, type to jump); TimeWheel and DateWheel presets with real month lengths |
+| 68 | PickerWheel | Forms | done | a true 3D cylinder for any list, one or many columns; follows the hand, a let-go glides onto a row, strong rows stand out; one spin button per column in a labelled group (APG keys, type to jump); TimeWheel and DateWheel presets with real month lengths |
 | 69 | LivePill | Feedback | done | a status pill whose surface grows into a card from its own spot (liquid clip, 520ms open, 140ms close); its words keep their pixels as the card's last row; bottom by default, top too; the pill can be its own progress bar; Esc and tap outside close and return focus; one polite status, alerts shrink back after 5s unless held |
-| 70 | SwipeDeck | Actions | done | throw the top card to either side; a ruler with two throw marks pulls it in; past 35% of its width or a 600 px/s flick over 40px; the next card rises, the side's button fills toward it; undo plays the throw in reverse; arrows and Backspace; one polite status; cards behind inert; RTL start and end |
-| 71 | SplitFlap | Data display | done | cells flip forward through a drum, fast then slow, 8 steps at most, cascade within 350ms, no bounce; the board grows or shrinks with the liquid morph; text once in a hidden node, said when it lands; a change mid-run lands on the newest text |
+| 70 | SwipeDeck | Actions | done | throw the top card to either side; a ruler with two throw marks; past 35% of its width or a 600 px/s flick over 40px; the next card rises, the side's button fills toward it; undo plays the throw in reverse; arrows and Backspace; one polite status; cards behind inert; RTL start and end |
+| 71 | SplitFlap | Data display | done | cells flip forward through a drum, fast then slow, 8 steps at most, cascade within 350ms, no bounce; the board grows or shrinks with the morph; text once in a hidden node, said when it lands; a change mid-run lands on the newest text |

@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useId, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
 import { mergeRefs } from '../../internal/mergeRefs'
+import { easing, motionMs, prefersReducedMotion } from '../../internal/motion'
 import { useControllable } from '../../internal/useControllable'
 import styles from './Checkbox.module.css'
 
@@ -36,6 +37,8 @@ export function Checkbox({
   className,
   ref,
   disabled,
+  onPointerDown,
+  onKeyDown,
   'aria-describedby': describedByProp,
   ...rest
 }: CheckboxProps) {
@@ -59,6 +62,27 @@ export function Checkbox({
 
   const state = mixed ? 'mixed' : checked ? 'on' : 'off'
 
+  // The fill grows from where the box was pressed, or from its middle for a key or a tap on the label,
+  // and shrinks back the same way.
+  const fillRef = useRef<HTMLSpanElement>(null)
+  const pressedAt = useRef<{ x: number; y: number } | null>(null)
+  const filled = state !== 'off'
+  const wasFilled = useRef(filled)
+  useLayoutEffect(() => {
+    if (wasFilled.current === filled) return
+    wasFilled.current = filled
+    const fill = fillRef.current
+    const at = pressedAt.current
+    pressedAt.current = null
+    if (!fill || prefersReducedMotion() || typeof fill.animate !== 'function') return
+    const box = fill.getBoundingClientRect()
+    const x = at ? Math.max(0, Math.min(box.width, at.x - box.left)) : box.width / 2
+    const y = at ? Math.max(0, Math.min(box.height, at.y - box.top)) : box.height / 2
+    const r = Math.hypot(Math.max(x, box.width - x), Math.max(y, box.height - y))
+    const shapes = [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`]
+    fill.animate({ clipPath: filled ? shapes : shapes.reverse() }, { duration: motionMs('slow'), easing: easing('morph') })
+  }, [filled])
+
   return (
     <div className={cx(styles.root, className)} data-disabled={disabled || undefined} data-invalid={error ? true : undefined}>
       <span className={styles.boxWrap}>
@@ -76,9 +100,18 @@ export function Checkbox({
             setMixed(false)
             setChecked(true)
           }}
+          onPointerDown={(e) => {
+            pressedAt.current = { x: e.clientX, y: e.clientY }
+            onPointerDown?.(e)
+          }}
+          onKeyDown={(e) => {
+            pressedAt.current = null
+            onKeyDown?.(e)
+          }}
           {...rest}
         />
         <span className={styles.box} data-state={state} aria-hidden="true">
+          <span ref={fillRef} className={styles.fill} />
           <svg viewBox="0 0 16 16" className={styles.mark}>
             <path className={styles.tick} d="M3.5 8.5l3 3 6-7" pathLength="1" />
             <path className={styles.dash} d="M4 8h8" pathLength="1" />

@@ -23,7 +23,8 @@
 .shell[data-corner="bl"] { bottom: 0; left: 0; }
 .shell[data-corner="br"] { bottom: 0; right: 0; }
 
-/* Opening, the edges travel on the liquid curve and settle on the panel's box. Closing is quicker. */
+/* The edges travel on the morph curve both ways: out to the panel's box, and back to the button a
+   little quicker. A transition starts from where the edges are, so a move caught half way turns back. */
 .surface {
   position: absolute;
   inset: var(--t) var(--r) var(--b) var(--l);
@@ -32,29 +33,29 @@
   background: var(--hl-color-surface);
   box-shadow: var(--hl-shadow-1);
   transition:
-    inset var(--hl-motion-fast) var(--hl-ease-out),
-    border-radius var(--hl-motion-fast) var(--hl-ease-out),
-    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+    inset var(--hl-motion-morph-out) var(--hl-ease-morph),
+    border-radius var(--hl-motion-morph-out) var(--hl-ease-morph),
+    box-shadow var(--hl-motion-morph-out) var(--hl-ease-morph);
 }
 
 .content {
   position: relative;
   clip-path: inset(var(--t) var(--r) var(--b) var(--l) round var(--pill));
-  transition: clip-path var(--hl-motion-fast) var(--hl-ease-out);
+  transition: clip-path var(--hl-motion-morph-out) var(--hl-ease-morph);
 }
 
 .shell[data-open] .surface {
   border-radius: var(--hl-radius-panel);
   box-shadow: var(--hl-shadow-3);
   transition:
-    inset var(--hl-motion-base) var(--hl-ease-liquid),
-    border-radius var(--hl-motion-base) var(--hl-ease-liquid),
-    box-shadow var(--hl-motion-base) var(--hl-ease-out);
+    inset var(--hl-motion-morph) var(--hl-ease-morph),
+    border-radius var(--hl-motion-morph) var(--hl-ease-morph),
+    box-shadow var(--hl-motion-morph) var(--hl-ease-morph);
 }
 
 .shell[data-open] .content {
   clip-path: inset(var(--t) var(--r) var(--b) var(--l) round var(--hl-radius-panel));
-  transition: clip-path var(--hl-motion-base) var(--hl-ease-liquid);
+  transition: clip-path var(--hl-motion-morph) var(--hl-ease-morph);
 }
 
 .shell:not([data-open]):has(.trigger:focus-visible) .surface { box-shadow: var(--hl-focus-ring); }
@@ -113,7 +114,7 @@
 /* Shut, the panel leaves the accessibility tree and the tab order, once the fold has finished. */
 .shell:not([data-open]) .panel {
   visibility: hidden;
-  transition: visibility 0s linear var(--hl-motion-fast);
+  transition: visibility 0s linear var(--hl-motion-morph-out);
 }
 
 .shell[data-corner^="b"] .panel { padding: var(--hl-space-6) var(--hl-space-6) calc(var(--hl-control-h-lg) + var(--hl-space-3)); }

@@ -3,7 +3,8 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { CheckIcon } from '../../internal/icons'
-import { prefersReducedMotion, readMotionMs } from '../../internal/motion'
+import { bezier } from '../../internal/feel'
+import { morphCurve, prefersReducedMotion, readMotionMs } from '../../internal/motion'
 import styles from './HoldToConfirm.module.css'
 
 export type HoldToConfirmProps = {
@@ -150,16 +151,17 @@ export function HoldToConfirm({
     raf.current = requestAnimationFrame(step)
   }
 
-  // Back fast and easing out: a rubber band, not a clock.
+  // Back fast on the morph curve: a rubber band, not a clock.
   const rewind = () => {
     cancelAnimationFrame(raf.current)
     const from = p.current
     const length = readMotionMs('fast')
     if (!length || !from) return paint(0)
+    const ease = bezier(morphCurve())
     const t0 = performance.now()
     const step = (now: number) => {
       const t = Math.min(1, (now - t0) / length)
-      paint(from * Math.pow(1 - t, 3))
+      paint(from * (1 - ease(t)))
       if (t < 1) raf.current = requestAnimationFrame(step)
     }
     raf.current = requestAnimationFrame(step)

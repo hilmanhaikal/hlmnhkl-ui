@@ -66,7 +66,7 @@ export function Popover({
   const [open, setOpen] = useControllable(openProp, defaultOpen, onOpenChange)
   const anchorRef = useRef<HTMLElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
-  const { mounted, state } = usePresence(open, 'fast')
+  const { mounted, state } = usePresence(open, 'morph-out')
   const floating = useFloating(anchorRef, panelRef, { open: mounted, side, align, offset: 8 })
   // The panel grows out of its trigger and folds back into it.
   useLiquid(panelRef, anchorRef, state, mounted && floating.ready)

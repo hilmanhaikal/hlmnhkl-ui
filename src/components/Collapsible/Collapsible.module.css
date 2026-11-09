@@ -53,15 +53,15 @@
   grid-template-rows: 0fr;
   visibility: hidden;
   transition:
-    grid-template-rows var(--hl-motion-slow) var(--hl-ease-out),
-    visibility 0s linear var(--hl-motion-slow);
+    grid-template-rows var(--hl-motion-morph) var(--hl-ease-morph),
+    visibility 0s linear var(--hl-motion-morph);
 }
 
 .root[data-open] .panel {
   grid-template-rows: 1fr;
   visibility: visible;
   transition:
-    grid-template-rows var(--hl-motion-slow) var(--hl-ease-out),
+    grid-template-rows var(--hl-motion-morph) var(--hl-ease-morph),
     visibility 0s;
 }
 
@@ -72,15 +72,4 @@
 
 .content {
   padding-top: var(--hl-space-3);
-  opacity: 0;
-  transform: translateY(calc(var(--hl-shift-md) * -1));
-  transition:
-    opacity var(--hl-motion-base) var(--hl-ease-out),
-    transform var(--hl-motion-slow) var(--hl-ease-out);
-}
-
-.root[data-open] .content {
-  opacity: 1;
-  transform: none;
-  transition-delay: var(--hl-motion-instant);
 }

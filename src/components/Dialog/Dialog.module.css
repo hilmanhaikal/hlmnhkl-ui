@@ -4,10 +4,10 @@
   z-index: var(--hl-z-dialog);
   background: var(--hl-color-overlay);
   backdrop-filter: blur(2px);
-  animation: fadeIn var(--hl-motion-base) var(--hl-ease-out);
+  animation: fadeIn var(--hl-motion-morph) var(--hl-ease-morph);
 }
 
-.overlay[data-state="closed"] { animation: fadeOut var(--hl-motion-base) var(--hl-ease-in) forwards; }
+.overlay[data-state="closed"] { animation: fadeOut var(--hl-motion-morph-out) var(--hl-ease-morph) forwards; }
 
 .positioner {
   position: fixed;
@@ -35,12 +35,21 @@
   box-shadow: var(--hl-shadow-4);
   outline: none;
   pointer-events: auto;
-  animation: panelIn var(--hl-motion-slow) var(--hl-ease-spring);
+  animation: panelIn var(--hl-motion-morph) var(--hl-ease-morph);
 }
 
 /* A closing panel takes no clicks, so a double click cannot run a footer action twice.
    The overlay still catches them, so they never reach the page behind. */
-.panel[data-state="closed"] { animation: panelOut var(--hl-motion-base) var(--hl-ease-in) forwards; pointer-events: none; }
+.panel[data-state="closed"] { animation: panelOut var(--hl-motion-morph-out) var(--hl-ease-morph) forwards; pointer-events: none; }
+
+/* The morph (internal/liquid.ts) grows the panel out of its opener instead, and a drag carries a
+   sheet the hand lets go of; the CSS motion stands down. */
+.panel[data-liquid],
+.panel[data-liquid][data-state="closed"],
+.panel[data-fluid][data-state="closed"] { animation: none; }
+
+/* The sheet's grabber, shown on phones only */
+.handle { display: none; }
 
 .sm { max-width: var(--hl-panel-w-sm); }
 .lg { max-width: var(--hl-panel-w-lg); }
@@ -137,6 +146,27 @@
   }
 
   .panel[data-state="closed"] { animation-name: slideDown; }
+
+  .handle {
+    display: block;
+    flex: none;
+    width: var(--hl-handle-w);
+    height: var(--hl-handle-h);
+    margin: var(--hl-space-3) auto 0;
+    border-radius: var(--hl-radius-full);
+    background: var(--hl-color-border-strong);
+    transition: width var(--hl-motion-base) var(--hl-ease-morph);
+  }
+
+  .panel[data-dragging] .handle { width: var(--hl-handle-w-active); }
+
+  /* The handle and the header are where the hand takes hold, as on a Sheet. */
+  .handle,
+  .handle + .header { touch-action: none; cursor: grab; }
+  .panel[data-dragging] .handle,
+  .panel[data-dragging] .handle + .header { cursor: grabbing; }
+
+  .handle + .header { padding-top: var(--hl-space-4); }
 
   .footer {
     flex-direction: column-reverse;

@@ -2,8 +2,8 @@
 
 import { useEffect, useId, useRef, useState, type ComponentPropsWithRef, type KeyboardEvent, type PointerEvent } from 'react'
 import { cx } from '../../internal/cx'
-import { magnetTo, nearestMark } from '../../internal/magnet'
-import { motionMs, prefersReducedMotion } from '../../internal/motion'
+import { bezier, nearestMark } from '../../internal/feel'
+import { morphCurve, motionMs, prefersReducedMotion } from '../../internal/motion'
 import { useControllable } from '../../internal/useControllable'
 import styles from './Slider.module.css'
 
@@ -65,22 +65,23 @@ export function Slider({
   const at = shown ?? value
   const pct = max === min ? 0 : ((at - min) / (max - min)) * 100
   const text = formatValue(value)
-  // How near a mark the pull starts: 6% of the track.
+  // A let-go within half of this (3% of the track) of a mark lands on it.
   const reach = (max - min) * 0.06
   const decimals = (String(step).split('.')[1] ?? '').length
   const toStep = (v: number) => Math.min(max, Math.max(min, Number((Math.round((v - min) / step) * step + min).toFixed(decimals))))
 
   useEffect(() => () => cancelAnimationFrame(glide.current), [])
 
-  // The thumb travels from where it is drawn to `to`, easing out. A click and a landing both use it.
+  // The thumb travels from where it is drawn to `to` on the morph curve. A click and a landing both use it.
   function glideTo(from: number, to: number) {
     cancelAnimationFrame(glide.current)
-    const ms = motionMs('base')
+    const ms = motionMs('morph-out')
     if (!ms || from === to || prefersReducedMotion()) return setShown(null)
+    const ease = bezier(morphCurve())
     const t0 = performance.now()
     const tick = (now: number) => {
       const p = Math.min(1, (now - t0) / ms)
-      setShown(p < 1 ? from + (to - from) * (1 - Math.pow(1 - p, 3)) : null)
+      setShown(p < 1 ? from + (to - from) * ease(p) : null)
       if (p < 1) glide.current = requestAnimationFrame(tick)
     }
     glide.current = requestAnimationFrame(tick)
@@ -101,7 +102,7 @@ export function Slider({
 
   function change(input: HTMLInputElement, native: number) {
     const p = press.current
-    const next = p && marks?.length ? toStep(magnetTo(fromPointer(input, p.lastX - p.grab), marks, reach)) : native
+    const next = p && marks?.length ? toStep(fromPointer(input, p.lastX - p.grab)) : native
     // A press that has not moved is a click: the value jumps, the thumb glides there. Once it moves, the hand leads.
     if (p && !p.moved) glideTo(at, next)
     else if (shown !== null) {

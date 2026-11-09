@@ -13,8 +13,9 @@ import {
   type ReactNode,
 } from 'react'
 import { CheckCircleIcon, ErrorIcon, InfoIcon, XIcon } from '../../internal/icons'
+import { useLiquid } from '../../internal/liquid'
 import { motionMs } from '../../internal/motion'
-import { speedTracker, spring } from '../../internal/spring'
+import { release, speedTracker } from '../../internal/fling'
 import { Spinner } from '../Spinner'
 import styles from './Toast.module.css'
 
@@ -91,7 +92,7 @@ export function ToastProvider({ children, visible = 3, label = 'Notifications', 
       timers.current.delete(timer)
       setItems((list) => list.filter((t) => t.id !== id))
       setHeights(({ [id]: _, ...rest }) => rest)
-    }, motionMs('slow'))
+    }, motionMs('morph-out'))
     timers.current.add(timer)
   }, [])
 
@@ -185,7 +186,7 @@ function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, dism
   const swipe = useRef<{ x: number; dx: number; speed: ReturnType<typeof speedTracker> } | null>(null)
   const [dragging, setDragging] = useState(false)
   const [hover, setHover] = useState(false)
-  // Where the toast is drawn sideways, set straight on --dx so a spring does not render every frame.
+  // Where the toast is drawn sideways, set straight on --dx so a glide does not render every frame.
   const at = useRef(0)
   const stop = useRef(() => {})
   useEffect(() => () => stop.current(), [])
@@ -197,10 +198,22 @@ function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, dism
     const el = ref.current
     stop.current()
     el?.setAttribute('data-fluid', '')
-    stop.current = spring(at.current, to, speed, paint, () => {
+    stop.current = release(at.current, to, speed, paint, () => {
       if (to === 0) el?.removeAttribute('data-fluid')
     })
   }
+
+  // It grows up out of the bottom edge it enters from, and a toast that leaves downward folds back into it.
+  // One thrown sideways keeps its throw.
+  useLiquid(
+    ref,
+    () => {
+      const r = ref.current?.getBoundingClientRect()
+      return r ? new DOMRect(r.left + r.width / 2 - r.height / 2, r.bottom, r.height, 2) : null
+    },
+    item.leaving === 'down' ? 'closed' : 'open',
+    true,
+  )
 
   useLayoutEffect(() => {
     const el = ref.current
@@ -242,7 +255,7 @@ function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, dism
   const onPointerDown = (e: PointerEvent<HTMLLIElement>) => {
     if ((e.target as HTMLElement).closest('button') || item.leaving) return
     stop.current()
-    // Caught mid-spring, it carries on from where it is.
+    // Caught mid-glide, it carries on from where it is.
     swipe.current = { x: e.clientX - at.current, dx: at.current, speed: speedTracker() }
     swipe.current.speed.add(at.current)
     e.currentTarget.setPointerCapture(e.pointerId)

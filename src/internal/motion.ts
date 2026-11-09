@@ -1,4 +1,6 @@
-export type MotionToken = 'instant' | 'fast' | 'base' | 'slow' | 'slower' | 'liquid' | 'fling' | 'delay-tooltip'
+import { MORPH, type Curve } from './feel'
+
+export type MotionToken = 'instant' | 'fast' | 'base' | 'slow' | 'slower' | 'liquid' | 'morph' | 'morph-out' | 'fling' | 'delay-tooltip'
 
 // Reads a duration token at run time, so reduced motion (0ms) and Retime's speed are honoured by JS
 // timers too.
@@ -19,9 +21,15 @@ export function motionMs(token: MotionToken): number {
   return readMotionMs(token)
 }
 
-export function easing(name: 'out' | 'in' | 'in-out' | 'spring' | 'bounce' | 'liquid'): string {
+export function easing(name: 'out' | 'in' | 'in-out' | 'spring' | 'bounce' | 'liquid' | 'morph'): string {
   if (typeof window === 'undefined') return 'ease'
   return getComputedStyle(document.documentElement).getPropertyValue(`--hl-ease-${name}`).trim() || 'ease'
+}
+
+/** --hl-ease-morph as cubic-bezier numbers, for motion drawn frame by frame in JS. */
+export function morphCurve(): Curve {
+  const n = easing('morph').match(/cubic-bezier\(([^)]*)\)/)?.[1].split(',').map(parseFloat)
+  return n?.length === 4 && n.every(Number.isFinite) ? (n as Curve) : MORPH
 }
 
 export function prefersReducedMotion(): boolean {

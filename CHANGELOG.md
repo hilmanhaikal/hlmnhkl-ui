@@ -2,6 +2,45 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.36.0 · 9 Nov 2026
+
+Every part now moves on one morph curve. Things grow from where you tapped, and closing is as quick as opening.
+
+### Added
+
+- Tokens: `--hl-ease-morph` (`cubic-bezier(0.32, 0.72, 0, 1)`, fast away with a long soft landing), `--hl-motion-morph` (600ms, to open) and `--hl-motion-morph-out` (480ms, to close). Both follow `--hl-motion-scale`, and reduced motion makes them instant.
+- Dialog on a phone: a handle on top, as on Sheet. Pull the sheet down by its handle or header to close it. Not on AlertDialog, and not when `dismissOnOverlay` is false.
+
+### Changed
+
+- One curve everywhere. `--hl-ease-out`, `--hl-ease-in`, `--hl-ease-spring`, `--hl-ease-bounce` and `--hl-ease-liquid` now point at `--hl-ease-morph`, and `--hl-motion-liquid`, `--hl-motion-pour` and `--hl-motion-fling` at the morph timings. The names still work in your own CSS. `--hl-ease-in-out` stays for loops only, like a shimmer.
+- Closing plays the curve forward, not backwards, so a close moves from its first frame instead of starting slow. A move caught half way starts from the shape on screen.
+- Dialog and AlertDialog: the panel grows out of the button that opened it and folds back into it. Opened from code with no button, it grows from the middle of the screen. On a phone it is a bottom sheet: it grows out of a button it covers, as one in the thumb zone is, and otherwise rises from the bottom edge. Focus moves and returns as before.
+- Dialog, AlertDialog, Sheet, Drawer, Lightbox and MorphButton open in 600ms and close in 480ms. Big moves have no slower timing of their own.
+- Tooltip: grows out of the edge of its target, a sliver as wide as the target, and folds back into it.
+- Toast: grows up out of the bottom edge instead of fading in, and a toast that leaves downward folds back into that edge. A toast thrown sideways still flies off.
+- Switch: the on colour grows out of the thumb and folds back into it, instead of fading.
+- Checkbox: the fill grows from where you pressed the box, or from its middle for a key or a tap on the label. The box no longer pops.
+- Accordion and Collapsible: only the panel's edge moves. The content no longer fades or slides in.
+- Select, DropdownMenu, ContextMenu and Popover grow with the morph curve too. The highlight in Tabs, SegmentedControl and ToggleGroup stretches with the same curve.
+- A let-go glides on the morph curve instead of a spring: Sheet, Drawer, Toast, Lightbox, SwipeActions, SwipeDeck, PullToRefresh, Dial, RulerScrubber and PickerWheel. It starts at the speed of your hand.
+- Drags follow the hand one to one. Slider, RangeSlider, ResizablePanels, SwipeDeck, Dial, RulerScrubber and PickerWheel no longer pull toward a mark while you drag. Slider, RangeSlider and ResizablePanels still land on a mark when you let go near one, and the others land on the nearest step. Strong marks are still drawn and still work with Page Up and Page Down.
+- HoldToConfirm, SplitFlap and the Navbar dock move on the morph curve. The dock no longer squashes as it lands.
+- Small screens (320px): MorphButton's panel fits the box it opens in, not only the screen; ButtonGroup wraps onto a second row, each row with its own round ends; Calendar's columns narrow to fit while each day keeps a 44px tap area.
+- Inner corners now follow the outer corner minus the gap, so nested shapes stay parallel. Fixed in Toolbar, Menubar, CommandPalette and the Navbar menu. Menus, lists and the editor toolbar now write it as a formula.
+
+### Removed
+
+- Tokens `--hl-magnet-reach` and `--hl-magnet-strong`, since nothing pulls any more.
+
+## 0.35.3 · 9 Nov 2026
+
+Docs site only. No changes to the library.
+
+### Changed
+
+- Installation: a short section on adding parts to an app that already has a design system, and the three tokens that make them match it.
+
 ## 0.35.2 · 9 Nov 2026
 
 A smoother throw in SwipeDeck.

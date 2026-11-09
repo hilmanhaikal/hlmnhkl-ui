@@ -5,6 +5,12 @@
   isolation: isolate;
 }
 
+/* With no room, the row wraps; each row keeps its joined look and its own round ends. */
+.horizontal {
+  flex-wrap: wrap;
+  row-gap: var(--hl-space-2);
+}
+
 .vertical {
   flex-direction: column;
   align-items: stretch;
@@ -19,17 +25,19 @@
 }
 
 /* Neighbours overlap by one line, so two borders read as one. */
-.horizontal.horizontal > * + * { margin-inline-start: calc(var(--hl-line) * -1); }
+.horizontal.horizontal > * + :not([data-row-start]) { margin-inline-start: calc(var(--hl-line) * -1); }
 .vertical.vertical > * + * { margin-block-start: calc(var(--hl-line) * -1); }
 /* min-width, not width: a button keeps its own size, and the narrower ones grow to the widest. */
 .vertical.vertical > * { min-width: 100%; }
 
-.horizontal.horizontal > :first-child {
+.horizontal.horizontal > :first-child,
+.horizontal.horizontal > [data-row-start] {
   border-start-start-radius: var(--hl-radius-control);
   border-end-start-radius: var(--hl-radius-control);
 }
 
-.horizontal.horizontal > :last-child {
+.horizontal.horizontal > :last-child,
+.horizontal.horizontal > [data-row-end] {
   border-start-end-radius: var(--hl-radius-control);
   border-end-end-radius: var(--hl-radius-control);
 }

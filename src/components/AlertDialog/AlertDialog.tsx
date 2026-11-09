@@ -4,6 +4,7 @@ import { useId, useRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { useFocusTrap } from '../../internal/focus'
 import { useDismiss, useScrollLock } from '../../internal/layers'
+import { useDialogMorph } from '../../internal/liquid'
 import { Portal } from '../../internal/Portal'
 import { usePresence } from '../../internal/usePresence'
 import { Button } from '../Button'
@@ -51,7 +52,8 @@ export function AlertDialog({
   const id = useId()
   const panelRef = useRef<HTMLDivElement>(null)
   const cancelRef = useRef<HTMLButtonElement>(null)
-  const { mounted, state } = usePresence(open, 'base')
+  const { mounted, state } = usePresence(open, 'morph-out')
+  useDialogMorph(panelRef, open, mounted, state)
 
   const cancel = () => {
     onCancel?.()

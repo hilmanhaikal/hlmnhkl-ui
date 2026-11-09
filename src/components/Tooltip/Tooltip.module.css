@@ -21,6 +21,10 @@
   animation: tipOut var(--hl-motion-fast) var(--hl-ease-in) forwards;
 }
 
+/* The morph (internal/liquid.ts) grows the tip out of its target instead; the fade stands down. */
+.tip[data-liquid],
+.tip[data-liquid][data-state="closed"] { animation: none; }
+
 @keyframes tipIn {
   from { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(var(--hl-pop-scale)); }
 }

@@ -2,8 +2,7 @@
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, type FocusEvent, type KeyboardEvent, type PointerEvent, type ReactNode, type RefObject } from 'react'
 import { cx } from '../../internal/cx'
-import { readMotionMs } from '../../internal/motion'
-import { rubber, speedTracker, spring, useFling } from '../../internal/spring'
+import { release, rubber, speedTracker, useDragClose } from '../../internal/fling'
 import { returnTarget, useFocusTrap } from '../../internal/focus'
 import { XIcon } from '../../internal/icons'
 import { useDismiss, useScrollLock } from '../../internal/layers'
@@ -69,63 +68,15 @@ export function Sheet({
   return <DetentSheet {...base} detents={detents} detent={detent} defaultDetent={defaultDetent} onDetentChange={onDetentChange} heightLabel={heightLabel} />
 }
 
-const CLOSE_RATIO = 0.3
-// px per second: a flick down this fast closes the sheet from anywhere.
-const CLOSE_SPEED = 500
-
 function PlainSheet({ open, onOpenChange, title, description, children, footer, closeLabel, initialFocus, className }: BaseProps) {
   const id = useId()
   const panelRef = useRef<HTMLDivElement>(null)
-  const drag = useRef<{ y: number; dy: number; pointer: number; speed: ReturnType<typeof speedTracker> } | null>(null)
-  const { mounted, state } = usePresence(open, 'slow')
-  const openRef = useRef(open)
-  openRef.current = open
-  const { at, paint, fling, stop } = useFling(panelRef, open, 'y')
+  const { mounted, state } = usePresence(open, 'morph-out')
+  const grab = useDragClose(panelRef, open, () => onOpenChange(false))
 
   useScrollLock(open)
   useDismiss(open, [panelRef], () => onOpenChange(false))
   useFocusTrap(panelRef, open && mounted, { initialFocus })
-
-  const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
-    if ((e.target as HTMLElement).closest('button')) return
-    if (e.pointerType === 'mouse' && e.button !== 0) return
-    stop()
-    // Caught mid-spring, it carries on from where it is.
-    drag.current = { y: e.clientY - at.current, dy: at.current, pointer: e.pointerId, speed: speedTracker() }
-    drag.current.speed.add(at.current)
-    e.currentTarget.setPointerCapture(e.pointerId)
-    panelRef.current?.setAttribute('data-dragging', '')
-  }
-
-  const onPointerMove = (e: PointerEvent<HTMLDivElement>) => {
-    const d = drag.current
-    const panel = panelRef.current
-    if (!d || !panel || d.pointer !== e.pointerId) return
-    const raw = e.clientY - d.y
-    d.dy = raw >= 0 ? raw : rubber(raw, panel.offsetHeight)
-    d.speed.add(d.dy)
-    paint(d.dy)
-  }
-
-  const onPointerUp = (e: PointerEvent<HTMLDivElement>) => {
-    const d = drag.current
-    const panel = panelRef.current
-    drag.current = null
-    if (!d || !panel) return
-    e.currentTarget.releasePointerCapture(d.pointer)
-    panel.removeAttribute('data-dragging')
-    const cancelled = e.type === 'pointercancel'
-    const speed = cancelled ? 0 : d.speed.speed()
-    const h = panel.offsetHeight
-    if (!cancelled && (d.dy > h * CLOSE_RATIO || (speed > CLOSE_SPEED && d.dy > 24))) {
-      fling(h, speed)
-      onOpenChange(false)
-      // If the parent keeps it open, it springs back.
-      requestAnimationFrame(() => {
-        if (openRef.current) fling(0, 0)
-      })
-    } else fling(0, speed)
-  }
 
   if (!mounted) return null
   return (
@@ -146,10 +97,7 @@ function PlainSheet({ open, onOpenChange, title, description, children, footer, 
       >
         <div
           className={styles.grab}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
+          {...grab}
         >
           <span className={styles.handle} aria-hidden="true" />
           <header className={styles.header}>
@@ -198,7 +146,7 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
   const [inner, setInner] = useState<SheetDetent>(defaultDetent ?? order[0])
   const index = Math.max(0, order.indexOf(detent ?? inner))
   const atTop = index === top
-  const { mounted, state } = usePresence(open, 'slow')
+  const { mounted, state } = usePresence(open, 'morph-out')
   const [vh, setVh] = useState(() => (typeof window === 'undefined' ? 0 : window.innerHeight))
   const heights = order.map((d) => Math.round(vh * SHARE[d]))
   const [dragging, setDragging] = useState(false)
@@ -211,7 +159,7 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
   const bodyRef = useRef<HTMLDivElement>(null)
   const at = useRef(0)
   const aimed = useRef(-1)
-  const stopSpring = useRef(() => {})
+  const stopGlide = useRef(() => {})
   const unlisten = useRef(() => {})
   const opener = useRef<HTMLElement | null>(null)
   const trapStart = useRef<HTMLElement | null>(null)
@@ -236,15 +184,9 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
     overlayRef.current?.style.setProperty('opacity', String(dim))
   }
 
-  // No bounce at a height: critically damped, and never thrown at it faster than it can stop.
   const settle = (to: number, v: number, done?: () => void) => {
-    stopSpring.current()
-    const period = readMotionMs('fling') / 1000
-    const d = at.current - to
-    const toward = Math.sign(v) === -Math.sign(d)
-    const w = period ? (2 * Math.PI) / period : 0
-    const speed = toward ? Math.sign(v) * Math.min(Math.abs(v), w * Math.abs(d)) : v
-    stopSpring.current = spring(at.current, to, speed, paint, done, 1)
+    stopGlide.current()
+    stopGlide.current = release(at.current, to, v, paint, done)
   }
 
   const shownHidden = () => {
@@ -255,7 +197,7 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
   const go = (i: number, v = 0, spoken = true) => {
     const hs = live.current.heights
     if (i < 0) {
-      // A spring carries it off at the hand's speed, so the CSS close stays out of the way.
+      // A glide carries it off at the hand's speed, so the CSS close stays out of the way.
       panelRef.current?.setAttribute('data-fluid', '')
       settle(0, v)
       onOpenChange(false)
@@ -317,7 +259,7 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
     if (panel && opener.current?.isConnected && (!active || active === document.body || panel.contains(active))) opener.current.focus({ preventScroll: true })
   }, [open])
 
-  useEffect(() => () => stopSpring.current(), [])
+  useEffect(() => () => stopGlide.current(), [])
 
   // Before the trap's own effect: at the top, focus stays where it is in the sheet.
   useLayoutEffect(() => {
@@ -337,8 +279,8 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
     if (!d.live) {
       if (Math.abs(dy) < SLOP) return
       if (bodyRef.current?.contains(e.target as Node) && live.current.index === top && dy > 0) return endDrag()
-      // A tap must not stop a settle half way, so the spring is caught only once it is a drag.
-      stopSpring.current()
+      // A tap must not stop a settle half way, so the glide is caught only once it is a drag.
+      stopGlide.current()
       d.live = true
       d.at0 = at.current
       d.start = nearest(at.current, hs)
@@ -400,6 +342,9 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
     window.addEventListener('pointerup', up)
     window.addEventListener('pointercancel', up)
     window.addEventListener('dragstart', block)
+    // Safari starts a text selection on the press itself, so a press outside the content (the grabber,
+    // the edges) blocks it at once. Text in the content can still be selected by dragging inside it.
+    if (!bodyRef.current?.contains(el)) window.addEventListener('selectstart', block)
     unlisten.current = () => {
       window.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)

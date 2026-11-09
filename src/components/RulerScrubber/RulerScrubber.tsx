@@ -2,8 +2,8 @@
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { attract, clamp, follow, lastStep, pull, roundTo, stepKey, steps, wheelSteps, type Mark } from '../../internal/feel'
-import { readMotionMs } from '../../internal/motion'
+import { clamp, follow, lastStep, pull, roundTo, stepKey, steps, wheelSteps } from '../../internal/feel'
+import { morphCurve, readMotionMs } from '../../internal/motion'
 import { Roll } from '../../internal/Roll'
 import { useControllable } from '../../internal/useControllable'
 import { ink, sideways, tokenNumber, useOnChange, useScrub } from '../../internal/useScrub'
@@ -28,7 +28,7 @@ export type RulerScrubberProps = Omit<ComponentPropsWithRef<'div'>, 'defaultValu
   step?: number
   /** Values with a long, numbered tick. Page Up and Page Down jump between them. Defaults to every 10 steps. */
   marks?: number[]
-  /** Values that pull harder from further away, such as a limit or the usual choice. */
+  /** Values drawn stronger, such as a limit or the usual choice. */
   strong?: number[]
   /** A tag under each strong mark, such as "Allowance". */
   strongLabel?: string
@@ -69,7 +69,6 @@ export function RulerScrubber({
   const all = steps(min, max, step)
   const labelled = new Set((marks ?? all.filter((_, i) => i % 10 === 0)).map((v) => roundTo(v, step, min)))
   const strongSet = new Set(strong.map((v) => roundTo(v, step, min)))
-  const pulls: Mark[] = all.map((at) => ({ at, strong: strongSet.has(at) }))
   const land = (p: number) => clamp(roundTo(p, step, min), min, top)
   const markText = formatMark ?? formatValue
   // The px between two ticks (a token) and how many ticks fit either side of the needle.
@@ -82,11 +81,9 @@ export function RulerScrubber({
     min,
     max: top,
     edge: step,
-    attract: (r) => attract(r, pulls, step, sc.reach()),
     land,
     // The hand at 4000px a second at most, so a hard throw still stops in reach.
     maxSpeed: fit.gap ? (4000 / fit.gap) * step : undefined,
-    rest: step / 50,
     // Dragging left brings higher values in, like pulling a tape.
     move: (e, last) => (-(e.clientX - last.x) / (fit.gap || 1)) * step * (e.shiftKey ? 0.25 : 1),
     key: (k, t) => stepKey(k, t, { min, max, step, marks: [...labelled] }),
@@ -117,9 +114,9 @@ export function RulerScrubber({
   // The ticks lean and grow only while the ruler moves. The lean eases in as it starts and settles flat as it stops.
   const [lean, setLean] = useState(0)
   const leaning = useRef<ReturnType<typeof follow> | null>(null)
-  if (!leaning.current) leaning.current = follow({ time: () => readMotionMs('fling'), onFrame: setLean })
+  if (!leaning.current) leaning.current = follow({ time: () => readMotionMs('morph-out'), curve: morphCurve(), onFrame: setLean })
   useEffect(() => {
-    leaning.current?.set(sc.moving && readMotionMs('fling') > 0 ? 1 : 0)
+    leaning.current?.set(sc.moving && readMotionMs('morph-out') > 0 ? 1 : 0)
   }, [sc.moving])
   useEffect(() => () => leaning.current?.stop(), [])
 

@@ -1,19 +1,21 @@
 import { useLayoutEffect, useRef, type RefObject } from 'react'
+import { returnTarget } from './focus'
 import { easing, motionMs, prefersReducedMotion } from './motion'
 
 // Liquid: a panel grows out of what opened it. It starts as the opener's own shape (its width and its
 // corners) at the panel's edge nearest the opener, then fills out to the whole panel; on close it
 // folds back. Only a clip changes, so nothing inside the panel is stretched and text stays sharp.
+// Both ways play the morph curve forward, so a close moves from its first frame, and a move caught
+// half way starts from the shape on screen.
 // Where the browser cannot clip or animate this way, or with reduced motion, the part's own CSS fade
 // runs instead.
 
-/** What the panel grows from: the opener element, or a rectangle (such as the point of a right click). */
-export type LiquidOrigin = RefObject<HTMLElement | null> | (() => DOMRect | null)
+/** What the panel grows from: the opener element, or one found at open time, or a rectangle (such as the point of a right click). */
+export type LiquidOrigin = RefObject<HTMLElement | null> | (() => HTMLElement | DOMRect | null)
 
 const able = () =>
   typeof CSS !== 'undefined' &&
   CSS.supports('clip-path', 'inset(0px round 1px)') &&
-  CSS.supports('animation-timing-function', 'linear(0, 1)') &&
   typeof Element !== 'undefined' &&
   typeof Element.prototype.animate === 'function'
 
@@ -53,35 +55,94 @@ export function startShape(panel: DOMRect, from: DOMRect, radius: string) {
   return `inset(${top}px ${right}px ${bottom}px ${left}px round ${radius})`
 }
 
+// The phone layout of Dialog and AlertDialog, as their CSS sets it.
+const SHEET = '(max-width: 520px)'
+
+const live = (run: Animation | null) => run?.playState === 'running' || run?.playState === 'paused'
+
+// Grows the panel out of `found` (or folds it back) from wherever the last run left it.
+function clipMorph(p: HTMLElement, found: HTMLElement | DOMRect, state: 'open' | 'closed', last: Animation | null) {
+  const opener = found instanceof HTMLElement ? found : null
+  const from = found instanceof HTMLElement ? found.getBoundingClientRect() : found
+  const now = live(last) ? getComputedStyle(p).clipPath : null
+  last?.cancel()
+  // Set before measuring, so the part's CSS enter animation is not caught mid-scale.
+  p.dataset.liquid = ''
+  // Never rounder than half the opener's height: a pill's 999px corner would keep a tall panel a
+  // capsule for most of the growth.
+  const cap = Math.min(from.width, from.height) / 2
+  const radius = `${Math.min(cap, opener ? parseFloat(getComputedStyle(opener).borderRadius) || 0 : cap)}px`
+  const start = startShape(p.getBoundingClientRect(), from, radius)
+  const room = shadowReach(p)
+  const corner = getComputedStyle(p).borderRadius || '0px'
+  const end = `inset(${-room}px round calc(${corner} + ${room}px))`
+  // data-liquid stays set while the panel is open: taking it off would restart the part's CSS enter animation.
+  if (state === 'open') return p.animate({ clipPath: [now ?? start, end] }, { duration: motionMs('morph'), easing: easing('morph') })
+  // A close starts at the panel's own edge, not out past its shadow, so the edge moves on the first frame.
+  return p.animate({ clipPath: [now ?? `inset(0px round ${corner})`, start] }, { duration: motionMs('morph-out'), easing: easing('morph'), fill: 'forwards' })
+}
+
 /**
  * Plays the growth when `state` turns open (once `ready`, that is, once the panel is in its place) and
  * the fold when it turns closed. Marks the panel with data-liquid while it runs, so the part's CSS can
- * stand its own enter and exit animation down.
+ * stand its own enter and exit animation down. The part's usePresence exit is 'morph-out', so the
+ * fold lands as the panel unmounts.
  */
 export function useLiquid(panel: RefObject<HTMLElement | null>, origin: LiquidOrigin, state: 'open' | 'closed', ready: boolean) {
+  const run = useRef<Animation | null>(null)
   useLayoutEffect(() => {
     const p = panel.current
     if (!p || !ready || prefersReducedMotion() || !able()) return
-    const opener = typeof origin === 'function' ? null : origin.current
-    const from = typeof origin === 'function' ? origin() : (opener?.getBoundingClientRect() ?? null)
-    if (!from) return
-    // Never rounder than half the opener's height: a pill's 999px corner would keep a tall panel a
-    // capsule for most of the growth.
-    const cap = Math.min(from.width, from.height) / 2
-    const radius = `${Math.min(cap, opener ? parseFloat(getComputedStyle(opener).borderRadius) || 0 : cap)}px`
-    const start = startShape(p.getBoundingClientRect(), from, radius)
-    const room = shadowReach(p)
-    const end = `inset(${-room}px round calc(${getComputedStyle(p).borderRadius || '0px'} + ${room}px))`
-    // Stays set while the panel is open: taking it off would restart the part's CSS enter animation.
-    p.dataset.liquid = ''
-    const run =
-      state === 'open'
-        ? p.animate({ clipPath: [start, end] }, { duration: motionMs('liquid'), easing: easing('liquid') })
-        : p.animate({ clipPath: [end, start] }, { duration: motionMs('fast'), easing: easing('in'), fill: 'forwards' })
-    return () => run.cancel()
+    const found = typeof origin === 'function' ? origin() : origin.current
+    if (!found) return
+    run.current = clipMorph(p, found, state, run.current)
     // Plays once per open and once per close; the origin is read fresh each time.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, ready])
+  useLayoutEffect(() => () => run.current?.cancel(), [])
+}
+
+/**
+ * A centred dialog grows out of the control that opened it (the one focus goes back to) and folds back
+ * into it. Opened from code with no such control, it grows from the middle of the screen. On a phone
+ * the dialog is a bottom sheet: it grows out of a control it covers, as one in the thumb zone is, and
+ * otherwise rises from the bottom edge. A sheet the hand drags away (data-fluid) is carried by the drag.
+ */
+export function useDialogMorph(panel: RefObject<HTMLElement | null>, open: boolean, mounted: boolean, state: 'open' | 'closed') {
+  const opener = useRef<HTMLElement | null>(null)
+  const wasOpen = useRef(false)
+  const run = useRef<Animation | null>(null)
+  const rise = useRef(false)
+  // Runs before the focus trap moves focus into the dialog.
+  useLayoutEffect(() => {
+    if (open && !wasOpen.current) opener.current = returnTarget()
+    wasOpen.current = open
+  }, [open])
+  useLayoutEffect(() => {
+    const p = panel.current
+    if (!p || !mounted || prefersReducedMotion() || !able()) return
+    const el = opener.current
+    const box = el && el !== document.body && el.isConnected ? el.getBoundingClientRect() : null
+    const found = el && box && box.width > 0 && box.height > 0 ? el : null
+    if (state === 'open' && !live(run.current)) {
+      const r = p.getBoundingClientRect()
+      rise.current = window.matchMedia(SHEET).matches && !(found && box && box.top >= r.top && box.bottom <= r.bottom + 1)
+    }
+    if (state === 'closed' && 'fluid' in p.dataset) return
+    if (!rise.current) {
+      run.current = clipMorph(p, found ?? new DOMRect(window.innerWidth / 2 - 1, window.innerHeight / 2 - 1, 2, 2), state, run.current)
+      return
+    }
+    const now = live(run.current) ? getComputedStyle(p).transform : null
+    run.current?.cancel()
+    p.dataset.liquid = ''
+    const down = 'translateY(100%)'
+    run.current =
+      state === 'open'
+        ? p.animate({ transform: [now ?? down, 'none'] }, { duration: motionMs('morph'), easing: easing('morph') })
+        : p.animate({ transform: [now ?? 'none', down] }, { duration: motionMs('morph-out'), easing: easing('morph'), fill: 'forwards' })
+  }, [state, mounted, panel])
+  useLayoutEffect(() => () => run.current?.cancel(), [])
 }
 
 /** A highlight's place in its row: its left edge, width, and (for rows that wrap) its top. */
@@ -119,10 +180,10 @@ export function useStretch(el: RefObject<HTMLElement | null>, box: StretchBox | 
     const run = node.animate(
       [
         { transform: place(from), width: `${from.w}px`, easing: easing('out') },
-        { transform: place(mid), width: `${mid.w}px`, offset: 0.3, easing: easing('liquid') },
+        { transform: place(mid), width: `${mid.w}px`, offset: 0.3, easing: easing('morph') },
         { transform: place(box), width: `${box.w}px` },
       ],
-      { duration: motionMs('liquid') },
+      { duration: motionMs('morph') },
     )
     current.current = run
     // Only the latest stretch takes the mark off: a cancelled one settles later, mid-way through the next.

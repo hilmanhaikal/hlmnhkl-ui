@@ -1,10 +1,13 @@
-// Feel: how a value moves under the hand. Marks pull it in, a flick coasts a capped distance, and one
-// spring settles it without a bounce. Plain TypeScript with no framework and no styling, so it can
-// stand on its own. Every time is passed in, so a period of 0 (reduced motion) keeps each result and
-// drops the motion.
+// Feel: how a value moves under the hand. A drag follows the hand one to one; a let-go coasts a capped
+// distance and lands on the morph curve, starting at the hand's speed. Plain TypeScript with no
+// framework and no styling, so it can stand on its own. Every time is passed in, so a duration of 0
+// (reduced motion) keeps each result and drops the motion.
 
-/** A place a moving value is drawn onto. A strong mark reaches further and wins over a plain one. */
-export type Mark = { at: number; strong?: boolean }
+/** A cubic-bezier's four numbers. */
+export type Curve = [number, number, number, number]
+
+/** The numbers of --hl-ease-morph, for when the token cannot be read. */
+export const MORPH: Curve = [0.32, 0.72, 0, 1]
 
 export const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
 
@@ -27,41 +30,11 @@ export function nearestMark(value: number, marks: number[]): number | null {
   return best
 }
 
-/** `raw` drawn toward the nearest mark within `reach`: sticky close to the mark, free at the edge. */
-export function magnetTo(raw: number, marks: number[], reach: number): number {
-  const mark = nearestMark(raw, marks)
-  if (mark === null || reach <= 0) return raw
-  const d = raw - mark
-  if (Math.abs(d) >= reach) return raw
-  const t = Math.abs(d) / reach
-  return mark + Math.sign(d) * reach * t * t
-}
-
-/** 1 on the mark, 0 at the edge of its reach, smooth in between. Drives size, ink and lean. */
+/** 1 on the mark, 0 at the edge of its reach, smooth in between. Drives size and ink. */
 export function pull(distance: number, reach: number) {
   if (reach <= 0) return distance === 0 ? 1 : 0
   const t = Math.min(1, Math.abs(distance) / reach)
   return 0.5 + 0.5 * Math.cos(Math.PI * t)
-}
-
-/** How far marks reach, as a share of the gap between two marks. */
-export type Reach = { reach?: number; strong?: number }
-
-/** `raw` drawn onto the mark whose reach it is in. A strong mark wins inside its wider reach. */
-export function attract(raw: number, marks: Mark[], gap: number, { reach = 0.35, strong = 1.5 }: Reach = {}) {
-  let best: Mark | null = null
-  let size = 0
-  for (const m of marks) {
-    const r = gap * (m.strong ? strong : reach)
-    const d = Math.abs(raw - m.at)
-    if (d >= r) continue
-    const better = !best || (m.strong && !best.strong) || (!!m.strong === !!best.strong && d < Math.abs(raw - best.at))
-    if (better) {
-      best = m
-      size = r
-    }
-  }
-  return best ? magnetTo(raw, [best.at], size) : raw
 }
 
 /** Past an edge a drag still moves, less the further it goes, and never more than `size`. */
@@ -90,32 +63,54 @@ export function speedTracker(window = 100) {
   }
 }
 
-export type SpringOptions = {
+/** A cubic-bezier as a function from a share of the time (0 to 1) to a share of the way. */
+export function bezier([x1, y1, x2, y2]: Curve) {
+  const along = (a: number, b: number, t: number) => 3 * a * t * (1 - t) ** 2 + 3 * b * t * t * (1 - t) + t ** 3
+  return (x: number) => {
+    if (x <= 0) return 0
+    if (x >= 1) return 1
+    let lo = 0
+    let hi = 1
+    let t = x
+    for (let i = 0; i < 24; i++) {
+      const at = along(x1, x2, t)
+      if (Math.abs(at - x) < 1e-5) break
+      if (at < x) lo = t
+      else hi = t
+      t = (lo + hi) / 2
+    }
+    return along(y1, y2, t)
+  }
+}
+
+export type MorphOptions = {
   from: number
   to: number
-  /** Units per second at the start, so a let-go carries on at the hand's speed. */
+  /** Units per second at the start. Toward `to`, a let-go carries on at the hand's speed, so the move takes less time. */
   velocity?: number
-  /** One swing in ms. 0 jumps straight to `to`. */
-  period: number
-  /** Below 1 it settles without a bounce you can see. */
-  damping?: number
-  /** Close enough to stop, in units. */
-  rest?: number
+  /** How long the move takes from rest, in ms. 0 jumps straight to `to`. */
+  duration: number
+  /** The curve. Defaults to the morph curve. */
+  curve?: Curve
   onFrame: (value: number) => void
   onDone?: () => void
 }
 
-/** Runs from `from` to `to` and stops there. Returns a stop function. */
-export function springTo({ from, to, velocity = 0, period, damping = 0.88, rest = 0.3, onFrame, onDone }: SpringOptions) {
-  if (!period) {
+/** Runs from `from` to `to` on the curve and stops there. Returns a stop function. */
+export function morphTo({ from, to, velocity = 0, duration, curve = MORPH, onFrame, onDone }: MorphOptions) {
+  if (!duration || from === to) {
     onFrame(to)
     onDone?.()
     return () => {}
   }
-  const w = (2 * Math.PI) / (period / 1000)
-  let x = from
-  let v = velocity
-  let last = performance.now()
+  const D = to - from
+  // The curve starts at y1 / x1 times its average speed. A let-go toward `to` shortens the move until
+  // that start speed is the hand's, but never below 40% of the time, so a hard throw still lands softly.
+  const lead = curve[0] > 0 ? curve[1] / curve[0] : 1
+  const toward = Math.sign(velocity) === Math.sign(D) ? Math.abs(velocity) : 0
+  const ms = toward ? clamp(((lead * Math.abs(D)) / toward) * 1000, duration * 0.4, duration) : duration
+  const ease = bezier(curve)
+  const t0 = performance.now()
   let raf = 0
   const finish = () => {
     cancelAnimationFrame(raf)
@@ -124,19 +119,11 @@ export function springTo({ from, to, velocity = 0, period, damping = 0.88, rest 
     onDone?.()
   }
   // Frames can stall (a hidden tab, a slow phone), so a timer lands it in real time if they do.
-  const backstop = setTimeout(finish, period * 4)
+  const backstop = setTimeout(finish, ms + 50)
   raf = requestAnimationFrame(function step(now) {
-    // Real elapsed time in small slices: a slow frame moves the spring as far as the clock did.
-    let dt = Math.min(1, Math.max(0, now - last) / 1000)
-    last = now
-    while (dt > 0) {
-      const h = Math.min(dt, 1 / 240)
-      v += (-w * w * (x - to) - 2 * damping * w * v) * h
-      x += v * h
-      dt -= h
-    }
-    if (Math.abs(x - to) < rest && Math.abs(v) < rest * 13) return finish()
-    onFrame(x)
+    const t = (now - t0) / ms
+    if (t >= 1) return finish()
+    onFrame(from + D * ease(t))
     raf = requestAnimationFrame(step)
   })
   return () => {
@@ -145,7 +132,7 @@ export function springTo({ from, to, velocity = 0, period, damping = 0.88, rest 
   }
 }
 
-export type GlideOptions = Omit<SpringOptions, 'to' | 'onDone'> & {
+export type GlideOptions = Omit<MorphOptions, 'to' | 'onDone'> & {
   /** Where it comes to rest, given where the coast would end. */
   land: (end: number) => number
   /** How far a flick carries: its speed times this, in seconds. 0 lands under the hand. */
@@ -156,11 +143,11 @@ export type GlideOptions = Omit<SpringOptions, 'to' | 'onDone'> & {
 }
 
 /**
- * A let-go: coast at the hand's speed, slowing, then the spring lands on `land(end)`. With a period
- * of 0 it lands at once, on the place under the hand.
+ * A let-go: it lands on `land(end)`, where `end` is as far as the flick would coast, on the morph
+ * curve at the hand's speed. With a duration of 0 it lands at once, on the place under the hand.
  */
-export function glide({ from, velocity = 0, land, coast = 0.2, maxSpeed = Infinity, period, damping, rest, onFrame, onDone }: GlideOptions) {
-  if (!period) {
+export function glide({ from, velocity = 0, land, coast = 0.2, maxSpeed = Infinity, duration, curve, onFrame, onDone }: GlideOptions) {
+  if (!duration) {
     const to = land(from)
     onFrame(to)
     onDone?.(to)
@@ -168,75 +155,26 @@ export function glide({ from, velocity = 0, land, coast = 0.2, maxSpeed = Infini
   }
   const v = clamp(velocity, -maxSpeed, maxSpeed)
   const to = land(from + v * coast)
-  const D = to - from
-  const settle = (at: number, speed: number) => springTo({ from: at, to, velocity: speed, period, damping, rest, onFrame, onDone: () => onDone?.(to) })
-  if (!coast || !v || !D || Math.abs(v * coast) < Math.abs(D) * 0.2 || Math.sign(D) !== Math.sign(v)) {
-    // Straight to the spring: only speed toward the target carries over, and no more than it can lose
-    // without passing it, so a fast let-go never flies past and springs back.
-    const toward = Math.sign(v) === Math.sign(D) ? Math.sign(D) * Math.min(Math.abs(v), Math.abs(D) / 0.06) : 0
-    return { to, stop: settle(from, toward) }
-  }
-  const T = clamp(D / v, 0.06, 0.4)
-  const end = T * Math.log(5)
-  const t0 = performance.now()
-  let stopSpring = () => {}
-  let raf = 0
-  const toSpring = () => {
-    cancelAnimationFrame(raf)
-    clearTimeout(backstop)
-    const k = Math.exp(-end / T)
-    stopSpring = settle(from + D * (1 - k), (D / T) * k)
-  }
-  const backstop = setTimeout(toSpring, end * 1000 + period)
-  raf = requestAnimationFrame(function step(now) {
-    const t = (now - t0) / 1000
-    if (t >= end) return toSpring()
-    onFrame(from + D * (1 - Math.exp(-t / T)))
-    raf = requestAnimationFrame(step)
-  })
-  return {
-    to,
-    stop: () => {
-      cancelAnimationFrame(raf)
-      clearTimeout(backstop)
-      stopSpring()
-    },
-  }
+  return { to, stop: morphTo({ from, to, velocity: v, duration, curve, onFrame, onDone: () => onDone?.(to) }) }
 }
 
-/** A number that eases toward a target over about `time()` ms and stops there. A time of 0 jumps. */
-export function follow({ value = 0, time, onFrame }: { value?: number; time: () => number; onFrame: (value: number) => void }) {
+/** A number that moves toward a target on the curve, over `time()` ms from where it is. A time of 0 jumps. */
+export function follow({ value = 0, time, curve, onFrame }: { value?: number; time: () => number; curve?: Curve; onFrame: (value: number) => void }) {
   let at = value
   let to = value
-  let raf = 0
-  let last = 0
-  const step = (now: number) => {
-    const tau = time() / 3
-    const dt = now - last
-    last = now
-    at = tau ? to + (at - to) * Math.exp(-dt / tau) : to
-    if (Math.abs(at - to) < 0.002) at = to
-    onFrame(at)
-    raf = at === to ? 0 : requestAnimationFrame(step)
-  }
+  let stop = () => {}
   return {
     get value() {
       return at
     },
     set(target: number) {
+      if (target === to) return
       to = target
-      if (raf || at === to) return
-      if (!time()) {
-        at = to
-        onFrame(at)
-        return
-      }
-      last = performance.now()
-      raf = requestAnimationFrame(step)
+      stop()
+      stop = morphTo({ from: at, to, duration: time(), curve, onFrame: (v) => onFrame((at = v)) })
     },
     stop() {
-      cancelAnimationFrame(raf)
-      raf = 0
+      stop()
     },
   }
 }
@@ -283,18 +221,16 @@ export type ScrubOptions = {
   max?: number
   /** How far a drag stretches past an end, in units. */
   edge?: number
-  /** Draws the position toward its marks while the hand moves it. */
-  attract?: (raw: number) => number
   /** The value a position comes to rest on. */
   land: (at: number) => number
   /** How far a flick coasts: its speed times this, in seconds. */
   coast?: number
   /** The fastest a flick may go, in units per second. */
   maxSpeed?: number
-  /** One spring swing in ms, read at each start. 0 is reduced motion: the same result, no glide. */
-  period: () => number
-  /** Close enough to stop, in units. */
-  rest?: number
+  /** How long a glide takes in ms, read at each start. 0 is reduced motion: the same result, no glide. */
+  duration: () => number
+  /** The glide's curve, read at each start. */
+  curve?: () => Curve
   onFrame?: (at: number) => void
   onMoving?: (moving: boolean) => void
   /** A new resting value came under the hand. */
@@ -346,7 +282,7 @@ export function createScrub(options: ScrubOptions) {
   const run = (velocity: number, land: (end: number) => number, coast: number) => {
     stop()
     setMoving(true)
-    const g = glide({ from: at, velocity, land, coast, maxSpeed: o.maxSpeed, period: o.period(), rest: o.rest, onFrame: paint, onDone: done })
+    const g = glide({ from: at, velocity, land, coast, maxSpeed: o.maxSpeed, duration: o.duration(), curve: o.curve?.(), onFrame: paint, onDone: done })
     target = g.to
     stop = g.stop
   }
@@ -381,11 +317,11 @@ export function createScrub(options: ScrubOptions) {
       setMoving(true)
       raw += delta
       tracker.add(raw, t)
-      paint(o.attract ? o.attract(stretch(raw)) : stretch(raw))
+      paint(stretch(raw))
     },
     /** The hand lets go: it coasts at the hand's speed and lands on a value. */
     release(t?: number) {
-      // Let go past an end, it springs back from the stretch with no speed of its own.
+      // Let go past an end, it glides back from the stretch with no speed of its own.
       const outside = bounded() && (at < o.min! || at > o.max!)
       const speed = dragged && !outside ? tracker.speed(t) : 0
       dragged = false

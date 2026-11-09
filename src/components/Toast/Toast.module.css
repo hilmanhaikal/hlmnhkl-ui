@@ -81,11 +81,14 @@
 
 .toast > * { transition: opacity var(--hl-motion-base) var(--hl-ease-out); }
 
-.toast[data-leaving="down"] { animation: toastOutDown var(--hl-motion-slow) var(--hl-ease-in-out) forwards; }
+.toast[data-leaving="down"] { animation: toastOutDown var(--hl-motion-morph-out) var(--hl-ease-morph) forwards; }
 .toast[data-leaving="left"] { animation: toastOutLeft var(--hl-motion-slow) var(--hl-ease-out) forwards; }
 .toast[data-leaving="right"] { animation: toastOutRight var(--hl-motion-slow) var(--hl-ease-out) forwards; }
 /* Thrown away: the spring carries it off at the hand's speed, so it only fades. */
 .toast[data-fluid][data-leaving] { animation: toastFade var(--hl-motion-slow) var(--hl-ease-out) forwards; }
+/* The morph (internal/liquid.ts) grows it in and folds it away instead. */
+.toast[data-liquid]:not([data-leaving]),
+.toast[data-liquid][data-leaving="down"] { animation: none; }
 
 .icon {
   display: inline-flex;

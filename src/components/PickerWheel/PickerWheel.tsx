@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { clamp, magnetTo, pull, wheelSteps, wrap } from '../../internal/feel'
+import { clamp, pull, wheelSteps, wrap } from '../../internal/feel'
 import { useControllable } from '../../internal/useControllable'
 import { ink, tokenNumber, useOnChange, useScrub } from '../../internal/useScrub'
 import styles from './PickerWheel.module.css'
@@ -14,7 +14,7 @@ export type PickerWheelColumn = {
   options: string[]
   /** The last row runs on into the first, as hours do. */
   loop?: boolean
-  /** Rows, by index, that pull harder, such as :00 and :30, or today. */
+  /** Rows, by index, drawn stronger, such as :00 and :30, or today. Page Up and Page Down jump between them. */
   strong?: number[]
   /** Twice as wide, for words such as month names. */
   wide?: boolean
@@ -52,7 +52,7 @@ type ColumnProps = {
   haptics: boolean
 }
 
-/** One column: its rows are the marks. Free between rows, drawn in near one, harder near a strong row. */
+/** One column: its rows are the marks. A drag follows the hand; a let-go lands on a row. */
 function Column({ column, index, onChange, onShown, haptics }: ColumnProps) {
   const { options, loop = false } = column
   const n = options.length
@@ -75,15 +75,8 @@ function Column({ column, index, onChange, onShown, haptics }: ColumnProps) {
     min: loop ? undefined : 0,
     max: loop ? undefined : n - 1,
     edge: 0.6,
-    attract: (r) => {
-      const k = Math.round(r)
-      const { reach = 0.35, strong: far = 1.5 } = sc.reach()
-      // Rows are the marks, so a strong row reaches at most half a row: the rows beside it stay easy to stop on.
-      return magnetTo(r, [k], strong.has(wrap(k, n)) ? Math.min(far, 0.5) : reach)
-    },
     land: (p) => fit(Math.round(p)),
     maxSpeed: 40,
-    rest: 0.01,
     move: (e, last) => -(e.clientY - last.y) / (row.current || 1),
     // The APG spinbutton keys: Up is the next, higher value and Down the one before.
     key: (k, t) => {
@@ -240,7 +233,7 @@ export type TimeWheelProps = Omit<PickerWheelProps, 'columns' | 'value' | 'defau
   hourCycle?: 12 | 24
   /** Minutes between two rows. */
   minuteStep?: number
-  /** Minutes that pull harder. */
+  /** Minutes drawn stronger. Page Up and Page Down jump between them. */
   strong?: number[]
 }
 
@@ -292,7 +285,7 @@ export type DateWheelProps = Omit<PickerWheelProps, 'columns' | 'value' | 'defau
   fromYear?: number
   /** The last year on the wheel. Undefined is 10 years from now. */
   toYear?: number
-  /** Dates, as "YYYY-MM-DD", that pull harder. Undefined is today. */
+  /** Dates, as "YYYY-MM-DD", drawn stronger. Undefined is today. */
   strong?: string[]
 }
 

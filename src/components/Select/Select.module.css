@@ -114,7 +114,7 @@
   top: 0;
   left: var(--hl-space-2);
   right: var(--hl-space-2);
-  border-radius: var(--hl-radius-sm);
+  border-radius: max(0px, calc(var(--hl-radius-md) - var(--hl-space-2)));
   background: var(--hl-color-surface-hover);
   transition:
     transform var(--hl-motion-base) var(--hl-ease-out),
@@ -129,7 +129,7 @@
   gap: var(--hl-space-4);
   min-height: var(--hl-hit-min);
   padding: var(--hl-space-2) var(--hl-space-4);
-  border-radius: var(--hl-radius-sm);
+  border-radius: max(0px, calc(var(--hl-radius-md) - var(--hl-space-2)));
   cursor: pointer;
   animation: optionIn var(--hl-motion-slow) var(--hl-ease-out) backwards;
   animation-delay: calc(var(--i) * var(--hl-motion-stagger) / 2);

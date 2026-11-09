@@ -14,6 +14,7 @@ import {
   type Ref,
 } from 'react'
 import { useDismiss } from '../../internal/layers'
+import { useLiquid } from '../../internal/liquid'
 import { mergeRefs } from '../../internal/mergeRefs'
 import { motionMs } from '../../internal/motion'
 import { Portal } from '../../internal/Portal'
@@ -53,8 +54,22 @@ export function Tooltip({ content, side = 'top', children, delay }: TooltipProps
   const anchorRef = useRef<HTMLElement>(null)
   const tipRef = useRef<HTMLDivElement>(null)
   const timer = useRef<number | undefined>(undefined)
-  const { mounted, state } = usePresence(open, 'fast')
+  const { mounted, state } = usePresence(open, 'morph-out')
   const floating = useFloating(anchorRef, tipRef, { open: mounted, side, offset: 8 })
+  // The tip grows out of the edge of the target it points to, a sliver as wide as the target, and folds back into it.
+  useLiquid(
+    tipRef,
+    () => {
+      const r = anchorRef.current?.getBoundingClientRect()
+      if (!r) return null
+      if (floating.side === 'top') return new DOMRect(r.left, r.top, r.width, 2)
+      if (floating.side === 'bottom') return new DOMRect(r.left, r.bottom - 2, r.width, 2)
+      if (floating.side === 'left') return new DOMRect(r.left, r.top, 2, r.height)
+      return new DOMRect(r.right - 2, r.top, 2, r.height)
+    },
+    state,
+    mounted && floating.ready,
+  )
 
   const clear = () => window.clearTimeout(timer.current)
   const show = (wait: number) => {

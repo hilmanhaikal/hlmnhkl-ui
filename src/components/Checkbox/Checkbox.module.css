@@ -30,6 +30,7 @@
 .input:disabled { cursor: not-allowed; }
 
 .box {
+  position: relative;
   display: grid;
   place-items: center;
   width: 100%;
@@ -39,7 +40,6 @@
   background: var(--hl-color-surface);
   color: var(--hl-color-accent-fg);
   transition:
-    background-color var(--hl-motion-fast) var(--hl-ease-out),
     border-color var(--hl-motion-fast) var(--hl-ease-out),
     box-shadow var(--hl-motion-fast) var(--hl-ease-out),
     transform var(--hl-motion-slow) var(--hl-ease-spring);
@@ -52,14 +52,21 @@
 .input:focus-visible + .box { box-shadow: var(--hl-focus-ring); }
 .root[data-invalid] .box[data-state="off"] { border-color: var(--hl-color-danger); }
 
-.box[data-state="on"],
-.box[data-state="mixed"] {
+/* The checked fill covers the border too. It grows from the press point in Checkbox.tsx; here it only
+   holds the end state, so reduced motion lands on it at once. */
+.fill {
+  position: absolute;
+  inset: calc(var(--hl-line-thick) * -1);
+  border-radius: var(--hl-radius-xs);
   background: var(--hl-color-accent);
-  border-color: var(--hl-color-accent);
-  animation: pop var(--hl-motion-slow) var(--hl-ease-spring);
+  clip-path: circle(0 at 50% 50%);
 }
 
+.box[data-state="on"] .fill,
+.box[data-state="mixed"] .fill { clip-path: none; }
+
 .mark {
+  position: relative;
   width: var(--hl-icon-sm);
   height: var(--hl-icon-sm);
   fill: none;
@@ -103,8 +110,4 @@
   font-size: var(--hl-text-sm);
   color: var(--hl-color-fg-muted);
   line-height: var(--hl-leading-snug);
-}
-
-@keyframes pop {
-  40% { transform: scale(1.12); }
 }

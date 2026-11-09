@@ -27,11 +27,23 @@
   background: var(--hl-color-surface);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition:
-    background-color var(--hl-motion-base) var(--hl-ease-out),
-    border-color var(--hl-motion-base) var(--hl-ease-out),
-    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+  transition: box-shadow var(--hl-motion-fast) var(--hl-ease-out);
 }
+
+/* The on fill. Off, it is a dot hidden under the thumb; on, its edges move out to cover the track
+   (border too), so the colour grows from the thumb instead of fading in. */
+.track::before {
+  --in: calc(var(--pad) + var(--hl-line));
+  content: "";
+  position: absolute;
+  inset: calc(var(--hl-line) * -1);
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-accent);
+  clip-path: inset(var(--in) calc(var(--w) - var(--in) - var(--thumb) + var(--hl-line) * 2) var(--in) var(--in) round var(--hl-radius-full));
+  transition: clip-path var(--hl-motion-slow) var(--hl-ease-morph);
+}
+
+.track[data-on]::before { clip-path: inset(0 round var(--hl-radius-full)); }
 
 .track::after {
   content: "";
@@ -45,11 +57,6 @@
 }
 
 .track:disabled { cursor: not-allowed; }
-
-.track[data-on] {
-  background: var(--hl-color-accent);
-  border-color: var(--hl-color-accent);
-}
 
 .thumb {
   position: absolute;

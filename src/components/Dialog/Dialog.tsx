@@ -2,9 +2,11 @@
 
 import { useId, useRef, type ReactNode, type RefObject } from 'react'
 import { cx } from '../../internal/cx'
+import { useDragClose } from '../../internal/fling'
 import { useFocusTrap } from '../../internal/focus'
 import { XIcon } from '../../internal/icons'
 import { useDismiss, useScrollLock } from '../../internal/layers'
+import { useDialogMorph } from '../../internal/liquid'
 import { Portal } from '../../internal/Portal'
 import { usePresence } from '../../internal/usePresence'
 import styles from './Dialog.module.css'
@@ -49,7 +51,15 @@ export function Dialog({
 }: DialogProps) {
   const id = useId()
   const panelRef = useRef<HTMLDivElement>(null)
-  const { mounted, state } = usePresence(open, 'base')
+  const { mounted, state } = usePresence(open, 'morph-out')
+  useDialogMorph(panelRef, open, mounted, state)
+  // On a phone the dialog is a bottom sheet, and the hand can pull it down to close, as it can a Sheet.
+  const grab = useDragClose(
+    panelRef,
+    open,
+    () => onOpenChange(false),
+    (e) => window.matchMedia('(max-width: 520px)').matches && !!(e.target as HTMLElement).closest(`.${styles.handle}, .${styles.header}`),
+  )
 
   useScrollLock(open)
   useDismiss(open, [panelRef], () => onOpenChange(false), { outside: dismissOnOverlay })
@@ -69,7 +79,9 @@ export function Dialog({
           tabIndex={-1}
           className={cx(styles.panel, styles[size], className)}
           data-state={state}
+          {...(dismissOnOverlay ? grab : {})}
         >
+          {dismissOnOverlay && <span className={styles.handle} aria-hidden="true" />}
           <header className={styles.header}>
             <div className={styles.titles}>
               <h2 id={`${id}-title`} className={styles.title}>{title}</h2>

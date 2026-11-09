@@ -73,9 +73,10 @@ export function LivePill({
     const b = button.current
     if (!sh || !b) return
     const measure = () => {
-      const right = sh.offsetWidth - b.offsetLeft - b.offsetWidth
-      const bottom = sh.offsetHeight - b.offsetTop - b.offsetHeight
-      setShut(`inset(${b.offsetTop}px ${right}px ${bottom}px ${b.offsetLeft}px round ${b.offsetHeight / 2}px)`)
+      // Real fractions, not whole pixels: a half-pixel miss shows as an outline thin on one side and thick on the other.
+      const s = sh.getBoundingClientRect()
+      const r = b.getBoundingClientRect()
+      setShut(`inset(${r.top - s.top}px ${s.right - r.right}px ${s.bottom - r.bottom}px ${r.left - s.left}px round ${r.height / 2}px)`)
       const row = b.parentElement as HTMLElement
       setRowH(row.offsetHeight)
     }

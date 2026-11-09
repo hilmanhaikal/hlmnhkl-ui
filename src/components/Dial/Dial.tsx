@@ -2,7 +2,7 @@
 
 import { useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type PointerEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { attract, clamp, lastStep, pull, roundTo, steps, wheelSteps, stepKey, type Mark } from '../../internal/feel'
+import { clamp, lastStep, pull, roundTo, steps, wheelSteps, stepKey } from '../../internal/feel'
 import { Roll } from '../../internal/Roll'
 import { useControllable } from '../../internal/useControllable'
 import { ink, sideways, tokenNumber, useOnChange, useScrub } from '../../internal/useScrub'
@@ -27,9 +27,9 @@ export type DialProps = Omit<ComponentPropsWithRef<'div'>, 'defaultValue' | 'onC
   step?: number
   /** Values with a printed label. Page Up and Page Down jump between them. Defaults to min and max. */
   marks?: number[]
-  /** Values that pull harder from further away, such as the usual setting. */
+  /** Values drawn stronger, such as the usual setting. */
   strong?: number[]
-  /** "printed": the scale is printed on the knob and turns under a fixed index. "mercury": a solid knob that reaches for a few named levels. "arc": the rim of a large dial, swiped sideways. */
+  /** "printed": the scale is printed on the knob and turns under a fixed index. "mercury": a solid knob with a few named levels. "arc": the rim of a large dial, swiped sideways. */
   variant?: 'printed' | 'mercury' | 'arc'
   /** Turns the value into the readout and what screen readers hear. */
   formatValue?: (value: number) => string
@@ -97,7 +97,6 @@ export function Dial({
   const all = steps(min, max, step)
   const labelled = (marks ?? [min, max]).map((v) => roundTo(v, step, min))
   const strongSet = new Set(strong.map((v) => roundTo(v, step, min)))
-  const pulls: Mark[] = all.map((at) => ({ at, strong: strongSet.has(at) }))
   const land = (p: number) => clamp(roundTo(p, step, min), min, top)
   const markText = formatMark ?? formatValue
   const stepDeg = SWEEP / Math.max(1, all.length - 1)
@@ -110,11 +109,9 @@ export function Dial({
     min,
     max: top,
     edge: step * (variant === 'arc' ? 0.8 : variant === 'mercury' ? 0.12 : 0.6),
-    attract: (r) => attract(r, pulls, step, sc.reach()),
     land,
     coast: variant === 'arc' ? 0.2 : 0,
     maxSpeed: 160 * step,
-    rest: step / 50,
     move:
       variant === 'arc'
         ? (e, last) => (-(e.clientX - last.x) / (rim?.gap || 1)) * step * (e.shiftKey ? 0.25 : 1)

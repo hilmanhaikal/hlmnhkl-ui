@@ -31,6 +31,7 @@
   --pill-muted: var(--hl-color-fg-muted);
   --pill-line: var(--hl-color-border);
   --pill-key: var(--hl-color-border-strong);
+  --pill-edge: color-mix(in srgb, var(--pill-fg) 16%, transparent);
   --pill-fill: var(--hl-color-inverse);
   --pill-fill-fg: var(--hl-color-inverse-fg);
   position: absolute;
@@ -51,6 +52,7 @@
   --pill-muted: color-mix(in srgb, var(--pill-fg) 62%, var(--pill-bg));
   --pill-line: color-mix(in srgb, var(--pill-fg) 18%, var(--pill-bg));
   --pill-key: transparent;
+  --pill-edge: transparent;
   --pill-fill: var(--hl-color-surface);
   --pill-fill-fg: var(--hl-color-fg);
 }
@@ -64,6 +66,11 @@
   z-index: 1;
   clip-path: inset(0 0 0 0 round var(--hl-radius-sheet));
   transition: clip-path var(--hl-motion-liquid) var(--hl-ease-liquid);
+}
+
+/* Shut, the card's own edge can sit on the pill's bottom edge and double its outline there. */
+.shell:not([data-open]) {
+  box-shadow: none;
 }
 
 /* Before it is measured (the first paint of a server page), only the pill's words show. */
@@ -108,7 +115,6 @@
   border-radius: var(--hl-radius-full);
   background: transparent;
   color: inherit;
-  box-shadow: inset 0 0 0 var(--hl-line) var(--pill-key);
   font: inherit;
   font-size: var(--hl-text-sm);
   font-weight: var(--hl-weight-semibold);
@@ -117,6 +123,16 @@
   overflow: clip;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* The outline sits over the fill, so both ends match. Mixed from the text colour, it fades into the fill. */
+.button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 var(--hl-line) var(--pill-edge);
+  pointer-events: none;
   transition: box-shadow var(--hl-motion-fast) var(--hl-ease-out);
 }
 
@@ -126,7 +142,7 @@
 }
 
 /* Open, the pill stops being a chip: its outline goes, and its words read as the card's last row. */
-.shell[data-open] .button {
+.shell[data-open] .button::after {
   box-shadow: inset 0 0 0 var(--hl-line) transparent;
 }
 

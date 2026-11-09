@@ -60,7 +60,7 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
   const anchorRef = useRef<HTMLElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const typeahead = useRef({ text: '', at: 0 })
-  const { mounted, state } = usePresence(open, 'fast')
+  const { mounted, state } = usePresence(open, 'morph-out')
   const floating = useFloating(anchorRef, menuRef, { open: mounted, side: 'bottom', align, offset: 6 })
   // The menu grows out of its button and folds back into it.
   useLiquid(menuRef, anchorRef, state, mounted && floating.ready)

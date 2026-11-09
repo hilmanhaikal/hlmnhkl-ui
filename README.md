@@ -1,17 +1,15 @@
 # hlmnhkl/ui
 
-React components, measured down to the part you never see: the 44px tap area, the 2px focus ring, the timing of every move. Black, white and grey with one blue accent, and copied into your app so the code is yours.
+React components where every part grows from the spot you touch. A button becomes its panel, a pill becomes a card, a card becomes its page: the edges move and the words stay still. Black, white and grey with one blue accent, and copied into your app so the code is yours.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-dark.png">
-  <img alt="The hlmnhkl/ui homepage: a real Switch drawn large, with thin lines reading its live tap area, focus ring and timing, under the line 'Measured down to the part you never see.'" src="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-light.png">
+  <img alt="The hlmnhkl/ui homepage: the line 'Every part grows from the spot you touch.' beside a Get started button that has poured open into a card with the two install commands." src="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-light.png">
 </picture>
 
-**[Docs](https://ui.hlmnhkl.my)** · [Installation](https://ui.hlmnhkl.my/installation) · [Components](https://ui.hlmnhkl.my/button) · [What's new](https://ui.hlmnhkl.my/changelog)
+**[Docs](https://ui.hlmnhkl.my)** · [Installation](https://ui.hlmnhkl.my/installation) · [Components](https://ui.hlmnhkl.my/components) · [What's new](https://ui.hlmnhkl.my/changelog)
 
-<img alt="Four hlmnhkl/ui controls in use: a Dial turned to a new oven temperature, a RulerScrubber dragged and landing on a mark, a SwipeDeck card thrown right and the next thrown left, and a SplitFlap board flipping to new times." src="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/signature.gif" width="600">
-
-Controls that feel like real ones: Dial, RulerScrubber, SwipeDeck, SplitFlap and more. Plus the everyday parts every app needs: buttons, inputs, sheets, tables, menus and 60 more.
+Every part opens and closes on one fluid curve, from where you tapped. Dialogs, menus, tooltips and sheets grow out of their trigger and fold back into it. Plus the everyday parts every app needs: buttons, inputs, tables, forms and many more.
 
 ## Install
 
@@ -70,7 +68,7 @@ Setup for other tools: [MCP server](https://ui.hlmnhkl.my/mcp).
 
 - **The source, not a package.** The command copies plain files into your app. Change anything; there is no update to wait for.
 - **71 free components**, from Button, Dialog, Select and Table to Toast and Retime, one speed setting for every animation. See [COMPONENTS.md](COMPONENTS.md).
-- **Controls that feel made by hand.** Dial, RulerScrubber and PickerWheel are drawn onto their marks like a magnet, glide after a flick without flying past, and settle without a bounce. Sheet rests at set heights, HoldToConfirm burns a line round its edge, SwipeDeck throws its cards and SplitFlap flips like a station board.
+- **Controls that feel made by hand.** Dial, RulerScrubber and PickerWheel follow the hand, glide after a flick on one morph curve, and land on a step without a bounce. Sheet rests at set heights, HoldToConfirm burns a line round its edge, SwipeDeck throws its cards and SplitFlap flips like a station board.
 - **One look, set by tokens.** Every colour, size and timing comes from one file, `tokens.css`. Colour appears only to mean something: good, caution or bad.
 - **Light and dark.** Dark follows the system, or set `data-theme="dark"` on `<html>`.
 - **Accessible.** Keyboard support per the WAI-ARIA patterns, visible focus, screen reader labels, and reduced motion. On touch screens every control gives at least a 44px target, even the small sizes; only the six PIN boxes and the seven calendar days get narrower when the row has no room, about 36px wide on a 320px phone. CalendarHeatmap's days are small by design, since a year must fit on screen; its month table gives the same numbers at full size.
