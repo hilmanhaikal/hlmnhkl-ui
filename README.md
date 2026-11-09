@@ -3,8 +3,8 @@
 React components where every part grows from the spot you touch. A button becomes its panel, a pill becomes a card, a card becomes its page: the edges move and the words stay still. Black, white and grey with one blue accent, and copied into your app so the code is yours.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-dark.png">
-  <img alt="The hlmnhkl/ui homepage: the line 'Every part grows from the spot you touch.' beside a Get started button that has poured open into a card with the two install commands." src="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-dark-0.36.png">
+  <img alt="The hlmnhkl/ui homepage: the line 'Every part grows from the spot you touch.' beside a Get started button that has poured open into a card with the two install commands." src="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-light-0.36.png">
 </picture>
 
 **[Docs](https://ui.hlmnhkl.my)** · [Installation](https://ui.hlmnhkl.my/installation) · [Components](https://ui.hlmnhkl.my/components) · [What's new](https://ui.hlmnhkl.my/changelog)
