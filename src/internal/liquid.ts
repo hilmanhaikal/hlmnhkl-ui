@@ -80,7 +80,17 @@ function clipMorph(p: HTMLElement, found: HTMLElement | DOMRect, state: 'open' |
   // data-liquid stays set while the panel is open: taking it off would restart the part's CSS enter animation.
   if (state === 'open') return p.animate({ clipPath: [now ?? start, end] }, { duration: motionMs('morph'), easing: easing('morph') })
   // A close starts at the panel's own edge, not out past its shadow, so the edge moves on the first frame.
-  return p.animate({ clipPath: [now ?? `inset(0px round ${corner})`, start] }, { duration: motionMs('morph-out'), easing: easing('morph'), fill: 'forwards' })
+  // It also fades by 65% of the fold: when the opener sits outside the panel, the shrinking clip would
+  // otherwise leave a strip of the panel on its near edge until the very end.
+  return p.animate(
+    [
+      { clipPath: now ?? `inset(0px round ${corner})`, opacity: 1 },
+      { opacity: 1, offset: 0.2 },
+      { opacity: 0, offset: 0.65 },
+      { clipPath: start, opacity: 0 },
+    ],
+    { duration: motionMs('morph-out'), easing: easing('morph'), fill: 'forwards' },
+  )
 }
 
 /**

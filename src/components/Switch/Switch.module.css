@@ -45,6 +45,9 @@
 
 .track[data-on]::before { clip-path: inset(0 round var(--hl-radius-full)); }
 
+/* While the thumb stretches across (Switch.tsx), the fill's edge rides on it. */
+.track[data-moving]::before { clip-path: var(--fill); transition: none; }
+
 .track::after {
   content: "";
   position: absolute;
@@ -66,20 +69,8 @@
   height: var(--thumb);
   border-radius: var(--hl-radius-full);
   background: var(--hl-color-border-strong);
-  /* Its move is drawn by .liquid (Switch.tsx); CSS holds the end state. */
+  /* Its move is played by Switch.tsx; CSS holds the end state. */
   transition: background-color var(--hl-motion-base) var(--hl-ease-out);
-}
-
-.thumb[data-flowing] { opacity: 0; }
-
-.liquid {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
 }
 
 /* Both on and off pass 3:1 contrast */

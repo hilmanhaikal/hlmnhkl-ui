@@ -2,6 +2,18 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.37.1 · 10 Nov 2026
+
+The switch moves as one soft pill, and folding panels leave nothing behind.
+
+### Changed
+
+- Switch: the thumb now stretches across as one pill (its front edge leads, the back catches up, at most 1.4 times its size), and the on colour's edge rides on it. Before, a drop split off and the colour was left behind as a dot, so it looked like three blobs.
+
+### Fixed
+
+- Popover, Dialog, Tooltip and other parts that fold back into their trigger: the panel fades as it folds, so no strip of it is left by the trigger at the end of the close.
+
 ## 0.37.0 · 9 Nov 2026
 
 Parts move like soft liquid. A button gives under your finger, a switch sends a drop ahead, menus follow you with a bead, and a toast rises out of the screen.
