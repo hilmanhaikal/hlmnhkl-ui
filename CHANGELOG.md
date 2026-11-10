@@ -2,6 +2,12 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## Unreleased
+
+### Changed
+
+- Docs and the MCP server: components sit in 10 groups instead of 12. Forms splits into Text fields and Choices and pickers (which now holds the date and time pickers); Charts and Communication join Data display; HoverCard moves to Overlays. Old group links (such as `/components?group=Charts`) open the group the parts moved to.
+
 ## 0.37.2 · 10 Nov 2026
 
 Fields stay above a phone keyboard.
