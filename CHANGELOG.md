@@ -2,6 +2,14 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.37.2 · 10 Nov 2026
+
+Fields stay above a phone keyboard.
+
+### Fixed
+
+- Phone keyboards: a field a part focuses for you (a MorphButton's note, a Sheet's or Dialog's first field) no longer hides under the keyboard. The page scrolls just enough, or a fixed sheet or dialog lifts above the keyboard and drops back when it closes. New internal file `keyboard.ts`, used by `focus.ts`; a layer that places itself can opt out with `data-own-keyboard`.
+
 ## 0.37.1 · 10 Nov 2026
 
 The switch moves as one soft pill, and folding panels leave nothing behind.

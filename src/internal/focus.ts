@@ -1,4 +1,5 @@
 import { useEffect, type RefObject } from 'react'
+import { watchKeyboard } from './keyboard'
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contenteditable="true"]'
@@ -21,6 +22,8 @@ if (typeof document !== 'undefined') {
     },
     true,
   )
+  // Focus moved from code stays above a phone keyboard.
+  watchKeyboard()
 }
 
 // Where focus should go back to: the focused element, unless it is the page or a box around the
