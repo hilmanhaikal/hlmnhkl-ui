@@ -1,0 +1,62 @@
+/* Each icon's motion plays once when the control it sits in is pointed at or focused, or when the icon
+   itself is. Nothing plays with reduced motion. Moves stay within about a tenth of the icon, so it never
+   leaves its box. */
+.icon { transform-origin: 50% 50%; }
+.icon[data-motion="swing"] { transform-origin: 50% 12%; }
+.icon[data-motion="grow"] { transform-origin: 50% 86%; }
+
+.icon[data-motion="nudge-r"] { --hl-icon-play: hl-icon-nudge-r; }
+.icon[data-motion="nudge-l"] { --hl-icon-play: hl-icon-nudge-l; }
+.icon[data-motion="nudge-u"] { --hl-icon-play: hl-icon-nudge-u; }
+.icon[data-motion="nudge-d"] { --hl-icon-play: hl-icon-nudge-d; }
+.icon[data-motion="nudge-ur"] { --hl-icon-play: hl-icon-nudge-ur; }
+.icon[data-motion="swing"] { --hl-icon-play: hl-icon-swing; }
+.icon[data-motion="turn"] { --hl-icon-play: hl-icon-turn; }
+.icon[data-motion="pop"] { --hl-icon-play: hl-icon-pop; }
+.icon[data-motion="blink"] { --hl-icon-play: hl-icon-blink; }
+.icon[data-motion="wiggle"] { --hl-icon-play: hl-icon-wiggle; }
+.icon[data-motion="bounce"] { --hl-icon-play: hl-icon-bounce; }
+.icon[data-motion="grow"] { --hl-icon-play: hl-icon-grow; }
+
+@media (prefers-reduced-motion: no-preference) {
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon,
+  .icon:hover {
+    animation: var(--hl-icon-play, none) var(--hl-motion-slow) var(--hl-ease-out);
+  }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="draw"] > *,
+  .icon[data-motion="draw"]:hover > * {
+    stroke-dasharray: 1;
+    animation: draw var(--hl-motion-slower) var(--hl-ease-out);
+  }
+}
+
+@keyframes :global(hl-icon-nudge-r) { 40% { transform: translateX(0.12em); } }
+@keyframes :global(hl-icon-nudge-l) { 40% { transform: translateX(-0.12em); } }
+@keyframes :global(hl-icon-nudge-u) { 40% { transform: translateY(-0.12em); } }
+@keyframes :global(hl-icon-nudge-d) { 40% { transform: translateY(0.12em); } }
+@keyframes :global(hl-icon-nudge-ur) { 40% { transform: translate(0.1em, -0.1em); } }
+@keyframes :global(hl-icon-swing) {
+  25% { transform: rotate(14deg); }
+  50% { transform: rotate(-10deg); }
+  75% { transform: rotate(5deg); }
+}
+@keyframes :global(hl-icon-turn) { to { transform: rotate(1turn); } }
+@keyframes :global(hl-icon-pop) { 40% { transform: scale(1.18); } }
+@keyframes :global(hl-icon-blink) { 45% { transform: scaleY(0.12); } }
+@keyframes :global(hl-icon-wiggle) {
+  20% { transform: rotate(-10deg); }
+  40% { transform: rotate(9deg); }
+  60% { transform: rotate(-6deg); }
+  80% { transform: rotate(3deg); }
+}
+@keyframes :global(hl-icon-grow) {
+  40% { transform: scale(0.94, 1.14); }
+  70% { transform: scale(1.02, 0.97); }
+}
+@keyframes :global(hl-icon-bounce) {
+  35% { transform: translateY(-0.14em); }
+  65% { transform: translateY(0.03em); }
+}
+/* Named in this file (not global): only the rule above plays it. The others are global because their
+   name travels in --hl-icon-play, which CSS modules do not rename. */
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }

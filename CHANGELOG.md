@@ -2,10 +2,21 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
-## Unreleased
+## 0.38.0 · 10 Nov 2026
+
+104 icons that can move, Pro blocks you can try, and docs that are quicker to get around.
+
+### Added
+
+- Icons: 60 new ones, so there are 104, all drawn for this library on the same 24 grid (files and data, people and chat, commerce and places, and docs icons such as Book, Plug, Palette and Sliders). Also `ChevronUpIcon`, `ArrowLeftIcon`, `ArrowRightIcon` and `EyeOffIcon`.
+- Icons: every icon has a small motion that fits its meaning, off by default. Add `animated` (`<SendIcon animated />`) and it plays once when the button or link it sits in is pointed at or focused: arrows nudge, bells swing, settings turn, ticks draw in, hearts pop, eyes blink. Nothing moves with reduced motion. New internal file `icons.module.css`, which `add` copies with `icons.tsx`.
 
 ### Changed
 
+- Docs: Pro blocks, templates and themes run live on their pages, so you can try them. Their code stays locked: the Code tab shows the Pro lock, and no readable Pro source is in the site (a build check makes sure).
+- Docs: Components and Blocks in the top bar open their first page, and the sidebar lists the rest; the Components index page is gone (old `/components` links open the first part of their group). Docs and Resources keep their menus, now wider, with an icon per page and a chevron that turns while open.
+- Docs: block and template pages show the preview across the whole page, as tall as the block itself, so nothing is cut and no empty space is left.
+- Docs: one Pro label everywhere, with a soft sheen.
 - Docs and the MCP server: components sit in 10 groups instead of 12. Forms splits into Text fields and Choices and pickers (which now holds the date and time pickers); Charts and Communication join Data display; HoverCard moves to Overlays. Old group links (such as `/components?group=Charts`) open the group the parts moved to.
 
 ## 0.37.2 · 10 Nov 2026
