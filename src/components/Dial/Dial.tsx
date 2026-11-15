@@ -68,6 +68,16 @@ function turn(unitsPerDeg: number, centre: (r: DOMRect) => { x: number; y: numbe
   }
 }
 
+/** Where a tap sits around a centre, in degrees clockwise from the top, or null too near the centre to tell. */
+function angleAt(e: PointerEvent<HTMLElement>, centre: (r: DOMRect) => { x: number; y: number }) {
+  const c = centre(e.currentTarget.getBoundingClientRect())
+  if (Math.hypot(e.clientX - c.x, e.clientY - c.y) < 16) return null
+  return (Math.atan2(e.clientX - c.x, c.y - e.clientY) * 180) / Math.PI
+}
+
+const mercuryCentre = (r: DOMRect) => ({ x: r.left + r.width / 2, y: r.top + (r.height * CY) / H })
+const knobCentre = (r: DOMRect) => ({ x: r.left + r.width / 2, y: r.top + r.height / 2 })
+
 export function Dial({
   label,
   value: valueProp,
@@ -116,9 +126,30 @@ export function Dial({
       variant === 'arc'
         ? (e, last) => (-(e.clientX - last.x) / (rim?.gap || 1)) * step * (e.shiftKey ? 0.25 : 1)
         : variant === 'mercury'
-          ? turn(step / stepDeg, (r) => ({ x: r.left + r.width / 2, y: r.top + (r.height * CY) / H }))
-          : turn((max - min) / SWEEP, (r) => ({ x: r.left + r.width / 2, y: r.top + r.height / 2 })),
+          ? turn(step / stepDeg, mercuryCentre)
+          : turn((max - min) / SWEEP, knobCentre),
     key: (k, t) => stepKey(k, t, { min, max, step, marks: labelled }),
+    // A tap without a drag goes to the mark under it, so the dial works with one plain press.
+    tap: (e, at) => {
+      if (variant === 'arc') {
+        if (!rim?.gap || !rim.r) return null
+        const r = e.currentTarget.getBoundingClientRect()
+        // The rim curves, so the tap's sideways distance becomes a length along the arc.
+        const along = rim.r * Math.asin(clamp((e.clientX - (r.left + r.width / 2)) / rim.r, -1, 1))
+        return land(at + (along / rim.gap) * step)
+      }
+      if (variant === 'mercury') {
+        const a = angleAt(e, mercuryCentre)
+        // Past either end of the sweep, land clamps to the nearer end (the dead part is split at the bottom).
+        return a === null ? null : land(min + ((a + 135) / stepDeg) * step)
+      }
+      const a = angleAt(e, knobCentre)
+      if (a === null) return null
+      // The printed face turns, so the tap is read on the face: min at 0 and max 270 degrees back from it.
+      const back = (((((at - min) / (max - min || 1)) * SWEEP - a) % 360) + 360) % 360
+      if (back > SWEEP) return back < SWEEP + (360 - SWEEP) / 2 ? top : min
+      return land(min + (back / SWEEP) * (max - min))
+    },
     wheel:
       variant === 'arc'
         ? (e, t) => {

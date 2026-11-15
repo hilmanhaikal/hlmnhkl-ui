@@ -95,6 +95,13 @@
 
 .label { flex: 1; }
 
+.reason {
+  display: block;
+  font-size: var(--hl-text-xs);
+  font-weight: var(--hl-weight-regular);
+  color: var(--hl-color-fg-muted);
+}
+
 .shortcut {
   font-family: var(--hl-font-mono);
   font-size: var(--hl-text-xs);

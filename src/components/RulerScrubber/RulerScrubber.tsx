@@ -87,6 +87,12 @@ export function RulerScrubber({
     // Dragging left brings higher values in, like pulling a tape.
     move: (e, last) => (-(e.clientX - last.x) / (fit.gap || 1)) * step * (e.shiftKey ? 0.25 : 1),
     key: (k, t) => stepKey(k, t, { min, max, step, marks: [...labelled] }),
+    // A tap without a drag goes to the tick under it, so the ruler works with one plain press.
+    tap: (e, at) => {
+      if (!fit.gap) return null
+      const r = e.currentTarget.getBoundingClientRect()
+      return land(at + ((e.clientX - (r.left + r.width / 2)) / fit.gap) * step)
+    },
     wheel: (e, t) => {
       const dx = sideways(e)
       if (dx === null || !fit.gap) return null

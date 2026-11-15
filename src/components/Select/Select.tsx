@@ -34,6 +34,8 @@ export type SelectProps = {
   help?: ReactNode
   /** Error message under the field. Also marks the field invalid. */
   error?: ReactNode
+  /** Shown in the open list when there are no options. */
+  emptyText?: string
   /** Stops the list from opening. */
   disabled?: boolean
   /** Submits the selected value in a hidden field with this name. */
@@ -54,6 +56,7 @@ export function Select({
   placeholder = 'Choose one',
   help,
   error,
+  emptyText = 'No options',
   disabled,
   name,
   id,
@@ -65,6 +68,7 @@ export function Select({
   const listId = `${baseId}-list`
   const helpId = `${baseId}-help`
   const errorId = `${baseId}-error`
+  const emptyId = `${baseId}-empty`
   const triggerId = id ?? `${auto}-trigger`
   const [value, setValue] = useControllable<string | null>(valueProp, defaultValue, (v) => v !== null && onValueChange?.(v))
   const [open, setOpen] = useState(false)
@@ -163,7 +167,8 @@ export function Select({
     }
   }
 
-  const describedBy = [help && !error ? helpId : null, error ? errorId : null].filter(Boolean).join(' ')
+  const empty = options.length === 0
+  const describedBy = [help && !error ? helpId : null, error ? errorId : null, open && empty ? emptyId : null].filter(Boolean).join(' ')
 
   return (
     <div className={cx(styles.root, className)}>
@@ -182,7 +187,7 @@ export function Select({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listId}
-        aria-activedescendant={open && active >= 0 ? `${baseId}-opt-${active}` : undefined}
+        aria-activedescendant={open && enabled(active) ? `${baseId}-opt-${active}` : undefined}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy || undefined}
         disabled={disabled}
@@ -190,7 +195,7 @@ export function Select({
         onKeyDown={onKeyDown}
       >
         <span className={cx(styles.value, !selected && styles.placeholder)}>
-          <span key={selected?.value ?? 'none'} className={styles.valueText}>
+          <span key={selected?.value ?? 'none'} className={styles.valueText} title={selected ? selected.label : placeholder}>
             {selected ? selected.label : placeholder}
           </span>
         </span>
@@ -236,6 +241,11 @@ export function Select({
                 <CheckIcon className={styles.check} data-on={o.value === value || undefined} />
               </div>
             ))}
+            {empty && (
+              <div id={emptyId} className={styles.empty}>
+                {emptyText}
+              </div>
+            )}
           </div>
         </Portal>
       )}

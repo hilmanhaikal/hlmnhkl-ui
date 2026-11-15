@@ -55,13 +55,13 @@ export function Breadcrumb({ items, maxItems = 4, label = 'Breadcrumb', expandLa
                     …
                   </button>
                 ) : last ? (
-                  <span className={styles.current} aria-current="page">{item.label}</span>
+                  <span className={styles.current} aria-current="page" title={item.label}>{item.label}</span>
                 ) : item.href === undefined ? (
-                  <button type="button" className={cx(styles.link, styles.button)} onClick={item.onClick}>
+                  <button type="button" className={cx(styles.link, styles.button)} title={item.label} onClick={item.onClick}>
                     {item.label}
                   </button>
                 ) : (
-                  <a className={styles.link} href={item.href} onClick={item.onClick}>
+                  <a className={styles.link} href={item.href} title={item.label} onClick={item.onClick}>
                     {item.label}
                   </a>
                 )}

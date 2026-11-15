@@ -12,11 +12,12 @@ export type BadgeProps = ComponentPropsWithRef<'span'> & {
 }
 
 export function Badge({ variant = 'subtle', tone = 'neutral', dot, className, children, ...rest }: BadgeProps) {
+  const plain = typeof children === 'string' || typeof children === 'number'
   return (
     <span className={cx(styles.root, styles[variant], className)} data-tone={tone === 'neutral' ? undefined : tone} {...rest}>
       {dot && <span className={styles.dot} data-pulse={dot === 'pulse' || undefined} aria-hidden="true" />}
       {/* Keyed on content, so a new value pops in instead of swapping silently. */}
-      <span key={typeof children === 'string' || typeof children === 'number' ? String(children) : undefined} className={styles.text}>
+      <span key={plain ? String(children) : undefined} className={styles.text} title={plain && !rest.title ? String(children) : undefined}>
         {children}
       </span>
     </span>

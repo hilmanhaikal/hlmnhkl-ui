@@ -2,6 +2,33 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.39.0 · 15 Nov 2026
+
+Every part works without a drag, focus never hides under a bar, and parts say when they are loading, empty or failed.
+
+### Added
+
+- Table and DataGrid: `loading` (and `loadingRows`) shows skeleton rows in the real columns, marks the table busy and holds back the empty text until the data is in.
+- Select: `emptyText` ("No options") when there are no options, where the list used to open blank.
+- Combobox: `loadError` and `onRetry` show a failed search as its own message with Try again, apart from "No matches".
+- VideoPlayer: a source that fails shows "This video could not be played." with Try again, and a spinner shows while it buffers.
+- Image: `retry` adds a Try again button to the fallback.
+- Button and DropdownMenu items: `disabledReason` says why a disabled control is off, to screen readers and on hover; a menu item shows it under its label.
+- Timeline and TreeView: `emptyText` for a list with nothing in it.
+- Badge, Tag, Breadcrumb, TreeView, CommandPalette, FileUpload, Select and DataGrid: text that is cut off shows in full on hover.
+
+### Fixed
+
+- Accessibility, WCAG 2.2 dragging (2.5.7): nine parts that needed a drag now have a tap or click way too. Dial and RulerScrubber: tap the scale. ImageCropper: tap the photo to centre the crop. ResizablePanels: click a handle. SortableList: tap the grip, then Move up, Move down, Done. KanbanBoard: a Move menu on each card. TreeView: Move, then tap a folder. SwipeActions: a More button on each row (`moreLabel`, `hideMore`). DataGrid: Wider and Narrower in every column's menu.
+- Accessibility, WCAG 2.2 focus (2.4.11): in blocks and templates, a control that takes focus no longer hides under a fixed or sticky bar. Table: a focused cell scrolls clear of the sticky header and first column.
+
+### Changed
+
+- Button: the large size has 24px side padding (was 32px), so all three sizes use half their height.
+- Blocks and templates, words: "This did not load" in place of "Something went wrong", sentence case for "Privacy policy" and "Help centre", and error summaries that no longer rely on the colour red.
+- Docs on a phone: the menu's Components and Blocks tabs list every part by group, one tap each, and the menu opens on the tab of the page you are on, scrolled to it. So another part is two taps away (Menu, then the part).
+- Docs sidebar: rows are tighter (30px, the tap area stays 44px), with a small gap between them and corners that fit the shorter row.
+
 ## 0.38.0 · 10 Nov 2026
 
 104 icons that can move, Pro blocks you can try, and docs that are quicker to get around.

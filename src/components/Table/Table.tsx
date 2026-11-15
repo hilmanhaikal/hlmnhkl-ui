@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type FocusEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { easing, motionMs } from '../../internal/motion'
 import { useControllable } from '../../internal/useControllable'
+import { Skeleton } from '../Skeleton'
 import styles from './Table.module.css'
 
 export type TableColumn<T> = {
@@ -33,6 +34,8 @@ export type TableLabels = {
   unsorted: (column: string) => string
   /** The row count beside each group's name. */
   groupCount: (count: number) => string
+  /** Spoken while the rows load. */
+  loading: string
 }
 
 const defaultLabels: TableLabels = {
@@ -41,6 +44,7 @@ const defaultLabels: TableLabels = {
   sortedBy: (column, direction) => `Sorted by ${column}, ${direction}`,
   unsorted: (column) => `No longer sorted by ${column}`,
   groupCount: (count) => `${count} ${count === 1 ? 'row' : 'rows'}`,
+  loading: 'Loading rows',
 }
 
 export type TableProps<T> = {
@@ -80,20 +84,24 @@ export type TableProps<T> = {
   maxHeight?: CSSProperties['maxHeight']
   /** Shown in place of rows when there are none. */
   emptyText?: ReactNode
+  /** Shows skeleton rows in place of the data and holds sorting and selection still. */
+  loading?: boolean
+  /** How many skeleton rows show while loading. */
+  loadingRows?: number
   /** Screen reader text for checkboxes and sort news. Missing keys use the English defaults. */
   labels?: Partial<TableLabels>
   /** Extra class for the root element. */
   className?: string
 }
 
-function Check({ checked, mixed, label, onChange }: { checked: boolean; mixed?: boolean; label: string; onChange: (v: boolean) => void }) {
+function Check({ checked, mixed, label, disabled, onChange }: { checked: boolean; mixed?: boolean; label: string; disabled?: boolean; onChange: (v: boolean) => void }) {
   const ref = useRef<HTMLInputElement>(null)
   useEffect(() => {
     if (ref.current) ref.current.indeterminate = Boolean(mixed)
   }, [mixed])
   return (
     <span className={styles.check}>
-      <input ref={ref} type="checkbox" aria-label={label} checked={checked} onChange={(e) => onChange(e.target.checked)} className={styles.checkInput} />
+      <input ref={ref} type="checkbox" aria-label={label} checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} className={styles.checkInput} />
       <span className={styles.checkBox} data-state={mixed ? 'mixed' : checked ? 'on' : 'off'} aria-hidden="true">
         <svg viewBox="0 0 16 16">
           <path className={styles.tick} d="M3.5 8.5l3 3 6-7" pathLength="1" />
@@ -124,6 +132,8 @@ export function Table<T>({
   maxHeight,
   layout = 'scroll',
   emptyText = 'Nothing here yet.',
+  loading = false,
+  loadingRows = 5,
   labels: labelsProp,
   className,
 }: TableProps<T>) {
@@ -138,6 +148,21 @@ export function Table<T>({
     const start = el.scrollLeft > 1
     const end = el.scrollLeft + el.clientWidth < el.scrollWidth - 1
     setMore((m) => (m.start === start && m.end === end ? m : { start, end }))
+    // The sticky first column's width, so a cell that takes focus scrolls clear of it (WCAG 2.4.11).
+    const first = el.querySelector<HTMLElement>('thead th')
+    el.style.setProperty('--first-w', first && getComputedStyle(first).left === '0px' ? `${first.offsetWidth}px` : '0px')
+  }
+  // Browsers do not scroll a sticky header cell into view on focus, so its button could stay under the
+  // sticky first column. Nudge the sideways scroll until the focused cell is clear on both sides.
+  const reveal = (e: FocusEvent<HTMLDivElement>) => {
+    const el = scrollRef.current
+    const cell = e.target.closest('th, td')
+    if (!el || !cell || cell === cell.parentElement?.firstElementChild) return
+    const box = el.getBoundingClientRect()
+    const r = cell.getBoundingClientRect()
+    const under = r.left - box.left - (parseFloat(el.style.getPropertyValue('--first-w')) || 0)
+    if (under < 0) el.scrollLeft += under
+    else if (r.right > box.right) el.scrollLeft += r.right - box.right
   }
   useEffect(() => {
     const el = scrollRef.current
@@ -249,9 +274,9 @@ export function Table<T>({
 
   return (
     <div className={cx(styles.root, className)} data-layout={layout} data-more-start={more.start || undefined} data-more-end={more.end || undefined}>
-      <div ref={scrollRef} onScroll={measure} className={styles.scroll} style={{ maxHeight }} tabIndex={scrollable ? 0 : undefined} role={scrollable ? 'region' : undefined} aria-labelledby={scrollable ? `${id}-cap` : undefined}>
+      <div ref={scrollRef} onScroll={measure} onFocus={reveal} className={styles.scroll} style={{ maxHeight }} tabIndex={scrollable ? 0 : undefined} role={scrollable ? 'region' : undefined} aria-labelledby={scrollable ? `${id}-cap` : undefined}>
         {/* Explicit roles keep table semantics when rows restyle as cards (layout="stack") */}
-        <table ref={tableRef} role="table" className={styles.table} aria-labelledby={`${id}-cap`}>
+        <table ref={tableRef} role="table" className={styles.table} aria-labelledby={`${id}-cap`} aria-busy={loading || undefined}>
           <caption id={`${id}-cap`} className={cx(styles.caption, hideCaption && styles.srOnly)}>
             {caption}
           </caption>
@@ -263,6 +288,7 @@ export function Table<T>({
                     checked={allOn}
                     mixed={someOn}
                     label={labels.selectAll}
+                    disabled={loading}
                     onChange={(v) => setSelected(v ? Array.from(new Set([...selected, ...ids])) : selected.filter((s) => !ids.includes(s)))}
                   />
                 </th>
@@ -282,7 +308,7 @@ export function Table<T>({
                     style={{ width: c.width }}
                   >
                     {c.sortable ? (
-                      <button type="button" className={styles.sortButton} data-active={active || undefined} onClick={() => toggleSort(c.key)}>
+                      <button type="button" className={styles.sortButton} disabled={loading} data-active={active || undefined} onClick={() => toggleSort(c.key)}>
                         <span>{c.header}</span>
                         <svg viewBox="0 0 16 16" className={styles.sortIcon} data-dir={dir} aria-hidden="true">
                           <path d="M8 12.5v-9M4.5 7L8 3.5 11.5 7" />
@@ -296,7 +322,20 @@ export function Table<T>({
               })}
             </tr>
           </thead>
-          {groups && groups.length > 0 ? (
+          {loading ? (
+            <tbody role="rowgroup">
+              {Array.from({ length: loadingRows }, (_, r) => (
+                <tr key={r} aria-hidden="true" className={cx(styles.row, styles.loadingRow)}>
+                  {selectable && <td className={styles.checkCell} />}
+                  {columns.map((c, i) => (
+                    <td key={c.key} className={styles.td} data-align={c.align ?? 'start'} data-label={labelOf(c)}>
+                      <Skeleton shape="text" width={`${[72, 56, 84][(r + i) % 3]}%`} />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          ) : groups && groups.length > 0 ? (
             groups.map((g) => (
               <tbody key={g.key} role="rowgroup" className={styles.group}>
                 <tr role="row" data-row-id={`group:${g.key}`} className={styles.groupRow}>
@@ -323,6 +362,7 @@ export function Table<T>({
         </table>
       </div>
       <p className={styles.srOnly} role="status">{announce}</p>
+      <p className={styles.srOnly} role="status">{loading ? labels.loading : ''}</p>
     </div>
   )
 }

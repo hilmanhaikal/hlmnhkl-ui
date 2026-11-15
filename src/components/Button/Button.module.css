@@ -92,7 +92,7 @@
 }
 
 .sm { --h: var(--hl-control-h-sm); padding: 0 var(--hl-space-5); font-size: var(--hl-text-sm); }
-.lg { --h: var(--hl-control-h-lg); padding: 0 var(--hl-space-8); font-size: var(--hl-text-lg); }
+.lg { --h: var(--hl-control-h-lg); padding: 0 var(--hl-space-7); font-size: var(--hl-text-lg); }
 .full { display: grid; width: 100%; }
 
 .primary {

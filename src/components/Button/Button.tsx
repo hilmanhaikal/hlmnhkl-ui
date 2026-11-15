@@ -1,6 +1,6 @@
 'use client'
 
-import type { ComponentPropsWithRef, FocusEvent, KeyboardEvent, MouseEvent, PointerEvent, ReactNode, Ref } from 'react'
+import { useId, type ComponentPropsWithRef, type FocusEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, type Ref } from 'react'
 import { cx } from '../../internal/cx'
 import { useSoftPress } from '../../internal/softPress'
 import { Spinner } from '../Spinner'
@@ -24,6 +24,8 @@ export type ButtonProps = ComponentPropsWithRef<'button'> & {
   trailingIcon?: ReactNode
   /** Stretches the button to fill its container. */
   fullWidth?: boolean
+  /** Why the button is disabled. Read by screen readers and shown as a tooltip while it is disabled. */
+  disabledReason?: string
   /** Renders a link with the same look, for navigation. Button-only props such as type are then ignored. */
   href?: string
 }
@@ -37,6 +39,7 @@ export function Button({
   trailingIcon,
   fullWidth,
   href,
+  disabledReason,
   className,
   children,
   type = 'button',
@@ -51,10 +54,15 @@ export function Button({
   ref,
   ...rest
 }: ButtonProps) {
+  const reasonId = useId()
   const inert = loading || Boolean(rest.disabled) || ariaDisabledProp === true || ariaDisabledProp === 'true'
   // The edge is soft: it dents where pressed and springs back (internal/softPress.ts).
   const soft = useSoftPress({ layer: styles.soft, fill: styles.softFill, ring: styles.softRing, wet: styles.wet }, inert, href === undefined ? [' ', 'Enter'] : ['Enter'])
+  const reason = (Boolean(rest.disabled) || ariaDisabledProp === true || ariaDisabledProp === 'true') ? disabledReason : undefined
+  const describedBy = [rest['aria-describedby'], reason ? reasonId : undefined].filter(Boolean).join(' ') || undefined
   const shared = {
+    'aria-describedby': describedBy,
+    title: rest.title ?? reason,
     className: cx(styles.root, styles[variant], styles[size], fullWidth && styles.full, className),
     'data-loading': loading || undefined,
     'aria-busy': loading || undefined,
@@ -106,6 +114,12 @@ export function Button({
       <span className={styles.srOnly} role="status">
         {loading ? loadingLabel : null}
       </span>
+      {reason && (
+        // Hidden from the name, so it is read once, as the description.
+        <span id={reasonId} className={styles.srOnly} aria-hidden="true">
+          {reason}
+        </span>
+      )}
     </>
   )
 
@@ -126,7 +140,8 @@ export function Button({
   }
 
   return (
-    <button {...rest} {...shared} ref={ref} type={type}>
+    // With a reason the button is aria-disabled only: a natively disabled button cannot take focus, so its reason could not be reached.
+    <button {...rest} disabled={reason ? undefined : rest.disabled} {...shared} ref={ref} type={type}>
       {inner}
     </button>
   )

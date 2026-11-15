@@ -30,6 +30,8 @@ export type MenuEntry =
       shortcut?: string
       onSelect?: () => void
       disabled?: boolean
+      /** Why the item is disabled. Shown as small text under the label while it is disabled. */
+      disabledReason?: string
       /** Marks a destructive action in red and bold. Use a clear word too, such as "Delete". */
       destructive?: boolean
     }
@@ -169,6 +171,7 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
                   </div>
                 )
               const n = stagger++
+              const reason = item.disabled ? item.disabledReason : undefined
               return (
                 <div
                   key={i}
@@ -192,7 +195,14 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
                   }}
                 >
                   {item.icon && <span className={styles.icon}>{item.icon}</span>}
-                  <span className={styles.label}>{item.label}</span>
+                  <span className={styles.label}>
+                    {item.label}
+                    {reason && (
+                      <span className={styles.reason}>
+                        {reason}
+                      </span>
+                    )}
+                  </span>
                   {item.shortcut && <kbd className={styles.shortcut}>{item.shortcut}</kbd>}
                 </div>
               )

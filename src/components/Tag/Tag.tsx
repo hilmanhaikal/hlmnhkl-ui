@@ -84,7 +84,9 @@ export function Tag({ children, onRemove, removeLabel, selected, onSelectedChang
       ) : (
         icon && <span className={styles.icon}>{icon}</span>
       )}
-      <span className={styles.text}>{children}</span>
+      <span className={styles.text} title={typeof children === 'string' || typeof children === 'number' ? String(children) : undefined}>
+        {children}
+      </span>
     </>
   )
 

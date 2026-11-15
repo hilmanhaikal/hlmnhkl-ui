@@ -151,6 +151,16 @@
   cursor: not-allowed;
 }
 
+.empty {
+  display: flex;
+  align-items: center;
+  min-height: var(--hl-hit-min);
+  padding: 0 var(--hl-space-4);
+  font-size: var(--hl-text-sm);
+  color: var(--hl-color-fg-muted);
+  cursor: default;
+}
+
 .optionText {
   display: flex;
   flex-direction: column;
