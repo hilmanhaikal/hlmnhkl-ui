@@ -2,6 +2,21 @@
 
 What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.42.0 · 15 Nov 2026
+
+Picking an option now moves at the morph's pace, and every thumb casts one soft shadow.
+
+### Added
+
+- Token `--gooee-shadow-thumb`: a soft shadow for a thumb on its track. Every layer blurs at least twice as far as it drops, so no hard edge shows. It is stronger in dark mode, where a black shadow barely shows.
+
+### Changed
+
+- SegmentedControl, Tabs and ToggleGroup: a new choice now moves in `--gooee-motion-morph-out` (400 ms) instead of `--gooee-motion-slow` (360 ms), so every move runs on the morph's times.
+- SegmentedControl, ToggleGroup and Switch: the thumb uses `--gooee-shadow-thumb` instead of `--gooee-shadow-2`, which had a hard edge on a dark track.
+- While a part flows (SegmentedControl, Tabs, Toast), its drawn shape casts the same shadow as the part at rest. Before, the shadows were chained, so each shadow also shadowed the one before it and the drawing came out darker.
+- The installation guide has a shadcn CLI tab.
+
 ## 0.41.1 · 15 Nov 2026
 
 The docs live at gooee.dev now.

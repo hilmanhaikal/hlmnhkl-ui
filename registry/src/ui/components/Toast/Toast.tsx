@@ -14,7 +14,7 @@ import {
   type ReactNode,
 } from 'react'
 import { CheckCircleIcon, ErrorIcon, InfoIcon, XIcon } from '../../internal/icons'
-import { frames, layer, morphEase, motionFor, shadowOf } from '../../internal/liquidMatter'
+import { castShadow, frames, layer, morphEase, motionFor, shadowOf } from '../../internal/liquidMatter'
 import { BEND, body, budScene, exitToward, loopsPath, pincher, sdBox, trace, type Box, type Pt } from '../../internal/liquidPath'
 import { motionMs } from '../../internal/motion'
 import { release, speedTracker } from '../../internal/fling'
@@ -235,7 +235,7 @@ function bud(toast: HTMLElement, origin: ToastOptions['origin'], way: 'in' | 'ou
   path.style.fill = look.backgroundColor
   path.style.stroke = look.borderTopColor
   path.style.strokeWidth = `${line}px`
-  svg.style.filter = shadowOf(toast).filter
+  castShadow(svg, shadowOf(toast).shadows)
   const inset = line / 2
   const T2: Box = { cx: T.cx, cy: T.cy, hw: T.hw - inset, hh: T.hh - inset, r: Math.max(0, T.r - inset) }
   // The origin keeps its own look: the drawing is cut out where it is.

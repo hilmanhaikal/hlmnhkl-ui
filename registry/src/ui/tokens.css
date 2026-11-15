@@ -166,6 +166,8 @@
   --gooee-shadow-2: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 12px rgb(0 0 0 / 0.06);
   --gooee-shadow-3: 0 2px 4px rgb(0 0 0 / 0.04), 0 12px 32px rgb(0 0 0 / 0.1);
   --gooee-shadow-4: 0 4px 8px rgb(0 0 0 / 0.05), 0 24px 64px rgb(0 0 0 / 0.16);
+  /* A thumb on its track. Every layer blurs at least twice its drop, so no hard edge shows */
+  --gooee-shadow-thumb: 0 1px 3px rgb(0 0 0 / 0.04), 0 3px 8px rgb(0 0 0 / 0.04), 0 6px 16px rgb(0 0 0 / 0.04);
 
   /* Motion. Every duration is its base times --gooee-motion-scale, so one value retimes the whole
      library (see Retime). 1 is normal, 1.5 is slower, 0 is no motion. Reduced motion still wins. */
@@ -191,8 +193,8 @@
   --gooee-motion-shimmer: 1400ms;
   --gooee-motion-spin: 800ms;
   --gooee-motion-indeterminate: 1500ms;
-  /* Morph: the one curve for every move. Fast away, long soft landing, no overshoot, like an iPhone
-     sheet. Opening and closing both play it forward */
+  /* Morph: the one curve for every move. A soft lift-off, then a long settle, with no overshoot.
+     Opening and closing both play it forward */
   --gooee-ease-morph: cubic-bezier(0.2, 0, 0, 1);
   /* Older names, kept so apps that use them still work. They are the morph now */
   --gooee-ease-out: var(--gooee-ease-morph);
@@ -278,6 +280,7 @@
     --gooee-shadow-2: 0 1px 2px rgb(0 0 0 / 0.2), 0 4px 12px rgb(0 0 0 / 0.15);
     --gooee-shadow-3: 0 2px 4px rgb(0 0 0 / 0.4), 0 12px 32px rgb(0 0 0 / 0.5);
     --gooee-shadow-4: 0 4px 8px rgb(0 0 0 / 0.4), 0 24px 64px rgb(0 0 0 / 0.6);
+  --gooee-shadow-thumb: 0 1px 3px rgb(0 0 0 / 0.12), 0 3px 8px rgb(0 0 0 / 0.12), 0 6px 16px rgb(0 0 0 / 0.12);
     color-scheme: dark;
   }
 }
@@ -319,6 +322,7 @@
   --gooee-shadow-2: 0 1px 2px rgb(0 0 0 / 0.2), 0 4px 12px rgb(0 0 0 / 0.15);
   --gooee-shadow-3: 0 2px 4px rgb(0 0 0 / 0.4), 0 12px 32px rgb(0 0 0 / 0.5);
   --gooee-shadow-4: 0 4px 8px rgb(0 0 0 / 0.4), 0 24px 64px rgb(0 0 0 / 0.6);
+  --gooee-shadow-thumb: 0 1px 3px rgb(0 0 0 / 0.12), 0 3px 8px rgb(0 0 0 / 0.12), 0 6px 16px rgb(0 0 0 / 0.12);
   color-scheme: dark;
 }
 

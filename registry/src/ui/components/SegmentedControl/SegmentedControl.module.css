@@ -23,15 +23,15 @@
   z-index: -1;
   border-radius: var(--gooee-radius-control);
   background: var(--gooee-color-surface-raised);
-  box-shadow: var(--gooee-shadow-2), 0 0 0 var(--gooee-line) var(--gooee-color-border);
+  box-shadow: var(--gooee-shadow-thumb), 0 0 0 var(--gooee-line) var(--gooee-color-border);
 }
 
 /* A resize slides the pill plainly. A new choice flows it (internal/liquidMatter.ts useFlow): while
    it flows the pill hides and .liquid draws it, then the pill is back in its place, exact. */
 .pill[data-ready] {
   transition:
-    transform var(--gooee-motion-slow) var(--gooee-ease-out),
-    width var(--gooee-motion-slow) var(--gooee-ease-out);
+    transform var(--gooee-motion-morph-out) var(--gooee-ease-out),
+    width var(--gooee-motion-morph-out) var(--gooee-ease-out);
 }
 
 .pill[data-flowing] {

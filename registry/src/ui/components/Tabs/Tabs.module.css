@@ -66,8 +66,8 @@
 
 .indicator[data-ready] {
   transition:
-    transform var(--gooee-motion-slow) var(--gooee-ease-out),
-    width var(--gooee-motion-slow) var(--gooee-ease-out);
+    transform var(--gooee-motion-morph-out) var(--gooee-ease-out),
+    width var(--gooee-motion-morph-out) var(--gooee-ease-out);
 }
 
 /* A new tab flows the underline instead (internal/liquidMatter.ts useFlow): .liquid draws it meanwhile. */

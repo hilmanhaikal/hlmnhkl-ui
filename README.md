@@ -89,7 +89,7 @@ Setup for other tools: [MCP server](https://gooee.dev/mcp).
 
 ## Pro
 
-76 more components (such as DataGrid, Calendar, Chart, KanbanBoard, Combobox and WeekSchedule), page blocks, full templates and brand themes are coming as Gooee UI Pro. You can see them on the [docs site](https://gooee.dev).
+80 more components (such as the AI chat parts AssistantThread and PromptBar, DataGrid, Calendar, Chart, KanbanBoard and Combobox), page blocks, full templates and brand themes are coming as Gooee UI Pro. You can see them on the [docs site](https://gooee.dev).
 
 ## Licence
 

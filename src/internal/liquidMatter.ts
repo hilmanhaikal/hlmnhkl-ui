@@ -13,21 +13,52 @@ export const morphEase = () => bezier(morphCurve())
 /** A duration token in ms, or 0 when motion is reduced. */
 export const motionFor = (token: MotionToken) => (prefersReducedMotion() ? 0 : motionMs(token))
 
-/**
- * An element's outer box shadows as drop-shadow filters, so a drawn shape casts the same shadow. A
- * shadow that is only a spread (a 1px ring) comes back as `ring`, to draw as a stroke.
- */
+type Shadow = { x: number; y: number; blur: number; colour: string }
+
+/** An element's outer box shadows. A shadow that is only a spread (a 1px ring) comes back as `ring`, to draw as a stroke. */
 export function shadowOf(el: Element) {
-  const filters: string[] = []
+  const shadows: Shadow[] = []
   let ring: { colour: string; width: number } | null = null
   for (const part of getComputedStyle(el).boxShadow.split(/,(?![^(]*\))/)) {
     if (part.trim() === 'none' || part.includes('inset')) continue
     const colour = part.match(/rgba?\([^)]*\)|#[\da-f]+/i)?.[0] ?? 'currentColor'
     const [x = 0, y = 0, blur = 0, spread = 0] = (part.replace(colour, '').match(/-?[\d.]+px/g) ?? []).map(parseFloat)
     if (spread > 0 && !x && !y && !blur) ring = { colour, width: spread }
-    else filters.push(`drop-shadow(${x}px ${y}px ${blur}px ${colour})`)
+    else shadows.push({ x, y, blur, colour })
   }
-  return { filter: filters.join(' ') || 'none', ring }
+  return { shadows, ring }
+}
+
+let filterId = 0
+
+/**
+ * Casts `shadows` from the layer's paths the way box-shadow does: each one blurred from the shape on its
+ * own, then merged. A chain of CSS drop-shadows would shadow the shadows too, so the drawing would come out
+ * darker than the part it stands in for and jump at the hand-over.
+ */
+export function castShadow(svg: SVGSVGElement, shadows: Shadow[]) {
+  if (!shadows.length) return
+  const el = (tag: string, attrs: Record<string, string | number>, parent: Element) => {
+    const node = parent.appendChild(document.createElementNS(NS, tag))
+    for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, String(v))
+    return node
+  }
+  const { width, height } = svg.getBoundingClientRect()
+  const m = Math.max(...shadows.map((s) => Math.max(Math.abs(s.x), Math.abs(s.y)) + s.blur * 1.5)) + 2
+  const id = `gooee-shadow-${++filterId}`
+  const filter = el('filter', { id, filterUnits: 'userSpaceOnUse', x: -m, y: -m, width: width + m * 2, height: height + m * 2, 'color-interpolation-filters': 'sRGB' }, el('defs', {}, svg))
+  shadows.forEach((s, i) => {
+    el('feGaussianBlur', { in: 'SourceAlpha', stdDeviation: s.blur / 2 }, filter)
+    el('feOffset', { dx: s.x, dy: s.y, result: `b${i}` }, filter)
+    el('feFlood', { 'flood-color': s.colour }, filter)
+    el('feComposite', { in2: `b${i}`, operator: 'in', result: `s${i}` }, filter)
+  })
+  // box-shadow paints its first shadow on top, so they merge last to first, under the shape.
+  const merge = el('feMerge', {}, filter)
+  for (let i = shadows.length - 1; i >= 0; i--) el('feMergeNode', { in: `s${i}` }, merge)
+  el('feMergeNode', { in: 'SourceGraphic' }, merge)
+  const g = el('g', { filter: `url(#${id})` }, svg)
+  for (const path of Array.from(svg.querySelectorAll(':scope > path'))) g.appendChild(path)
 }
 
 /** An SVG in `host`, before `before`, with `count` paths. It is marked data-gooee-liquid. */
@@ -105,7 +136,7 @@ export function useFlow(
       end()
       return
     }
-    const ms = motionFor('slow')
+    const ms = motionFor('morph-out')
     if (!ms) {
       end()
       return
@@ -122,21 +153,21 @@ export function useFlow(
     else {
       const { svg, paths } = layer(root, cls, m.nextSibling)
       const look = getComputedStyle(m)
-      const { filter, ring } = shadowOf(m)
+      const { shadows, ring } = shadowOf(m)
       paths[0].style.fill = look.backgroundColor
       if (ring && !line) {
         paths[0].style.stroke = ring.colour
         paths[0].style.strokeWidth = `${ring.width * 2}px`
         paths[0].style.paintOrder = 'stroke'
       }
-      svg.style.filter = filter
+      castShadow(svg, shadows)
       f = { front: from.front, rest: from.rest, stop: () => {}, svg, pin: pincher(e, motionFor('fast')) }
       run.current = f
       m.dataset.flowing = ''
       root.dataset.flowing = ''
     }
     const flow = f
-    const path = flow.svg.firstElementChild as SVGPathElement
+    const path = flow.svg.querySelector('path') as SVGPathElement
     const lift = Math.max(BEND + 0.5, hh / 2)
     const settle = Math.max(BEND + 0.5, hh / 3)
     const start = { front: from.front, rest: from.rest }

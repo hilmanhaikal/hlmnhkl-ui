@@ -76,7 +76,7 @@
 /* Both on and off pass 3:1 contrast */
 .track[data-on] .thumb {
   background: var(--gooee-color-accent-fg);
-  box-shadow: var(--gooee-shadow-2);
+  box-shadow: var(--gooee-shadow-thumb);
 }
 
 .track[data-on] .thumb {
