@@ -21,13 +21,13 @@ export type ThemeToggleProps = {
 }
 
 /** Put in <head>, before the page paints, so a saved dark theme never flashes light first. */
-export const themeScript = (storageKey = 'hl-theme') =>
+export const themeScript = (storageKey = 'gooee-theme') =>
   `try{var t=localStorage.getItem(${JSON.stringify(storageKey)});if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t}catch(e){}`
 
 const pageTheme = (): Theme => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
 
 // One button that flips between the light and dark theme. The sun turns into the moon and back.
-export function ThemeToggle({ theme: themeProp, onThemeChange, storageKey = 'hl-theme', size = 'sm', className }: ThemeToggleProps) {
+export function ThemeToggle({ theme: themeProp, onThemeChange, storageKey = 'gooee-theme', size = 'sm', className }: ThemeToggleProps) {
   const controlled = themeProp !== undefined
   const [own, setOwn] = useState<Theme>('light')
   const theme = controlled ? themeProp : own

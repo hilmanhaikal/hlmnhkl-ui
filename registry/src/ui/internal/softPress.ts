@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import { useEffect, useRef, type KeyboardEvent, type PointerEvent } from 'react'
 import { boxRing, clamp01, lerp, nearest, polyPath, seg, softRing, type Pt } from './liquidPath'
 import { morphEase, motionFor } from './liquidMatter'
@@ -77,8 +77,8 @@ export function useSoftPress(look: SoftLook, inert: boolean, keys: string[]) {
     const svg = document.createElementNS(NS, 'svg')
     svg.setAttribute('class', look.layer)
     svg.setAttribute('aria-hidden', 'true')
-    svg.setAttribute('data-hl-liquid', '')
-    const id = `hl-soft-${++ids}`
+    svg.setAttribute('data-gooee-liquid', '')
+    const id = `gooee-soft-${++ids}`
     const defs = svg.appendChild(document.createElementNS(NS, 'defs'))
     const grad = defs.appendChild(document.createElementNS(NS, 'radialGradient'))
     grad.id = `${id}-wet`
@@ -148,7 +148,7 @@ export function useSoftPress(look: SoftLook, inert: boolean, keys: string[]) {
     if (pullTo === 0 && s.pull < 0.01) s.pull = 0
     const ease = still ? 1 : 1 - Math.exp(-dt / (fast / 2.3))
     s.to = [s.to[0] + (s.toAim[0] - s.to[0]) * ease, s.to[1] + (s.toAim[1] - s.to[1]) * ease]
-    const depth = parseFloat(getComputedStyle(L.el).getPropertyValue('--hl-press-depth')) || 0
+    const depth = parseFloat(getComputedStyle(L.el).getPropertyValue('--gooee-press-depth')) || 0
     const p = s.press
     if (p) {
       const k = p.ms ? clamp01((now - p.t0) / p.ms) : 1

@@ -1,17 +1,17 @@
 {
-  "name": "hlmnhkl-ui-mcp",
-  "version": "0.40.0",
-  "description": "A read-only MCP server for hlmnhkl/ui: AI coding tools look up components, props and install steps.",
+  "name": "gooee-mcp",
+  "version": "0.41.0",
+  "description": "A read-only MCP server for Gooee UI: AI coding tools look up components, props and install steps.",
   "license": "MIT",
   "homepage": "https://ui.hlmnhkl.my/mcp",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hilmanhaikal/hlmnhkl-ui.git",
+    "url": "git+https://github.com/hilmanhaikal/gooee-ui.git",
     "directory": "mcp"
   },
   "type": "module",
   "bin": {
-    "hlmnhkl-ui-mcp": "index.js"
+    "gooee-mcp": "index.js"
   },
   "files": [
     "index.js",

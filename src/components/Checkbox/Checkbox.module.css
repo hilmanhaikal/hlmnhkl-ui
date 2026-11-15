@@ -1,26 +1,26 @@
 .root {
   display: flex;
   align-items: flex-start;
-  gap: var(--hl-space-4);
-  min-height: var(--hl-hit-min);
-  padding-block: var(--hl-space-4);
+  gap: var(--gooee-space-4);
+  min-height: var(--gooee-hit-min);
+  padding-block: var(--gooee-space-4);
 }
 
-.root[data-disabled] { opacity: var(--hl-disabled-opacity); }
+.root[data-disabled] { opacity: var(--gooee-disabled-opacity); }
 
 .boxWrap {
   position: relative;
   display: inline-grid;
   flex: none;
-  width: var(--hl-control-box);
-  height: var(--hl-control-box);
-  margin-top: var(--hl-space-1);
+  width: var(--gooee-control-box);
+  height: var(--gooee-control-box);
+  margin-top: var(--gooee-space-1);
 }
 
 /* The real input sits on top, invisible, with a 44px hit area. */
 .input {
   position: absolute;
-  inset: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset: min(0px, calc((100% - var(--gooee-hit-min)) / 2));
   margin: 0;
   opacity: 0;
   cursor: pointer;
@@ -35,28 +35,28 @@
   place-items: center;
   width: 100%;
   height: 100%;
-  border: var(--hl-line-thick) solid var(--hl-color-border-strong);
-  border-radius: var(--hl-radius-xs);
-  background: var(--hl-color-surface);
-  color: var(--hl-color-accent-fg);
+  border: var(--gooee-line-thick) solid var(--gooee-color-border-strong);
+  border-radius: var(--gooee-radius-xs);
+  background: var(--gooee-color-surface);
+  color: var(--gooee-color-accent-fg);
   transition:
-    border-color var(--hl-motion-fast) var(--hl-ease-out),
-    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 @media (hover: hover) {
-  .input:hover:not(:disabled) + .box { border-color: var(--hl-color-fg); }
+  .input:hover:not(:disabled) + .box { border-color: var(--gooee-color-fg); }
 }
-.input:focus-visible + .box { box-shadow: var(--hl-focus-ring); }
-.root[data-invalid] .box[data-state="off"] { border-color: var(--hl-color-danger); }
+.input:focus-visible + .box { box-shadow: var(--gooee-focus-ring); }
+.root[data-invalid] .box[data-state="off"] { border-color: var(--gooee-color-danger); }
 
 /* The checked fill covers the border too. Ink pours into it in Checkbox.tsx (internal/liquidMore.ts);
    here it only holds the end state, so reduced motion lands on it at once. */
 .fill {
   position: absolute;
-  inset: calc(var(--hl-line-thick) * -1);
-  border-radius: var(--hl-radius-xs);
-  background: var(--hl-color-accent);
+  inset: calc(var(--gooee-line-thick) * -1);
+  border-radius: var(--gooee-radius-xs);
+  background: var(--gooee-color-accent);
   clip-path: circle(0 at 50% 50%);
 }
 
@@ -74,8 +74,8 @@
 
 .mark {
   position: relative;
-  width: var(--hl-icon-sm);
-  height: var(--hl-icon-sm);
+  width: var(--gooee-icon-sm);
+  height: var(--gooee-icon-sm);
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
@@ -88,12 +88,12 @@
   /* Hidden just before the path starts. A zero-length dash would leave its round ends as a dot in Safari. */
   stroke-dasharray: 1 2;
   stroke-dashoffset: 1.01;
-  transition: stroke-dashoffset var(--hl-motion-base) var(--hl-ease-out);
+  transition: stroke-dashoffset var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 .box[data-state="on"] .tick {
   stroke-dashoffset: 0;
-  transition-delay: var(--hl-motion-instant);
+  transition-delay: var(--gooee-motion-instant);
 }
 
 .box[data-state="mixed"] .dash { stroke-dashoffset: 0; }
@@ -105,16 +105,16 @@
 }
 
 .label {
-  font-size: var(--hl-text-md);
-  line-height: var(--hl-leading-snug);
+  font-size: var(--gooee-text-md);
+  line-height: var(--gooee-leading-snug);
   cursor: pointer;
 }
 
 .root[data-disabled] .label { cursor: not-allowed; }
 
 .description {
-  margin-top: var(--hl-space-1);
-  font-size: var(--hl-text-sm);
-  color: var(--hl-color-fg-muted);
-  line-height: var(--hl-leading-snug);
+  margin-top: var(--gooee-space-1);
+  font-size: var(--gooee-text-sm);
+  color: var(--gooee-color-fg-muted);
+  line-height: var(--gooee-leading-snug);
 }

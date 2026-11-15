@@ -1,4 +1,4 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
   display: flex;
   flex-direction: column;
@@ -6,68 +6,68 @@
 }
 
 .label {
-  margin-bottom: var(--hl-space-3);
-  font-size: var(--hl-text-sm);
-  font-weight: var(--hl-weight-medium);
+  margin-bottom: var(--gooee-space-3);
+  font-size: var(--gooee-text-sm);
+  font-weight: var(--gooee-weight-medium);
 }
 
 .field {
   display: inline-flex;
   align-items: center;
   align-self: flex-start;
-  width: var(--hl-number-w);
+  width: var(--gooee-number-w);
   max-width: 100%;
-  min-height: var(--hl-hit-min);
+  min-height: var(--gooee-hit-min);
   padding: 0;
-  border: var(--hl-line) solid var(--hl-color-border-strong);
-  border-radius: var(--hl-radius-control);
-  background: var(--hl-color-surface);
+  border: var(--gooee-line) solid var(--gooee-color-border-strong);
+  border-radius: var(--gooee-radius-control);
+  background: var(--gooee-color-surface);
   transition:
-    border-color var(--hl-motion-fast) var(--hl-ease-out),
-    box-shadow var(--hl-motion-base) var(--hl-ease-out);
+    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    box-shadow var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 @media (hover: hover) {
-  .field:hover { border-color: var(--hl-color-fg-muted); }
+  .field:hover { border-color: var(--gooee-color-fg-muted); }
 }
 
 .field:focus-within {
-  border-color: var(--hl-color-fg);
-  box-shadow: 0 0 0 var(--hl-halo) var(--hl-color-surface-active);
+  border-color: var(--gooee-color-fg);
+  box-shadow: 0 0 0 var(--gooee-halo) var(--gooee-color-surface-active);
 }
 
-.field[data-invalid] { border-color: var(--hl-color-danger); border-width: var(--hl-line-thick); }
-.field[data-disabled] { opacity: 0.6; background: var(--hl-color-surface-sunken); }
+.field[data-invalid] { border-color: var(--gooee-color-danger); border-width: var(--gooee-line-thick); }
+.field[data-disabled] { opacity: 0.6; background: var(--gooee-color-surface-sunken); }
 
 .step {
   position: relative;
   display: grid;
   place-items: center;
   flex: none;
-  width: var(--hl-hit-min);
-  height: var(--hl-hit-min);
+  width: var(--gooee-hit-min);
+  height: var(--gooee-hit-min);
   padding: 0;
   border: 0;
-  border-radius: var(--hl-radius-full);
+  border-radius: var(--gooee-radius-full);
   background: transparent;
-  color: var(--hl-color-fg);
-  font-size: var(--hl-icon-md);
+  color: var(--gooee-color-fg);
+  font-size: var(--gooee-icon-md);
   cursor: pointer;
   touch-action: manipulation;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition:
-    background-color var(--hl-motion-fast) var(--hl-ease-out),
-    transform var(--hl-motion-slow) var(--hl-ease-spring);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
 }
 
 @media (hover: hover) {
-  .step:hover:not(:disabled) { background: var(--hl-color-surface-hover); }
+  .step:hover:not(:disabled) { background: var(--gooee-color-surface-hover); }
 }
-.step:active:not(:disabled) { transform: scale(var(--hl-press-scale-strong)); transition-duration: var(--hl-motion-instant); }
+.step:active:not(:disabled) { transform: scale(var(--gooee-press-scale-strong)); transition-duration: var(--gooee-motion-instant); }
 /* The press shrinks the button, so an invisible layer keeps the whole box under a mouse released at its edge. */
 .step:active:not(:disabled)::after { content: ""; position: absolute; inset: -9%; }
-.step:disabled { color: var(--hl-color-fg-disabled); cursor: not-allowed; }
+.step:disabled { color: var(--gooee-color-fg-disabled); cursor: not-allowed; }
 
 .control {
   position: relative;
@@ -85,8 +85,8 @@
   background: transparent;
   outline: none;
   text-align: center;
-  font-size: var(--hl-text-input);
-  font-weight: var(--hl-weight-medium);
+  font-size: var(--gooee-text-input);
+  font-weight: var(--gooee-weight-medium);
   font-variant-numeric: tabular-nums;
 }
 
@@ -99,7 +99,7 @@
   inset: 0;
   display: grid;
   place-items: center;
-  font-size: var(--hl-text-md);
-  font-weight: var(--hl-weight-medium);
+  font-size: var(--gooee-text-md);
+  font-weight: var(--gooee-weight-medium);
   pointer-events: none;
 }

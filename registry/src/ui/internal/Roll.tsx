@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import { useRef } from 'react'
 import styles from './Roll.module.css'
 

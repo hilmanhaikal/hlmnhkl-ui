@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import { useCallback, useLayoutEffect, useState, type CSSProperties, type RefObject } from 'react'
 
 export type Side = 'top' | 'bottom' | 'left' | 'right'

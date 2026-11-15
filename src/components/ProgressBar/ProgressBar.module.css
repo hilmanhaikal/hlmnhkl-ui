@@ -1,48 +1,48 @@
 .root {
   display: flex;
   flex-direction: column;
-  gap: var(--hl-space-3);
+  gap: var(--gooee-space-3);
   min-width: 0;
 }
 
 .head {
   display: flex;
   justify-content: space-between;
-  gap: var(--hl-space-4);
-  font-size: var(--hl-text-sm);
+  gap: var(--gooee-space-4);
+  font-size: var(--gooee-text-sm);
 }
 
-.label { font-weight: var(--hl-weight-medium); }
+.label { font-weight: var(--gooee-weight-medium); }
 
 .value {
   font-variant-numeric: tabular-nums;
-  color: var(--hl-color-fg-muted);
+  color: var(--gooee-color-fg-muted);
 }
 
 .track {
   position: relative;
-  height: var(--hl-progress-h);
+  height: var(--gooee-progress-h);
   overflow: hidden;
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface-active);
-  box-shadow: inset 0 0 0 var(--hl-line) var(--hl-color-border);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-surface-active);
+  box-shadow: inset 0 0 0 var(--gooee-line) var(--gooee-color-border);
 }
 
-.sm { height: var(--hl-progress-h-sm); }
+.sm { height: var(--gooee-progress-h-sm); }
 
 /* scaleX, not width: no layout work per frame */
 .fill {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: var(--hl-color-accent);
+  background: var(--gooee-color-accent);
   transform-origin: left center;
-  transition: transform var(--hl-motion-slower) var(--hl-ease-out);
+  transition: transform var(--gooee-motion-slower) var(--gooee-ease-out);
 }
 
 .track[data-indeterminate] .fill {
   width: 40%;
-  animation: slide var(--hl-motion-indeterminate) var(--hl-ease-in-out) infinite;
+  animation: slide var(--gooee-motion-indeterminate) var(--gooee-ease-in-out) infinite;
 }
 
 .srOnly {

@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import { useEffect, useRef, type PointerEvent, type RefObject } from 'react'
 import { morphTo, rubber, speedTracker } from './feel'
 import { morphCurve, readMotionMs } from './motion'
@@ -7,7 +7,7 @@ export { rubber, speedTracker }
 
 /**
  * A let-go: runs from `from` to `to` on the morph curve, starting at `velocity` (units per second), so
- * it carries on at the hand's speed. From rest it takes --hl-motion-morph-out: Retime slows it,
+ * it carries on at the hand's speed. From rest it takes --gooee-motion-morph-out: Retime slows it,
  * reduced motion (0ms) jumps. Returns a stop function.
  */
 export function release(from: number, to: number, velocity: number, onFrame: (value: number) => void, onDone?: () => void) {

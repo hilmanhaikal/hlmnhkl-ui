@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import { useEffect, type RefObject } from 'react'
 import { boxPath, boxRing, clamp01, lerp, polyPath, sdBox, seg, trace, type Box, type Pt, type Sdf } from './liquidPath'
 import { frames, layer, morphEase, motionFor } from './liquidMatter'
@@ -14,7 +14,7 @@ let ids = 0
 function clipOf(svg: SVGSVGElement) {
   const defs = svg.insertBefore(document.createElementNS(NS, 'defs'), svg.firstChild)
   const clip = defs.appendChild(document.createElementNS(NS, 'clipPath'))
-  clip.id = `hl-liquid-clip-${++ids}`
+  clip.id = `gooee-liquid-clip-${++ids}`
   const path = clip.appendChild(document.createElementNS(NS, 'path'))
   return { path, url: `url(#${clip.id})` }
 }
@@ -213,7 +213,7 @@ function nearestOn(cl: Ring, x: number, y: number) {
 
 /**
  * Field focus: while `target` matches `on`, it carries data-edge, which its CSS draws as the dark edge
- * (the field's focus indicator, --hl-line-focus thick).
+ * (the field's focus indicator, --gooee-line-focus thick).
  * When it starts to match, the edge first flows both ways round from where it was pressed (or from the
  * start edge for a key) and meets on the far side, then data-edge lands; when it stops mid-flow, the
  * drawing fades. The layer sits in `host` (the target itself, or a wrapper for a textarea).
@@ -241,8 +241,8 @@ export function useEdgeFlow(target: RefObject<HTMLElement | null>, host: RefObje
       const ms = motionFor('base') + motionFor('instant')
       if (!ms) return settle()
       const look = getComputedStyle(el)
-      // The settled edge is a focus indicator: --hl-line-focus thick, inside the border box.
-      const bw = parseFloat(look.getPropertyValue('--hl-line-focus')) || 2
+      // The settled edge is a focus indicator: --gooee-line-focus thick, inside the border box.
+      const bw = parseFloat(look.getPropertyValue('--gooee-line-focus')) || 2
       const r = parseFloat(look.borderTopLeftRadius) || 0
       const rect = el.getBoundingClientRect()
       let W = el.offsetWidth
@@ -256,7 +256,7 @@ export function useEdgeFlow(target: RefObject<HTMLElement | null>, host: RefObje
       pressed = null
       const { svg, paths } = layer(root, cls, null)
       const path = paths[0]
-      path.style.fill = look.getPropertyValue('--hl-flow-edge').trim() || 'currentColor'
+      path.style.fill = look.getPropertyValue('--gooee-flow-edge').trim() || 'currentColor'
       path.setAttribute('fill-rule', 'evenodd')
       path.setAttribute('data-measure', 'shape')
       const place = () => {
@@ -660,7 +660,7 @@ export function useBead(panel: RefObject<HTMLElement | null>, on: boolean, cls: 
         run.id = requestAnimationFrame(tick)
         tick(performance.now())
       }
-      if (run) run.path.style.fill = getComputedStyle(to).getPropertyValue('--hl-bead').trim()
+      if (run) run.path.style.fill = getComputedStyle(to).getPropertyValue('--gooee-bead').trim()
     }
     const focusOut = (ev: FocusEvent) => {
       if (!run || itemOf(ev.relatedTarget)) return

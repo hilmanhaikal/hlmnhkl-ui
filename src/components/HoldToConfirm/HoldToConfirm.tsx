@@ -102,7 +102,7 @@ export function HoldToConfirm({
     const measure = () => {
       const w = main.offsetWidth
       const h = main.offsetHeight
-      const inset = parseFloat(getComputedStyle(root).getPropertyValue('--hl-hold-stroke')) / 2 || 1
+      const inset = parseFloat(getComputedStyle(root).getPropertyValue('--gooee-hold-stroke')) / 2 || 1
       setSize({ w, h, step: step.offsetWidth, stepH: step.offsetHeight, room: root.clientWidth, inset })
       setPath(outline(w, h, inset, w / 2))
     }
@@ -138,7 +138,7 @@ export function HoldToConfirm({
   // Forward at an even speed: it is a clock.
   const run = () => {
     cancelAnimationFrame(raf.current)
-    const total = ms(shellRef.current, '--hl-hold-time', 1500)
+    const total = ms(shellRef.current, '--gooee-hold-time', 1500)
     let last = performance.now()
     const step = (now: number) => {
       const next = Math.min(1, p.current + (now - last) / total)

@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import type { ComponentPropsWithRef, CSSProperties, ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { space, type Space } from '../../internal/space'
@@ -9,7 +9,7 @@ export type SplitProps = ComponentPropsWithRef<'div'> & {
   sidebar: ReactNode
   /** Which side the sidebar sits on. It also comes first ("start") or last ("end") when the columns stack. */
   side?: 'start' | 'end'
-  /** Width of the sidebar, from the --hl-split-side-* tokens. */
+  /** Width of the sidebar, from the --gooee-split-side-* tokens. */
   sidebarWidth?: 'sm' | 'md' | 'lg'
   /** Space between the columns, and between them once stacked, as a step of the space scale. */
   gap?: Space
@@ -21,7 +21,7 @@ export function Split({ sidebar, side = 'start', sidebarWidth = 'md', gap = 7, s
   const hasSide = sidebar !== null && sidebar !== undefined && sidebar !== false
   const aside = hasSide && <div className={styles.side}>{sidebar}</div>
   const main = <div className={styles.main}>{children}</div>
-  const vars = { '--split-gap': space(gap), '--split-side': `var(--hl-split-side-${sidebarWidth})`, ...style } as CSSProperties
+  const vars = { '--split-gap': space(gap), '--split-side': `var(--gooee-split-side-${sidebarWidth})`, ...style } as CSSProperties
   // The outer box is the query container: an element cannot query its own width.
   return (
     <div className={cx(styles.root, className)} style={vars} {...rest}>

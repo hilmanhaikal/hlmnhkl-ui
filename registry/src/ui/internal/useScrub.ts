@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { createScrub, type ScrubOptions } from './feel'
 import { morphCurve, readMotionMs } from './motion'
@@ -134,7 +134,7 @@ export function useScrub(o: UseScrubOptions) {
 }
 
 /** A colour between two tokens by the pull, so ink fills in as a mark is drawn in. */
-export const ink = (p: number, from = 'var(--hl-color-fg-muted)', to = 'var(--hl-color-fg)') => `color-mix(in srgb, ${to} ${Math.round(p * 100)}%, ${from})`
+export const ink = (p: number, from = 'var(--gooee-color-fg-muted)', to = 'var(--gooee-color-fg)') => `color-mix(in srgb, ${to} ${Math.round(p * 100)}%, ${from})`
 
 /** A number token read from `el`, such as a px size or a share. */
 export const tokenNumber = (el: Element | null, name: string) => (el ? parseFloat(getComputedStyle(el).getPropertyValue(name)) || 0 : 0)

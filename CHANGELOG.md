@@ -1,6 +1,17 @@
 # Changelog
 
-What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
+What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
+
+## 0.41.0 · 15 Nov 2026
+
+hlmnhkl/ui is now Gooee UI, and every morph lifts off softly instead of popping.
+
+### Changed
+
+- hlmnhkl/ui is now **Gooee UI**, named after its mascot. The package is `gooee` (`npx gooee add button`), the MCP server is `gooee-mcp`, the repo is `hilmanhaikal/gooee-ui`, and the shadcn address is `hilmanhaikal/gooee-ui/<name>`. The old packages still install and point here.
+- Every token, data attribute and keyframe now starts with `gooee` instead of `hl`: `--hl-color-fg` is `--gooee-color-fg`, `data-hl-liquid` is `data-gooee-liquid`. The settings file is `gooee.json` instead of `hlmnhkl-ui.json`. To move an app: rename the file, replace `--hl-` with `--gooee-` in your own CSS, then run `npx gooee update`.
+- ThemeToggle: the default `storageKey` is `gooee-theme` instead of `hl-theme`. Pass `storageKey="hl-theme"` to keep a visitor's saved theme.
+- The morph curve, `--gooee-ease-morph`, is now `cubic-bezier(0.2, 0, 0, 1)`: a soft lift-off, then a long settle. The old curve did half of every move in its first 96 ms, so a 600 ms open felt like a 220 ms pop. Opening still takes 600 ms; closing, `--gooee-motion-morph-out`, now takes 400 ms instead of 480 ms.
 
 ## 0.40.0 · 15 Nov 2026
 

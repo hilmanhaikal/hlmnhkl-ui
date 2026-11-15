@@ -1,12 +1,12 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
   display: flex;
   flex-direction: column;
-  border-top: var(--hl-line) solid var(--hl-color-border);
+  border-top: var(--gooee-line) solid var(--gooee-color-border);
 }
 
 .item {
-  border-bottom: var(--hl-line) solid var(--hl-color-border);
+  border-bottom: var(--gooee-line) solid var(--gooee-color-border);
 }
 
 .heading {
@@ -19,31 +19,31 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--hl-space-5);
+  gap: var(--gooee-space-5);
   width: 100%;
-  min-height: var(--hl-hit-min);
-  padding: var(--hl-space-5) var(--hl-space-2);
+  min-height: var(--gooee-hit-min);
+  padding: var(--gooee-space-5) var(--gooee-space-2);
   border: 0;
-  border-radius: var(--hl-radius-sm);
+  border-radius: var(--gooee-radius-sm);
   background: transparent;
   /* Without a colour, iPhone Safari draws button text in its own blue. */
-  color: var(--hl-color-fg);
+  color: var(--gooee-color-fg);
   font-family: inherit;
-  font-size: var(--hl-text-md);
-  font-weight: var(--hl-weight-medium);
+  font-size: var(--gooee-text-md);
+  font-weight: var(--gooee-weight-medium);
   text-align: left;
   cursor: pointer;
-  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 @media (hover: hover) {
-  .trigger:hover:not(:disabled) { background: var(--hl-color-surface-hover); }
+  .trigger:hover:not(:disabled) { background: var(--gooee-color-surface-hover); }
 }
-.trigger:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
+.trigger:disabled { opacity: var(--gooee-disabled-opacity); cursor: not-allowed; }
 
 .trigger:focus-visible {
   outline: none;
-  box-shadow: inset 0 0 0 var(--hl-line-focus) var(--hl-color-fg);
+  box-shadow: inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg);
 }
 
 .title {
@@ -53,10 +53,10 @@
 
 .chevron {
   flex: none;
-  width: var(--hl-icon-md);
-  height: var(--hl-icon-md);
-  color: var(--hl-color-fg-muted);
-  transition: transform var(--hl-motion-slow) var(--hl-ease-spring);
+  width: var(--gooee-icon-md);
+  height: var(--gooee-icon-md);
+  color: var(--gooee-color-fg-muted);
+  transition: transform var(--gooee-motion-slow) var(--gooee-ease-spring);
 }
 
 .item[data-open] .chevron { transform: rotate(180deg); }
@@ -67,15 +67,15 @@
   grid-template-rows: 0fr;
   visibility: hidden;
   transition:
-    grid-template-rows var(--hl-motion-morph) var(--hl-ease-morph),
-    visibility 0s linear var(--hl-motion-morph);
+    grid-template-rows var(--gooee-motion-morph) var(--gooee-ease-morph),
+    visibility 0s linear var(--gooee-motion-morph);
 }
 
 .item[data-open] .panel {
   grid-template-rows: 1fr;
   visibility: visible;
   transition:
-    grid-template-rows var(--hl-motion-morph) var(--hl-ease-morph),
+    grid-template-rows var(--gooee-motion-morph) var(--gooee-ease-morph),
     visibility 0s;
 }
 
@@ -85,7 +85,7 @@
 }
 
 .content {
-  padding: 0 var(--hl-space-2) var(--hl-space-6);
-  color: var(--hl-color-fg-muted);
-  line-height: var(--hl-leading-normal);
+  padding: 0 var(--gooee-space-2) var(--gooee-space-6);
+  color: var(--gooee-color-fg-muted);
+  line-height: var(--gooee-leading-normal);
 }

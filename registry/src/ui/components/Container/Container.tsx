@@ -1,11 +1,11 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import type { ComponentPropsWithRef, CSSProperties } from 'react'
 import { cx } from '../../internal/cx'
 import { space, type Space } from '../../internal/space'
 import styles from './Container.module.css'
 
 export type ContainerProps = ComponentPropsWithRef<'div'> & {
-  /** Widest the content gets, from the --hl-container-* tokens. "full" never stops growing. */
+  /** Widest the content gets, from the --gooee-container-* tokens. "full" never stops growing. */
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
   /** Space on the left and right, as a step of the space scale. The notch area on a phone wins when it is wider. */
   padding?: Space

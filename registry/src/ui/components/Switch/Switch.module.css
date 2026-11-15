@@ -1,9 +1,9 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
   display: flex;
   align-items: center;
-  gap: var(--hl-space-4);
-  min-height: var(--hl-hit-min);
+  gap: var(--gooee-space-4);
+  min-height: var(--gooee-hit-min);
 }
 
 .start {
@@ -11,40 +11,40 @@
   justify-content: space-between;
 }
 
-.root[data-disabled] { opacity: var(--hl-disabled-opacity); }
+.root[data-disabled] { opacity: var(--gooee-disabled-opacity); }
 
 .track {
-  --w: var(--hl-switch-w);
-  --h: var(--hl-switch-h);
-  --pad: var(--hl-switch-pad);
+  --w: var(--gooee-switch-w);
+  --h: var(--gooee-switch-h);
+  --pad: var(--gooee-switch-pad);
   --thumb: calc(var(--h) - var(--pad) * 2);
   position: relative;
   flex: none;
   width: var(--w);
   height: var(--h);
   padding: 0;
-  border: var(--hl-line) solid var(--hl-color-border-strong);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface);
+  border: var(--gooee-line) solid var(--gooee-color-border-strong);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-surface);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+  transition: box-shadow var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 /* The on fill. Off, it is a dot hidden under the thumb; on, its edges move out to cover the track
    (border too), so the colour grows from the thumb instead of fading in. */
 .track::before {
-  --in: calc(var(--pad) + var(--hl-line));
+  --in: calc(var(--pad) + var(--gooee-line));
   content: "";
   position: absolute;
-  inset: calc(var(--hl-line) * -1);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-accent);
-  clip-path: inset(var(--in) calc(var(--w) - var(--in) - var(--thumb) + var(--hl-line) * 2) var(--in) var(--in) round var(--hl-radius-full));
-  transition: clip-path var(--hl-motion-base) var(--hl-ease-morph);
+  inset: calc(var(--gooee-line) * -1);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-accent);
+  clip-path: inset(var(--in) calc(var(--w) - var(--in) - var(--thumb) + var(--gooee-line) * 2) var(--in) var(--in) round var(--gooee-radius-full));
+  transition: clip-path var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
-.track[data-on]::before { clip-path: inset(0 round var(--hl-radius-full)); }
+.track[data-on]::before { clip-path: inset(0 round var(--gooee-radius-full)); }
 
 /* While the thumb stretches across (Switch.tsx), the fill's edge rides on it. */
 .track[data-moving]::before { clip-path: var(--fill); transition: none; }
@@ -52,32 +52,32 @@
 .track::after {
   content: "";
   position: absolute;
-  inset: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset: min(0px, calc((100% - var(--gooee-hit-min)) / 2));
 }
 
 .track:focus-visible {
   outline: none;
-  box-shadow: var(--hl-focus-ring);
+  box-shadow: var(--gooee-focus-ring);
 }
 
 .track:disabled { cursor: not-allowed; }
 
 .thumb {
   position: absolute;
-  top: calc(var(--pad) - var(--hl-line));
-  left: calc(var(--pad) - var(--hl-line));
+  top: calc(var(--pad) - var(--gooee-line));
+  left: calc(var(--pad) - var(--gooee-line));
   width: var(--thumb);
   height: var(--thumb);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-border-strong);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-border-strong);
   /* Its move is played by Switch.tsx; CSS holds the end state. */
-  transition: background-color var(--hl-motion-base) var(--hl-ease-out);
+  transition: background-color var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 /* Both on and off pass 3:1 contrast */
 .track[data-on] .thumb {
-  background: var(--hl-color-accent-fg);
-  box-shadow: var(--hl-shadow-2);
+  background: var(--gooee-color-accent-fg);
+  box-shadow: var(--gooee-shadow-2);
 }
 
 .track[data-on] .thumb {
@@ -87,12 +87,12 @@
 .text {
   display: flex;
   flex-direction: column;
-  gap: var(--hl-space-1);
+  gap: var(--gooee-space-1);
 }
 
-.label { cursor: pointer; line-height: var(--hl-leading-snug); }
+.label { cursor: pointer; line-height: var(--gooee-leading-snug); }
 
 .description {
-  font-size: var(--hl-text-sm);
-  color: var(--hl-color-fg-muted);
+  font-size: var(--gooee-text-sm);
+  color: var(--gooee-color-fg-muted);
 }

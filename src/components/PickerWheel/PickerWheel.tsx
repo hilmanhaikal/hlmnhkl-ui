@@ -100,7 +100,7 @@ function Column({ column, index, onChange, onShown, haptics }: ColumnProps) {
     },
     tap: (e, at) => {
       const r = e.currentTarget.getBoundingClientRect()
-      const tilt = (tokenNumber(e.currentTarget, '--hl-wheel-tilt') * Math.PI) / 180
+      const tilt = (tokenNumber(e.currentTarget, '--gooee-wheel-tilt') * Math.PI) / 180
       const radius = row.current / 2 / Math.tan(tilt / 2)
       const dy = e.clientY - (r.top + r.height / 2)
       if (!tilt || !radius) return null
@@ -121,7 +121,7 @@ function Column({ column, index, onChange, onShown, haptics }: ColumnProps) {
   })
 
   useLayoutEffect(() => {
-    row.current = tokenNumber(sc.ref.current, '--hl-hit-min')
+    row.current = tokenNumber(sc.ref.current, '--gooee-hit-min')
   }, [sc.ref])
 
   // The list got shorter (31 days to 30): stay on the last row instead of jumping.

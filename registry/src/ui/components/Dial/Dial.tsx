@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 'use client'
 
 import { useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type PointerEvent, type ReactNode } from 'react'
@@ -168,7 +168,7 @@ export function Dial({
   useLayoutEffect(() => {
     if (variant !== 'arc') return
     const el = sc.ref.current
-    setRim({ r: tokenNumber(el, '--hl-dial-arc-radius'), gap: tokenNumber(el, '--hl-dial-arc-gap') })
+    setRim({ r: tokenNumber(el, '--gooee-dial-arc-radius'), gap: tokenNumber(el, '--gooee-dial-arc-gap') })
   }, [variant, sc.ref])
 
   const shown = land(sc.at)
@@ -266,8 +266,8 @@ export function Dial({
                   const p = pull(sc.at - v, step * 1.2)
                   const tier = labelled.includes(v) ? 'major' : i % 2 === 0 ? 'mid' : 'minor'
                   return (
-                    <span key={v} className={styles.arcMark} style={{ transform: `rotate(${a}deg) translateY(calc(var(--hl-dial-arc-radius) * -1))` }}>
-                      <i className={styles.arcTick} data-tier={tier} style={{ background: ink(p, 'var(--hl-color-border-strong)', 'var(--hl-color-accent)'), transform: `scaleY(${1 + p * 0.7})` }} />
+                    <span key={v} className={styles.arcMark} style={{ transform: `rotate(${a}deg) translateY(calc(var(--gooee-dial-arc-radius) * -1))` }}>
+                      <i className={styles.arcTick} data-tier={tier} style={{ background: ink(p, 'var(--gooee-color-border-strong)', 'var(--gooee-color-accent)'), transform: `scaleY(${1 + p * 0.7})` }} />
                       {tier === 'major' && (
                         <span className={styles.arcNum} style={{ color: ink(p), transform: `translateX(-50%) scale(${1 + p * 0.3})` }}>
                           {markText(v)}
@@ -311,10 +311,10 @@ export function Dial({
               const major = isMajor(v)
               return (
                 <span key={v} className={styles.spoke} style={{ transform: `rotate(${at}deg)` }}>
-                  <i className={styles.tick} data-major={major || undefined} data-fine={(dense && !major) || undefined} data-strong={strongSet.has(v) || undefined} data-current={v === shown || undefined} style={{ background: ink(p, 'var(--hl-color-border-strong)', 'var(--hl-color-accent)'), transform: `scaleY(${1 + p * 0.5})` }} />
+                  <i className={styles.tick} data-major={major || undefined} data-fine={(dense && !major) || undefined} data-strong={strongSet.has(v) || undefined} data-current={v === shown || undefined} style={{ background: ink(p, 'var(--gooee-color-border-strong)', 'var(--gooee-color-accent)'), transform: `scaleY(${1 + p * 0.5})` }} />
                   {printed.includes(v) && (
                     <span className={styles.numAt} style={{ transform: `translateY(var(--num-r)) rotate(${-(at + turned)}deg)` }}>
-                      <span className={styles.num} style={{ color: ink(p), transform: `translate(-50%, -50%) scale(${1 + p * 0.45})`, fontWeight: `calc(var(--hl-weight-medium) + (var(--hl-weight-semibold) - var(--hl-weight-medium)) * ${p.toFixed(3)})` }}>
+                      <span className={styles.num} style={{ color: ink(p), transform: `translate(-50%, -50%) scale(${1 + p * 0.45})`, fontWeight: `calc(var(--gooee-weight-medium) + (var(--gooee-weight-semibold) - var(--gooee-weight-medium)) * ${p.toFixed(3)})` }}>
                         {markText(v)}
                       </span>
                     </span>

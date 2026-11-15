@@ -14,13 +14,13 @@
   display: inline-block;
   height: 1.15em;
   overflow: hidden;
-  animation: enter var(--hl-motion-slow) var(--hl-ease-out);
+  animation: enter var(--gooee-motion-slow) var(--gooee-ease-out);
 }
 
 .strip {
   display: flex;
   flex-direction: column;
-  transition: transform var(--hl-motion-slower) var(--hl-ease-spring);
+  transition: transform var(--gooee-motion-slower) var(--gooee-ease-spring);
 }
 
 .cell {
@@ -31,7 +31,7 @@
 
 .symbol {
   display: inline-block;
-  animation: enter var(--hl-motion-slow) var(--hl-ease-out);
+  animation: enter var(--gooee-motion-slow) var(--gooee-ease-out);
 }
 
 .srOnly {

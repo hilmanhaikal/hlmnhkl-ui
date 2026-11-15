@@ -53,7 +53,7 @@ Status: **done** means built, typed, in the docs site with demos, keyboard and s
 | 47 | Center | Layout | done | centres both ways or across only, min height tokens, text centring optional |
 | 48 | AspectRatio | Layout | done | holds a ratio, child fills it, img and video crop with cover |
 | 49 | VisuallyHidden | Layout | done | clip pattern, focusable variant shows on focus for skip links |
-| 50 | Retime | Motion | done | one speed for every animation: Off, Slower, Normal, Faster; sets `--hl-motion-scale`; remembers the choice; reduced motion still wins |
+| 50 | Retime | Motion | done | one speed for every animation: Off, Slower, Normal, Faster; sets `--gooee-motion-scale`; remembers the choice; reduced motion still wins |
 | 51 | Toggle | Actions | done | one button with aria-pressed, controlled or not, Button sizes, round icon-only form with aria-label, the fill pops in |
 | 52 | AlertDialog | Overlays | done | role alertdialog on Dialog's parts, focus starts on Cancel, Esc cancels, an outside tap does nothing, danger tone, docks to the bottom on phones |
 | 53 | Fieldset | Text fields | done | native fieldset and legend, description and error linked to the group, native disabled reaches every field |
@@ -62,7 +62,7 @@ Status: **done** means built, typed, in the docs site with demos, keyboard and s
 | 56 | ButtonGroup | Actions | done | joined buttons with shared borders and rounded ends, role group with a label, row or column, the focused button rises above its neighbours |
 | 57 | InputGroup | Text fields | done | a field with text, an icon or a button joined to either side, one border and focus ring, side text read with the field |
 | 58 | AvatarGroup | Data display | done | stacked Avatars, max then "+N" named "N more", the group names everyone, fans out on hover; own folder, Avatar still re-exports it |
-| 59 | CodeBlock | Data display | done | TSX, HTML, CSS and shell colouring from --hl-code-* tokens, title row, copy button, optional line numbers, keyboard-scrollable pre; the docs site uses it |
+| 59 | CodeBlock | Data display | done | TSX, HTML, CSS and shell colouring from --gooee-code-* tokens, title row, copy button, optional line numbers, keyboard-scrollable pre; the docs site uses it |
 | 60 | Fab | Actions | done | one main action in the thumb zone above the home indicator; extended label pours into the icon on scroll down; actions pour up out of it, focus moves in, Esc returns it |
 | 61 | ThemeToggle | Actions | done | sun turns into moon; sets data-theme and remembers it, or controlled; themeScript in head stops a dark flash; follows the system with no saved choice |
 | 62 | Prose | Layout | done | styles plain HTML from Markdown or a CMS for reading on a 68ch line; quotes on a soft panel; zero-weight rules so your classes win |

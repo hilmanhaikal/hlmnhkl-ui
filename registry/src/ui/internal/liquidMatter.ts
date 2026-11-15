@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import { useLayoutEffect, useRef, type RefObject } from 'react'
 import { bezier } from './feel'
 import { body, BEND, boxPath, flowScene, loopsPath, pincher, trace, type Box } from './liquidPath'
@@ -31,12 +31,12 @@ export function shadowOf(el: Element) {
   return { filter: filters.join(' ') || 'none', ring }
 }
 
-/** An SVG in `host`, before `before`, with `count` paths. It is marked data-hl-liquid. */
+/** An SVG in `host`, before `before`, with `count` paths. It is marked data-gooee-liquid. */
 export function layer(host: Element, className: string, before: Node | null, count = 1) {
   const svg = document.createElementNS(NS, 'svg')
   svg.setAttribute('class', className)
   svg.setAttribute('aria-hidden', 'true')
-  svg.setAttribute('data-hl-liquid', '')
+  svg.setAttribute('data-gooee-liquid', '')
   const paths = Array.from({ length: count }, () => svg.appendChild(document.createElementNS(NS, 'path')))
   host.insertBefore(svg, before)
   return { svg, paths }

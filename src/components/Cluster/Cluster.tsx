@@ -4,7 +4,7 @@ import { space, type Space } from '../../internal/space'
 import styles from './Cluster.module.css'
 
 export type ClusterProps = ComponentPropsWithRef<'div'> & {
-  /** Space between items, as a step of the space scale (0 to 12, read as --hl-space-N). */
+  /** Space between items, as a step of the space scale (0 to 12, read as --gooee-space-N). */
   gap?: Space
   /** Space between wrapped rows. Defaults to the same step as gap. */
   rowGap?: Space

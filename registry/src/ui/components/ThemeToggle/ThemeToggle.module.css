@@ -1,4 +1,4 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 /* The sun and the moon share one spot: the one for the other theme turns away and shrinks as the
    current one turns in. */
 .icon {
@@ -13,8 +13,8 @@
   width: 100%;
   height: 100%;
   transition:
-    transform var(--hl-motion-slower) var(--hl-ease-spring),
-    opacity var(--hl-motion-base) var(--hl-ease-out);
+    transform var(--gooee-motion-slower) var(--gooee-ease-spring),
+    opacity var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 /* Shows the theme the button switches to: the moon in light, the sun in dark. */

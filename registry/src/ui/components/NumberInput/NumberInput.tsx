@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 'use client'
 
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
@@ -153,9 +153,9 @@ export function NumberInput({
       if (v !== null && (dir > 0 ? v >= max : v <= min)) return stopHold()
       hold.current.count++
       bump(dir, hold.current.count > 12 ? step * 5 : step)
-      hold.current.timer = window.setTimeout(tick, tokenMs('--hl-motion-repeat', 70))
+      hold.current.timer = window.setTimeout(tick, tokenMs('--gooee-motion-repeat', 70))
     }
-    hold.current.timer = window.setTimeout(tick, tokenMs('--hl-motion-repeat-delay', 400))
+    hold.current.timer = window.setTimeout(tick, tokenMs('--gooee-motion-repeat-delay', 400))
   }
   useEffect(() => stopHold, [])
 

@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import type { ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { CopyButton } from '../CopyButton'

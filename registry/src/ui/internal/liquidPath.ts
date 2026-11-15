@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 // Liquid matter: the shapes behind Button, Switch, SegmentedControl, Tabs and Toast while they move.
 // Each frame is a signed distance field (rounded boxes and circles) whose zero line is walked into an
 // SVG path. Two bodies join through concave arcs of a fixed radius, so the outline never bends tighter

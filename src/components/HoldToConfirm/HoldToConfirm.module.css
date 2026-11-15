@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--hl-space-3);
+  gap: var(--gooee-space-3);
   min-width: 0;
 }
 
@@ -11,45 +11,45 @@
   display: flex;
   align-items: center;
   max-width: 100%;
-  height: var(--hl-control-h-lg);
+  height: var(--gooee-control-h-lg);
   overflow: hidden;
-  border-radius: calc(var(--hl-control-h-lg) / 2);
-  background: var(--hl-color-surface);
-  box-shadow: inset 0 0 0 var(--hl-line-thick) var(--hl-color-border-strong);
+  border-radius: calc(var(--gooee-control-h-lg) / 2);
+  background: var(--gooee-color-surface);
+  box-shadow: inset 0 0 0 var(--gooee-line-thick) var(--gooee-color-border-strong);
   transition:
-    width var(--hl-motion-morph-out) var(--hl-ease-morph),
-    height var(--hl-motion-morph-out) var(--hl-ease-morph),
-    border-radius var(--hl-motion-morph-out) var(--hl-ease-morph),
-    box-shadow var(--hl-motion-fast) var(--hl-ease-morph);
+    width var(--gooee-motion-morph-out) var(--gooee-ease-morph),
+    height var(--gooee-motion-morph-out) var(--gooee-ease-morph),
+    border-radius var(--gooee-motion-morph-out) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 /* The pill grows into its confirm step on the morph curve, and folds back a little quicker. */
 .shell[data-phase="step"] {
   transition:
-    width var(--hl-motion-morph) var(--hl-ease-morph),
-    height var(--hl-motion-morph) var(--hl-ease-morph),
-    border-radius var(--hl-motion-morph) var(--hl-ease-morph),
-    box-shadow var(--hl-motion-fast) var(--hl-ease-morph);
+    width var(--gooee-motion-morph) var(--gooee-ease-morph),
+    height var(--gooee-motion-morph) var(--gooee-ease-morph),
+    border-radius var(--gooee-motion-morph) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 .shell:has(.main:focus-visible) {
-  box-shadow: inset 0 0 0 var(--hl-line-thick) var(--hl-color-border-strong), var(--hl-focus-ring);
+  box-shadow: inset 0 0 0 var(--gooee-line-thick) var(--gooee-color-border-strong), var(--gooee-focus-ring);
 }
 
-.shell[data-phase="done"] { box-shadow: inset 0 0 0 var(--hl-hold-stroke) var(--hl-color-fg); }
-.shell[data-disabled] { opacity: var(--hl-disabled-opacity); }
+.shell[data-phase="done"] { box-shadow: inset 0 0 0 var(--gooee-hold-stroke) var(--gooee-color-fg); }
+.shell[data-disabled] { opacity: var(--gooee-disabled-opacity); }
 
 .main {
   position: relative;
   flex: none;
   height: 100%;
-  padding: 0 var(--hl-space-7);
+  padding: 0 var(--gooee-space-7);
   border: 0;
-  border-radius: var(--hl-radius-full);
+  border-radius: var(--gooee-radius-full);
   background: transparent;
-  color: var(--hl-color-fg);
+  color: var(--gooee-color-fg);
   font: inherit;
-  font-weight: var(--hl-weight-medium);
+  font-weight: var(--gooee-weight-medium);
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
@@ -69,9 +69,9 @@
   align-items: flex-start;
 }
 
-.shell[data-stack][data-phase="step"] { border-radius: var(--hl-radius-panel); }
-.shell[data-stack] .main { height: var(--hl-control-h-lg); }
-.shell[data-stack] .step { padding: 0 var(--hl-space-2) var(--hl-space-2); }
+.shell[data-stack][data-phase="step"] { border-radius: var(--gooee-radius-panel); }
+.shell[data-stack] .main { height: var(--gooee-control-h-lg); }
+.shell[data-stack] .step { padding: 0 var(--gooee-space-2) var(--gooee-space-2); }
 
 .faces { display: grid; }
 
@@ -80,13 +80,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--hl-space-3);
-  transition: opacity var(--hl-motion-fast) var(--hl-ease-out);
+  gap: var(--gooee-space-3);
+  transition: opacity var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 .face svg {
-  width: var(--hl-icon-md);
-  height: var(--hl-icon-md);
+  width: var(--gooee-icon-md);
+  height: var(--gooee-icon-md);
 }
 
 .face[data-face="done"],
@@ -102,8 +102,8 @@
 
 .run {
   fill: none;
-  stroke: var(--hl-color-fg);
-  stroke-width: var(--hl-hold-stroke);
+  stroke: var(--gooee-color-fg);
+  stroke-width: var(--gooee-hold-stroke);
   stroke-dasharray: 0 1;
   opacity: 0;
 }
@@ -112,57 +112,57 @@
   display: flex;
   flex: none;
   align-items: center;
-  gap: var(--hl-space-2);
-  padding-right: var(--hl-space-1);
+  gap: var(--gooee-space-2);
+  padding-right: var(--gooee-space-1);
 }
 
 .step[inert] {
   visibility: hidden;
-  transition: visibility 0s linear var(--hl-motion-morph-out);
+  transition: visibility 0s linear var(--gooee-motion-morph-out);
 }
 
 .cancel,
 .confirm {
-  height: var(--hl-hit-min);
-  padding: 0 var(--hl-space-5);
+  height: var(--gooee-hit-min);
+  padding: 0 var(--gooee-space-5);
   border: 0;
-  border-radius: var(--hl-radius-full);
+  border-radius: var(--gooee-radius-full);
   font: inherit;
-  font-weight: var(--hl-weight-medium);
+  font-weight: var(--gooee-weight-medium);
   white-space: nowrap;
   cursor: pointer;
   outline: none;
-  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 .cancel {
   background: transparent;
-  color: var(--hl-color-fg);
+  color: var(--gooee-color-fg);
 }
 
 .confirm {
-  background: var(--hl-color-danger-solid);
-  color: var(--hl-color-on-danger);
+  background: var(--gooee-color-danger-solid);
+  color: var(--gooee-color-on-danger);
 }
 
 @media (hover: hover) {
-  .cancel:hover { background: var(--hl-color-surface-hover); }
-  .confirm:hover { background: var(--hl-color-danger-solid-hover); }
+  .cancel:hover { background: var(--gooee-color-surface-hover); }
+  .confirm:hover { background: var(--gooee-color-danger-solid-hover); }
 }
 
 .cancel:focus-visible,
 .confirm:focus-visible {
   box-shadow:
-    inset 0 0 0 var(--hl-line-focus) var(--hl-color-fg),
-    inset 0 0 0 calc(var(--hl-line-focus) * 2) var(--hl-color-surface);
+    inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg),
+    inset 0 0 0 calc(var(--gooee-line-focus) * 2) var(--gooee-color-surface);
 }
 
 .hint {
-  min-height: calc(var(--hl-text-sm) * var(--hl-leading-snug) * 2);
+  min-height: calc(var(--gooee-text-sm) * var(--gooee-leading-snug) * 2);
   margin: 0;
-  color: var(--hl-color-fg-muted);
-  font-size: var(--hl-text-sm);
-  line-height: var(--hl-leading-snug);
+  color: var(--gooee-color-fg-muted);
+  font-size: var(--gooee-text-sm);
+  line-height: var(--gooee-leading-snug);
 }
 
 .srOnly {

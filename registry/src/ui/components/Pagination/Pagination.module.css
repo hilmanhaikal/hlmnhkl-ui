@@ -1,8 +1,8 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
   display: flex;
   align-items: center;
-  gap: var(--hl-space-2);
+  gap: var(--gooee-space-2);
   max-width: 100%;
   min-width: 0;
 }
@@ -13,10 +13,10 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--hl-space-1);
+  gap: var(--gooee-space-1);
   min-width: 0;
-  margin: calc(var(--hl-space-2) * -1);
-  padding: var(--hl-space-2);
+  margin: calc(var(--gooee-space-2) * -1);
+  padding: var(--gooee-space-2);
   list-style: none;
   isolation: isolate;
   overflow-x: auto;
@@ -30,18 +30,18 @@
 
 .pill {
   position: absolute;
-  top: var(--hl-space-2);
+  top: var(--gooee-space-2);
   left: 0;
-  height: var(--hl-hit-min);
+  height: var(--gooee-hit-min);
   z-index: -1;
-  border-radius: var(--hl-radius-md);
-  background: var(--hl-color-accent);
+  border-radius: var(--gooee-radius-md);
+  background: var(--gooee-color-accent);
 }
 
 .pill[data-ready] {
   transition:
-    transform var(--hl-motion-slow) var(--hl-ease-out),
-    width var(--hl-motion-slow) var(--hl-ease-out);
+    transform var(--gooee-motion-slow) var(--gooee-ease-out),
+    width var(--gooee-motion-slow) var(--gooee-ease-out);
 }
 
 .btn {
@@ -49,41 +49,41 @@
   display: grid;
   place-items: center;
   flex: none;
-  min-width: var(--hl-hit-min);
-  height: var(--hl-hit-min);
-  padding: 0 var(--hl-space-3);
+  min-width: var(--gooee-hit-min);
+  height: var(--gooee-hit-min);
+  padding: 0 var(--gooee-space-3);
   border: 0;
-  border-radius: var(--hl-radius-md);
+  border-radius: var(--gooee-radius-md);
   background: transparent;
   color: inherit;
   font: inherit;
-  font-size: var(--hl-text-sm);
+  font-size: var(--gooee-text-sm);
   font-variant-numeric: tabular-nums;
-  font-weight: var(--hl-weight-medium);
+  font-weight: var(--gooee-weight-medium);
   cursor: pointer;
   transition:
-    color var(--hl-motion-base) var(--hl-ease-out),
-    background-color var(--hl-motion-fast) var(--hl-ease-out),
-    transform var(--hl-motion-slow) var(--hl-ease-spring);
+    color var(--gooee-motion-base) var(--gooee-ease-out),
+    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
 }
 
 @media (hover: hover) {
-  .btn:hover:not(:disabled):not([aria-current]) { background: var(--hl-color-surface-hover); }
+  .btn:hover:not(:disabled):not([aria-current]) { background: var(--gooee-color-surface-hover); }
 }
-.btn:active:not(:disabled) { transform: scale(var(--hl-press-scale-strong)); }
+.btn:active:not(:disabled) { transform: scale(var(--gooee-press-scale-strong)); }
 /* The press shrinks the button, so an invisible layer keeps the whole box under a mouse released at its edge. */
 .btn:active:not(:disabled)::after { content: ""; position: absolute; inset: -9%; }
-.btn[aria-current="page"] { color: var(--hl-color-accent-fg); }
-.btn:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
-.btn:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+.btn[aria-current="page"] { color: var(--gooee-color-accent-fg); }
+.btn:disabled { opacity: var(--gooee-disabled-opacity); cursor: not-allowed; }
+.btn:focus-visible { outline: none; box-shadow: var(--gooee-focus-ring); }
 
 .edge {
-  font-size: var(--hl-icon-md);
-  border: var(--hl-line) solid var(--hl-color-border);
+  font-size: var(--gooee-icon-md);
+  border: var(--gooee-line) solid var(--gooee-color-border);
 }
 
 .gap {
-  min-width: var(--hl-space-7);
+  min-width: var(--gooee-space-7);
   text-align: center;
-  color: var(--hl-color-fg-muted);
+  color: var(--gooee-color-fg-muted);
 }

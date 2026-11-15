@@ -110,7 +110,7 @@ export function Switch({
         const p = Math.min(1, Math.max(0, ((live.a + live.b) / 2 - offX - size / 2) / (onX - offX)))
         const side = (pad + line) * (1 - p)
         const right = outer - live.b - line + line * (1 - p) - pad * p
-        track.style.setProperty('--fill', `inset(${side}px ${Math.max(0, right)}px ${side}px ${side}px round var(--hl-radius-full))`)
+        track.style.setProperty('--fill', `inset(${side}px ${Math.max(0, right)}px ${side}px ${side}px round var(--gooee-radius-full))`)
       },
       end,
     )

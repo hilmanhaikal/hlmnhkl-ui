@@ -8,7 +8,7 @@ export type GridProps = ComponentPropsWithRef<'div'> & {
   columns?: number
   /** Narrowest a cell may get before a column drops: a token size or any CSS length. Defaults to "md" when columns is not set. */
   min?: 'xs' | 'sm' | 'md' | 'lg' | (string & {})
-  /** Space between cells, as a step of the space scale (0 to 12, read as --hl-space-N). */
+  /** Space between cells, as a step of the space scale (0 to 12, read as --gooee-space-N). */
   gap?: Space
   /** Element to render, so a set of cards can be a list. */
   as?: 'div' | 'section' | 'ul' | 'ol'
@@ -27,7 +27,7 @@ export function Grid({ columns, min, gap = 5, as = 'div', steps = 'all', classNa
     '--grid-gap': space(gap),
     '--grid-cols': columns,
     '--grid-half': columns ? Math.max(1, Math.floor(columns / 2)) : undefined,
-    '--grid-min': tokenSizes.includes(minValue) ? `var(--hl-grid-min-${minValue})` : minValue,
+    '--grid-min': tokenSizes.includes(minValue) ? `var(--gooee-grid-min-${minValue})` : minValue,
     ...style,
   } as CSSProperties
   const fitClass = !columns ? styles.fit : steps === 'halves' ? styles.halves : styles.capped

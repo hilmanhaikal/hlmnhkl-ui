@@ -1,49 +1,49 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
-  --s: var(--hl-control-h-md);
+  --s: var(--gooee-control-h-md);
   position: relative;
   display: inline-flex;
   width: fit-content;
   align-items: center;
   justify-content: center;
-  gap: var(--hl-space-3);
+  gap: var(--gooee-space-3);
   min-width: var(--s);
   height: var(--s);
   padding: 0;
-  border: var(--hl-line) solid var(--hl-color-border);
-  border-radius: var(--hl-radius-control);
-  background: var(--hl-color-surface);
-  color: var(--hl-color-fg);
-  font-size: var(--hl-text-sm);
-  font-weight: var(--hl-weight-medium);
+  border: var(--gooee-line) solid var(--gooee-color-border);
+  border-radius: var(--gooee-radius-control);
+  background: var(--gooee-color-surface);
+  color: var(--gooee-color-fg);
+  font-size: var(--gooee-text-sm);
+  font-weight: var(--gooee-weight-medium);
   cursor: pointer;
   transition:
-    background-color var(--hl-motion-fast) var(--hl-ease-out),
-    border-color var(--hl-motion-base) var(--hl-ease-out);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    border-color var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 .root::after {
   content: "";
   position: absolute;
-  inset: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset: min(0px, calc((100% - var(--gooee-hit-min)) / 2));
 }
 
-.sm { --s: var(--hl-control-h-sm); }
-.withLabel { padding: 0 var(--hl-space-5) 0 var(--hl-space-4); }
+.sm { --s: var(--gooee-control-h-sm); }
+.withLabel { padding: 0 var(--gooee-space-5) 0 var(--gooee-space-4); }
 
 @media (hover: hover) {
-  .root:hover { background: var(--hl-color-surface-hover); }
+  .root:hover { background: var(--gooee-color-surface-hover); }
 }
-.root:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
-.root[data-copied] { border-color: var(--hl-color-fg); }
-.root[data-failed] { border-color: var(--hl-color-danger); color: var(--hl-color-danger); }
+.root:focus-visible { outline: none; box-shadow: var(--gooee-focus-ring); }
+.root[data-copied] { border-color: var(--gooee-color-fg); }
+.root[data-failed] { border-color: var(--gooee-color-danger); color: var(--gooee-color-danger); }
 
 /* With a label, CopyButton.tsx sets --cap-shift so the icon sits on the middle of the capitals. */
 .icons {
   position: relative;
   display: grid;
-  width: var(--hl-icon-md);
-  height: var(--hl-icon-md);
+  width: var(--gooee-icon-md);
+  height: var(--gooee-icon-md);
   translate: 0 var(--cap-shift, 0px);
 }
 
@@ -70,8 +70,8 @@
 .fail,
 .root[data-failed] .copy {
   transition:
-    opacity var(--hl-motion-fast) var(--hl-ease-out),
-    transform var(--hl-motion-slow) var(--hl-ease-spring);
+    opacity var(--gooee-motion-fast) var(--gooee-ease-out),
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
 }
 
 .check {
@@ -103,8 +103,8 @@
 .labelFailed {
   grid-area: 1 / 1;
   transition:
-    transform var(--hl-motion-slow) var(--hl-ease-spring),
-    opacity var(--hl-motion-base) var(--hl-ease-out);
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring),
+    opacity var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 .labelDone { transform: translateY(100%); opacity: 0; }

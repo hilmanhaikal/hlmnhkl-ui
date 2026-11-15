@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 'use client'
 
 import { useCallback, useEffect, useLayoutEffect, useRef, type CSSProperties, type PointerEvent, type ReactNode } from 'react'
@@ -48,7 +48,7 @@ export function ScrollArea({ label, maxHeight, orientation = 'vertical', classNa
       if (!overflow) return
       const pad = parseFloat(getComputedStyle(track).paddingTop) || 0
       const trackLen = (axis === 'y' ? track.clientHeight : track.clientWidth) - pad * 2
-      const minThumb = parseFloat(getComputedStyle(root).getPropertyValue('--hl-scrollbar-min')) || 24
+      const minThumb = parseFloat(getComputedStyle(root).getPropertyValue('--gooee-scrollbar-min')) || 24
       const len = Math.max(minThumb, (size / full) * trackLen)
       const offset = (pos / (full - size)) * (trackLen - len)
       if (axis === 'y') {

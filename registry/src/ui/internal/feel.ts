@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 // Feel: how a value moves under the hand. A drag follows the hand one to one; a let-go coasts a capped
 // distance and lands on the morph curve, starting at the hand's speed. Plain TypeScript with no
 // framework and no styling, so it can stand on its own. Every time is passed in, so a duration of 0
@@ -7,8 +7,8 @@
 /** A cubic-bezier's four numbers. */
 export type Curve = [number, number, number, number]
 
-/** The numbers of --hl-ease-morph, for when the token cannot be read. */
-export const MORPH: Curve = [0.32, 0.72, 0, 1]
+/** The numbers of --gooee-ease-morph, for when the token cannot be read. */
+export const MORPH: Curve = [0.2, 0, 0, 1]
 
 export const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
 

@@ -1,6 +1,6 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 // A small tokenizer for TSX, HTML, CSS and shell: enough to colour short examples. It only splits the
-// text; CodeBlock gives each kind its --hl-code-* colour.
+// text; CodeBlock gives each kind its --gooee-code-* colour.
 
 export type CodeLanguage = 'tsx' | 'html' | 'css' | 'shell'
 

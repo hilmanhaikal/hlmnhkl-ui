@@ -1,10 +1,10 @@
-# hlmnhkl/ui
+# Gooee UI
 
 React components where every part grows from the spot you touch. A button becomes its panel, a pill becomes a card, a card becomes its page: the edges move and the words stay still. Black, white and grey with one blue accent, and copied into your app so the code is yours.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-dark-0.37.png">
-  <img alt="The hlmnhkl/ui homepage: the line 'Every part grows from the spot you touch.', with Gooee, the mascot, as the o in grows, beside a Get started button that has poured open into a card with three ways to start." src="https://raw.githubusercontent.com/hilmanhaikal/hlmnhkl-ui/main/.github/assets/home-light-0.37.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hilmanhaikal/gooee-ui/main/.github/assets/home-dark-0.37.png">
+  <img alt="The Gooee UI homepage: the line 'Every part grows from the spot you touch.', with Gooee, the mascot, as the o in grows, beside a Get started button that has poured open into a card with three ways to start." src="https://raw.githubusercontent.com/hilmanhaikal/gooee-ui/main/.github/assets/home-light-0.37.png">
 </picture>
 
 **[Docs](https://ui.hlmnhkl.my)** · [Installation](https://ui.hlmnhkl.my/installation) · [Components](https://ui.hlmnhkl.my/components) · [What's new](https://ui.hlmnhkl.my/changelog)
@@ -18,11 +18,11 @@ Meet [Gooee](https://ui.hlmnhkl.my/gooee), the mascot: a drop of the same goo th
 From your app's folder, set it up once, then copy the components you need:
 
 ```sh
-npx hlmnhkl-ui@latest init
-npx hlmnhkl-ui@latest add button dialog
+npx gooee@latest init
+npx gooee@latest add button dialog
 ```
 
-Also `pnpm dlx`, `yarn dlx` (Yarn 2 and up) or `bunx`. `init` adds `tokens.css` and `base.css` to `src/ui` (or `--to <folder>`) and remembers the folder in `hlmnhkl-ui.json`. `add` also copies the components they use (Button needs Spinner) and the shared files.
+Also `pnpm dlx`, `yarn dlx` (Yarn 2 and up) or `bunx`. `init` adds `tokens.css` and `base.css` to `src/ui` (or `--to <folder>`) and remembers the folder in `gooee.json`. `add` also copies the components they use (Button needs Spinner) and the shared files.
 
 Then import the styles once at your app root, and use a component:
 
@@ -41,14 +41,14 @@ Using Next.js or React Router? The [installation guide](https://ui.hlmnhkl.my/in
 The free components are also a shadcn registry, so the shadcn CLI can add them. No Tailwind and no `components.json` are needed:
 
 ```sh
-npx shadcn@latest add hilmanhaikal/hlmnhkl-ui/button
+npx shadcn@latest add hilmanhaikal/gooee-ui/button
 ```
 
-It writes the same files as `npx hlmnhkl-ui add button`, into `src/ui`, with `tokens.css`, `base.css` and `hlmnhkl-ui.json`. So `npx hlmnhkl-ui diff` and `update` work on them later. Import the two style files once, as above. (`--dry-run` asks for a `components.json`; a real `add` does not.)
+It writes the same files as `npx gooee add button`, into `src/ui`, with `tokens.css`, `base.css` and `gooee.json`. So `npx gooee diff` and `update` work on them later. Import the two style files once, as above. (`--dry-run` asks for a `components.json`; a real `add` does not.)
 
 | Command | What it does |
 | --- | --- |
-| `init` | Set a project up: `tokens.css`, `base.css` and `hlmnhkl-ui.json` |
+| `init` | Set a project up: `tokens.css`, `base.css` and `gooee.json` |
 | `add <name>...` | Copy components, with what they import |
 | `list` | Show everything there is, free and Pro. `--kind blocks` filters |
 | `diff <name>...` | Show what changed between your copy and the latest version |
@@ -56,22 +56,22 @@ It writes the same files as `npx hlmnhkl-ui add button`, into `src/ui`, with `to
 
 | Option | What it does |
 | --- | --- |
-| `--to <folder>` | Where the files go. Default: the folder in `hlmnhkl-ui.json`, else `src/ui` |
+| `--to <folder>` | Where the files go. Default: the folder in `gooee.json`, else `src/ui` |
 | `--dry-run` | Print what would happen, write nothing |
 | `--overwrite` | `add`: replace files that are already there. Without it, they are skipped and listed |
 | `--with-base` | `add`: also copy `base.css` (`init` always does) |
 | `--yes` | `update`: replace without asking |
 
-Every copied file starts with one line naming hlmnhkl/ui and the MIT licence, so the licence notice travels with the code. `diff` and `update` ignore that line.
+Every copied file starts with one line naming Gooee UI and the MIT licence, so the licence notice travels with the code. `diff` and `update` ignore that line.
 
 `add`, `diff` and `update` never change your `tokens.css`. If the latest one has tokens yours lacks, they list them after the result, with the lines to copy.
 
 **With an AI assistant:** point it at [llms.txt](https://ui.hlmnhkl.my/llms.txt) (every component and the rules) or [llms-full.txt](https://ui.hlmnhkl.my/llms-full.txt) (props, keyboard notes and an example for each free component). There is also a [registry.json](https://ui.hlmnhkl.my/registry.json).
 
-**MCP server:** let Claude Code, Cursor, VS Code or any MCP tool look up components, props and install steps. It only reads, runs on your computer and collects nothing. It is its own small package, `hlmnhkl-ui-mcp`, so `add` never downloads it. In Claude Code:
+**MCP server:** let Claude Code, Cursor, VS Code or any MCP tool look up components, props and install steps. It only reads, runs on your computer and collects nothing. It is its own small package, `gooee-mcp`, so `add` never downloads it. In Claude Code:
 
 ```sh
-claude mcp add hlmnhkl-ui -- npx -y hlmnhkl-ui-mcp@latest
+claude mcp add gooee -- npx -y gooee-mcp@latest
 ```
 
 Setup for other tools: [MCP server](https://ui.hlmnhkl.my/mcp).
@@ -89,11 +89,11 @@ Setup for other tools: [MCP server](https://ui.hlmnhkl.my/mcp).
 
 ## Pro
 
-76 more components (such as DataGrid, Calendar, Chart, KanbanBoard, Combobox and WeekSchedule), page blocks, full templates and brand themes are coming as hlmnhkl/ui Pro. You can see them on the [docs site](https://ui.hlmnhkl.my).
+76 more components (such as DataGrid, Calendar, Chart, KanbanBoard, Combobox and WeekSchedule), page blocks, full templates and brand themes are coming as Gooee UI Pro. You can see them on the [docs site](https://ui.hlmnhkl.my).
 
 ## Licence
 
-The free components, tokens and scripts in this repo are [MIT](LICENSE): use them in any project, free or paid. Pro is not MIT. The MIT licence covers the code, not the hlmnhkl/ui name or logo.
+The free components, tokens and scripts in this repo are [MIT](LICENSE): use them in any project, free or paid. Pro is not MIT. The MIT licence covers the code, not the Gooee UI name or logo.
 
 ## Working on it
 

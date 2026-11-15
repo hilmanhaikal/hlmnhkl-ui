@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 'use client'
 
 import { createContext, useContext, useId, useRef, type KeyboardEvent, type ReactNode } from 'react'

@@ -8,7 +8,7 @@
 - [ ] No new package, no install script, nothing in `.github/` or `scripts/`
 - [ ] `npm run typecheck` passes
 - [ ] Works with the keyboard, and with `prefers-reduced-motion: reduce`
-- [ ] Tokens only (`--hl-*`), no raw colours, sizes or times
+- [ ] Tokens only (`--gooee-*`), no raw colours, sizes or times
 - [ ] A screenshot or short recording, on a phone and a desktop
 
 By opening this pull request, I agree my change is shared under the MIT licence of this repo.

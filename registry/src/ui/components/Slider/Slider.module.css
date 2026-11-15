@@ -1,35 +1,35 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
   display: flex;
   flex-direction: column;
-  gap: var(--hl-space-2);
+  gap: var(--gooee-space-2);
   min-width: 0;
 }
 
-.root[data-disabled] { opacity: var(--hl-disabled-opacity); }
+.root[data-disabled] { opacity: var(--gooee-disabled-opacity); }
 
 .head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: var(--hl-space-4);
+  gap: var(--gooee-space-4);
 }
 
 .label {
-  font-size: var(--hl-text-sm);
-  font-weight: var(--hl-weight-medium);
+  font-size: var(--gooee-text-sm);
+  font-weight: var(--gooee-weight-medium);
 }
 
 .value {
-  font-size: var(--hl-text-sm);
+  font-size: var(--gooee-text-sm);
   font-variant-numeric: tabular-nums;
-  color: var(--hl-color-fg-muted);
+  color: var(--gooee-color-fg-muted);
 }
 
 .trackWrap {
-  --thumb: var(--hl-control-box);
+  --thumb: var(--gooee-control-box);
   position: relative;
-  height: var(--hl-hit-min);
+  height: var(--gooee-hit-min);
   display: flex;
   align-items: center;
 }
@@ -37,7 +37,7 @@
 /* Native range input, for keyboard, touch and screen reader support */
 .input {
   width: 100%;
-  height: var(--hl-hit-min);
+  height: var(--gooee-hit-min);
   margin: 0;
   background: transparent;
   cursor: pointer;
@@ -49,49 +49,49 @@
 .input:focus { outline: none; }
 
 .input::-webkit-slider-runnable-track {
-  height: var(--hl-track-h);
-  border-radius: var(--hl-radius-full);
-  background: linear-gradient(to right, var(--hl-color-accent) var(--pct), var(--hl-color-surface-active) var(--pct));
-  box-shadow: inset 0 0 0 var(--hl-line) var(--hl-color-border);
+  height: var(--gooee-track-h);
+  border-radius: var(--gooee-radius-full);
+  background: linear-gradient(to right, var(--gooee-color-accent) var(--pct), var(--gooee-color-surface-active) var(--pct));
+  box-shadow: inset 0 0 0 var(--gooee-line) var(--gooee-color-border);
 }
 
 .input::-moz-range-track {
-  height: var(--hl-track-h);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface-active);
+  height: var(--gooee-track-h);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-surface-active);
 }
 
 .input::-moz-range-progress {
-  height: var(--hl-track-h);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-accent);
+  height: var(--gooee-track-h);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-accent);
 }
 
 .input::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: var(--thumb);
   height: var(--thumb);
-  margin-top: calc((var(--hl-track-h) - var(--thumb)) / 2);
-  border: var(--hl-line-thick) solid var(--hl-color-accent);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface-raised);
-  box-shadow: var(--hl-shadow-2);
+  margin-top: calc((var(--gooee-track-h) - var(--thumb)) / 2);
+  border: var(--gooee-line-thick) solid var(--gooee-color-accent);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-surface-raised);
+  box-shadow: var(--gooee-shadow-2);
   transition:
-    transform var(--hl-motion-slow) var(--hl-ease-spring),
-    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 .input::-moz-range-thumb {
   width: var(--thumb);
   height: var(--thumb);
   box-sizing: border-box;
-  border: var(--hl-line-thick) solid var(--hl-color-accent);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface-raised);
-  box-shadow: var(--hl-shadow-2);
+  border: var(--gooee-line-thick) solid var(--gooee-color-accent);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-surface-raised);
+  box-shadow: var(--gooee-shadow-2);
   transition:
-    transform var(--hl-motion-slow) var(--hl-ease-spring),
-    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 @media (hover: hover) {
@@ -100,27 +100,27 @@
 }
 .input:active:not(:disabled)::-webkit-slider-thumb { transform: scale(1.25); }
 .input:active:not(:disabled)::-moz-range-thumb { transform: scale(1.25); }
-.input:focus-visible::-webkit-slider-thumb { box-shadow: var(--hl-focus-ring); }
-.input:focus-visible::-moz-range-thumb { box-shadow: var(--hl-focus-ring); }
+.input:focus-visible::-webkit-slider-thumb { box-shadow: var(--gooee-focus-ring); }
+.input:focus-visible::-moz-range-thumb { box-shadow: var(--gooee-focus-ring); }
 
 .bubble {
   position: absolute;
-  bottom: calc(100% - var(--hl-space-2));
+  bottom: calc(100% - var(--gooee-space-2));
   left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--p));
-  padding: var(--hl-space-1) var(--hl-space-3);
-  border-radius: var(--hl-radius-sm);
-  background: var(--hl-color-inverse);
-  color: var(--hl-color-inverse-fg);
-  font-size: var(--hl-text-xs);
+  padding: var(--gooee-space-1) var(--gooee-space-3);
+  border-radius: var(--gooee-radius-sm);
+  background: var(--gooee-color-inverse);
+  color: var(--gooee-color-inverse-fg);
+  font-size: var(--gooee-text-xs);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
-  transform: translate(-50%, var(--hl-shift-sm)) scale(0.8);
+  transform: translate(-50%, var(--gooee-shift-sm)) scale(0.8);
   /* It stays a beat after a click or a let-go, so the value can be read before it fades. */
   transition:
-    opacity var(--hl-motion-fast) var(--hl-ease-out) var(--hl-motion-base),
-    transform var(--hl-motion-base) var(--hl-ease-spring) var(--hl-motion-base);
+    opacity var(--gooee-motion-fast) var(--gooee-ease-out) var(--gooee-motion-base),
+    transform var(--gooee-motion-base) var(--gooee-ease-spring) var(--gooee-motion-base);
 }
 
 .input:active:not(:disabled) + .bubble,
@@ -143,12 +143,12 @@
   position: absolute;
   top: 50%;
   left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--m));
-  width: var(--hl-space-2);
-  height: var(--hl-space-2);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-border-strong);
+  width: var(--gooee-space-2);
+  height: var(--gooee-space-2);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-border-strong);
   translate: -50% -50%;
-  transition: opacity var(--hl-motion-fast) var(--hl-ease-out);
+  transition: opacity var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 .mark[data-on] {

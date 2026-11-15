@@ -18,7 +18,7 @@ body:
     id: steps
     attributes:
       label: Steps to see it
-      placeholder: "1. npx hlmnhkl-ui add dial\n2. ..."
+      placeholder: "1. npx gooee add dial\n2. ..."
   - type: input
     id: where
     attributes:

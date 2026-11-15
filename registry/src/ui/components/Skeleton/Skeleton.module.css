@@ -1,16 +1,16 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .lines {
   display: flex;
   flex-direction: column;
-  gap: var(--hl-space-3);
+  gap: var(--gooee-space-3);
 }
 
 .bone {
   position: relative;
   display: block;
   overflow: hidden;
-  background: var(--hl-color-surface-active);
-  border-radius: var(--hl-radius-sm);
+  background: var(--gooee-color-surface-active);
+  border-radius: var(--gooee-radius-sm);
 }
 
 .bone::after {
@@ -18,33 +18,33 @@
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, var(--hl-color-shimmer), transparent);
-  animation: shimmer var(--hl-motion-shimmer) var(--hl-ease-in-out) infinite;
-  animation-delay: calc(var(--i, 0) * var(--hl-motion-stagger) * 3);
+  background: linear-gradient(90deg, transparent, var(--gooee-color-shimmer), transparent);
+  animation: shimmer var(--gooee-motion-shimmer) var(--gooee-ease-in-out) infinite;
+  animation-delay: calc(var(--i, 0) * var(--gooee-motion-stagger) * 3);
 }
 
-.text { height: 0.8em; border-radius: var(--hl-radius-xs); }
-.rect { width: 100%; height: var(--hl-skeleton-block); border-radius: var(--hl-radius-md); }
-.circle { width: var(--hl-skeleton-avatar); height: var(--hl-skeleton-avatar); border-radius: var(--hl-radius-full); }
+.text { height: 0.8em; border-radius: var(--gooee-radius-xs); }
+.rect { width: 100%; height: var(--gooee-skeleton-block); border-radius: var(--gooee-radius-md); }
+.circle { width: var(--gooee-skeleton-avatar); height: var(--gooee-skeleton-avatar); border-radius: var(--gooee-radius-full); }
 
 /* A sketch: the shapes as dashed pencil outlines, no fill. Text becomes dashed baselines. The lines
    themselves fade gently instead of a shimmer, which would light up the empty box behind them. */
 .sketch {
   background: none;
-  border: var(--hl-line) dashed var(--hl-color-border-strong);
-  animation: sketching var(--hl-motion-shimmer) var(--hl-ease-in-out) infinite alternate;
-  animation-delay: calc(var(--i, 0) * var(--hl-motion-stagger) * 3);
+  border: var(--gooee-line) dashed var(--gooee-color-border-strong);
+  animation: sketching var(--gooee-motion-shimmer) var(--gooee-ease-in-out) infinite alternate;
+  animation-delay: calc(var(--i, 0) * var(--gooee-motion-stagger) * 3);
 }
 
 .sketch::after { display: none; }
 
 .sketch.text {
-  border-width: 0 0 var(--hl-line);
+  border-width: 0 0 var(--gooee-line);
   border-radius: 0;
 }
 
 @keyframes sketching {
-  from { border-color: var(--hl-color-border); }
+  from { border-color: var(--gooee-color-border); }
 }
 
 @keyframes shimmer {

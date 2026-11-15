@@ -13,13 +13,13 @@ const defaultLabels: RetimeLabels = { off: 'Off', slower: 'Slower', normal: 'Nor
 // How long motion takes compared with normal. Off is 0, so nothing moves at all.
 const SCALE: Record<RetimeSpeed, number> = { off: 0, slower: 1.5, normal: 1, faster: 0.6 }
 
-const STORAGE_KEY = 'hl-motion-speed'
-const CHANGE_EVENT = 'hl-retime'
+const STORAGE_KEY = 'gooee-motion-speed'
+const CHANGE_EVENT = 'gooee-retime'
 
 /** Retimes every animation in the library at once. Reduced motion in the system still wins. */
 export function applyRetime(speed: RetimeSpeed) {
   if (typeof document === 'undefined') return
-  document.documentElement.style.setProperty('--hl-motion-scale', String(SCALE[speed]))
+  document.documentElement.style.setProperty('--gooee-motion-scale', String(SCALE[speed]))
   // Other Retime controls on the page (a header and a menu, say) follow the same choice.
   window.dispatchEvent(new CustomEvent<RetimeSpeed>(CHANGE_EVENT, { detail: speed }))
 }
@@ -92,7 +92,7 @@ export function Retime({
   useEffect(() => {
     if (pending.current && pending.current !== speed) return
     pending.current = null
-    if (document.documentElement.style.getPropertyValue('--hl-motion-scale') === String(SCALE[speed])) return
+    if (document.documentElement.style.getPropertyValue('--gooee-motion-scale') === String(SCALE[speed])) return
     applyRetime(speed)
     if (!remember) return
     try {

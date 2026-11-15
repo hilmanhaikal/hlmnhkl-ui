@@ -1,15 +1,15 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
   display: flex;
   flex-direction: column;
-  gap: var(--hl-space-3);
+  gap: var(--gooee-space-3);
 }
 
 .title {
-  margin: 0 0 var(--hl-space-2);
-  font-size: var(--hl-text-sm);
-  font-weight: var(--hl-weight-semibold);
-  color: var(--hl-color-fg);
+  margin: 0 0 var(--gooee-space-2);
+  font-size: var(--gooee-text-sm);
+  font-weight: var(--gooee-weight-semibold);
+  color: var(--gooee-color-fg);
 }
 
 /* A strip of frames, one per section, threaded on a faint line through their middles. */
@@ -23,10 +23,10 @@
 .list::before {
   content: "";
   position: absolute;
-  top: var(--hl-space-6);
-  bottom: var(--hl-space-6);
-  left: calc(var(--hl-space-3) + var(--hl-space-2) - var(--hl-line) / 2);
-  border-left: var(--hl-line) solid var(--hl-color-border);
+  top: var(--gooee-space-6);
+  bottom: var(--gooee-space-6);
+  left: calc(var(--gooee-space-3) + var(--gooee-space-2) - var(--gooee-line) / 2);
+  border-left: var(--gooee-line) solid var(--gooee-color-border);
 }
 
 /* Looks compact but keeps a 44px hit area with an invisible layer. */
@@ -34,75 +34,75 @@
   position: relative;
   display: flex;
   align-items: baseline;
-  gap: var(--hl-space-4);
+  gap: var(--gooee-space-4);
   width: 100%;
-  min-height: var(--hl-control-h-sm);
-  padding: var(--hl-space-2) var(--hl-space-3);
-  border-radius: var(--hl-radius-sm);
-  color: var(--hl-color-fg-muted);
-  font-size: var(--hl-text-sm);
-  line-height: var(--hl-leading-snug);
+  min-height: var(--gooee-control-h-sm);
+  padding: var(--gooee-space-2) var(--gooee-space-3);
+  border-radius: var(--gooee-radius-sm);
+  color: var(--gooee-color-fg-muted);
+  font-size: var(--gooee-text-sm);
+  line-height: var(--gooee-leading-snug);
   text-decoration: none;
-  transition: color var(--hl-motion-fast) var(--hl-ease-out), background-color var(--hl-motion-fast) var(--hl-ease-out);
+  transition: color var(--gooee-motion-fast) var(--gooee-ease-out), background-color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 .link::after {
   content: "";
   position: absolute;
   inset-inline: 0;
-  inset-block: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset-block: min(0px, calc((100% - var(--gooee-hit-min)) / 2));
 }
 
 @media (hover: hover) {
-  .link:hover { color: var(--hl-color-fg); background: var(--hl-color-surface-hover); }
+  .link:hover { color: var(--gooee-color-fg); background: var(--gooee-color-surface-hover); }
 }
 
-.link:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+.link:focus-visible { outline: none; box-shadow: var(--gooee-focus-ring); }
 
 /* Each section's frame: open ahead, filled once read, ringed where the reader is. */
 .node {
   position: relative;
   z-index: 1;
   flex: none;
-  width: var(--hl-space-4);
-  height: var(--hl-space-4);
-  translate: 0 calc(var(--hl-space-1) / 2);
-  border: var(--hl-line-thick) solid var(--hl-color-border-strong);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-bg);
+  width: var(--gooee-space-4);
+  height: var(--gooee-space-4);
+  translate: 0 calc(var(--gooee-space-1) / 2);
+  border: var(--gooee-line-thick) solid var(--gooee-color-border-strong);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-bg);
   transition:
-    background-color var(--hl-motion-base) var(--hl-ease-out),
-    border-color var(--hl-motion-base) var(--hl-ease-out),
-    box-shadow var(--hl-motion-base) var(--hl-ease-out);
+    background-color var(--gooee-motion-base) var(--gooee-ease-out),
+    border-color var(--gooee-motion-base) var(--gooee-ease-out),
+    box-shadow var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
-[data-state="read"] .node { border-color: var(--hl-color-fg-subtle); background: var(--hl-color-fg-subtle); }
+[data-state="read"] .node { border-color: var(--gooee-color-fg-subtle); background: var(--gooee-color-fg-subtle); }
 
-[data-state="here"] .link { color: var(--hl-color-fg); font-weight: var(--hl-weight-medium); }
+[data-state="here"] .link { color: var(--gooee-color-fg); font-weight: var(--gooee-weight-medium); }
 
 [data-state="here"] .node {
-  border-color: var(--hl-color-fg);
-  background: var(--hl-color-fg);
-  box-shadow: 0 0 0 var(--hl-space-1) var(--hl-color-bg), 0 0 0 calc(var(--hl-space-1) + var(--hl-line-thick)) var(--hl-color-fg);
+  border-color: var(--gooee-color-fg);
+  background: var(--gooee-color-fg);
+  box-shadow: 0 0 0 var(--gooee-space-1) var(--gooee-color-bg), 0 0 0 calc(var(--gooee-space-1) + var(--gooee-line-thick)) var(--gooee-color-fg);
 }
 
 .toTop {
   display: inline-flex;
   align-items: center;
-  gap: var(--hl-space-2);
+  gap: var(--gooee-space-2);
   align-self: flex-start;
-  min-height: var(--hl-hit-min);
-  padding-inline: var(--hl-space-3);
-  border-radius: var(--hl-radius-sm);
-  color: var(--hl-color-fg-muted);
-  font-size: var(--hl-text-sm);
+  min-height: var(--gooee-hit-min);
+  padding-inline: var(--gooee-space-3);
+  border-radius: var(--gooee-radius-sm);
+  color: var(--gooee-color-fg-muted);
+  font-size: var(--gooee-text-sm);
   text-decoration: none;
 }
 
-.toTop > svg { width: var(--hl-icon-sm); height: var(--hl-icon-sm); }
+.toTop > svg { width: var(--gooee-icon-sm); height: var(--gooee-icon-sm); }
 
 @media (hover: hover) {
-  .toTop:hover { color: var(--hl-color-fg); background: var(--hl-color-surface-hover); }
+  .toTop:hover { color: var(--gooee-color-fg); background: var(--gooee-color-surface-hover); }
 }
 
-.toTop:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+.toTop:focus-visible { outline: none; box-shadow: var(--gooee-focus-ring); }

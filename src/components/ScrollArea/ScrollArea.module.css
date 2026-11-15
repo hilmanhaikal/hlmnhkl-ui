@@ -16,7 +16,7 @@
 }
 
 .viewport::-webkit-scrollbar { display: none; }
-.viewport:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--hl-line-focus) var(--hl-color-fg); }
+.viewport:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg); }
 
 .root[data-orientation="vertical"] .viewport { overflow-x: hidden; }
 .root[data-orientation="horizontal"] .viewport { overflow-y: hidden; }
@@ -25,14 +25,14 @@
 .track {
   position: absolute;
   z-index: 1;
-  padding: var(--hl-space-1);
+  padding: var(--gooee-space-1);
   opacity: 0;
-  transition: opacity var(--hl-motion-slow) var(--hl-ease-out);
+  transition: opacity var(--gooee-motion-slow) var(--gooee-ease-out);
 }
 
-.track[data-axis="y"] { top: 0; right: 0; bottom: 0; width: calc(var(--hl-scrollbar-w-active) + var(--hl-space-1) * 2); }
-.track[data-axis="x"] { left: 0; right: 0; bottom: 0; height: calc(var(--hl-scrollbar-w-active) + var(--hl-space-1) * 2); }
-.root[data-orientation="both"] .track[data-axis="y"] { bottom: calc(var(--hl-scrollbar-w-active) + var(--hl-space-1) * 2); }
+.track[data-axis="y"] { top: 0; right: 0; bottom: 0; width: calc(var(--gooee-scrollbar-w-active) + var(--gooee-space-1) * 2); }
+.track[data-axis="x"] { left: 0; right: 0; bottom: 0; height: calc(var(--gooee-scrollbar-w-active) + var(--gooee-space-1) * 2); }
+.root[data-orientation="both"] .track[data-axis="y"] { bottom: calc(var(--gooee-scrollbar-w-active) + var(--gooee-space-1) * 2); }
 
 .track[data-hidden] { display: none; }
 
@@ -45,28 +45,28 @@
 
 .thumb {
   position: absolute;
-  top: var(--hl-space-1);
-  left: var(--hl-space-1);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-border-strong);
+  top: var(--gooee-space-1);
+  left: var(--gooee-space-1);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-border-strong);
   cursor: grab;
   touch-action: none;
   transition:
-    width var(--hl-motion-base) var(--hl-ease-out),
-    height var(--hl-motion-base) var(--hl-ease-out),
-    background-color var(--hl-motion-fast) var(--hl-ease-out);
+    width var(--gooee-motion-base) var(--gooee-ease-out),
+    height var(--gooee-motion-base) var(--gooee-ease-out),
+    background-color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
-.track[data-axis="y"] .thumb { width: var(--hl-scrollbar-w); left: auto; right: var(--hl-space-1); }
-.track[data-axis="x"] .thumb { height: var(--hl-scrollbar-w); top: auto; bottom: var(--hl-space-1); }
+.track[data-axis="y"] .thumb { width: var(--gooee-scrollbar-w); left: auto; right: var(--gooee-space-1); }
+.track[data-axis="x"] .thumb { height: var(--gooee-scrollbar-w); top: auto; bottom: var(--gooee-space-1); }
 
-.root[data-dragging] .track[data-axis="y"] .thumb { width: var(--hl-scrollbar-w-active); }
-.root[data-dragging] .track[data-axis="x"] .thumb { height: var(--hl-scrollbar-w-active); }
+.root[data-dragging] .track[data-axis="y"] .thumb { width: var(--gooee-scrollbar-w-active); }
+.root[data-dragging] .track[data-axis="x"] .thumb { height: var(--gooee-scrollbar-w-active); }
 
-.root[data-dragging] .thumb { background: var(--hl-color-fg-muted); cursor: grabbing; }
+.root[data-dragging] .thumb { background: var(--gooee-color-fg-muted); cursor: grabbing; }
 
 @media (hover: hover) {
-  .track[data-axis="y"]:hover .thumb { width: var(--hl-scrollbar-w-active); }
-  .track[data-axis="x"]:hover .thumb { height: var(--hl-scrollbar-w-active); }
-  .thumb:hover { background: var(--hl-color-fg-muted); cursor: grabbing; }
+  .track[data-axis="y"]:hover .thumb { width: var(--gooee-scrollbar-w-active); }
+  .track[data-axis="x"]:hover .thumb { height: var(--gooee-scrollbar-w-active); }
+  .thumb:hover { background: var(--gooee-color-fg-muted); cursor: grabbing; }
 }

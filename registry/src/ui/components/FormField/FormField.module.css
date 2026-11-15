@@ -1,24 +1,24 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
-.root[data-disabled] { opacity: var(--hl-disabled-opacity); }
+.root[data-disabled] { opacity: var(--gooee-disabled-opacity); }
 
 .label {
-  margin-bottom: var(--hl-space-3);
-  font-size: var(--hl-text-sm);
-  font-weight: var(--hl-weight-medium);
-  color: var(--hl-color-fg);
+  margin-bottom: var(--gooee-space-3);
+  font-size: var(--gooee-text-sm);
+  font-weight: var(--gooee-weight-medium);
+  color: var(--gooee-color-fg);
 }
 
-.required { color: var(--hl-color-fg-muted); }
+.required { color: var(--gooee-color-fg-muted); }
 
 .optional {
-  font-weight: var(--hl-weight-regular);
-  color: var(--hl-color-fg-muted);
+  font-weight: var(--gooee-weight-regular);
+  color: var(--gooee-color-fg-muted);
 }
 
 .control {
@@ -29,35 +29,35 @@
 
 /* Plain native controls inside get the library's field look, so a bare <input> or <select> fits in. */
 .control > :is(input:not([type="checkbox"], [type="radio"], [type="range"]), select, textarea) {
-  min-height: var(--hl-hit-min);
-  padding: var(--hl-space-3) var(--hl-space-5);
-  border: var(--hl-line) solid var(--hl-color-border-strong);
-  border-radius: var(--hl-radius-md);
-  background: var(--hl-color-surface);
-  font-size: var(--hl-text-md);
+  min-height: var(--gooee-hit-min);
+  padding: var(--gooee-space-3) var(--gooee-space-5);
+  border: var(--gooee-line) solid var(--gooee-color-border-strong);
+  border-radius: var(--gooee-radius-md);
+  background: var(--gooee-color-surface);
+  font-size: var(--gooee-text-md);
   transition:
-    border-color var(--hl-motion-fast) var(--hl-ease-out),
-    box-shadow var(--hl-motion-base) var(--hl-ease-out);
+    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    box-shadow var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 @media (hover: hover) {
-  .control > :is(input, select, textarea):hover:not(:disabled) { border-color: var(--hl-color-fg-muted); }
+  .control > :is(input, select, textarea):hover:not(:disabled) { border-color: var(--gooee-color-fg-muted); }
 }
 
 .control > :is(input, select, textarea):focus {
   outline: none;
-  border-color: var(--hl-color-fg);
-  box-shadow: 0 0 0 var(--hl-halo) var(--hl-color-surface-active);
+  border-color: var(--gooee-color-fg);
+  box-shadow: 0 0 0 var(--gooee-halo) var(--gooee-color-surface-active);
 }
 
 .root[data-invalid] .control > :is(input, select, textarea) {
-  border-color: var(--hl-color-danger);
-  border-width: var(--hl-line-thick);
-  animation: nudge var(--hl-motion-slow) var(--hl-ease-out);
+  border-color: var(--gooee-color-danger);
+  border-width: var(--gooee-line-thick);
+  animation: nudge var(--gooee-motion-slow) var(--gooee-ease-out);
 }
 
 @keyframes nudge {
   0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(calc(var(--hl-shift-sm) * -1)); }
-  60% { transform: translateX(var(--hl-shift-sm)); }
+  25% { transform: translateX(calc(var(--gooee-shift-sm) * -1)); }
+  60% { transform: translateX(var(--gooee-shift-sm)); }
 }

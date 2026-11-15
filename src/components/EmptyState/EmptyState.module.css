@@ -2,58 +2,58 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: var(--hl-empty-w);
+  max-width: var(--gooee-empty-w);
   margin: 0 auto;
-  padding: var(--hl-space-10) var(--hl-space-5);
+  padding: var(--gooee-space-10) var(--gooee-space-5);
   text-align: center;
 }
 
 .root > * {
-  animation: rise var(--hl-motion-slower) var(--hl-ease-out) backwards;
-  animation-delay: calc(var(--i) * var(--hl-motion-stagger) * 2);
+  animation: rise var(--gooee-motion-slower) var(--gooee-ease-out) backwards;
+  animation-delay: calc(var(--i) * var(--gooee-motion-stagger) * 2);
 }
 
 .icon {
   display: grid;
   place-items: center;
-  width: var(--hl-empty-icon);
-  height: var(--hl-empty-icon);
-  margin-bottom: var(--hl-space-6);
-  border: var(--hl-line) dashed var(--hl-color-border-strong);
-  border-radius: var(--hl-radius-panel);
-  color: var(--hl-color-fg-muted);
-  font-size: var(--hl-icon-xl);
+  width: var(--gooee-empty-icon);
+  height: var(--gooee-empty-icon);
+  margin-bottom: var(--gooee-space-6);
+  border: var(--gooee-line) dashed var(--gooee-color-border-strong);
+  border-radius: var(--gooee-radius-panel);
+  color: var(--gooee-color-fg-muted);
+  font-size: var(--gooee-icon-xl);
 }
 
-.icon > svg { animation: float calc(var(--hl-motion-slower) * 6) var(--hl-ease-in-out) infinite; }
+.icon > svg { animation: float calc(var(--gooee-motion-slower) * 6) var(--gooee-ease-in-out) infinite; }
 
 .title {
   margin: 0;
-  font-size: var(--hl-text-lg);
-  font-weight: var(--hl-weight-semibold);
-  letter-spacing: var(--hl-tracking-tight);
+  font-size: var(--gooee-text-lg);
+  font-weight: var(--gooee-weight-semibold);
+  letter-spacing: var(--gooee-tracking-tight);
   overflow-wrap: anywhere;
 }
 
-h1.title { font-size: var(--hl-text-2xl); }
+h1.title { font-size: var(--gooee-text-2xl); }
 
 .description {
-  margin: var(--hl-space-3) 0 0;
-  color: var(--hl-color-fg-muted);
-  font-size: var(--hl-text-sm);
-  line-height: var(--hl-leading-normal);
+  margin: var(--gooee-space-3) 0 0;
+  color: var(--gooee-color-fg-muted);
+  font-size: var(--gooee-text-sm);
+  line-height: var(--gooee-leading-normal);
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--hl-space-3);
-  margin-top: var(--hl-space-7);
+  gap: var(--gooee-space-3);
+  margin-top: var(--gooee-space-7);
 }
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(var(--hl-shift-md)); }
+  from { opacity: 0; transform: translateY(var(--gooee-shift-md)); }
 }
 
 @keyframes float {

@@ -1,33 +1,33 @@
 .root {
   display: grid;
   justify-items: center;
-  gap: var(--hl-space-6);
+  gap: var(--gooee-space-6);
   width: 100%;
-  color: var(--hl-color-fg);
+  color: var(--gooee-color-fg);
 }
 
 .head {
   display: grid;
   justify-items: center;
-  gap: var(--hl-space-1);
+  gap: var(--gooee-space-1);
   text-align: center;
 }
 
 .label {
-  font-size: var(--hl-text-sm);
-  color: var(--hl-color-fg-muted);
+  font-size: var(--gooee-text-sm);
+  color: var(--gooee-color-fg-muted);
 }
 
 .readout {
-  font-size: var(--hl-text-4xl);
-  font-weight: var(--hl-weight-semibold);
-  letter-spacing: var(--hl-tracking-tight);
+  font-size: var(--gooee-text-4xl);
+  font-weight: var(--gooee-weight-semibold);
+  letter-spacing: var(--gooee-tracking-tight);
   line-height: 1;
 }
 
 .detail {
-  font-size: var(--hl-text-sm);
-  color: var(--hl-color-fg-muted);
+  font-size: var(--gooee-text-sm);
+  color: var(--gooee-color-fg-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -52,41 +52,41 @@
 /* Printed knob */
 
 .printed {
-  --num-r: calc(var(--hl-dial-size) * -0.29);
+  --num-r: calc(var(--gooee-dial-size) * -0.29);
 }
 
 .bezel {
   position: relative;
   display: grid;
   place-items: center;
-  width: var(--hl-dial-ring);
-  height: var(--hl-dial-ring);
-  border-radius: var(--hl-radius-full);
-  border: var(--hl-line) solid var(--hl-color-border);
+  width: var(--gooee-dial-ring);
+  height: var(--gooee-dial-ring);
+  border-radius: var(--gooee-radius-full);
+  border: var(--gooee-line) solid var(--gooee-color-border);
 }
 
 .index {
   position: absolute;
-  top: var(--hl-space-1);
+  top: var(--gooee-space-1);
   left: 50%;
-  width: var(--hl-indicator);
-  height: var(--hl-space-4);
-  margin-left: calc(var(--hl-indicator) / -2);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-fg);
+  width: var(--gooee-indicator);
+  height: var(--gooee-space-4);
+  margin-left: calc(var(--gooee-indicator) / -2);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-fg);
 }
 
 .knob {
-  width: var(--hl-dial-size);
-  height: var(--hl-dial-size);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface-raised);
-  box-shadow: var(--hl-shadow-2), inset 0 0 0 var(--hl-line) var(--hl-color-border);
+  width: var(--gooee-dial-size);
+  height: var(--gooee-dial-size);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-surface-raised);
+  box-shadow: var(--gooee-shadow-2), inset 0 0 0 var(--gooee-line) var(--gooee-color-border);
   touch-action: none;
 }
 
 .knob:focus-visible {
-  box-shadow: var(--hl-focus-ring), var(--hl-shadow-2);
+  box-shadow: var(--gooee-focus-ring), var(--gooee-shadow-2);
 }
 
 .face {
@@ -111,32 +111,32 @@
 
 .tick {
   position: absolute;
-  left: calc(var(--hl-indicator) / -2);
-  top: calc(var(--hl-dial-size) / -2 + var(--hl-space-3));
-  width: var(--hl-indicator);
-  height: var(--hl-space-3);
-  border-radius: var(--hl-radius-full);
+  left: calc(var(--gooee-indicator) / -2);
+  top: calc(var(--gooee-dial-size) / -2 + var(--gooee-space-3));
+  width: var(--gooee-indicator);
+  height: var(--gooee-space-3);
+  border-radius: var(--gooee-radius-full);
   transform-origin: top center;
 }
 
 .tick[data-major] {
-  height: var(--hl-space-5);
+  height: var(--gooee-space-5);
 }
 
 /* On a long scale the plain steps are hairlines, so they read as a fine ruler, not a solid band. */
 .tick[data-fine] {
-  left: calc(var(--hl-line) / -2);
-  width: var(--hl-line);
-  height: var(--hl-space-2);
+  left: calc(var(--gooee-line) / -2);
+  width: var(--gooee-line);
+  height: var(--gooee-space-2);
 }
 
 /* The amount: a thin ink arc on the ring, from min to the index. A vector stroke, so its edges stay
    smooth at any size (a gradient mask would leave them stepped). */
 .fill {
   position: absolute;
-  inset: calc(var(--hl-line) * -1);
-  width: calc(100% + var(--hl-line) * 2);
-  height: calc(100% + var(--hl-line) * 2);
+  inset: calc(var(--gooee-line) * -1);
+  width: calc(100% + var(--gooee-line) * 2);
+  height: calc(100% + var(--gooee-line) * 2);
   overflow: visible;
   transform: rotate(-90deg);
   pointer-events: none;
@@ -145,10 +145,10 @@
 .fill circle {
   cx: 50%;
   cy: 50%;
-  r: calc(50% - var(--hl-indicator) / 2);
+  r: calc(50% - var(--gooee-indicator) / 2);
   fill: none;
-  stroke: var(--hl-color-fg);
-  stroke-width: var(--hl-indicator);
+  stroke: var(--gooee-color-fg);
+  stroke-width: var(--gooee-indicator);
   stroke-linecap: round;
 }
 
@@ -156,24 +156,24 @@
   position: absolute;
   top: 35%;
   left: 50%;
-  width: var(--hl-indicator);
-  height: var(--hl-space-5);
-  margin-left: calc(var(--hl-indicator) / -2);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-border-strong);
+  width: var(--gooee-indicator);
+  height: var(--gooee-space-5);
+  margin-left: calc(var(--gooee-indicator) / -2);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-border-strong);
   pointer-events: none;
 }
 
 .tick[data-strong] {
-  left: calc(var(--hl-indicator) * -1);
-  width: calc(var(--hl-indicator) * 2);
+  left: calc(var(--gooee-indicator) * -1);
+  width: calc(var(--gooee-indicator) * 2);
 }
 
 .num {
   position: absolute;
   left: 0;
   top: 0;
-  font-size: var(--hl-text-sm);
+  font-size: var(--gooee-text-sm);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   line-height: 1;
@@ -182,25 +182,25 @@
 .cap {
   position: absolute;
   inset: 35%;
-  border-radius: var(--hl-radius-full);
-  border: var(--hl-line) solid var(--hl-color-border);
-  background: var(--hl-color-surface-sunken);
+  border-radius: var(--gooee-radius-full);
+  border: var(--gooee-line) solid var(--gooee-color-border);
+  background: var(--gooee-color-surface-sunken);
 }
 
 /* Mercury */
 
 .mercury {
-  gap: var(--hl-space-4);
+  gap: var(--gooee-space-4);
 }
 
 .mercuryHit {
-  width: min(100%, calc(var(--hl-dial-ring) + var(--hl-space-9)));
-  border-radius: var(--hl-radius-panel);
+  width: min(100%, calc(var(--gooee-dial-ring) + var(--gooee-space-9)));
+  border-radius: var(--gooee-radius-panel);
   touch-action: none;
 }
 
 .mercuryHit:focus-visible {
-  box-shadow: var(--hl-focus-ring);
+  box-shadow: var(--gooee-focus-ring);
 }
 
 .mercurySvg {
@@ -211,51 +211,51 @@
 }
 
 .metal {
-  fill: var(--hl-color-fg);
+  fill: var(--gooee-color-fg);
 }
 
 .groove {
   fill: none;
-  stroke: color-mix(in srgb, var(--hl-color-inverse-fg) 22%, transparent);
-  stroke-width: var(--hl-line);
+  stroke: color-mix(in srgb, var(--gooee-color-inverse-fg) 22%, transparent);
+  stroke-width: var(--gooee-line);
 }
 
 .dot {
-  fill: var(--hl-color-border-strong);
+  fill: var(--gooee-color-border-strong);
 }
 
 .dot[data-on] {
-  fill: var(--hl-color-accent);
+  fill: var(--gooee-color-accent);
 }
 
 .level {
-  font-family: var(--hl-font-sans);
-  font-size: var(--hl-text-sm);
-  fill: var(--hl-color-fg-muted);
+  font-family: var(--gooee-font-sans);
+  font-size: var(--gooee-text-sm);
+  fill: var(--gooee-color-fg-muted);
 }
 
 .level[data-on] {
-  fill: var(--hl-color-accent);
-  font-weight: var(--hl-weight-semibold);
+  fill: var(--gooee-color-accent);
+  font-weight: var(--gooee-weight-semibold);
 }
 
 /* Speed arc */
 
 .arc {
-  gap: var(--hl-space-5);
+  gap: var(--gooee-space-5);
 }
 
 .arcStage {
-  --rim: calc(var(--hl-ruler-h) / 2);
+  --rim: calc(var(--gooee-ruler-h) / 2);
   width: 100%;
-  height: var(--hl-ruler-h);
-  border-radius: var(--hl-radius-md);
+  height: var(--gooee-ruler-h);
+  border-radius: var(--gooee-radius-md);
   /* A sideways swipe turns it; up and down still scrolls the page. */
   touch-action: pan-y;
 }
 
 .arcStage:focus-visible {
-  box-shadow: var(--hl-focus-ring);
+  box-shadow: var(--gooee-focus-ring);
 }
 
 .arcClip {
@@ -263,26 +263,26 @@
   inset: 0;
   overflow: hidden;
   border-radius: inherit;
-  mask-image: linear-gradient(90deg, transparent, var(--hl-color-fg) 16%, var(--hl-color-fg) 84%, transparent);
+  mask-image: linear-gradient(90deg, transparent, var(--gooee-color-fg) 16%, var(--gooee-color-fg) 84%, transparent);
 }
 
 .hub {
   position: absolute;
   left: 50%;
-  top: calc(var(--rim) + var(--hl-dial-arc-radius));
+  top: calc(var(--rim) + var(--gooee-dial-arc-radius));
   width: 0;
   height: 0;
 }
 
 .disc {
   position: absolute;
-  left: calc(var(--hl-dial-arc-radius) * -1);
-  top: calc(var(--hl-dial-arc-radius) * -1);
-  width: calc(var(--hl-dial-arc-radius) * 2);
-  height: calc(var(--hl-dial-arc-radius) * 2);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface-sunken);
-  box-shadow: inset 0 var(--hl-line) 0 var(--hl-color-border-strong);
+  left: calc(var(--gooee-dial-arc-radius) * -1);
+  top: calc(var(--gooee-dial-arc-radius) * -1);
+  width: calc(var(--gooee-dial-arc-radius) * 2);
+  height: calc(var(--gooee-dial-arc-radius) * 2);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-surface-sunken);
+  box-shadow: inset 0 var(--gooee-line) 0 var(--gooee-color-border-strong);
 }
 
 .arcMark {
@@ -295,27 +295,27 @@
 
 .arcTick {
   position: absolute;
-  left: calc(var(--hl-indicator) / -2);
+  left: calc(var(--gooee-indicator) / -2);
   bottom: 0;
-  width: var(--hl-indicator);
-  height: var(--hl-space-3);
-  border-radius: var(--hl-radius-full);
+  width: var(--gooee-indicator);
+  height: var(--gooee-space-3);
+  border-radius: var(--gooee-radius-full);
   transform-origin: bottom center;
 }
 
 .arcTick[data-tier='mid'] {
-  height: var(--hl-space-4);
+  height: var(--gooee-space-4);
 }
 
 .arcTick[data-tier='major'] {
-  height: var(--hl-space-6);
+  height: var(--gooee-space-6);
 }
 
 .arcNum {
   position: absolute;
   left: 0;
-  top: var(--hl-space-4);
-  font-size: var(--hl-text-xs);
+  top: var(--gooee-space-4);
+  font-size: var(--gooee-text-xs);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   transform-origin: top center;
@@ -323,22 +323,22 @@
 
 .arcStrong {
   position: absolute;
-  left: calc(var(--hl-dot) / -2);
-  top: var(--hl-space-8);
-  width: var(--hl-dot);
-  height: var(--hl-dot);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-fg-muted);
+  left: calc(var(--gooee-dot) / -2);
+  top: var(--gooee-space-8);
+  width: var(--gooee-dot);
+  height: var(--gooee-dot);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-fg-muted);
 }
 
 .arcIndex {
   position: absolute;
   z-index: 1;
   left: 50%;
-  top: var(--hl-space-3);
-  width: var(--hl-indicator);
-  height: var(--hl-space-5);
-  margin-left: calc(var(--hl-indicator) / -2);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-fg);
+  top: var(--gooee-space-3);
+  width: var(--gooee-indicator);
+  height: var(--gooee-space-5);
+  margin-left: calc(var(--gooee-indicator) / -2);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-fg);
 }

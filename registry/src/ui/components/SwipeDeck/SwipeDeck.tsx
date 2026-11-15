@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 'use client'
 
 import { useEffect, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
@@ -43,7 +43,7 @@ type Done<T> = { item: T; side: Side; dir: SwipeDeckSide }
 
 // A press is a drag only once it moves this far sideways, so a tap on a card's own button stays a tap.
 const SLOP = 8
-// The throw rule: past --hl-deck-throw of the card's width, or a flick this fast that has moved at least FLICK_MIN.
+// The throw rule: past --gooee-deck-throw of the card's width, or a flick this fast that has moved at least FLICK_MIN.
 const FLICK = 600
 const FLICK_MIN = 40
 const TILT = 0.06
@@ -221,7 +221,7 @@ export function SwipeDeck<T>({
   }, [done.length])
 
   useLayoutEffect(() => {
-    share.current = tokenNumber(root.current, '--hl-deck-throw') || share.current
+    share.current = tokenNumber(root.current, '--gooee-deck-throw') || share.current
   }, [])
   useEffect(() => () => stop.current(), [])
 

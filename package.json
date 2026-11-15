@@ -1,16 +1,16 @@
 {
-  "name": "hlmnhkl-ui",
-  "version": "0.40.0",
-  "description": "React components in black, white and grey with one blue accent. Copy them into your app with npx hlmnhkl-ui add <name>.",
+  "name": "gooee",
+  "version": "0.41.0",
+  "description": "React components in black, white and grey with one blue accent. Copy them into your app with npx gooee add <name>.",
   "license": "MIT",
   "homepage": "https://ui.hlmnhkl.my",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hilmanhaikal/hlmnhkl-ui.git"
+    "url": "git+https://github.com/hilmanhaikal/gooee-ui.git"
   },
   "type": "module",
   "bin": {
-    "hlmnhkl-ui": "scripts/add.js"
+    "gooee": "scripts/add.js"
   },
   "engines": {
     "node": ">=18"

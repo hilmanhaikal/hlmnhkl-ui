@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import styles from './IconButton.module.css'

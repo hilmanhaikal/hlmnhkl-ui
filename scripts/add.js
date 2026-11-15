@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// The hlmnhkl/ui command line: sets a project up, lists what exists, and copies components, blocks,
+// The Gooee UI command line: sets a project up, lists what exists, and copies components, blocks,
 // templates and themes (with everything they import) into it, then shows and takes later changes.
-// Runs as `npx hlmnhkl-ui <command>` from the npm package, or `npm run add -- <command>` in this repo.
+// Runs as `npx gooee <command>` from the npm package, or `npm run add -- <command>` in this repo.
 // Plain JavaScript on purpose: the project has no Node type package.
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
 import { basename, dirname, join, relative, resolve, sep } from 'node:path'
@@ -13,10 +13,10 @@ const SRC = join(ROOT, 'src')
 const INTERNAL = join(SRC, 'internal')
 const EXCLUDED = /(\.(test|spec|stories|demo)\.[jt]sx?$)|(^|\/)(docs|demos|__tests__)\//
 const DEFAULT_TO = 'src/ui'
-const CONFIG = 'hlmnhkl-ui.json'
+const CONFIG = 'gooee.json'
 const SITE = 'https://ui.hlmnhkl.my'
 const COMMANDS = ['init', 'add', 'list', 'diff', 'update']
-const USAGE = `Usage: npx hlmnhkl-ui <command> [options]
+const USAGE = `Usage: npx gooee <command> [options]
 
   init                     Set a project up: tokens.css, base.css and ${CONFIG}
   add <name> [<name>...]   Copy components, blocks, templates or themes, with what they import
@@ -86,7 +86,7 @@ function parseArgs(argv) {
   if (COMMANDS.includes(rest[0])) opts.command = rest.shift()
   opts.names = rest
   if (['add', 'diff', 'update'].includes(opts.command) && !opts.names.length) {
-    fail(`Name at least one component, block, template or theme, for example: npx hlmnhkl-ui ${opts.command} button`)
+    fail(`Name at least one component, block, template or theme, for example: npx gooee ${opts.command} button`)
   }
   return opts
 }
@@ -158,7 +158,7 @@ function lookup(raw, all) {
   const helper = Object.keys(HELPERS).find((h) => h.replace(/-/g, '') === name.toLowerCase())
   if (helper && !prefix) return { kind: 'helper', name: helper, file: join(INTERNAL, HELPERS[helper]) }
   const pro = proComponents().find((p) => p.toLowerCase() === name.toLowerCase())
-  if (pro) fail(`${pro} is in hlmnhkl/ui Pro, so it is not in this package. See ${SITE}/${raw.toLowerCase()}`, false)
+  if (pro) fail(`${pro} is in Gooee UI Pro, so it is not in this package. See ${SITE}/${raw.toLowerCase()}`, false)
   const close = suggest(name, all)
   fail(`There is no component, block, template or theme called "${raw}".${close.length ? ` Did you mean ${close.join(', ')}?` : ''}`, false)
 }
@@ -270,10 +270,11 @@ function plan(items) {
 // Every copied file starts with one credit line, so the MIT licence's notice travels with the code.
 // It is left out when comparing, so it never counts as a change.
 function credit(file, pro) {
-  const text = pro ? `hlmnhkl/ui Pro, see LICENSE-PRO.md. ${SITE}` : `hlmnhkl/ui, MIT licence. ${SITE}`
+  const text = pro ? `Gooee UI Pro, see LICENSE-PRO.md. ${SITE}` : `Gooee UI, MIT licence. ${SITE}`
   return file.endsWith('.css') ? `/* ${text} */\n` : `// ${text}\n`
 }
-const withoutCredit = (text) => text.replace(/^(\/\/ hlmnhkl\/ui[^\n]*|\/\* hlmnhkl\/ui[^\n]*\*\/)\n/, '')
+// Copies made before the rename start with the old name, hlmnhkl/ui, so diff and update still see them as ours.
+const withoutCredit = (text) => text.replace(/^(\/\/ (?:Gooee UI|hlmnhkl\/ui)[^\n]*|\/\* (?:Gooee UI|hlmnhkl\/ui)[^\n]*\*\/)\n/, '')
 
 // The project folder (npm runs scripts from the repo root; INIT_CWD is where the command was typed).
 const CWD = process.env.INIT_CWD ?? process.cwd()
@@ -349,7 +350,7 @@ function lineDiff(oldText, newText) {
 function runInit(opts) {
   const { folder, to } = targetFolder(opts)
   const sheets = ['tokens.css', 'base.css'].map((name) => ({ from: join(SRC, name), to: join(to, name), pro: false }))
-  console.log(`${opts.dryRun ? 'Dry run, nothing written. ' : ''}Setting up hlmnhkl/ui in ${folder}`)
+  console.log(`${opts.dryRun ? 'Dry run, nothing written. ' : ''}Setting up Gooee UI in ${folder}`)
   for (const s of sheets) {
     if (existsSync(s.to)) console.log(`  ${basename(s.to)}: already there, kept (your theme edits stay)`)
     else {
@@ -364,8 +365,8 @@ function runInit(opts) {
     console.log(`  ${CONFIG}: added, so later commands put files in ${folder}`)
   }
   console.log(`\nNext:\n  1. Import both once, tokens first, ${fromEntry(folder)}`)
-  console.log(`  2. Add your first component: npx hlmnhkl-ui add button`)
-  console.log(`  See everything there is: npx hlmnhkl-ui list, or ${SITE}`)
+  console.log(`  2. Add your first component: npx gooee add button`)
+  console.log(`  See everything there is: npx gooee list, or ${SITE}`)
 }
 
 function runList(opts) {
@@ -383,7 +384,7 @@ function runList(opts) {
     if (pro.length) console.log(`  Pro: ${pro.join(', ')}`)
   }
   if (!wanted) console.log(`Helpers (${Object.keys(HELPERS).length})\n  ${Object.keys(HELPERS).join(', ')}`)
-  console.log(`\nAdd one: npx hlmnhkl-ui add <name>. Every page: ${SITE}`)
+  console.log(`\nAdd one: npx gooee add <name>. Every page: ${SITE}`)
 }
 
 function runAdd(opts) {
@@ -422,7 +423,7 @@ function runAdd(opts) {
     console.log('Dependencies:')
     for (const { item, deps } of needs.values()) console.log(`  ${item.name} needs ${[...deps.values()].map(label).join(', ')}`)
   }
-  if (items.some(isPro)) console.log('Pro: part of hlmnhkl/ui Pro.')
+  if (items.some(isPro)) console.log('Pro: part of Gooee UI Pro.')
   if (skipped.length) {
     console.log(`Skipped ${plural(skipped.length, 'existing file')}${opts.overwrite ? '' : ' (see what differs with diff, take the new version with update)'}:`)
     for (const s of skipped) console.log(`  ${s}`)
@@ -458,7 +459,7 @@ function report(to, copies, withLines) {
 function runDiff(opts) {
   const { to, copies } = compare(opts)
   const count = report(to, copies, true)
-  if (count) console.log(`Take the latest version: npx hlmnhkl-ui update ${opts.names.join(' ')}`)
+  if (count) console.log(`Take the latest version: npx gooee update ${opts.names.join(' ')}`)
 }
 
 async function runUpdate(opts) {

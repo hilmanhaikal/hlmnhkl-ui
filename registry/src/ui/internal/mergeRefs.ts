@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import type { Ref, RefCallback } from 'react'
 
 export function mergeRefs<T>(...refs: Array<Ref<T> | undefined>): RefCallback<T> {

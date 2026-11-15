@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import { useEffect, useRef, type RefObject } from 'react'
 
 // A stack of open layers, so Esc and outside clicks only close the top one.
@@ -36,7 +36,7 @@ export function useDismiss(
       const target = e.target as Node
       if (refsRef.current.some((r) => r.current?.contains(target))) return
       // Things like the toast stack sit above every layer and never count as outside.
-      if (target instanceof Element && target.closest('[data-hl-layer-ignore]')) return
+      if (target instanceof Element && target.closest('[data-gooee-layer-ignore]')) return
       cb.current('outside', e)
     }
     const onFocus = (e: FocusEvent) => {

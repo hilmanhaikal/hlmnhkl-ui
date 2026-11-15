@@ -1,39 +1,39 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
   flex: none;
-  background: var(--hl-color-border);
+  background: var(--gooee-color-border);
 }
 
-.horizontal { width: 100%; height: var(--hl-line); }
-.vertical { align-self: stretch; width: var(--hl-line); min-height: 1em; }
+.horizontal { width: 100%; height: var(--gooee-line); }
+.vertical { align-self: stretch; width: var(--gooee-line); min-height: 1em; }
 
 .animated.horizontal,
-.animated .line { animation: drawX var(--hl-motion-slower) var(--hl-ease-out); }
-.animated.vertical { animation: drawY var(--hl-motion-slower) var(--hl-ease-out); }
+.animated .line { animation: drawX var(--gooee-motion-slower) var(--gooee-ease-out); }
+.animated.vertical { animation: drawY var(--gooee-motion-slower) var(--gooee-ease-out); }
 
 .labelled {
   display: flex;
   align-items: center;
-  gap: var(--hl-space-4);
+  gap: var(--gooee-space-4);
   width: 100%;
 }
 
 .line {
   flex: 1;
-  height: var(--hl-line);
-  background: var(--hl-color-border);
+  height: var(--gooee-line);
+  background: var(--gooee-color-border);
 }
 
 .line:first-child { transform-origin: right; }
 .line:last-child { transform-origin: left; }
 
 .text {
-  font-size: var(--hl-text-xs);
-  font-weight: var(--hl-weight-medium);
-  color: var(--hl-color-fg-muted);
+  font-size: var(--gooee-text-xs);
+  font-weight: var(--gooee-weight-medium);
+  color: var(--gooee-color-fg-muted);
 }
 
-.animated .text { animation: fade var(--hl-motion-slower) var(--hl-ease-out); }
+.animated .text { animation: fade var(--gooee-motion-slower) var(--gooee-ease-out); }
 
 @keyframes drawX { from { transform: scaleX(0); } }
 @keyframes drawY { from { transform: scaleY(0); } }

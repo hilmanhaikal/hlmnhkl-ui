@@ -1,4 +1,4 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 /* The max width adds the padding back, so the size token stays the content width. */
 .root {
   box-sizing: border-box;
@@ -8,8 +8,8 @@
   padding-right: max(var(--container-pad), env(safe-area-inset-right, 0px));
 }
 
-.sm { --container-max: var(--hl-container-sm); }
-.md { --container-max: var(--hl-container-md); }
-.lg { --container-max: var(--hl-container-lg); }
-.xl { --container-max: var(--hl-container-xl); }
+.sm { --container-max: var(--gooee-container-sm); }
+.md { --container-max: var(--gooee-container-md); }
+.lg { --container-max: var(--gooee-container-lg); }
+.xl { --container-max: var(--gooee-container-xl); }
 .full { max-width: none; }

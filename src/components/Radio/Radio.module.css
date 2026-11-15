@@ -7,43 +7,43 @@
 
 .legend {
   padding: 0;
-  margin-bottom: var(--hl-space-2);
-  font-size: var(--hl-text-sm);
-  font-weight: var(--hl-weight-medium);
+  margin-bottom: var(--gooee-space-2);
+  font-size: var(--gooee-text-sm);
+  font-weight: var(--gooee-weight-medium);
 }
 
 .groupDescription {
-  margin: 0 0 var(--hl-space-2);
-  font-size: var(--hl-text-sm);
-  color: var(--hl-color-fg-muted);
+  margin: 0 0 var(--gooee-space-2);
+  font-size: var(--gooee-text-sm);
+  color: var(--gooee-color-fg-muted);
 }
 
 .items { display: flex; }
 .vertical { flex-direction: column; }
-.horizontal { flex-wrap: wrap; column-gap: var(--hl-space-7); }
+.horizontal { flex-wrap: wrap; column-gap: var(--gooee-space-7); }
 
 .root {
   display: flex;
   align-items: flex-start;
-  gap: var(--hl-space-4);
-  min-height: var(--hl-hit-min);
-  padding-block: var(--hl-space-4);
+  gap: var(--gooee-space-4);
+  min-height: var(--gooee-hit-min);
+  padding-block: var(--gooee-space-4);
 }
 
-.root[data-disabled] { opacity: var(--hl-disabled-opacity); }
+.root[data-disabled] { opacity: var(--gooee-disabled-opacity); }
 
 .circleWrap {
   position: relative;
   display: inline-grid;
   flex: none;
-  width: var(--hl-control-box);
-  height: var(--hl-control-box);
-  margin-top: var(--hl-space-1);
+  width: var(--gooee-control-box);
+  height: var(--gooee-control-box);
+  margin-top: var(--gooee-space-1);
 }
 
 .input {
   position: absolute;
-  inset: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset: min(0px, calc((100% - var(--gooee-hit-min)) / 2));
   margin: 0;
   opacity: 0;
   cursor: pointer;
@@ -57,50 +57,50 @@
   place-items: center;
   width: 100%;
   height: 100%;
-  border: var(--hl-line-thick) solid var(--hl-color-border-strong);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface);
+  border: var(--gooee-line-thick) solid var(--gooee-color-border-strong);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-surface);
   transition:
-    border-color var(--hl-motion-fast) var(--hl-ease-out),
-    box-shadow var(--hl-motion-fast) var(--hl-ease-out),
-    transform var(--hl-motion-slow) var(--hl-ease-spring);
+    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out),
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
 }
 
 @media (hover: hover) {
-  .input:hover:not(:disabled) + .circle { border-color: var(--hl-color-fg); }
+  .input:hover:not(:disabled) + .circle { border-color: var(--gooee-color-fg); }
 }
-.input:active:not(:disabled) + .circle { transform: scale(var(--hl-press-scale-strong)); transition-duration: var(--hl-motion-instant); }
-.input:focus-visible + .circle { box-shadow: var(--hl-focus-ring); }
-.circle[data-on] { border-color: var(--hl-color-accent); }
-.group[data-invalid] .circle:not([data-on]) { border-color: var(--hl-color-danger); }
+.input:active:not(:disabled) + .circle { transform: scale(var(--gooee-press-scale-strong)); transition-duration: var(--gooee-motion-instant); }
+.input:focus-visible + .circle { box-shadow: var(--gooee-focus-ring); }
+.circle[data-on] { border-color: var(--gooee-color-accent); }
+.group[data-invalid] .circle:not([data-on]) { border-color: var(--gooee-color-danger); }
 
 .dot {
-  width: var(--hl-control-dot);
-  height: var(--hl-control-dot);
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-accent);
+  width: var(--gooee-control-dot);
+  height: var(--gooee-control-dot);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-accent);
   transform: scale(0);
-  transition: transform var(--hl-motion-fast) var(--hl-ease-in);
+  transition: transform var(--gooee-motion-fast) var(--gooee-ease-in);
 }
 
 .circle[data-on] .dot {
   transform: scale(1);
-  transition: transform var(--hl-motion-slow) var(--hl-ease-bounce);
+  transition: transform var(--gooee-motion-slow) var(--gooee-ease-bounce);
 }
 
 .text {
   display: flex;
   flex-direction: column;
-  gap: var(--hl-space-1);
+  gap: var(--gooee-space-1);
 }
 
 .label {
-  line-height: var(--hl-leading-snug);
+  line-height: var(--gooee-leading-snug);
   cursor: pointer;
 }
 
 .description {
-  font-size: var(--hl-text-sm);
-  color: var(--hl-color-fg-muted);
-  line-height: var(--hl-leading-snug);
+  font-size: var(--gooee-text-sm);
+  color: var(--gooee-color-fg-muted);
+  line-height: var(--gooee-leading-snug);
 }

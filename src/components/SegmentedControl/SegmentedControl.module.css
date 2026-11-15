@@ -3,10 +3,10 @@
   display: inline-flex;
   /* Its own width in a column layout too; fullWidth (.full) still fills the row. */
   width: fit-content;
-  padding: var(--hl-space-1);
-  border: var(--hl-line) solid var(--hl-color-border);
-  border-radius: var(--hl-radius-control);
-  background: var(--hl-color-surface-sunken);
+  padding: var(--gooee-space-1);
+  border: var(--gooee-line) solid var(--gooee-color-border);
+  border-radius: var(--gooee-radius-control);
+  background: var(--gooee-color-surface-sunken);
   isolation: isolate;
   max-width: 100%;
 }
@@ -16,21 +16,21 @@
 
 .pill {
   position: absolute;
-  top: var(--hl-space-1);
-  bottom: var(--hl-space-1);
+  top: var(--gooee-space-1);
+  bottom: var(--gooee-space-1);
   left: 0;
   z-index: -1;
-  border-radius: var(--hl-radius-control);
-  background: var(--hl-color-surface-raised);
-  box-shadow: var(--hl-shadow-2), 0 0 0 var(--hl-line) var(--hl-color-border);
+  border-radius: var(--gooee-radius-control);
+  background: var(--gooee-color-surface-raised);
+  box-shadow: var(--gooee-shadow-2), 0 0 0 var(--gooee-line) var(--gooee-color-border);
 }
 
 /* A resize slides the pill plainly. A new choice flows it (internal/liquidMatter.ts useFlow): while
    it flows the pill hides and .liquid draws it, then the pill is back in its place, exact. */
 .pill[data-ready] {
   transition:
-    transform var(--hl-motion-slow) var(--hl-ease-out),
-    width var(--hl-motion-slow) var(--hl-ease-out);
+    transform var(--gooee-motion-slow) var(--gooee-ease-out),
+    width var(--gooee-motion-slow) var(--gooee-ease-out);
 }
 
 .pill[data-flowing] {
@@ -50,7 +50,7 @@
 }
 
 /* While it flows, every label is muted and a copy in the chosen colour shows through the liquid. */
-.root[data-flowing] > .item { color: var(--hl-color-fg-muted); transition: none; }
+.root[data-flowing] > .item { color: var(--gooee-color-fg-muted); transition: none; }
 
 .ink {
   position: absolute;
@@ -60,7 +60,7 @@
 
 .ink .item {
   position: absolute;
-  color: var(--hl-color-fg);
+  color: var(--gooee-color-fg);
   transition: none;
 }
 
@@ -71,60 +71,60 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--hl-space-3);
-  --pad: var(--hl-space-5);
-  min-height: calc(var(--hl-control-h-md) - var(--hl-space-1) * 2);
+  gap: var(--gooee-space-3);
+  --pad: var(--gooee-space-5);
+  min-height: calc(var(--gooee-control-h-md) - var(--gooee-space-1) * 2);
   padding: 0 var(--pad);
   border: 0;
-  border-radius: var(--hl-radius-control);
+  border-radius: var(--gooee-radius-control);
   background: transparent;
-  color: var(--hl-color-fg-muted);
-  font-size: var(--hl-text-sm);
-  font-weight: var(--hl-weight-medium);
+  color: var(--gooee-color-fg-muted);
+  font-size: var(--gooee-text-sm);
+  font-weight: var(--gooee-weight-medium);
   white-space: nowrap;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition:
-    color var(--hl-motion-base) var(--hl-ease-out),
-    transform var(--hl-motion-slow) var(--hl-ease-spring);
+    color var(--gooee-motion-base) var(--gooee-ease-out),
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
 }
 
 .item::after {
   content: "";
   position: absolute;
-  inset-block: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset-block: min(0px, calc((100% - var(--gooee-hit-min)) / 2));
   inset-inline: 0;
 }
 
 .sm .item {
-  --pad: var(--hl-space-4);
-  min-height: calc(var(--hl-control-h-sm) - var(--hl-space-1) * 2);
-  font-size: var(--hl-text-xs);
+  --pad: var(--gooee-space-4);
+  min-height: calc(var(--gooee-control-h-sm) - var(--gooee-space-1) * 2);
+  font-size: var(--gooee-text-xs);
 }
 
 @media (hover: hover) {
-  .item:hover:not(:disabled) { color: var(--hl-color-fg); }
+  .item:hover:not(:disabled) { color: var(--gooee-color-fg); }
 }
-.item:active:not(:disabled) { transform: scale(var(--hl-press-scale)); }
-.item[data-on] { color: var(--hl-color-fg); }
-.item:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
+.item:active:not(:disabled) { transform: scale(var(--gooee-press-scale)); }
+.item[data-on] { color: var(--gooee-color-fg); }
+.item:disabled { opacity: var(--gooee-disabled-opacity); cursor: not-allowed; }
 
 .item:focus-visible {
   outline: none;
-  box-shadow: var(--hl-focus-ring);
+  box-shadow: var(--gooee-focus-ring);
 }
 
 .icon {
   display: inline-flex;
   flex: none;
-  font-size: var(--hl-icon-md);
+  font-size: var(--gooee-icon-md);
 }
 
 /* Too wide for its box (a narrow phone): less padding first, then long labels end in an ellipsis */
 .root[data-tight] .item {
   flex: 1 1 auto;
   min-width: 0;
-  --pad: var(--hl-space-3);
+  --pad: var(--gooee-space-3);
 }
 
 .text {
@@ -138,13 +138,13 @@
 @media (pointer: coarse) {
   .item,
   .sm .item {
-    min-height: var(--hl-hit-min);
+    min-height: var(--gooee-hit-min);
   }
   .text,
   .icon:only-child {
-    min-width: calc(var(--hl-hit-min) - var(--pad) * 2);
+    min-width: calc(var(--gooee-hit-min) - var(--pad) * 2);
     justify-content: center;
     text-align: center;
   }
-  .root[data-tight] .item { min-width: var(--hl-hit-min); }
+  .root[data-tight] .item { min-width: var(--gooee-hit-min); }
 }

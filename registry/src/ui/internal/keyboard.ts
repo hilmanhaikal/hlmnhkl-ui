@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 // A phone's keyboard covers the bottom of the window, and Safari scrolls a field into view only when
 // you tap the field itself. Parts move focus from code without scrolling (so their morph never jumps),
 // which leaves the field under the keyboard. While a keyboard is up, this keeps the focused field in

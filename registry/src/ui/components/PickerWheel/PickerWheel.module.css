@@ -1,34 +1,34 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
   display: grid;
-  gap: var(--hl-space-5);
+  gap: var(--gooee-space-5);
   width: 100%;
-  color: var(--hl-color-fg);
+  color: var(--gooee-color-fg);
 }
 
 .head {
   display: grid;
   justify-items: center;
-  gap: var(--hl-space-1);
+  gap: var(--gooee-space-1);
   text-align: center;
 }
 
 .label {
-  font-size: var(--hl-text-sm);
-  color: var(--hl-color-fg-muted);
+  font-size: var(--gooee-text-sm);
+  color: var(--gooee-color-fg-muted);
 }
 
 .readout {
-  font-size: var(--hl-text-4xl);
-  font-weight: var(--hl-weight-semibold);
-  letter-spacing: var(--hl-tracking-tight);
+  font-size: var(--gooee-text-4xl);
+  font-weight: var(--gooee-weight-semibold);
+  letter-spacing: var(--gooee-tracking-tight);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
 .detail {
-  font-size: var(--hl-text-sm);
-  color: var(--hl-color-fg-muted);
+  font-size: var(--gooee-text-sm);
+  color: var(--gooee-color-fg-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -38,12 +38,12 @@
 }
 
 .column {
-  /* The drum's radius, so each row of --hl-hit-min turns by --hl-wheel-tilt. */
-  --wheel-r: calc(var(--hl-hit-min) / 2 / tan(var(--hl-wheel-tilt) / 2));
+  /* The drum's radius, so each row of --gooee-hit-min turns by --gooee-wheel-tilt. */
+  --wheel-r: calc(var(--gooee-hit-min) / 2 / tan(var(--gooee-wheel-tilt) / 2));
   position: relative;
   flex: none;
-  width: var(--hl-wheel-w);
-  height: calc(var(--hl-wheel-rows) * var(--hl-hit-min));
+  width: var(--gooee-wheel-w);
+  height: calc(var(--gooee-wheel-rows) * var(--gooee-hit-min));
   perspective: calc(var(--wheel-r) * 7);
   touch-action: none;
   cursor: grab;
@@ -51,11 +51,11 @@
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  mask-image: linear-gradient(180deg, transparent, var(--hl-color-fg) 30%, var(--hl-color-fg) 70%, transparent);
+  mask-image: linear-gradient(180deg, transparent, var(--gooee-color-fg) 30%, var(--gooee-color-fg) 70%, transparent);
 }
 
 .column[data-wide] {
-  width: calc(var(--hl-wheel-w) * 2);
+  width: calc(var(--gooee-wheel-w) * 2);
 }
 
 .column[data-moving] {
@@ -68,26 +68,26 @@
   left: 0;
   right: 0;
   top: 50%;
-  height: calc(var(--hl-hit-min) - var(--hl-space-3) + var(--hl-space-3) * var(--grip, 1));
+  height: calc(var(--gooee-hit-min) - var(--gooee-space-3) + var(--gooee-space-3) * var(--grip, 1));
   transform: translateY(-50%);
-  background: var(--hl-color-surface-sunken);
+  background: var(--gooee-color-surface-sunken);
 }
 
 .column:first-child .band {
-  border-radius: var(--hl-radius-md) 0 0 var(--hl-radius-md);
+  border-radius: var(--gooee-radius-md) 0 0 var(--gooee-radius-md);
 }
 
 .column:last-child .band {
-  border-radius: 0 var(--hl-radius-md) var(--hl-radius-md) 0;
+  border-radius: 0 var(--gooee-radius-md) var(--gooee-radius-md) 0;
 }
 
 .column:only-child .band {
-  border-radius: var(--hl-radius-md);
+  border-radius: var(--gooee-radius-md);
 }
 
 .column:focus-visible .band {
-  border-radius: var(--hl-radius-md);
-  box-shadow: var(--hl-focus-ring);
+  border-radius: var(--gooee-radius-md);
+  box-shadow: var(--gooee-focus-ring);
 }
 
 .drum {
@@ -102,23 +102,23 @@
   left: 0;
   right: 0;
   top: 50%;
-  height: var(--hl-hit-min);
-  margin-top: calc(var(--hl-hit-min) / -2);
+  height: var(--gooee-hit-min);
+  margin-top: calc(var(--gooee-hit-min) / -2);
   display: grid;
   place-items: center;
-  font-size: var(--hl-text-xl);
+  font-size: var(--gooee-text-xl);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   backface-visibility: hidden;
-  transform: rotateX(calc(var(--d) * -1 * var(--hl-wheel-tilt))) translateZ(var(--wheel-r));
+  transform: rotateX(calc(var(--d) * -1 * var(--gooee-wheel-tilt))) translateZ(var(--wheel-r));
 }
 
 .row[data-strong]::after {
   content: '';
   position: absolute;
-  right: var(--hl-space-2);
-  width: var(--hl-space-2);
-  height: var(--hl-space-2);
-  border-radius: var(--hl-radius-full);
+  right: var(--gooee-space-2);
+  width: var(--gooee-space-2);
+  height: var(--gooee-space-2);
+  border-radius: var(--gooee-radius-full);
   background: currentColor;
 }

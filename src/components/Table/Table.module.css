@@ -4,33 +4,33 @@
   position: relative;
   container-type: inline-size;
   min-width: 0;
-  border: var(--hl-line) solid var(--hl-color-border);
-  border-radius: var(--hl-radius-panel);
-  background: var(--hl-color-surface);
+  border: var(--gooee-line) solid var(--gooee-color-border);
+  border-radius: var(--gooee-radius-panel);
+  background: var(--gooee-color-surface);
   overflow: hidden;
 }
 
 .scroll {
   overflow: auto;
   /* Room for the sticky header row and first column, so focus never lands under them. */
-  scroll-padding: var(--hl-hit-min) 0 0 var(--first-w, 0px);
+  scroll-padding: var(--gooee-hit-min) 0 0 var(--first-w, 0px);
   /* Sideways only: a swipe at the edge must not go back a page, but the wheel still scrolls the page. */
   overscroll-behavior-x: contain;
 }
 
-.scroll:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--hl-line-focus) var(--hl-color-fg); }
+.scroll:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg); }
 
 .table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  font-size: var(--hl-text-sm);
+  font-size: var(--gooee-text-sm);
 }
 
 .caption {
-  padding: var(--hl-space-5) var(--hl-space-5) var(--hl-space-3);
-  font-size: var(--hl-text-md);
-  font-weight: var(--hl-weight-semibold);
+  padding: var(--gooee-space-5) var(--gooee-space-5) var(--gooee-space-3);
+  font-size: var(--gooee-text-md);
+  font-weight: var(--gooee-weight-semibold);
   text-align: left;
 }
 
@@ -38,32 +38,32 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  background: var(--hl-color-surface);
-  box-shadow: inset 0 calc(var(--hl-line) * -1) 0 var(--hl-color-border);
+  background: var(--gooee-color-surface);
+  box-shadow: inset 0 calc(var(--gooee-line) * -1) 0 var(--gooee-color-border);
 }
 
 .th {
-  height: var(--hl-hit-min);
-  padding: 0 var(--hl-space-5);
-  font-size: var(--hl-text-xs);
-  font-weight: var(--hl-weight-medium);
+  height: var(--gooee-hit-min);
+  padding: 0 var(--gooee-space-5);
+  font-size: var(--gooee-text-xs);
+  font-weight: var(--gooee-weight-medium);
   text-align: left;
   white-space: nowrap;
-  color: var(--hl-color-fg-muted);
+  color: var(--gooee-color-fg-muted);
 }
 
-.th[data-sortable] { padding: 0 var(--hl-space-3); }
+.th[data-sortable] { padding: 0 var(--gooee-space-3); }
 .th[data-align="end"],
 .td[data-align="end"] { text-align: right; }
 
 .sortButton {
   display: inline-flex;
   align-items: center;
-  gap: var(--hl-space-2);
-  min-height: var(--hl-hit-min);
-  padding: 0 var(--hl-space-3);
+  gap: var(--gooee-space-2);
+  min-height: var(--gooee-hit-min);
+  padding: 0 var(--gooee-space-3);
   border: 0;
-  border-radius: var(--hl-radius-sm);
+  border-radius: var(--gooee-radius-sm);
   background: transparent;
   color: inherit;
   font: inherit;
@@ -71,31 +71,31 @@
   text-transform: inherit;
   cursor: pointer;
   transition:
-    background-color var(--hl-motion-fast) var(--hl-ease-out),
-    color var(--hl-motion-fast) var(--hl-ease-out);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 .th[data-align="end"] .sortButton { flex-direction: row-reverse; }
 @media (hover: hover) {
-  .sortButton:hover:not(:disabled) { background: var(--hl-color-surface-hover); color: var(--hl-color-fg); }
+  .sortButton:hover:not(:disabled) { background: var(--gooee-color-surface-hover); color: var(--gooee-color-fg); }
 }
-.sortButton[data-active] { color: var(--hl-color-fg); }
+.sortButton[data-active] { color: var(--gooee-color-fg); }
 .sortButton:disabled { cursor: default; }
-.sortButton:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--hl-line-focus) var(--hl-color-fg); }
+.sortButton:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg); }
 
 .sortIcon {
-  width: var(--hl-icon-sm);
-  height: var(--hl-icon-sm);
+  width: var(--gooee-icon-sm);
+  height: var(--gooee-icon-sm);
   fill: none;
   stroke: currentColor;
   stroke-width: 1.75;
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: 0;
-  transform: translateY(var(--hl-space-1));
+  transform: translateY(var(--gooee-space-1));
   transition:
-    transform var(--hl-motion-slow) var(--hl-ease-spring),
-    opacity var(--hl-motion-base) var(--hl-ease-out);
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring),
+    opacity var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 @media (hover: hover) {
@@ -106,22 +106,22 @@
 .sortIcon[data-dir="descending"] { transform: rotate(180deg); }
 
 .row {
-  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 @media (hover: hover) {
-  .row:hover { background: var(--hl-color-surface-hover); }
+  .row:hover { background: var(--gooee-color-surface-hover); }
 }
-.row[data-selected] { background: var(--hl-color-surface-sunken); }
+.row[data-selected] { background: var(--gooee-color-surface-sunken); }
 @media (hover: hover) {
-  .row[data-selected]:hover { background: var(--hl-color-surface-active); }
+  .row[data-selected]:hover { background: var(--gooee-color-surface-active); }
 }
 
 .td,
 .checkCell {
-  height: var(--hl-hit-min);
-  padding: var(--hl-space-3) var(--hl-space-5);
-  border-top: var(--hl-line) solid var(--hl-color-border);
+  height: var(--gooee-hit-min);
+  padding: var(--gooee-space-3) var(--gooee-space-5);
+  border-top: var(--gooee-line) solid var(--gooee-color-border);
   vertical-align: middle;
   font-variant-numeric: tabular-nums;
 }
@@ -129,7 +129,7 @@
 .head .checkCell { border-top: 0; }
 
 .checkCell {
-  width: calc(var(--hl-hit-min) + var(--hl-space-5));
+  width: calc(var(--gooee-hit-min) + var(--gooee-space-5));
   padding-right: 0;
   /* th centres by default */
   text-align: left;
@@ -138,37 +138,37 @@
 /* A group's header: its name and how many rows it holds, on a quiet band that opens a gap above it,
    so the groups read as pieces the table split into. */
 .groupHead {
-  padding: var(--hl-space-6) var(--hl-space-5) var(--hl-space-2);
-  border-top: var(--hl-line) solid var(--hl-color-border);
-  background: var(--hl-color-surface-sunken);
-  font-size: var(--hl-text-sm);
-  font-weight: var(--hl-weight-semibold);
+  padding: var(--gooee-space-6) var(--gooee-space-5) var(--gooee-space-2);
+  border-top: var(--gooee-line) solid var(--gooee-color-border);
+  background: var(--gooee-color-surface-sunken);
+  font-size: var(--gooee-text-sm);
+  font-weight: var(--gooee-weight-semibold);
   text-align: left;
 }
 
-.group:first-of-type .groupHead { padding-top: var(--hl-space-3); }
+.group:first-of-type .groupHead { padding-top: var(--gooee-space-3); }
 
 .groupCount {
-  margin-left: var(--hl-space-3);
-  font-size: var(--hl-text-xs);
-  font-weight: var(--hl-weight-regular);
-  color: var(--hl-color-fg-muted);
+  margin-left: var(--gooee-space-3);
+  font-size: var(--gooee-text-xs);
+  font-weight: var(--gooee-weight-regular);
+  color: var(--gooee-color-fg-muted);
 }
 
 /* A new group's header settles in while its rows glide into place below it. */
-.groupRow { animation: groupIn var(--hl-motion-slow) var(--hl-ease-out) both; }
+.groupRow { animation: groupIn var(--gooee-motion-slow) var(--gooee-ease-out) both; }
 
 @keyframes groupIn {
-  from { opacity: 0; transform: translateY(calc(var(--hl-shift-sm) * -1)); }
+  from { opacity: 0; transform: translateY(calc(var(--gooee-shift-sm) * -1)); }
 }
 
 .loadingRow { pointer-events: none; }
 
 .empty {
-  padding: var(--hl-space-9) var(--hl-space-5);
-  border-top: var(--hl-line) solid var(--hl-color-border);
+  padding: var(--gooee-space-9) var(--gooee-space-5);
+  border-top: var(--gooee-line) solid var(--gooee-color-border);
   text-align: center;
-  color: var(--hl-color-fg-muted);
+  color: var(--gooee-color-fg-muted);
 }
 
 .check {
@@ -176,9 +176,9 @@
   /* Not inline, so th and td baselines cannot shift it */
   display: grid;
   place-items: center;
-  width: var(--hl-hit-min);
-  height: var(--hl-hit-min);
-  margin: calc((var(--hl-hit-min) - var(--hl-table-check)) / -2);
+  width: var(--gooee-hit-min);
+  height: var(--gooee-hit-min);
+  margin: calc((var(--gooee-hit-min) - var(--gooee-table-check)) / -2);
 }
 
 .checkInput {
@@ -192,17 +192,17 @@
 .checkBox {
   display: grid;
   place-items: center;
-  width: var(--hl-table-check);
-  height: var(--hl-table-check);
-  border: var(--hl-line-thick) solid var(--hl-color-border-strong);
-  border-radius: var(--hl-radius-xs);
-  background: var(--hl-color-surface);
-  color: var(--hl-color-accent-fg);
+  width: var(--gooee-table-check);
+  height: var(--gooee-table-check);
+  border: var(--gooee-line-thick) solid var(--gooee-color-border-strong);
+  border-radius: var(--gooee-radius-xs);
+  background: var(--gooee-color-surface);
+  color: var(--gooee-color-accent-fg);
   pointer-events: none;
   transition:
-    background-color var(--hl-motion-fast) var(--hl-ease-out),
-    border-color var(--hl-motion-fast) var(--hl-ease-out),
-    transform var(--hl-motion-slow) var(--hl-ease-spring);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
 }
 
 .checkBox svg {
@@ -217,19 +217,19 @@
 
 .checkBox[data-state="on"],
 .checkBox[data-state="mixed"] {
-  border-color: var(--hl-color-accent);
-  background: var(--hl-color-accent);
+  border-color: var(--gooee-color-accent);
+  background: var(--gooee-color-accent);
 }
 
-.checkInput:active + .checkBox { transform: scale(var(--hl-press-scale)); }
-.checkInput:focus-visible + .checkBox { box-shadow: var(--hl-focus-ring); }
+.checkInput:active + .checkBox { transform: scale(var(--gooee-press-scale)); }
+.checkInput:focus-visible + .checkBox { box-shadow: var(--gooee-focus-ring); }
 
 .tick,
 .dash {
   /* Hidden just before the path starts. A zero-length dash would leave its round ends as a dot in Safari. */
   stroke-dasharray: 1 2;
   stroke-dashoffset: 1.01;
-  transition: stroke-dashoffset var(--hl-motion-base) var(--hl-ease-out);
+  transition: stroke-dashoffset var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 .checkBox[data-state="on"] .tick,
@@ -258,9 +258,9 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--hl-space-2);
-    padding: var(--hl-space-2) var(--hl-space-3);
-    border-bottom: var(--hl-line) solid var(--hl-color-border);
+    gap: var(--gooee-space-2);
+    padding: var(--gooee-space-2) var(--gooee-space-3);
+    border-bottom: var(--gooee-line) solid var(--gooee-color-border);
   }
 
   /* Stacked, the head only holds sort buttons and the select-all box. A table with neither
@@ -274,8 +274,8 @@
 
   [data-layout="stack"] .row {
     position: relative;
-    padding: var(--hl-space-3) var(--hl-space-4);
-    border-top: var(--hl-line) solid var(--hl-color-border);
+    padding: var(--gooee-space-3) var(--gooee-space-4);
+    border-top: var(--gooee-line) solid var(--gooee-color-border);
   }
 
   [data-layout="stack"] .row:first-child { border-top: 0; }
@@ -284,10 +284,10 @@
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     align-items: center;
-    gap: var(--hl-space-4);
+    gap: var(--gooee-space-4);
     height: auto;
-    min-height: var(--hl-control-h-sm);
-    padding: var(--hl-space-2) 0;
+    min-height: var(--gooee-control-h-sm);
+    padding: var(--gooee-space-2) 0;
     border-top: 0;
     text-align: left;
   }
@@ -296,22 +296,22 @@
 
   [data-layout="stack"] .td::before {
     content: attr(data-label);
-    font-size: var(--hl-text-xs);
-    font-weight: var(--hl-weight-medium);
-    color: var(--hl-color-fg-muted);
+    font-size: var(--gooee-text-xs);
+    font-weight: var(--gooee-weight-medium);
+    color: var(--gooee-color-fg-muted);
   }
 
   [data-layout="stack"] .table .row .checkCell {
     position: absolute;
-    top: var(--hl-space-3);
-    right: var(--hl-space-3);
+    top: var(--gooee-space-3);
+    right: var(--gooee-space-3);
     width: auto;
     height: auto;
     padding: 0;
     border: 0;
   }
 
-  [data-layout="stack"] .row:has(.checkCell) .td { padding-right: var(--hl-hit-min); }
+  [data-layout="stack"] .row:has(.checkCell) .td { padding-right: var(--gooee-hit-min); }
 }
 
 /* layout="scroll": the table keeps its columns and scrolls sideways when it is wider than its
@@ -322,7 +322,7 @@
 }
 
 [data-layout="scroll"] .td {
-  max-width: var(--hl-table-cell-max);
+  max-width: var(--gooee-table-cell-max);
 }
 
 /* The first column stays in place while the rest scrolls, so each row keeps its name. */
@@ -330,26 +330,26 @@
   position: sticky;
   left: 0;
   z-index: 1;
-  background: var(--hl-color-surface);
+  background: var(--gooee-color-surface);
 }
 
 [data-layout="scroll"] .head tr > :first-child { z-index: 2; }
 
 [data-layout="scroll"][data-more-start] tr > :first-child {
-  box-shadow: inset calc(var(--hl-line) * -1) 0 0 var(--hl-color-border);
+  box-shadow: inset calc(var(--gooee-line) * -1) 0 0 var(--gooee-color-border);
 }
 
 [data-layout="scroll"][data-more-start] .head tr > :first-child {
   box-shadow:
-    inset calc(var(--hl-line) * -1) 0 0 var(--hl-color-border),
-    inset 0 calc(var(--hl-line) * -1) 0 var(--hl-color-border);
+    inset calc(var(--gooee-line) * -1) 0 0 var(--gooee-color-border),
+    inset 0 calc(var(--gooee-line) * -1) 0 var(--gooee-color-border);
 }
 
-[data-layout="scroll"] .row[data-selected] > :first-child { background: var(--hl-color-surface-sunken); }
+[data-layout="scroll"] .row[data-selected] > :first-child { background: var(--gooee-color-surface-sunken); }
 
 @media (hover: hover) {
-  [data-layout="scroll"] .row:hover > :first-child { background: var(--hl-color-surface-hover); }
-  [data-layout="scroll"] .row[data-selected]:hover > :first-child { background: var(--hl-color-surface-active); }
+  [data-layout="scroll"] .row:hover > :first-child { background: var(--gooee-color-surface-hover); }
+  [data-layout="scroll"] .row[data-selected]:hover > :first-child { background: var(--gooee-color-surface-active); }
 }
 
 /* A soft fade on the edge that has more to scroll to. */
@@ -359,11 +359,11 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: var(--hl-space-8);
-  background: linear-gradient(to right, transparent, var(--hl-color-surface));
+  width: var(--gooee-space-8);
+  background: linear-gradient(to right, transparent, var(--gooee-color-surface));
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--hl-motion-fast) var(--hl-ease-out);
+  transition: opacity var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 [data-layout="scroll"][data-more-end]::after { opacity: 1; }

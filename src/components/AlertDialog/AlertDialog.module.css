@@ -1,2 +1,2 @@
 /* Dialog's header leaves room on the right for its close button. An alert dialog has none: Cancel is the way out. */
-.header { padding-right: var(--hl-space-7); }
+.header { padding-right: var(--gooee-space-7); }

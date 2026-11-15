@@ -1,4 +1,4 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 /* The negative margin keeps the announcers from adding a pixel of scroll under the page. */
 .srOnly {
   position: absolute;
@@ -12,20 +12,20 @@
 
 .viewport {
   position: fixed;
-  left: var(--hl-space-4);
-  right: var(--hl-space-4);
-  bottom: calc(var(--hl-space-5) + env(safe-area-inset-bottom));
-  z-index: var(--hl-z-toast);
+  left: var(--gooee-space-4);
+  right: var(--gooee-space-4);
+  bottom: calc(var(--gooee-space-5) + env(safe-area-inset-bottom));
+  z-index: var(--gooee-z-toast);
   pointer-events: none;
-  transition: height var(--hl-motion-slow) var(--hl-ease-out);
+  transition: height var(--gooee-motion-slow) var(--gooee-ease-out);
 }
 
 @media (min-width: 640px) {
   .viewport {
     left: auto;
-    right: var(--hl-space-7);
-    bottom: var(--hl-space-7);
-    width: var(--hl-toast-w);
+    right: var(--gooee-space-7);
+    bottom: var(--gooee-space-7);
+    width: var(--gooee-toast-w);
   }
 }
 
@@ -46,28 +46,28 @@
   bottom: 0;
   display: flex;
   align-items: flex-start;
-  gap: var(--hl-space-4);
-  padding: var(--hl-space-5) var(--hl-space-2) var(--hl-space-5) var(--hl-space-5);
-  border: var(--hl-line) solid var(--hl-glass-edge, var(--hl-color-border));
-  border-radius: var(--hl-radius-md);
-  background: var(--hl-glass-bg, var(--hl-color-surface));
-  -webkit-backdrop-filter: var(--hl-glass-filter, none);
-  backdrop-filter: var(--hl-glass-filter, none);
-  box-shadow: var(--hl-shadow-3);
+  gap: var(--gooee-space-4);
+  padding: var(--gooee-space-5) var(--gooee-space-2) var(--gooee-space-5) var(--gooee-space-5);
+  border: var(--gooee-line) solid var(--gooee-glass-edge, var(--gooee-color-border));
+  border-radius: var(--gooee-radius-md);
+  background: var(--gooee-glass-bg, var(--gooee-color-surface));
+  -webkit-backdrop-filter: var(--gooee-glass-filter, none);
+  backdrop-filter: var(--gooee-glass-filter, none);
+  box-shadow: var(--gooee-shadow-3);
   pointer-events: auto;
   touch-action: pan-y;
   user-select: none;
   transform-origin: bottom center;
   transform: translate(var(--dx), var(--y)) scale(var(--s));
   transition:
-    transform var(--hl-motion-slow) var(--hl-ease-spring),
-    opacity var(--hl-motion-base) var(--hl-ease-out);
-  animation: toastIn var(--hl-motion-slow) var(--hl-ease-spring);
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring),
+    opacity var(--gooee-motion-base) var(--gooee-ease-out);
+  animation: toastIn var(--gooee-motion-slow) var(--gooee-ease-spring);
 }
 
 .toast[data-dragging] { transition: none; }
 /* A spring is moving it from the hand: only the fade stays with CSS. */
-.toast[data-fluid] { transition: opacity var(--hl-motion-base) var(--hl-ease-out); }
+.toast[data-fluid] { transition: opacity var(--gooee-motion-base) var(--gooee-ease-out); }
 .toast[data-hidden] { opacity: 0; pointer-events: none; }
 
 .toast[data-behind] {
@@ -77,16 +77,16 @@
 
 .toast[data-behind] > * {
   opacity: 0;
-  transition: opacity var(--hl-motion-fast) var(--hl-ease-out);
+  transition: opacity var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
-.toast > * { transition: opacity var(--hl-motion-base) var(--hl-ease-out); }
+.toast > * { transition: opacity var(--gooee-motion-base) var(--gooee-ease-out); }
 
-.toast[data-leaving="down"] { animation: toastOutDown var(--hl-motion-morph-out) var(--hl-ease-morph) forwards; }
-.toast[data-leaving="left"] { animation: toastOutLeft var(--hl-motion-slow) var(--hl-ease-out) forwards; }
-.toast[data-leaving="right"] { animation: toastOutRight var(--hl-motion-slow) var(--hl-ease-out) forwards; }
+.toast[data-leaving="down"] { animation: toastOutDown var(--gooee-motion-morph-out) var(--gooee-ease-morph) forwards; }
+.toast[data-leaving="left"] { animation: toastOutLeft var(--gooee-motion-slow) var(--gooee-ease-out) forwards; }
+.toast[data-leaving="right"] { animation: toastOutRight var(--gooee-motion-slow) var(--gooee-ease-out) forwards; }
 /* Thrown away: the spring carries it off at the hand's speed, so it only fades. */
-.toast[data-fluid][data-leaving] { animation: toastFade var(--hl-motion-slow) var(--hl-ease-out) forwards; }
+.toast[data-fluid][data-leaving] { animation: toastFade var(--gooee-motion-slow) var(--gooee-ease-out) forwards; }
 /* The bud (Toast.tsx) grows it in and flows it away instead. */
 .toast[data-liquid]:not([data-leaving]),
 .toast[data-liquid][data-leaving="down"] { animation: none; }
@@ -94,13 +94,13 @@
 .icon {
   display: inline-flex;
   flex: none;
-  margin-top: var(--hl-space-1);
-  font-size: var(--hl-icon-lg);
+  margin-top: var(--gooee-space-1);
+  font-size: var(--gooee-icon-lg);
 }
 
 /* Only the icon has status colour; its shape and the title carry the meaning */
-.icon[data-variant="success"] { color: var(--hl-color-success); }
-.icon[data-variant="error"] { color: var(--hl-color-danger); }
+.icon[data-variant="success"] { color: var(--gooee-color-success); }
+.icon[data-variant="error"] { color: var(--gooee-color-danger); }
 
 .text {
   flex: 1;
@@ -109,73 +109,73 @@
 
 .title {
   margin: 0;
-  font-size: var(--hl-text-md);
-  font-weight: var(--hl-weight-medium);
-  line-height: var(--hl-leading-snug);
+  font-size: var(--gooee-text-md);
+  font-weight: var(--gooee-weight-medium);
+  line-height: var(--gooee-leading-snug);
 }
 
 .description {
-  margin: var(--hl-space-1) 0 0;
-  font-size: var(--hl-text-sm);
-  color: var(--hl-color-fg-muted);
-  line-height: var(--hl-leading-snug);
+  margin: var(--gooee-space-1) 0 0;
+  font-size: var(--gooee-text-sm);
+  color: var(--gooee-color-fg-muted);
+  line-height: var(--gooee-leading-snug);
 }
 
 .action {
   flex: none;
   align-self: center;
-  min-height: var(--hl-control-h-sm);
-  padding: 0 var(--hl-space-4);
-  border: var(--hl-line) solid var(--hl-color-border-strong);
-  border-radius: var(--hl-radius-control);
+  min-height: var(--gooee-control-h-sm);
+  padding: 0 var(--gooee-space-4);
+  border: var(--gooee-line) solid var(--gooee-color-border-strong);
+  border-radius: var(--gooee-radius-control);
   background: transparent;
-  font-size: var(--hl-text-sm);
-  font-weight: var(--hl-weight-medium);
+  font-size: var(--gooee-text-sm);
+  font-weight: var(--gooee-weight-medium);
   cursor: pointer;
   position: relative;
-  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 .action::after {
   content: "";
   position: absolute;
-  inset-block: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset-block: min(0px, calc((100% - var(--gooee-hit-min)) / 2));
   inset-inline: 0;
 }
 
 @media (hover: hover) {
-  .action:hover { background: var(--hl-color-surface-hover); }
+  .action:hover { background: var(--gooee-color-surface-hover); }
 }
-.action:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+.action:focus-visible { outline: none; box-shadow: var(--gooee-focus-ring); }
 
 .close {
   display: grid;
   place-items: center;
   flex: none;
-  width: var(--hl-hit-min);
-  height: var(--hl-hit-min);
-  margin-block: calc(var(--hl-space-4) * -1);
+  width: var(--gooee-hit-min);
+  height: var(--gooee-hit-min);
+  margin-block: calc(var(--gooee-space-4) * -1);
   padding: 0;
   border: 0;
-  border-radius: var(--hl-radius-full);
+  border-radius: var(--gooee-radius-full);
   background: transparent;
-  color: var(--hl-color-fg-muted);
-  font-size: var(--hl-icon-md);
+  color: var(--gooee-color-fg-muted);
+  font-size: var(--gooee-icon-md);
   cursor: pointer;
-  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 @media (hover: hover) {
-  .close:hover { background: var(--hl-color-surface-hover); color: var(--hl-color-fg); }
+  .close:hover { background: var(--gooee-color-surface-hover); color: var(--gooee-color-fg); }
 }
-.close:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+.close:focus-visible { outline: none; box-shadow: var(--gooee-focus-ring); }
 
 @keyframes toastIn {
-  from { opacity: 0; transform: translateY(100%) scale(var(--hl-pop-scale)); }
+  from { opacity: 0; transform: translateY(100%) scale(var(--gooee-pop-scale)); }
 }
 
 @keyframes toastOutDown {
-  to { opacity: 0; transform: translate(var(--dx), calc(var(--y) + 100%)) scale(var(--hl-pop-scale)); }
+  to { opacity: 0; transform: translate(var(--dx), calc(var(--y) + 100%)) scale(var(--gooee-pop-scale)); }
 }
 
 @keyframes toastOutLeft {
@@ -194,7 +194,7 @@
 .bud {
   position: fixed;
   inset: 0;
-  z-index: var(--hl-z-toast);
+  z-index: var(--gooee-z-toast);
   width: 100%;
   height: 100%;
   overflow: visible;

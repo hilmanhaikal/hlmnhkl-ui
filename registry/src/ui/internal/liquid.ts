@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import { useLayoutEffect, useRef, type RefObject } from 'react'
 import { returnTarget } from './focus'
 import { bezier } from './feel'

@@ -1,69 +1,69 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
   display: flex;
   align-items: flex-start;
-  gap: var(--hl-space-4);
-  padding: var(--hl-space-5);
-  border: var(--hl-line) solid var(--hl-color-border);
-  border-radius: var(--hl-radius-md);
-  background: var(--hl-color-surface);
+  gap: var(--gooee-space-4);
+  padding: var(--gooee-space-5);
+  border: var(--gooee-line) solid var(--gooee-color-border);
+  border-radius: var(--gooee-radius-md);
+  background: var(--gooee-color-surface);
   overflow: hidden;
-  animation: alertIn var(--hl-motion-slow) var(--hl-ease-out);
+  animation: alertIn var(--gooee-motion-slow) var(--gooee-ease-out);
 }
 
 /* The icon shape also tells statuses apart, so colour is never alone. */
 .success {
-  background: var(--hl-color-success-soft);
-  border-color: color-mix(in srgb, var(--hl-color-success) 45%, var(--hl-color-border));
+  background: var(--gooee-color-success-soft);
+  border-color: color-mix(in srgb, var(--gooee-color-success) 45%, var(--gooee-color-border));
 }
 .warning {
-  background: var(--hl-color-warning-soft);
-  border-color: color-mix(in srgb, var(--hl-color-warning) 45%, var(--hl-color-border));
+  background: var(--gooee-color-warning-soft);
+  border-color: color-mix(in srgb, var(--gooee-color-warning) 45%, var(--gooee-color-border));
 }
 .error {
-  background: var(--hl-color-danger-soft);
-  border-color: color-mix(in srgb, var(--hl-color-danger) 45%, var(--hl-color-border));
+  background: var(--gooee-color-danger-soft);
+  border-color: color-mix(in srgb, var(--gooee-color-danger) 45%, var(--gooee-color-border));
 }
-.success .icon { color: var(--hl-color-success); }
-.warning .icon { color: var(--hl-color-warning); }
-.error .icon { color: var(--hl-color-danger); }
-.error .title { font-weight: var(--hl-weight-semibold); }
+.success .icon { color: var(--gooee-color-success); }
+.warning .icon { color: var(--gooee-color-warning); }
+.error .icon { color: var(--gooee-color-danger); }
+.error .title { font-weight: var(--gooee-weight-semibold); }
 
 .banner {
-  --strip: var(--hl-color-inverse);
-  --strip-fg: var(--hl-color-inverse-fg);
+  --strip: var(--gooee-color-inverse);
+  --strip-fg: var(--gooee-color-inverse-fg);
   border-radius: 0;
-  border-width: 0 0 var(--hl-line);
+  border-width: 0 0 var(--gooee-line);
   background: var(--strip);
   color: var(--strip-fg);
   align-items: center;
-  padding-block: var(--hl-space-3);
+  padding-block: var(--gooee-space-3);
 }
 
 /* Swapped on the children, not the strip, so the strip still reads the page's own values. Links and buttons in the action stay visible. */
 .banner > * {
-  --hl-color-bg: var(--strip);
-  --hl-color-surface: var(--strip);
-  --hl-color-surface-hover: color-mix(in srgb, var(--strip-fg) 14%, var(--strip));
-  --hl-color-surface-active: color-mix(in srgb, var(--strip-fg) 20%, var(--strip));
-  --hl-color-fg: var(--strip-fg);
-  --hl-color-fg-muted: color-mix(in srgb, var(--strip-fg) 80%, var(--strip));
-  --hl-color-border: color-mix(in srgb, var(--strip-fg) 24%, var(--strip));
-  --hl-color-border-strong: color-mix(in srgb, var(--strip-fg) 55%, var(--strip));
-  --hl-color-inverse: var(--strip-fg);
-  --hl-color-inverse-fg: var(--strip);
-  --hl-color-inverse-hover: color-mix(in srgb, var(--strip-fg) 82%, var(--strip));
-  --hl-color-accent: var(--strip-fg);
-  --hl-color-accent-fg: var(--strip);
-  --hl-focus-ring: 0 0 0 var(--hl-line-focus) var(--strip), 0 0 0 calc(var(--hl-line-focus) * 2) var(--strip-fg);
+  --gooee-color-bg: var(--strip);
+  --gooee-color-surface: var(--strip);
+  --gooee-color-surface-hover: color-mix(in srgb, var(--strip-fg) 14%, var(--strip));
+  --gooee-color-surface-active: color-mix(in srgb, var(--strip-fg) 20%, var(--strip));
+  --gooee-color-fg: var(--strip-fg);
+  --gooee-color-fg-muted: color-mix(in srgb, var(--strip-fg) 80%, var(--strip));
+  --gooee-color-border: color-mix(in srgb, var(--strip-fg) 24%, var(--strip));
+  --gooee-color-border-strong: color-mix(in srgb, var(--strip-fg) 55%, var(--strip));
+  --gooee-color-inverse: var(--strip-fg);
+  --gooee-color-inverse-fg: var(--strip);
+  --gooee-color-inverse-hover: color-mix(in srgb, var(--strip-fg) 82%, var(--strip));
+  --gooee-color-accent: var(--strip-fg);
+  --gooee-color-accent-fg: var(--strip);
+  --gooee-focus-ring: 0 0 0 var(--gooee-line-focus) var(--strip), 0 0 0 calc(var(--gooee-line-focus) * 2) var(--strip-fg);
 }
 
 .icon {
   flex: none;
-  width: var(--hl-icon-lg);
-  height: var(--hl-icon-lg);
-  margin-top: var(--hl-space-1);
-  animation: iconIn var(--hl-motion-slower) var(--hl-ease-spring);
+  width: var(--gooee-icon-lg);
+  height: var(--gooee-icon-lg);
+  margin-top: var(--gooee-space-1);
+  animation: iconIn var(--gooee-motion-slower) var(--gooee-ease-spring);
 }
 
 /* On the inverse strip a status hue can drop under 3:1, so the banner icon keeps the strip's text colour. */
@@ -74,47 +74,47 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--hl-space-1);
+  gap: var(--gooee-space-1);
 }
 
 .title {
   margin: 0;
-  font-weight: var(--hl-weight-medium);
-  line-height: var(--hl-leading-snug);
+  font-weight: var(--gooee-weight-medium);
+  line-height: var(--gooee-leading-snug);
 }
 
 .body {
-  font-size: var(--hl-text-sm);
-  color: var(--hl-color-fg-muted);
-  line-height: var(--hl-leading-normal);
+  font-size: var(--gooee-text-sm);
+  color: var(--gooee-color-fg-muted);
+  line-height: var(--gooee-leading-normal);
 }
 
-.action { margin-top: var(--hl-space-3); }
+.action { margin-top: var(--gooee-space-3); }
 
 .close {
   display: grid;
   place-items: center;
   flex: none;
-  width: var(--hl-hit-min);
-  height: var(--hl-hit-min);
-  margin: calc(var(--hl-space-4) * -1) calc(var(--hl-space-3) * -1) calc(var(--hl-space-4) * -1) 0;
+  width: var(--gooee-hit-min);
+  height: var(--gooee-hit-min);
+  margin: calc(var(--gooee-space-4) * -1) calc(var(--gooee-space-3) * -1) calc(var(--gooee-space-4) * -1) 0;
   padding: 0;
   border: 0;
-  border-radius: var(--hl-radius-full);
+  border-radius: var(--gooee-radius-full);
   background: transparent;
-  color: var(--hl-color-fg-muted);
-  font-size: var(--hl-icon-md);
+  color: var(--gooee-color-fg-muted);
+  font-size: var(--gooee-icon-md);
   cursor: pointer;
-  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 @media (hover: hover) {
-  .close:hover { background: var(--hl-color-surface-hover); color: var(--hl-color-fg); }
+  .close:hover { background: var(--gooee-color-surface-hover); color: var(--gooee-color-fg); }
 }
-.close:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+.close:focus-visible { outline: none; box-shadow: var(--gooee-focus-ring); }
 
 @keyframes alertIn {
-  from { opacity: 0; transform: translateY(calc(var(--hl-shift-sm) * -1)); }
+  from { opacity: 0; transform: translateY(calc(var(--gooee-shift-sm) * -1)); }
 }
 
 @keyframes iconIn {

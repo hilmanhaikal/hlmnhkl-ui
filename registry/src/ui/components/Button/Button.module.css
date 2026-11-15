@@ -1,6 +1,6 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
-  --h: var(--hl-control-h-md);
+  --h: var(--gooee-control-h-md);
   position: relative;
   display: inline-grid;
   /* Its own width in a column layout too; fullWidth (.full) still fills the row. */
@@ -9,14 +9,14 @@
   place-items: center;
   max-width: 100%;
   min-height: var(--h);
-  padding: 0 var(--hl-space-6);
+  padding: 0 var(--gooee-space-6);
   --bg: transparent;
   --line: transparent;
-  border: var(--hl-line) solid var(--line);
-  border-radius: var(--hl-radius-control);
+  border: var(--gooee-line) solid var(--line);
+  border-radius: var(--gooee-radius-control);
   background: var(--bg);
-  font-size: var(--hl-text-md);
-  font-weight: var(--hl-weight-medium);
+  font-size: var(--gooee-text-md);
+  font-weight: var(--gooee-weight-medium);
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
@@ -24,10 +24,10 @@
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition:
-    background-color var(--hl-motion-fast) var(--hl-ease-out),
-    border-color var(--hl-motion-fast) var(--hl-ease-out),
-    color var(--hl-motion-fast) var(--hl-ease-out),
-    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    color var(--gooee-motion-fast) var(--gooee-ease-out),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 /* The soft edge (internal/softPress.ts): while pressed, hovered by a mouse or letting go, an SVG draws
@@ -37,39 +37,39 @@
   background: transparent;
   border-color: transparent;
   box-shadow: none;
-  transition: color var(--hl-motion-fast) var(--hl-ease-out);
+  transition: color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
-.root[data-soft]:focus-visible { box-shadow: var(--hl-focus-ring); }
+.root[data-soft]:focus-visible { box-shadow: var(--gooee-focus-ring); }
 
 .soft {
   position: absolute;
-  left: calc(var(--hl-line) * -1);
-  top: calc(var(--hl-line) * -1);
+  left: calc(var(--gooee-line) * -1);
+  top: calc(var(--gooee-line) * -1);
   overflow: visible;
   pointer-events: none;
 }
 
 .softFill {
   fill: var(--bg);
-  transition: fill var(--hl-motion-fast) var(--hl-ease-out);
+  transition: fill var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 .softRing { fill: var(--line); }
 
-.soft stop { stop-color: var(--hl-press-wet-dark); }
-.soft[data-wet="light"] stop { stop-color: var(--hl-press-wet-light); }
+.soft stop { stop-color: var(--gooee-press-wet-dark); }
+.soft[data-wet="light"] stop { stop-color: var(--gooee-press-wet-light); }
 
 /* Invisible hit area so small buttons still get a 44px target. */
 .root::after {
   content: "";
   position: absolute;
-  inset-block: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset-block: min(0px, calc((100% - var(--gooee-hit-min)) / 2));
   inset-inline: 0;
 }
 
 @media (pointer: coarse) {
-  .sm::after { inset-inline: min(0px, calc((100% - var(--hl-hit-min)) / 2)); }
+  .sm::after { inset-inline: min(0px, calc((100% - var(--gooee-hit-min)) / 2)); }
 }
 
 /* Beside another button, the hit area sinks below every box in the row, so it only fills the empty gap. */
@@ -78,63 +78,63 @@
 
 .root:focus-visible {
   outline: none;
-  box-shadow: var(--hl-focus-ring);
+  box-shadow: var(--gooee-focus-ring);
 }
 
 /* aria-disabled looks the same as disabled but stays focusable, so focus is not lost and the reason it points to stays readable. */
 .root:disabled,
 .root[aria-disabled="true"]:not([data-loading]) {
   cursor: not-allowed;
-  opacity: var(--hl-disabled-opacity);
+  opacity: var(--gooee-disabled-opacity);
 }
 
 .root[data-loading] {
   cursor: progress;
 }
 
-.sm { --h: var(--hl-control-h-sm); padding: 0 var(--hl-space-5); font-size: var(--hl-text-sm); }
-.lg { --h: var(--hl-control-h-lg); padding: 0 var(--hl-space-7); font-size: var(--hl-text-lg); }
+.sm { --h: var(--gooee-control-h-sm); padding: 0 var(--gooee-space-5); font-size: var(--gooee-text-sm); }
+.lg { --h: var(--gooee-control-h-lg); padding: 0 var(--gooee-space-7); font-size: var(--gooee-text-lg); }
 .full { display: grid; width: 100%; }
 
 .primary {
-  --bg: var(--hl-color-accent);
-  color: var(--hl-color-accent-fg);
-  box-shadow: var(--hl-shadow-1);
+  --bg: var(--gooee-color-accent);
+  color: var(--gooee-color-accent-fg);
+  box-shadow: var(--gooee-shadow-1);
 }
 @media (hover: hover) {
-  .primary:hover:not([aria-disabled="true"]) { --bg: var(--hl-color-accent-hover); }
+  .primary:hover:not([aria-disabled="true"]) { --bg: var(--gooee-color-accent-hover); }
 }
 
 .secondary {
-  --bg: var(--hl-color-surface);
-  --line: var(--hl-color-border-strong);
-  color: var(--hl-color-fg);
+  --bg: var(--gooee-color-surface);
+  --line: var(--gooee-color-border-strong);
+  color: var(--gooee-color-fg);
 }
 @media (hover: hover) {
-  .secondary:hover:not([aria-disabled="true"]) { --bg: var(--hl-color-surface-hover); }
+  .secondary:hover:not([aria-disabled="true"]) { --bg: var(--gooee-color-surface-hover); }
 }
 
 .ghost {
-  color: var(--hl-color-fg);
+  color: var(--gooee-color-fg);
 }
 @media (hover: hover) {
-  .ghost:hover:not([aria-disabled="true"]) { --bg: var(--hl-color-surface-hover); }
+  .ghost:hover:not([aria-disabled="true"]) { --bg: var(--gooee-color-surface-hover); }
 }
 /* A ghost has no fill of its own, so a press shows one to dent. */
-.ghost[data-held] { --bg: var(--hl-color-surface-hover); }
+.ghost[data-held] { --bg: var(--gooee-color-surface-hover); }
 
 .danger {
-  --bg: var(--hl-color-danger-solid);
-  color: var(--hl-color-on-danger);
-  font-weight: var(--hl-weight-semibold);
-  box-shadow: var(--hl-shadow-1);
+  --bg: var(--gooee-color-danger-solid);
+  color: var(--gooee-color-on-danger);
+  font-weight: var(--gooee-weight-semibold);
+  box-shadow: var(--gooee-shadow-1);
 }
 @media (hover: hover) {
-  .danger:hover:not([aria-disabled="true"]) { --bg: var(--hl-color-danger-solid-hover); }
+  .danger:hover:not([aria-disabled="true"]) { --bg: var(--gooee-color-danger-solid-hover); }
 }
 
 .primary .soft,
-.danger .soft { filter: drop-shadow(var(--hl-shadow-1)); }
+.danger .soft { filter: drop-shadow(var(--gooee-shadow-1)); }
 
 .content,
 .spinner {
@@ -143,11 +143,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--hl-space-3);
+  gap: var(--gooee-space-3);
   transition:
-    opacity var(--hl-motion-base) var(--hl-ease-out),
-    transform var(--hl-motion-slow) var(--hl-ease-spring),
-    filter var(--hl-motion-base) var(--hl-ease-out);
+    opacity var(--gooee-motion-base) var(--gooee-ease-out),
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring),
+    filter var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 .content { max-width: 100%; }
@@ -162,7 +162,7 @@
 .icon {
   display: inline-flex;
   flex: none;
-  font-size: var(--hl-icon-md);
+  font-size: var(--gooee-icon-md);
 }
 
 .srOnly {
@@ -177,12 +177,12 @@
 /* The spinner shares the label's grid cell, so the width never changes. */
 .spinner {
   opacity: 0;
-  transform: translateY(var(--hl-shift-md)) scale(0.6);
+  transform: translateY(var(--gooee-shift-md)) scale(0.6);
 }
 
 .root[data-loading] .content {
   opacity: 0;
-  transform: translateY(calc(var(--hl-shift-md) * -1)) scale(0.92);
+  transform: translateY(calc(var(--gooee-shift-md) * -1)) scale(0.92);
   filter: blur(2px);
 }
 

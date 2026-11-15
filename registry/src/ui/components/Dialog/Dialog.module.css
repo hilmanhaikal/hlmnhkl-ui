@@ -1,22 +1,22 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .overlay {
   position: fixed;
   inset: 0;
-  z-index: var(--hl-z-dialog);
-  background: var(--hl-color-overlay);
+  z-index: var(--gooee-z-dialog);
+  background: var(--gooee-color-overlay);
   backdrop-filter: blur(2px);
-  animation: fadeIn var(--hl-motion-morph) var(--hl-ease-morph);
+  animation: fadeIn var(--gooee-motion-morph) var(--gooee-ease-morph);
 }
 
-.overlay[data-state="closed"] { animation: fadeOut var(--hl-motion-morph-out) var(--hl-ease-morph) forwards; }
+.overlay[data-state="closed"] { animation: fadeOut var(--gooee-motion-morph-out) var(--gooee-ease-morph) forwards; }
 
 .positioner {
   position: fixed;
   inset: 0;
-  z-index: var(--hl-z-dialog);
+  z-index: var(--gooee-z-dialog);
   display: grid;
   place-items: center;
-  padding: var(--hl-space-5);
+  padding: var(--gooee-space-5);
   overflow-y: auto;
   pointer-events: none;
 }
@@ -24,24 +24,24 @@
 .panel {
   position: relative;
   width: 100%;
-  max-width: var(--hl-panel-w-md);
-  max-height: calc(100dvh - var(--hl-space-5) * 2);
+  max-width: var(--gooee-panel-w-md);
+  max-height: calc(100dvh - var(--gooee-space-5) * 2);
   display: flex;
   flex-direction: column;
-  border: var(--hl-line) solid var(--hl-glass-edge, var(--hl-color-border));
-  border-radius: var(--hl-radius-panel);
-  background: var(--hl-glass-bg, var(--hl-color-surface));
-  -webkit-backdrop-filter: var(--hl-glass-filter, none);
-  backdrop-filter: var(--hl-glass-filter, none);
-  box-shadow: var(--hl-shadow-4);
+  border: var(--gooee-line) solid var(--gooee-glass-edge, var(--gooee-color-border));
+  border-radius: var(--gooee-radius-panel);
+  background: var(--gooee-glass-bg, var(--gooee-color-surface));
+  -webkit-backdrop-filter: var(--gooee-glass-filter, none);
+  backdrop-filter: var(--gooee-glass-filter, none);
+  box-shadow: var(--gooee-shadow-4);
   outline: none;
   pointer-events: auto;
-  animation: panelIn var(--hl-motion-morph) var(--hl-ease-morph);
+  animation: panelIn var(--gooee-motion-morph) var(--gooee-ease-morph);
 }
 
 /* A closing panel takes no clicks, so a double click cannot run a footer action twice.
    The overlay still catches them, so they never reach the page behind. */
-.panel[data-state="closed"] { animation: panelOut var(--hl-motion-morph-out) var(--hl-ease-morph) forwards; pointer-events: none; }
+.panel[data-state="closed"] { animation: panelOut var(--gooee-motion-morph-out) var(--gooee-ease-morph) forwards; pointer-events: none; }
 
 /* The morph (internal/liquid.ts) grows the panel out of its opener instead, and a drag carries a
    sheet the hand lets go of; the CSS motion stands down. */
@@ -52,84 +52,84 @@
 /* The sheet's grabber, shown on phones only */
 .handle { display: none; }
 
-.sm { max-width: var(--hl-panel-w-sm); }
-.lg { max-width: var(--hl-panel-w-lg); }
+.sm { max-width: var(--gooee-panel-w-sm); }
+.lg { max-width: var(--gooee-panel-w-lg); }
 
 .header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--hl-space-4);
-  padding: var(--hl-space-7) var(--hl-space-4) 0 var(--hl-space-7);
+  gap: var(--gooee-space-4);
+  padding: var(--gooee-space-7) var(--gooee-space-4) 0 var(--gooee-space-7);
 }
 
 .titles {
   display: flex;
   flex-direction: column;
-  gap: var(--hl-space-2);
-  padding-top: var(--hl-space-2);
+  gap: var(--gooee-space-2);
+  padding-top: var(--gooee-space-2);
 }
 
 .title {
   margin: 0;
-  font-size: var(--hl-text-xl);
-  font-weight: var(--hl-weight-semibold);
-  letter-spacing: var(--hl-tracking-tight);
-  line-height: var(--hl-leading-tight);
+  font-size: var(--gooee-text-xl);
+  font-weight: var(--gooee-weight-semibold);
+  letter-spacing: var(--gooee-tracking-tight);
+  line-height: var(--gooee-leading-tight);
 }
 
 .description {
   margin: 0;
-  color: var(--hl-color-fg-muted);
-  font-size: var(--hl-text-md);
-  line-height: var(--hl-leading-snug);
+  color: var(--gooee-color-fg-muted);
+  font-size: var(--gooee-text-md);
+  line-height: var(--gooee-leading-snug);
 }
 
 .close {
   display: grid;
   place-items: center;
   flex: none;
-  width: var(--hl-hit-min);
-  height: var(--hl-hit-min);
-  margin-top: calc(var(--hl-space-3) * -1);
+  width: var(--gooee-hit-min);
+  height: var(--gooee-hit-min);
+  margin-top: calc(var(--gooee-space-3) * -1);
   padding: 0;
   border: 0;
-  border-radius: var(--hl-radius-full);
+  border-radius: var(--gooee-radius-full);
   background: transparent;
-  color: var(--hl-color-fg-muted);
-  font-size: var(--hl-icon-lg);
+  color: var(--gooee-color-fg-muted);
+  font-size: var(--gooee-icon-lg);
   cursor: pointer;
-  transition: background-color var(--hl-motion-fast) var(--hl-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 /* Only the icon turns and presses. The button is square to the pointer even though it looks round,
    so turning it would move its corners out from under the pointer and make it flicker. */
-.close svg { transition: transform var(--hl-motion-slow) var(--hl-ease-spring); }
+.close svg { transition: transform var(--gooee-motion-slow) var(--gooee-ease-spring); }
 
 @media (hover: hover) {
-  .close:hover { background: var(--hl-color-surface-hover); color: var(--hl-color-fg); }
+  .close:hover { background: var(--gooee-color-surface-hover); color: var(--gooee-color-fg); }
   .close:hover svg { transform: rotate(90deg); }
 }
-.close:active svg { transform: rotate(90deg) scale(var(--hl-press-scale)); }
-.close:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+.close:active svg { transform: rotate(90deg) scale(var(--gooee-press-scale)); }
+.close:focus-visible { outline: none; box-shadow: var(--gooee-focus-ring); }
 
 .body {
-  padding: var(--hl-space-5) var(--hl-space-7) 0;
+  padding: var(--gooee-space-5) var(--gooee-space-7) 0;
   overflow-y: auto;
-  color: var(--hl-color-fg-muted);
-  line-height: var(--hl-leading-normal);
+  color: var(--gooee-color-fg-muted);
+  line-height: var(--gooee-leading-normal);
 }
 
 .footer {
   display: flex;
   justify-content: flex-end;
   flex-wrap: wrap;
-  gap: var(--hl-space-3);
-  padding: var(--hl-space-7);
+  gap: var(--gooee-space-3);
+  padding: var(--gooee-space-7);
 }
 
-.header:last-child { padding-bottom: var(--hl-space-7); }
-.body:last-child { padding-bottom: var(--hl-space-7); }
+.header:last-child { padding-bottom: var(--gooee-space-7); }
+.body:last-child { padding-bottom: var(--gooee-space-7); }
 
 /* Phones: dock to the bottom, inside thumb reach. */
 @media (max-width: 520px) {
@@ -141,7 +141,7 @@
   .panel {
     max-width: none;
     max-height: 92dvh;
-    border-radius: var(--hl-radius-sheet) var(--hl-radius-sheet) 0 0;
+    border-radius: var(--gooee-radius-sheet) var(--gooee-radius-sheet) 0 0;
     padding-bottom: env(safe-area-inset-bottom);
     animation-name: slideUp;
   }
@@ -151,15 +151,15 @@
   .handle {
     display: block;
     flex: none;
-    width: var(--hl-handle-w);
-    height: var(--hl-handle-h);
-    margin: var(--hl-space-3) auto 0;
-    border-radius: var(--hl-radius-full);
-    background: var(--hl-color-border-strong);
-    transition: width var(--hl-motion-base) var(--hl-ease-morph);
+    width: var(--gooee-handle-w);
+    height: var(--gooee-handle-h);
+    margin: var(--gooee-space-3) auto 0;
+    border-radius: var(--gooee-radius-full);
+    background: var(--gooee-color-border-strong);
+    transition: width var(--gooee-motion-base) var(--gooee-ease-morph);
   }
 
-  .panel[data-dragging] .handle { width: var(--hl-handle-w-active); }
+  .panel[data-dragging] .handle { width: var(--gooee-handle-w-active); }
 
   /* The handle and the header are where the hand takes hold, as on a Sheet. */
   .handle,
@@ -167,7 +167,7 @@
   .panel[data-dragging] .handle,
   .panel[data-dragging] .handle + .header { cursor: grabbing; }
 
-  .handle + .header { padding-top: var(--hl-space-4); }
+  .handle + .header { padding-top: var(--gooee-space-4); }
 
   .footer {
     flex-direction: column-reverse;
@@ -180,11 +180,11 @@
 @keyframes fadeOut { to { opacity: 0; } }
 
 @keyframes panelIn {
-  from { opacity: 0; transform: translateY(var(--hl-shift-md)) scale(var(--hl-pop-scale)); }
+  from { opacity: 0; transform: translateY(var(--gooee-shift-md)) scale(var(--gooee-pop-scale)); }
 }
 
 @keyframes panelOut {
-  to { opacity: 0; transform: scale(var(--hl-pop-scale)); }
+  to { opacity: 0; transform: scale(var(--gooee-pop-scale)); }
 }
 
 @keyframes slideUp { from { transform: translateY(100%); } }

@@ -1,45 +1,45 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
   position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  border: var(--hl-line) solid var(--hl-color-border);
-  border-radius: var(--hl-radius-panel);
-  background: var(--hl-color-surface);
-  box-shadow: var(--hl-shadow-1);
+  border: var(--gooee-line) solid var(--gooee-color-border);
+  border-radius: var(--gooee-radius-panel);
+  background: var(--gooee-color-surface);
+  box-shadow: var(--gooee-shadow-1);
   transition:
-    transform var(--hl-motion-slow) var(--hl-ease-spring),
-    box-shadow var(--hl-motion-slow) var(--hl-ease-out),
-    border-color var(--hl-motion-base) var(--hl-ease-out);
+    transform var(--gooee-motion-slow) var(--gooee-ease-spring),
+    box-shadow var(--gooee-motion-slow) var(--gooee-ease-out),
+    border-color var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 @media (hover: hover) {
   .interactive:hover {
-    transform: translateY(calc(var(--hl-shift-sm) * -1));
-    box-shadow: var(--hl-shadow-3);
-    border-color: var(--hl-color-border-strong);
+    transform: translateY(calc(var(--gooee-shift-sm) * -1));
+    box-shadow: var(--gooee-shadow-3);
+    border-color: var(--gooee-color-border-strong);
   }
 
   /* The lift moves the card off a pointer on its lower edge, and it would drop back and lift again.
      This fills the gap below while it is up: twice the lift, since the spring overshoots. The card
      does not clip, so the strip can reach out. */
-  .interactive:hover::after { content: ""; position: absolute; inset: 100% 0 calc(var(--hl-shift-sm) * -2); }
+  .interactive:hover::after { content: ""; position: absolute; inset: 100% 0 calc(var(--gooee-shift-sm) * -2); }
 }
 
-.interactive:active { transform: translateY(0) scale(0.995); transition-duration: var(--hl-motion-fast); }
+.interactive:active { transform: translateY(0) scale(0.995); transition-duration: var(--gooee-motion-fast); }
 
 .interactive:focus-within:has(:focus-visible) {
-  box-shadow: var(--hl-focus-ring);
+  box-shadow: var(--gooee-focus-ring);
 }
 
 .media {
   overflow: hidden;
-  border-bottom: var(--hl-line) solid var(--hl-color-border);
-  border-radius: calc(var(--hl-radius-panel) - var(--hl-line)) calc(var(--hl-radius-panel) - var(--hl-line)) 0 0;
+  border-bottom: var(--gooee-line) solid var(--gooee-color-border);
+  border-radius: calc(var(--gooee-radius-panel) - var(--gooee-line)) calc(var(--gooee-radius-panel) - var(--gooee-line)) 0 0;
 }
 
-.media > * { transition: transform var(--hl-motion-slower) var(--hl-ease-out); }
+.media > * { transition: transform var(--gooee-motion-slower) var(--gooee-ease-out); }
 @media (hover: hover) {
   .interactive:hover .media > * { transform: scale(1.03); }
 }
@@ -47,37 +47,37 @@
 .body {
   display: flex;
   flex-direction: column;
-  gap: var(--hl-space-3);
-  padding: var(--hl-space-6);
+  gap: var(--gooee-space-3);
+  padding: var(--gooee-space-6);
 }
 
-.lg .body { padding: var(--hl-space-8); }
+.lg .body { padding: var(--gooee-space-8); }
 
 @media (max-width: 520px) {
-  .lg .body { padding: var(--hl-space-6); }
+  .lg .body { padding: var(--gooee-space-6); }
 }
 
 .fill > .body { flex: 1; }
 
 .title {
   margin: 0;
-  font-size: var(--hl-text-lg);
-  font-weight: var(--hl-weight-semibold);
-  letter-spacing: var(--hl-tracking-tight);
-  line-height: var(--hl-leading-tight);
+  font-size: var(--gooee-text-lg);
+  font-weight: var(--gooee-weight-semibold);
+  letter-spacing: var(--gooee-tracking-tight);
+  line-height: var(--gooee-leading-tight);
 }
 
 .description {
   margin: 0;
-  color: var(--hl-color-fg-muted);
-  font-size: var(--hl-text-sm);
-  line-height: var(--hl-leading-normal);
+  color: var(--gooee-color-fg-muted);
+  font-size: var(--gooee-text-sm);
+  line-height: var(--gooee-leading-normal);
 }
 
 .footer {
   display: flex;
   align-items: center;
-  gap: var(--hl-space-3);
-  padding: var(--hl-space-4) var(--hl-space-6);
-  border-top: var(--hl-line) solid var(--hl-color-border);
+  gap: var(--gooee-space-3);
+  padding: var(--gooee-space-4) var(--gooee-space-6);
+  border-top: var(--gooee-line) solid var(--gooee-color-border);
 }

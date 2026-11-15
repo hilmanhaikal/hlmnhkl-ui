@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 'use client'
 
 import {
@@ -138,7 +138,7 @@ export function ToastProvider({ children, visible = 3, label = 'Notifications', 
       <section
         className={styles.viewport}
         // Toasts are not part of an open dialog, but tapping one should not close it.
-        data-hl-layer-ignore=""
+        data-gooee-layer-ignore=""
         aria-label={label}
         style={{ height: live.length ? stackHeight : 0, ['--front-h' as string]: `${frontHeight}px` }}
         onPointerEnter={(e) => e.pointerType === 'mouse' && setExpanded(true)}
@@ -242,7 +242,7 @@ function bud(toast: HTMLElement, origin: ToastOptions['origin'], way: 'in' | 'ou
   if (O && cut) {
     const ns = 'http://www.w3.org/2000/svg'
     const clip = svg.appendChild(document.createElementNS(ns, 'clipPath'))
-    const id = `hl-bud-${Math.random().toString(36).slice(2)}`
+    const id = `gooee-bud-${Math.random().toString(36).slice(2)}`
     clip.id = id
     const hole = clip.appendChild(document.createElementNS(ns, 'path'))
     const r = Math.min(O.r + 1, O.hh + 1)

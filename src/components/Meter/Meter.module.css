@@ -1,63 +1,63 @@
 .root {
-  --tone: var(--hl-color-accent);
+  --tone: var(--gooee-color-accent);
   display: flex;
   flex-direction: column;
-  gap: var(--hl-space-3);
+  gap: var(--gooee-space-3);
   min-width: 0;
 }
 
-.root[data-tone="good"] { --tone: var(--hl-color-success); }
-.root[data-tone="fair"] { --tone: var(--hl-color-warning); }
-.root[data-tone="poor"] { --tone: var(--hl-color-danger); }
+.root[data-tone="good"] { --tone: var(--gooee-color-success); }
+.root[data-tone="fair"] { --tone: var(--gooee-color-warning); }
+.root[data-tone="poor"] { --tone: var(--gooee-color-danger); }
 
 .head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: var(--hl-space-4);
-  font-size: var(--hl-text-sm);
+  gap: var(--gooee-space-4);
+  font-size: var(--gooee-text-sm);
 }
 
-.label { font-weight: var(--hl-weight-medium); }
+.label { font-weight: var(--gooee-weight-medium); }
 
 .reading {
   display: inline-flex;
   align-items: baseline;
-  gap: var(--hl-space-3);
+  gap: var(--gooee-space-3);
   margin-left: auto;
 }
 
 .value {
   font-variant-numeric: tabular-nums;
-  color: var(--hl-color-fg-muted);
+  color: var(--gooee-color-fg-muted);
 }
 
 /* The word and the icon say the tone, so the colour is never the only sign. */
 .tone {
   display: inline-flex;
   align-items: center;
-  gap: var(--hl-space-2);
+  gap: var(--gooee-space-2);
   align-self: center;
   color: var(--tone);
-  font-weight: var(--hl-weight-medium);
+  font-weight: var(--gooee-weight-medium);
 }
 
 .icon {
-  width: var(--hl-icon-sm);
-  height: var(--hl-icon-sm);
+  width: var(--gooee-icon-sm);
+  height: var(--gooee-icon-sm);
   flex: none;
 }
 
 .track {
   position: relative;
-  height: var(--hl-progress-h);
+  height: var(--gooee-progress-h);
   overflow: hidden;
-  border-radius: var(--hl-radius-full);
-  background: var(--hl-color-surface-active);
-  box-shadow: inset 0 0 0 var(--hl-line) var(--hl-color-border);
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-surface-active);
+  box-shadow: inset 0 0 0 var(--gooee-line) var(--gooee-color-border);
 }
 
-.sm { height: var(--hl-progress-h-sm); }
+.sm { height: var(--gooee-progress-h-sm); }
 
 /* scaleX, not width: no layout work when the value changes. */
 .fill {
@@ -67,8 +67,8 @@
   background: var(--tone);
   transform-origin: left center;
   transition:
-    transform var(--hl-motion-slower) var(--hl-ease-out),
-    background-color var(--hl-motion-base) var(--hl-ease-out);
+    transform var(--gooee-motion-slower) var(--gooee-ease-out),
+    background-color var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 /* A notch where the low and high ranges begin, cut through the bar in the page colour. */
@@ -76,8 +76,8 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  width: var(--hl-line-focus);
-  background: var(--hl-color-surface);
+  width: var(--gooee-line-focus);
+  background: var(--gooee-color-surface);
   transform: translateX(-50%);
 }
 

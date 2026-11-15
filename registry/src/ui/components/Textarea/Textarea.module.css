@@ -1,4 +1,4 @@
-/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
 .root {
   display: flex;
   flex-direction: column;
@@ -9,38 +9,38 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: var(--hl-space-4);
-  margin-bottom: var(--hl-space-3);
+  gap: var(--gooee-space-4);
+  margin-bottom: var(--gooee-space-3);
 }
 
 .label {
-  font-size: var(--hl-text-sm);
-  font-weight: var(--hl-weight-medium);
+  font-size: var(--gooee-text-sm);
+  font-weight: var(--gooee-weight-medium);
 }
 
 .count {
-  font-size: var(--hl-text-xs);
+  font-size: var(--gooee-text-xs);
   font-variant-numeric: tabular-nums;
-  color: var(--hl-color-fg-muted);
+  color: var(--gooee-color-fg-muted);
 }
 
 .textarea {
   display: block;
   width: 100%;
   resize: none;
-  padding: var(--hl-space-4) var(--hl-space-5);
-  border: var(--hl-line) solid var(--hl-color-border-strong);
-  border-radius: var(--hl-radius-md);
-  background: var(--hl-color-surface);
-  font-size: var(--hl-text-input);
-  line-height: var(--hl-leading-normal);
+  padding: var(--gooee-space-4) var(--gooee-space-5);
+  border: var(--gooee-line) solid var(--gooee-color-border-strong);
+  border-radius: var(--gooee-radius-md);
+  background: var(--gooee-color-surface);
+  font-size: var(--gooee-text-input);
+  line-height: var(--gooee-leading-normal);
   outline: none;
   overflow-y: hidden;
-  --hl-flow-edge: var(--hl-color-fg);
+  --gooee-flow-edge: var(--gooee-color-fg);
   transition:
-    height var(--hl-motion-base) var(--hl-ease-out),
-    border-color var(--hl-motion-fast) var(--hl-ease-out),
-    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+    height var(--gooee-motion-base) var(--gooee-ease-out),
+    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
 /* Holds the drawn edge (internal/liquidMore.ts), which a textarea cannot. */
@@ -52,29 +52,29 @@
   pointer-events: none;
 }
 
-.textarea::placeholder { color: var(--hl-color-fg-subtle); }
+.textarea::placeholder { color: var(--gooee-color-fg-subtle); }
 @media (hover: hover) {
-  .textarea:hover { border-color: var(--hl-color-fg-muted); }
+  .textarea:hover { border-color: var(--gooee-color-fg-muted); }
 }
 
 /* Focused: the dark edge flows round, then Textarea.tsx sets data-edge and this 2px edge holds it. It
    is the field's focus indicator, so it lands at once; a blur fades it. */
 .textarea[data-edge] {
-  border-color: var(--hl-flow-edge);
-  box-shadow: inset 0 0 0 calc(var(--hl-line-focus) - var(--hl-line)) var(--hl-flow-edge);
-  transition: height var(--hl-motion-base) var(--hl-ease-out);
+  border-color: var(--gooee-flow-edge);
+  box-shadow: inset 0 0 0 calc(var(--gooee-line-focus) - var(--gooee-line)) var(--gooee-flow-edge);
+  transition: height var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 .textarea[data-invalid] {
-  --hl-flow-edge: var(--hl-color-danger);
-  border-color: var(--hl-color-danger);
-  border-width: var(--hl-line-thick);
+  --gooee-flow-edge: var(--gooee-color-danger);
+  border-color: var(--gooee-color-danger);
+  border-width: var(--gooee-line-thick);
 }
 
-.textarea[data-invalid][data-edge] { box-shadow: inset 0 0 0 calc(var(--hl-line-focus) - var(--hl-line-thick)) var(--hl-flow-edge); }
+.textarea[data-invalid][data-edge] { box-shadow: inset 0 0 0 calc(var(--gooee-line-focus) - var(--gooee-line-thick)) var(--gooee-flow-edge); }
 
 .textarea:disabled {
-  background: var(--hl-color-surface-sunken);
+  background: var(--gooee-color-surface-sunken);
   opacity: 0.6;
   cursor: not-allowed;
 }

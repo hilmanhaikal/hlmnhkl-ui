@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 'use client'
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
@@ -109,7 +109,7 @@ export function RulerScrubber({
     const el = sc.ref.current
     if (!el) return
     const measure = () => {
-      const gap = tokenNumber(el, '--hl-ruler-tick-gap')
+      const gap = tokenNumber(el, '--gooee-ruler-tick-gap')
       setFit({ gap, span: gap ? Math.ceil(el.clientWidth / 2 / gap) + 1 : 24, width: el.clientWidth, tag: tagRef.current?.offsetWidth ?? 0 })
     }
     measure()
@@ -168,12 +168,12 @@ export function RulerScrubber({
             const tilt = -Math.sign(d) * 14 * Math.sin(Math.PI * Math.min(1, Math.abs(d) / 6)) * (1 - on)
             const tier = labelled.has(v) ? 'major' : i % 2 === 0 ? 'mid' : 'minor'
             return (
-              <span key={v} className={styles.mark} style={{ transform: `translateX(calc(${d.toFixed(3)} * var(--hl-ruler-tick-gap)))` }}>
+              <span key={v} className={styles.mark} style={{ transform: `translateX(calc(${d.toFixed(3)} * var(--gooee-ruler-tick-gap)))` }}>
                 <i
                   className={styles.tick}
                   data-tier={tier}
                   style={{
-                    background: ink(on, tier === 'major' ? 'var(--hl-color-fg-muted)' : 'var(--hl-color-border-strong)', 'var(--hl-color-accent)'),
+                    background: ink(on, tier === 'major' ? 'var(--gooee-color-fg-muted)' : 'var(--gooee-color-border-strong)', 'var(--gooee-color-accent)'),
                     transform: lean > 0 ? `rotate(${(tilt * lean).toFixed(2)}deg) scaleY(${(1 + near * 0.9 * lean).toFixed(3)})` : undefined,
                   }}
                 />

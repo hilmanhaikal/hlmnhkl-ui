@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The hlmnhkl/ui MCP server, published on its own as hlmnhkl-ui-mcp (see publish-free), so AI coding tools
+// The Gooee UI MCP server, published on its own as gooee-mcp (see publish-free), so AI coding tools
 // can ask what the library holds. It only reads mcp-docs.json next to it: it writes no files, runs no
 // commands and fetches nothing, and Pro items are a name and one line. Answers go out on stdout, so nothing
 // else may print there.
@@ -14,7 +14,7 @@ let docs
 try {
   docs = JSON.parse(readFileSync(DOCS, 'utf8'))
 } catch {
-  console.error(`hlmnhkl-ui-mcp: cannot read ${DOCS}. It ships in the npm package; in the private repo, run publish-free first.`)
+  console.error(`gooee-mcp: cannot read ${DOCS}. It ships in the npm package; in the private repo, run publish-free first.`)
   process.exit(1)
 }
 
@@ -24,7 +24,7 @@ const NAME = { type: 'string', minLength: 1, maxLength: 64, pattern: '^[A-Za-z0-
 
 const squash = (s) => s.toLowerCase().replace(/[-_\s]/g, '')
 const text = (body) => ({ content: [{ type: 'text', text: body }] })
-const proNote = (i) => `${i.name} is in hlmnhkl/ui Pro. It is not in the free package, so it cannot be added with the CLI. See ${i.docs}`
+const proNote = (i) => `${i.name} is in Gooee UI Pro. It is not in the free package, so it cannot be added with the CLI. See ${i.docs}`
 
 // "date-picker" finds DatePicker; "blocks/Settings" picks one kind when two share a name.
 function find(raw) {
@@ -73,15 +73,15 @@ function describe(i) {
 
 function createServer() {
   const server = new McpServer(
-    { name: 'hlmnhkl-ui', version: docs.version },
-    { instructions: [`hlmnhkl/ui ${docs.version}: React components copied into the project. ${docs.site}`, ...docs.rules.map((r) => `- ${r}`)].join('\n') },
+    { name: 'gooee', version: docs.version },
+    { instructions: [`Gooee UI ${docs.version}: React components copied into the project. ${docs.site}`, ...docs.rules.map((r) => `- ${r}`)].join('\n') },
   )
 
   server.registerTool(
     'list_components',
     {
-      title: 'List hlmnhkl/ui components',
-      description: 'Every component, block, template and theme in hlmnhkl/ui, with one line each and whether it is free or Pro.',
+      title: 'List Gooee UI components',
+      description: 'Every component, block, template and theme in Gooee UI, with one line each and whether it is free or Pro.',
       inputSchema: fromJsonSchema({
         type: 'object',
         properties: {
@@ -102,7 +102,7 @@ function createServer() {
   server.registerTool(
     'get_component',
     {
-      title: 'Get one hlmnhkl/ui component',
+      title: 'Get one Gooee UI component',
       description: 'For a free component: what it does, the install and import lines, accessibility notes, its props and an example. For Pro: one line and the docs link.',
       inputSchema: fromJsonSchema({ type: 'object', properties: { name: NAME }, required: ['name'], additionalProperties: false }),
       annotations: READ_ONLY,
@@ -117,7 +117,7 @@ function createServer() {
   server.registerTool(
     'get_install_steps',
     {
-      title: 'Get install steps for hlmnhkl/ui components',
+      title: 'Get install steps for Gooee UI components',
       description: 'The commands and imports to add free components to a React project: init once, one add command, then the imports.',
       inputSchema: fromJsonSchema({
         type: 'object',
@@ -137,8 +137,8 @@ function createServer() {
       if (free.length) {
         lines.push(
           'From the project folder:',
-          '1. Once per project: `npx hlmnhkl-ui@latest init` (adds src/ui/tokens.css, src/ui/base.css and hlmnhkl-ui.json).',
-          `2. \`npx hlmnhkl-ui@latest add ${free.map((i) => i.id).join(' ')}\` (their imports come along).`,
+          '1. Once per project: `npx gooee@latest init` (adds src/ui/tokens.css, src/ui/base.css and gooee.json).',
+          `2. \`npx gooee@latest add ${free.map((i) => i.id).join(' ')}\` (their imports come along).`,
           "3. Once at the app root, tokens first: `import './ui/tokens.css'` then `import './ui/base.css'`.",
           '4. In your code:',
           ...free.map((i) => `   import { ${i.exports.join(', ')} } from './ui/components/${i.name}'`),

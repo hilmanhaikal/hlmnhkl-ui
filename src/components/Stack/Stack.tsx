@@ -4,7 +4,7 @@ import { space, type Space } from '../../internal/space'
 import styles from './Stack.module.css'
 
 export type StackProps = ComponentPropsWithRef<'div'> & {
-  /** Space between items, as a step of the space scale (0 to 12, read as --hl-space-N). */
+  /** Space between items, as a step of the space scale (0 to 12, read as --gooee-space-N). */
   gap?: Space
   /** Lines items up across the stack. "stretch" makes each item full width. */
   align?: 'stretch' | 'start' | 'center' | 'end'

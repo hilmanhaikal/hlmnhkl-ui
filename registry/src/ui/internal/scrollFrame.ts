@@ -1,4 +1,4 @@
-// hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://ui.hlmnhkl.my
 import { useLayoutEffect, useRef } from 'react'
 
 // One frame loop for every scroll part on the page. It runs only while the page moves, and stops
@@ -24,7 +24,7 @@ let tokens: ScrollTokens | null = null
 export function readScrollTokens(): ScrollTokens {
   const s = getComputedStyle(document.documentElement)
   const n = (name: string) => parseFloat(s.getPropertyValue(name))
-  return { ease: n('--hl-scroll-ease'), start: n('--hl-draft-start'), end: n('--hl-draft-end'), turn: n('--hl-story-turn'), turnNarrow: n('--hl-story-turn-narrow') }
+  return { ease: n('--gooee-scroll-ease'), start: n('--gooee-draft-start'), end: n('--gooee-draft-end'), turn: n('--gooee-story-turn'), turnNarrow: n('--gooee-story-turn-narrow') }
 }
 
 /** The tokens, read once each time the loop starts or the window changes size. */
