@@ -25,6 +25,7 @@ type Live = {
   wet: SVGCircleElement
   outer: Ring
   inner: Ring
+  w: number
   h: number
   top: number
   bottom: number
@@ -53,7 +54,10 @@ export function useSoftPress(look: SoftLook, inert: boolean, keys: string[]) {
     off: () => {},
   }).current
 
-  const build = (el: HTMLElement): Live => {
+  // The shape for the button's size now. Runs again when the size changes while the layer is up, such
+  // as a label that changes on click.
+  const fit = (L: Pick<Live, 'el' | 'svg'>) => {
+    const { el, svg } = L
     const w = el.offsetWidth
     const h = el.offsetHeight
     const css = getComputedStyle(el)
@@ -61,12 +65,18 @@ export function useSoftPress(look: SoftLook, inert: boolean, keys: string[]) {
     const r = Math.min(h / 2, parseFloat(css.borderTopLeftRadius) || 0)
     const outer = boxRing({ cx: w / 2, cy: h / 2, hw: w / 2, hh: h / 2, r }, 1)
     const inner = boxRing({ cx: w / 2, cy: h / 2, hw: w / 2 - line, hh: h / 2 - line, r: Math.max(0, r - line) }, 1)
+    svg.setAttribute('width', String(w))
+    svg.setAttribute('height', String(h))
+    let len = 0
+    outer.forEach((p, i) => (len += Math.hypot(outer[(i + 1) % outer.length][0] - p[0], outer[(i + 1) % outer.length][1] - p[1])))
+    return { outer, inner, w, h, top: nearest(outer, w / 2, 0), bottom: nearest(outer, w / 2, h), meet: len / 2 }
+  }
+
+  const build = (el: HTMLElement): Live => {
     const svg = document.createElementNS(NS, 'svg')
     svg.setAttribute('class', look.layer)
     svg.setAttribute('aria-hidden', 'true')
     svg.setAttribute('data-hl-liquid', '')
-    svg.setAttribute('width', String(w))
-    svg.setAttribute('height', String(h))
     const id = `hl-soft-${++ids}`
     const defs = svg.appendChild(document.createElementNS(NS, 'defs'))
     const grad = defs.appendChild(document.createElementNS(NS, 'radialGradient'))
@@ -91,9 +101,7 @@ export function useSoftPress(look: SoftLook, inert: boolean, keys: string[]) {
     wet.setAttribute('r', '0')
     el.prepend(svg)
     el.dataset.soft = ''
-    let len = 0
-    outer.forEach((p, i) => (len += Math.hypot(outer[(i + 1) % outer.length][0] - p[0], outer[(i + 1) % outer.length][1] - p[1])))
-    return { el, svg, fill, ring, clip, wet, outer, inner, h, top: nearest(outer, w / 2, 0), bottom: nearest(outer, w / 2, h), meet: len / 2 }
+    return { el, svg, fill, ring, clip, wet, ...fit({ el, svg }) }
   }
 
   const teardown = () => {
@@ -126,6 +134,7 @@ export function useSoftPress(look: SoftLook, inert: boolean, keys: string[]) {
     s.raf = 0
     const L = s.live
     if (!L) return
+    if (L.el.offsetWidth !== L.w || L.el.offsetHeight !== L.h) Object.assign(L, fit(L))
     const dt = Math.max(0, now - s.last)
     s.last = now
     const e = morphEase()

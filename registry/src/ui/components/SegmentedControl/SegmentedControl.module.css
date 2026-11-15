@@ -1,0 +1,151 @@
+/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+.root {
+  position: relative;
+  display: inline-flex;
+  /* Its own width in a column layout too; fullWidth (.full) still fills the row. */
+  width: fit-content;
+  padding: var(--hl-space-1);
+  border: var(--hl-line) solid var(--hl-color-border);
+  border-radius: var(--hl-radius-control);
+  background: var(--hl-color-surface-sunken);
+  isolation: isolate;
+  max-width: 100%;
+}
+
+.full { display: flex; width: 100%; }
+.full .item { flex: 1; }
+
+.pill {
+  position: absolute;
+  top: var(--hl-space-1);
+  bottom: var(--hl-space-1);
+  left: 0;
+  z-index: -1;
+  border-radius: var(--hl-radius-control);
+  background: var(--hl-color-surface-raised);
+  box-shadow: var(--hl-shadow-2), 0 0 0 var(--hl-line) var(--hl-color-border);
+}
+
+/* A resize slides the pill plainly. A new choice flows it (internal/liquidMatter.ts useFlow): while
+   it flows the pill hides and .liquid draws it, then the pill is back in its place, exact. */
+.pill[data-ready] {
+  transition:
+    transform var(--hl-motion-slow) var(--hl-ease-out),
+    width var(--hl-motion-slow) var(--hl-ease-out);
+}
+
+.pill[data-flowing] {
+  opacity: 0;
+  transition: none;
+}
+
+.liquid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* While it flows, every label is muted and a copy in the chosen colour shows through the liquid. */
+.root[data-flowing] > .item { color: var(--hl-color-fg-muted); transition: none; }
+
+.ink {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ink .item {
+  position: absolute;
+  color: var(--hl-color-fg);
+  transition: none;
+}
+
+/* Options share any room the track has beyond its own width, so a stretched track never ends in an empty gap. */
+.item {
+  flex: 1 0 auto;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hl-space-3);
+  --pad: var(--hl-space-5);
+  min-height: calc(var(--hl-control-h-md) - var(--hl-space-1) * 2);
+  padding: 0 var(--pad);
+  border: 0;
+  border-radius: var(--hl-radius-control);
+  background: transparent;
+  color: var(--hl-color-fg-muted);
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--hl-motion-base) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.item::after {
+  content: "";
+  position: absolute;
+  inset-block: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset-inline: 0;
+}
+
+.sm .item {
+  --pad: var(--hl-space-4);
+  min-height: calc(var(--hl-control-h-sm) - var(--hl-space-1) * 2);
+  font-size: var(--hl-text-xs);
+}
+
+@media (hover: hover) {
+  .item:hover:not(:disabled) { color: var(--hl-color-fg); }
+}
+.item:active:not(:disabled) { transform: scale(var(--hl-press-scale)); }
+.item[data-on] { color: var(--hl-color-fg); }
+.item:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
+
+.item:focus-visible {
+  outline: none;
+  box-shadow: var(--hl-focus-ring);
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  font-size: var(--hl-icon-md);
+}
+
+/* Too wide for its box (a narrow phone): less padding first, then long labels end in an ellipsis */
+.root[data-tight] .item {
+  flex: 1 1 auto;
+  min-width: 0;
+  --pad: var(--hl-space-3);
+}
+
+.text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Segments touch, so the box itself is the 44px target. The floor sits on the content, so the
+   overflow check still sees the natural width, and tight mode shrinks no further than 44px. */
+@media (pointer: coarse) {
+  .item,
+  .sm .item {
+    min-height: var(--hl-hit-min);
+  }
+  .text,
+  .icon:only-child {
+    min-width: calc(var(--hl-hit-min) - var(--pad) * 2);
+    justify-content: center;
+    text-align: center;
+  }
+  .root[data-tight] .item { min-width: var(--hl-hit-min); }
+}

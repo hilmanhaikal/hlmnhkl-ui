@@ -1,5 +1,6 @@
 [
   "AddressFields",
+  "AssistantThread",
   "AudioPlayer",
   "BottomTabBar",
   "Calendar",
@@ -42,6 +43,7 @@
   "PhoneInput",
   "PinInput",
   "ProgressRing",
+  "PromptBar",
   "PullToRefresh",
   "QrCode",
   "RangeSlider",
@@ -59,6 +61,7 @@
   "Sidebar",
   "SignaturePad",
   "SortableList",
+  "SourceMark",
   "Sparkline",
   "StackScroll",
   "Stat",
@@ -74,5 +77,6 @@
   "TreeView",
   "VideoPlayer",
   "VirtualList",
-  "WeekSchedule"
+  "WeekSchedule",
+  "WorkPill"
 ]

@@ -167,6 +167,7 @@ export const BellIcon = (p: IconProps) => (
     <path d="M10 20.5a2.2 2.2 0 0 0 4 0" />
   </Svg>
 )
+export const StopIcon = (p: IconProps) => <Svg m="pop" {...p}><rect x="6.5" y="6.5" width="11" height="11" rx="2.5" fill="currentColor" /></Svg>
 export const ArrowUpIcon = (p: IconProps) => <Svg m="nudge-u" {...p}><path d="M12 19V5M6 11l6-6 6 6" /></Svg>
 export const ArrowDownIcon = (p: IconProps) => <Svg m="nudge-d" {...p}><path d="M12 5v14M6 13l6 6 6-6" /></Svg>
 export const DownloadIcon = (p: IconProps) => (

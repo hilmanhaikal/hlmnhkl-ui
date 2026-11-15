@@ -669,6 +669,17 @@
   --hl-track-panel-w-narrow: 85%;
   --hl-track-gap: var(--hl-space-6);
   --hl-track-lean: 3;
+  /* PromptBar: the tallest the text box grows before it scrolls. AssistantThread: the width of the
+     conversation, and the line length of an answer */
+  --hl-prompt-max-h: 168px;
+  --hl-assistant-w: 720px;
+  --hl-answer-measure: 66ch;
+  /* AssistantThread: the widest your own message gets, and inline code in an answer. WorkPill: the
+     step list's width. SourceMark: the card's width */
+  --hl-assistant-mine-w: 80%;
+  --hl-code-inline-size: 0.88em;
+  --hl-work-steps-w: 280px;
+  --hl-source-card-w: 320px;
   /* Parallax: how far the nearest layer travels either side of its place (and on a narrow screen),
      and the gap between items */
   --hl-parallax-range: 120px;

@@ -1,0 +1,102 @@
+/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.listScroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: var(--hl-line) solid var(--hl-color-border);
+}
+
+.listScroll::-webkit-scrollbar { display: none; }
+
+.list {
+  position: relative;
+  display: flex;
+  gap: var(--hl-space-2);
+  width: max-content;
+  min-width: 100%;
+}
+
+.tab {
+  position: relative;
+  min-width: var(--hl-hit-min);
+  min-height: var(--hl-hit-min);
+  padding: 0 var(--hl-space-4);
+  border: 0;
+  border-radius: var(--hl-radius-sm) var(--hl-radius-sm) 0 0;
+  background: transparent;
+  color: var(--hl-color-fg-muted);
+  font: inherit;
+  font-size: var(--hl-text-md);
+  font-weight: var(--hl-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--hl-motion-base) var(--hl-ease-out), background-color var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+/* Narrow screens: a little less room around each tab, so a short row fits instead of scrolling. */
+@media (max-width: 479px) {
+  .tab { padding: 0 var(--hl-space-3); }
+}
+
+@media (hover: hover) {
+  .tab:hover:not(:disabled) { color: var(--hl-color-fg); background: var(--hl-color-surface-hover); }
+}
+.tab[aria-selected="true"] { color: var(--hl-color-fg); }
+.tab:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
+
+.tab:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 var(--hl-line-focus) var(--hl-color-fg);
+}
+
+.indicator {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: var(--hl-indicator);
+  border-radius: var(--hl-radius-full);
+  background: var(--hl-color-accent);
+  pointer-events: none;
+}
+
+.indicator[data-ready] {
+  transition:
+    transform var(--hl-motion-slow) var(--hl-ease-out),
+    width var(--hl-motion-slow) var(--hl-ease-out);
+}
+
+/* A new tab flows the underline instead (internal/liquidMatter.ts useFlow): .liquid draws it meanwhile. */
+.indicator[data-flowing] {
+  opacity: 0;
+  transition: none;
+}
+
+.liquid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.panel {
+  padding-top: var(--hl-space-6);
+  border-radius: var(--hl-radius-sm);
+  animation: panelIn var(--hl-motion-slow) var(--hl-ease-out);
+}
+
+.panel:focus-visible {
+  outline: none;
+  box-shadow: var(--hl-focus-ring);
+}
+
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(var(--hl-shift-md)); }
+}

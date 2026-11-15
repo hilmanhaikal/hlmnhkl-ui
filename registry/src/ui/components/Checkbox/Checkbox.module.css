@@ -1,0 +1,121 @@
+/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+.root {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--hl-space-4);
+  min-height: var(--hl-hit-min);
+  padding-block: var(--hl-space-4);
+}
+
+.root[data-disabled] { opacity: var(--hl-disabled-opacity); }
+
+.boxWrap {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  width: var(--hl-control-box);
+  height: var(--hl-control-box);
+  margin-top: var(--hl-space-1);
+}
+
+/* The real input sits on top, invisible, with a 44px hit area. */
+.input {
+  position: absolute;
+  inset: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.input:disabled { cursor: not-allowed; }
+
+.box {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border: var(--hl-line-thick) solid var(--hl-color-border-strong);
+  border-radius: var(--hl-radius-xs);
+  background: var(--hl-color-surface);
+  color: var(--hl-color-accent-fg);
+  transition:
+    border-color var(--hl-motion-fast) var(--hl-ease-out),
+    box-shadow var(--hl-motion-fast) var(--hl-ease-out);
+}
+
+@media (hover: hover) {
+  .input:hover:not(:disabled) + .box { border-color: var(--hl-color-fg); }
+}
+.input:focus-visible + .box { box-shadow: var(--hl-focus-ring); }
+.root[data-invalid] .box[data-state="off"] { border-color: var(--hl-color-danger); }
+
+/* The checked fill covers the border too. Ink pours into it in Checkbox.tsx (internal/liquidMore.ts);
+   here it only holds the end state, so reduced motion lands on it at once. */
+.fill {
+  position: absolute;
+  inset: calc(var(--hl-line-thick) * -1);
+  border-radius: var(--hl-radius-xs);
+  background: var(--hl-color-accent);
+  clip-path: circle(0 at 50% 50%);
+}
+
+.box[data-state="on"] .fill,
+.box[data-state="mixed"] .fill { clip-path: none; }
+
+.pour {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.box[data-pouring] .fill { visibility: hidden; }
+.box[data-pouring] :is(.tick, .dash) { transition: none; }
+
+.mark {
+  position: relative;
+  width: var(--hl-icon-sm);
+  height: var(--hl-icon-sm);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tick,
+.dash {
+  /* Hidden just before the path starts. A zero-length dash would leave its round ends as a dot in Safari. */
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.01;
+  transition: stroke-dashoffset var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.box[data-state="on"] .tick {
+  stroke-dashoffset: 0;
+  transition-delay: var(--hl-motion-instant);
+}
+
+.box[data-state="mixed"] .dash { stroke-dashoffset: 0; }
+
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--hl-text-md);
+  line-height: var(--hl-leading-snug);
+  cursor: pointer;
+}
+
+.root[data-disabled] .label { cursor: not-allowed; }
+
+.description {
+  margin-top: var(--hl-space-1);
+  font-size: var(--hl-text-sm);
+  color: var(--hl-color-fg-muted);
+  line-height: var(--hl-leading-snug);
+}

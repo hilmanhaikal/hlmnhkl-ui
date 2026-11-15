@@ -36,6 +36,16 @@ import { Button } from './ui/components/Button'
 
 Using Next.js or React Router? The [installation guide](https://ui.hlmnhkl.my/installation) has the steps for each.
 
+### With the shadcn CLI
+
+The free components are also a shadcn registry, so the shadcn CLI can add them. No Tailwind and no `components.json` are needed:
+
+```sh
+npx shadcn@latest add hilmanhaikal/hlmnhkl-ui/button
+```
+
+It writes the same files as `npx hlmnhkl-ui add button`, into `src/ui`, with `tokens.css`, `base.css` and `hlmnhkl-ui.json`. So `npx hlmnhkl-ui diff` and `update` work on them later. Import the two style files once, as above. (`--dry-run` asks for a `components.json`; a real `add` does not.)
+
 | Command | What it does |
 | --- | --- |
 | `init` | Set a project up: `tokens.css`, `base.css` and `hlmnhkl-ui.json` |

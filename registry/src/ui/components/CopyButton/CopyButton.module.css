@@ -1,0 +1,126 @@
+/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+.root {
+  --s: var(--hl-control-h-md);
+  position: relative;
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hl-space-3);
+  min-width: var(--s);
+  height: var(--s);
+  padding: 0;
+  border: var(--hl-line) solid var(--hl-color-border);
+  border-radius: var(--hl-radius-control);
+  background: var(--hl-color-surface);
+  color: var(--hl-color-fg);
+  font-size: var(--hl-text-sm);
+  font-weight: var(--hl-weight-medium);
+  cursor: pointer;
+  transition:
+    background-color var(--hl-motion-fast) var(--hl-ease-out),
+    border-color var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.root::after {
+  content: "";
+  position: absolute;
+  inset: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+}
+
+.sm { --s: var(--hl-control-h-sm); }
+.withLabel { padding: 0 var(--hl-space-5) 0 var(--hl-space-4); }
+
+@media (hover: hover) {
+  .root:hover { background: var(--hl-color-surface-hover); }
+}
+.root:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+.root[data-copied] { border-color: var(--hl-color-fg); }
+.root[data-failed] { border-color: var(--hl-color-danger); color: var(--hl-color-danger); }
+
+/* With a label, CopyButton.tsx sets --cap-shift so the icon sits on the middle of the capitals. */
+.icons {
+  position: relative;
+  display: grid;
+  width: var(--hl-icon-md);
+  height: var(--hl-icon-md);
+  translate: 0 var(--cap-shift, 0px);
+}
+
+/* The copy, pour and check are drawn by internal/liquidMore.ts while they move; the icons below are
+   the resting states, so they swap at once. Reduced motion shows only the swap. */
+.pour {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.icons[data-pouring] :is(.copy, .check) { visibility: hidden; }
+
+.copy,
+.check,
+.fail {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+}
+
+.fail,
+.root[data-failed] .copy {
+  transition:
+    opacity var(--hl-motion-fast) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.check {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* Hidden just before the path starts. A zero-length dash would leave its round ends as a dot in Safari. */
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.01;
+}
+
+.fail { opacity: 0; transform: scale(0.4); }
+
+.root[data-copied] .copy { opacity: 0; }
+.root[data-failed] .copy { opacity: 0; transform: scale(0.4) rotate(-45deg); }
+.root[data-failed] .fail { opacity: 1; transform: none; }
+
+.root[data-copied] .check { stroke-dashoffset: 0; }
+
+.labels {
+  display: grid;
+  overflow: hidden;
+}
+
+.labelIdle,
+.labelDone,
+.labelFailed {
+  grid-area: 1 / 1;
+  transition:
+    transform var(--hl-motion-slow) var(--hl-ease-spring),
+    opacity var(--hl-motion-base) var(--hl-ease-out);
+}
+
+.labelDone { transform: translateY(100%); opacity: 0; }
+/* Out of the layout until a copy fails, so the longer words do not widen every button. */
+.labelFailed { display: none; }
+.root[data-failed] .labelFailed { display: block; }
+.root[data-copied] .labelIdle,
+.root[data-failed] .labelIdle { transform: translateY(-100%); opacity: 0; }
+.root[data-copied] .labelDone,
+.root[data-failed] .labelFailed { transform: none; opacity: 1; }
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

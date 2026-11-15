@@ -2,6 +2,28 @@
 
 What changed in hlmnhkl/ui for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.40.0 · 15 Nov 2026
+
+AI chat parts that grow from the spot you touch, and every free part installs through the shadcn CLI.
+
+### Added
+
+- AssistantThread (Pro): a conversation with an AI assistant. What you send lifts out of the prompt bar into the thread, and the answer's status pill comes out of the send button. The answer streams in word by word with numbered sources, and is announced once when it is complete.
+- PromptBar (Pro): the box you write to an assistant in. It grows with the text, Enter sends, and while an answer is coming Send becomes Stop in the same spot.
+- WorkPill (Pro): one pill for the work behind an answer. It reshapes to fit each step, then becomes "Worked for 7 s" and opens into the list of steps.
+- SourceMark (Pro): a number in an answer that grows into its source's card.
+- Tokens `--hl-prompt-max-h`, `--hl-assistant-w`, `--hl-answer-measure`, `--hl-assistant-mine-w`, `--hl-code-inline-size`, `--hl-work-steps-w` and `--hl-source-card-w`, and a StopIcon.
+- The free components are also a shadcn registry: `npx shadcn@latest add hilmanhaikal/hlmnhkl-ui/button` adds a part with no Tailwind and no `components.json`. It writes the same files as `npx hlmnhkl-ui add`, so `diff` and `update` work on them.
+
+### Changed
+
+- The docs site and tests run on React 19.3.1, which fixes the Server Components flaw CVE-2026-126187. hlmnhkl/ui has no Server Components, so parts you copied were not exposed.
+
+### Fixed
+
+- Button: a label that changes while the pointer is on the button (such as "Fill it" becoming "Empty it" on click) no longer spills out of the soft edge. The edge now redraws to the button's new size.
+- Docs in Safari: after Escape closes a top bar menu opened by a click, focus goes to the menu's button.
+
 ## 0.39.0 · 15 Nov 2026
 
 Every part works without a drag, focus never hides under a bar, and parts say when they are loading, empty or failed.

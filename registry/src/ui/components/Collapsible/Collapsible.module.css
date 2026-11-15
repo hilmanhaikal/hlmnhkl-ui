@@ -1,0 +1,76 @@
+/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  max-width: 100%;
+  gap: var(--hl-space-3);
+  min-height: var(--hl-hit-min);
+  padding: 0 var(--hl-space-4);
+  border: 0;
+  border-radius: var(--hl-radius-control);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--hl-text-md);
+  font-weight: var(--hl-weight-medium);
+  cursor: pointer;
+  transition:
+    background-color var(--hl-motion-fast) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+@media (hover: hover) {
+  .trigger:hover:not(:disabled) { background: var(--hl-color-surface-hover); }
+}
+.trigger:active:not(:disabled) { transform: scale(var(--hl-press-scale)); }
+.trigger:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
+.trigger:focus-visible { outline: none; box-shadow: var(--hl-focus-ring); }
+
+.label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: start;
+}
+
+.chevron {
+  flex: none;
+  width: var(--hl-icon-md);
+  height: var(--hl-icon-md);
+  color: var(--hl-color-fg-muted);
+  transition: transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.root[data-open] .chevron { transform: rotate(180deg); }
+
+.panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--hl-motion-morph) var(--hl-ease-morph),
+    visibility 0s linear var(--hl-motion-morph);
+}
+
+.root[data-open] .panel {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--hl-motion-morph) var(--hl-ease-morph),
+    visibility 0s;
+}
+
+.inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.content {
+  padding-top: var(--hl-space-3);
+}

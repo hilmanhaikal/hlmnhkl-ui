@@ -1,0 +1,79 @@
+/* hlmnhkl/ui, MIT licence. https://ui.hlmnhkl.my */
+.root {
+  --s: var(--hl-control-h-md);
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--s);
+  height: var(--s);
+  padding: 0;
+  border: var(--hl-line) solid transparent;
+  border-radius: var(--hl-radius-full);
+  background: transparent;
+  color: var(--hl-color-fg);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--hl-motion-fast) var(--hl-ease-out),
+    border-color var(--hl-motion-fast) var(--hl-ease-out),
+    box-shadow var(--hl-motion-fast) var(--hl-ease-out),
+    transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+
+.root::after {
+  content: "";
+  position: absolute;
+  inset-block: min(0px, calc((100% - var(--hl-hit-min)) / 2));
+  inset-inline: 0;
+}
+
+/* Wider only for touch, as in Button: a mouse does not need it, and dense desktop rows have no gap to spare. */
+@media (pointer: coarse) {
+  .root::after { inset-inline: min(0px, calc((100% - var(--hl-hit-min)) / 2)); }
+}
+
+/* Beside another button, the hit area sinks below every box in the row, so it only fills the empty gap.
+   Links are left out: a card link with this button laid over it must not swallow the hit area. */
+:has(> button + .root, > .root + button) { isolation: isolate; }
+:has(> button + .root, > .root + button) > .root::after { z-index: -1; }
+
+/* A narrow gap leaves no room to share, so a ghost button beside another one takes the full width as its own box. */
+@media (pointer: coarse) {
+  .ghost:is(.root + .root, :has(+ .root)) { min-inline-size: var(--hl-hit-min); }
+}
+
+.sm { --s: var(--hl-control-h-sm); }
+.lg { --s: var(--hl-control-h-lg); }
+
+.icon {
+  display: inline-flex;
+  font-size: var(--hl-icon-lg);
+  transition: transform var(--hl-motion-slow) var(--hl-ease-spring);
+}
+.sm .icon { font-size: var(--hl-icon-md); }
+
+.root:focus-visible {
+  outline: none;
+  box-shadow: var(--hl-focus-ring);
+}
+
+@media (hover: hover) {
+  .root:hover:not(:disabled) .icon { transform: scale(1.08); }
+}
+.root:active:not(:disabled) { transform: scale(var(--hl-press-scale-strong)); transition-duration: var(--hl-motion-instant); }
+/* The press shrinks the button, so the hit area grows to keep the whole box under a mouse released at its edge. */
+.root:active:not(:disabled)::after { inset: -9%; }
+.root:disabled { opacity: var(--hl-disabled-opacity); cursor: not-allowed; }
+
+@media (hover: hover) {
+  .ghost:hover:not(:disabled) { background: var(--hl-color-surface-hover); }
+}
+.secondary { background: var(--hl-color-surface); border-color: var(--hl-color-border-strong); }
+@media (hover: hover) {
+  .secondary:hover:not(:disabled) { background: var(--hl-color-surface-hover); }
+}
+.primary { background: var(--hl-color-accent); color: var(--hl-color-accent-fg); }
+@media (hover: hover) {
+  .primary:hover:not(:disabled) { background: var(--hl-color-accent-hover); }
+}
