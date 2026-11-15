@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 import { createPortal } from 'react-dom'
 import type { ReactNode } from 'react'
 

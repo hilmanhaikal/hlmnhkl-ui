@@ -1,4 +1,4 @@
-/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://gooee.dev */
 /* Hide the browser's own clear button */
 .root input::-webkit-search-cancel-button,
 .root input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }

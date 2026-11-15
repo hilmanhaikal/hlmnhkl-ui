@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 import { Children, cloneElement, isValidElement, type ReactElement, type SVGProps } from 'react'
 import styles from './icons.module.css'
 

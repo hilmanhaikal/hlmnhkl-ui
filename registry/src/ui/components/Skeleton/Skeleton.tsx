@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 import type { CSSProperties } from 'react'
 import { cx } from '../../internal/cx'
 import styles from './Skeleton.module.css'

@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 // Feel: how a value moves under the hand. A drag follows the hand one to one; a let-go coasts a capped
 // distance and lands on the morph curve, starting at the hand's speed. Plain TypeScript with no
 // framework and no styling, so it can stand on its own. Every time is passed in, so a duration of 0

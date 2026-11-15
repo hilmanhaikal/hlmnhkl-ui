@@ -1,9 +1,9 @@
 {
   "name": "gooee",
-  "version": "0.41.0",
+  "version": "0.41.1",
   "description": "React components in black, white and grey with one blue accent. Copy them into your app with npx gooee add <name>.",
   "license": "MIT",
-  "homepage": "https://ui.hlmnhkl.my",
+  "homepage": "https://gooee.dev",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hilmanhaikal/gooee-ui.git"

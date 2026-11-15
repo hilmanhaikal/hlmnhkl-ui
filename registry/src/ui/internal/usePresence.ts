@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 import { useEffect, useState } from 'react'
 import { motionMs, type MotionToken } from './motion'
 

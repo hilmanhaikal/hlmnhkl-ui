@@ -1,6 +1,6 @@
 # Working on Gooee UI
 
-This repo is the free part of Gooee UI, under the MIT licence. Issues and pull requests are welcome. The docs live at https://ui.hlmnhkl.my.
+This repo is the free part of Gooee UI, under the MIT licence. Issues and pull requests are welcome. The docs live at https://gooee.dev.
 
 ## How a pull request gets in
 

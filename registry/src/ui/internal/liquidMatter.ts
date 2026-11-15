@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 import { useLayoutEffect, useRef, type RefObject } from 'react'
 import { bezier } from './feel'
 import { body, BEND, boxPath, flowScene, loopsPath, pincher, trace, type Box } from './liquidPath'

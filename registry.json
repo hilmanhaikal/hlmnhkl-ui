@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "gooee",
-  "homepage": "https://ui.hlmnhkl.my",
+  "homepage": "https://gooee.dev",
   "items": [
     {
       "name": "core",

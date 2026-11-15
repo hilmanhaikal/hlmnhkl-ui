@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 import { useLayoutEffect, useRef } from 'react'
 
 // One frame loop for every scroll part on the page. It runs only while the page moves, and stops

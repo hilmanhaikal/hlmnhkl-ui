@@ -2,6 +2,14 @@
 
 What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.41.1 · 15 Nov 2026
+
+The docs live at gooee.dev now.
+
+### Changed
+
+- The docs moved to **gooee.dev** (from ui.hlmnhkl.my). Every page keeps its path, so `ui.hlmnhkl.my/button` is `gooee.dev/button`. The CLI, the README, the npm page, the MCP server and the share card point there.
+
 ## 0.41.0 · 15 Nov 2026
 
 hlmnhkl/ui is now Gooee UI, and every morph lifts off softly instead of popping.

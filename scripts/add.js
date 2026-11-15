@@ -14,7 +14,7 @@ const INTERNAL = join(SRC, 'internal')
 const EXCLUDED = /(\.(test|spec|stories|demo)\.[jt]sx?$)|(^|\/)(docs|demos|__tests__)\//
 const DEFAULT_TO = 'src/ui'
 const CONFIG = 'gooee.json'
-const SITE = 'https://ui.hlmnhkl.my'
+const SITE = 'https://gooee.dev'
 const COMMANDS = ['init', 'add', 'list', 'diff', 'update']
 const USAGE = `Usage: npx gooee <command> [options]
 

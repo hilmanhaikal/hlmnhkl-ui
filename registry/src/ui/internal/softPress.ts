@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 import { useEffect, useRef, type KeyboardEvent, type PointerEvent } from 'react'
 import { boxRing, clamp01, lerp, nearest, polyPath, seg, softRing, type Pt } from './liquidPath'
 import { morphEase, motionFor } from './liquidMatter'

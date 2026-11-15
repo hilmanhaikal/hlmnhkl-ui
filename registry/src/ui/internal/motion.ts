@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 import { MORPH, type Curve } from './feel'
 
 export type MotionToken = 'instant' | 'fast' | 'base' | 'slow' | 'slower' | 'liquid' | 'morph' | 'morph-out' | 'fling' | 'delay-tooltip'

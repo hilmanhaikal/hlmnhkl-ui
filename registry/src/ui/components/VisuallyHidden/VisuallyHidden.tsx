@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 import type { ComponentPropsWithRef } from 'react'
 import { cx } from '../../internal/cx'
 import styles from './VisuallyHidden.module.css'

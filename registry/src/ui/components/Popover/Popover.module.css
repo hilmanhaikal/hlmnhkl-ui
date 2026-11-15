@@ -1,4 +1,4 @@
-/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://gooee.dev */
 .panel {
   --oy: calc(var(--gooee-shift-md) * -1);
   z-index: var(--gooee-z-popover);

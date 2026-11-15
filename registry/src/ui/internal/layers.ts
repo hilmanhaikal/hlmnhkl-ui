@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 import { useEffect, useRef, type RefObject } from 'react'
 
 // A stack of open layers, so Esc and outside clicks only close the top one.

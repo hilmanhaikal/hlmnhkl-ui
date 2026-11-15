@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 import { useEffect, type RefObject } from 'react'
 import { boxPath, boxRing, clamp01, lerp, polyPath, sdBox, seg, trace, type Box, type Pt, type Sdf } from './liquidPath'
 import { frames, layer, morphEase, motionFor } from './liquidMatter'

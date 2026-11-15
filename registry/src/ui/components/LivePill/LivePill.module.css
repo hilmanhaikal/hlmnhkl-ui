@@ -1,4 +1,4 @@
-/* Gooee UI, MIT licence. https://ui.hlmnhkl.my */
+/* Gooee UI, MIT licence. https://gooee.dev */
 .root {
   /* The row is the pill plus the card's inner padding, so the label keeps its pixels as the card grows round it. */
   --pill-pad: calc(var(--gooee-space-6) - (var(--gooee-hit-min) - var(--gooee-text-sm) * var(--gooee-leading-normal)) / 2);

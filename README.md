@@ -7,11 +7,11 @@ React components where every part grows from the spot you touch. A button become
   <img alt="The Gooee UI homepage: the line 'Every part grows from the spot you touch.', with Gooee, the mascot, as the o in grows, beside a Get started button that has poured open into a card with three ways to start." src="https://raw.githubusercontent.com/hilmanhaikal/gooee-ui/main/.github/assets/home-light-0.37.png">
 </picture>
 
-**[Docs](https://ui.hlmnhkl.my)** · [Installation](https://ui.hlmnhkl.my/installation) · [Components](https://ui.hlmnhkl.my/components) · [What's new](https://ui.hlmnhkl.my/changelog)
+**[Docs](https://gooee.dev)** · [Installation](https://gooee.dev/installation) · [Components](https://gooee.dev/components) · [What's new](https://gooee.dev/changelog)
 
 Every part opens and closes on one fluid curve, from where you tapped. Dialogs, menus, tooltips and sheets grow out of their trigger and fold back into it. Plus the everyday parts every app needs: buttons, inputs, tables, forms and many more.
 
-Meet [Gooee](https://ui.hlmnhkl.my/gooee), the mascot: a drop of the same goo the parts are made of.
+Meet [Gooee](https://gooee.dev/gooee), the mascot: a drop of the same goo the parts are made of.
 
 ## Install
 
@@ -34,7 +34,7 @@ import { Button } from './ui/components/Button'
 <Button onClick={save}>Save</Button>
 ```
 
-Using Next.js or React Router? The [installation guide](https://ui.hlmnhkl.my/installation) has the steps for each.
+Using Next.js or React Router? The [installation guide](https://gooee.dev/installation) has the steps for each.
 
 ### With the shadcn CLI
 
@@ -66,7 +66,7 @@ Every copied file starts with one line naming Gooee UI and the MIT licence, so t
 
 `add`, `diff` and `update` never change your `tokens.css`. If the latest one has tokens yours lacks, they list them after the result, with the lines to copy.
 
-**With an AI assistant:** point it at [llms.txt](https://ui.hlmnhkl.my/llms.txt) (every component and the rules) or [llms-full.txt](https://ui.hlmnhkl.my/llms-full.txt) (props, keyboard notes and an example for each free component). There is also a [registry.json](https://ui.hlmnhkl.my/registry.json).
+**With an AI assistant:** point it at [llms.txt](https://gooee.dev/llms.txt) (every component and the rules) or [llms-full.txt](https://gooee.dev/llms-full.txt) (props, keyboard notes and an example for each free component). There is also a [registry.json](https://gooee.dev/registry.json).
 
 **MCP server:** let Claude Code, Cursor, VS Code or any MCP tool look up components, props and install steps. It only reads, runs on your computer and collects nothing. It is its own small package, `gooee-mcp`, so `add` never downloads it. In Claude Code:
 
@@ -74,7 +74,7 @@ Every copied file starts with one line naming Gooee UI and the MIT licence, so t
 claude mcp add gooee -- npx -y gooee-mcp@latest
 ```
 
-Setup for other tools: [MCP server](https://ui.hlmnhkl.my/mcp).
+Setup for other tools: [MCP server](https://gooee.dev/mcp).
 
 ## What you get
 
@@ -89,7 +89,7 @@ Setup for other tools: [MCP server](https://ui.hlmnhkl.my/mcp).
 
 ## Pro
 
-76 more components (such as DataGrid, Calendar, Chart, KanbanBoard, Combobox and WeekSchedule), page blocks, full templates and brand themes are coming as Gooee UI Pro. You can see them on the [docs site](https://ui.hlmnhkl.my).
+76 more components (such as DataGrid, Calendar, Chart, KanbanBoard, Combobox and WeekSchedule), page blocks, full templates and brand themes are coming as Gooee UI Pro. You can see them on the [docs site](https://gooee.dev).
 
 ## Licence
 

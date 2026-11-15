@@ -1,4 +1,4 @@
-// Gooee UI, MIT licence. https://ui.hlmnhkl.my
+// Gooee UI, MIT licence. https://gooee.dev
 'use client'
 
 import { createContext, useContext, useId, useRef, type KeyboardEvent, type ReactNode } from 'react'
