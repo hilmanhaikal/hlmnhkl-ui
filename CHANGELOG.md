@@ -2,6 +2,14 @@
 
 What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.48.0 · 16 Nov 2026
+
+The look now works without React: a new package, gooee-tokens.
+
+### Added
+
+- `gooee-tokens`: every token and the small page reset as plain CSS, for Vue, Svelte, Angular, plain HTML or React. `npm i gooee-tokens`, then `@import "gooee-tokens";`. `gooee-tokens/tokens.css` is the tokens alone. Light and dark follow the system or `data-theme`.
+
 ## 0.47.0 · 16 Nov 2026
 
 Every bordered box is a whole number of 4px steps tall, and a few sizes move onto the grid.
