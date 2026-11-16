@@ -1,213 +1,46 @@
 // Gooee UI, MIT licence. https://gooee.dev
 import { useLayoutEffect, useRef, type RefObject } from 'react'
-import { returnTarget } from './focus'
-import { bezier } from './feel'
-import { easing, morphCurve, motionMs, prefersReducedMotion } from './motion'
+import { createDialogMorph, createLiquid, createStretch, type LiquidOrigin as Origin, type StretchBox } from './motion/liquid'
 
-// Liquid: a panel grows out of what opened it. It starts as the opener's own shape (its width and its
-// corners) at the panel's edge nearest the opener, then fills out to the whole panel; on close it
-// folds back. Only a clip changes, so nothing inside the panel is stretched and text stays sharp.
-// Both ways play the morph curve forward, so a close moves from its first frame, and a move caught
-// half way starts from the shape on screen.
-// Where the browser cannot clip or animate this way, or with reduced motion, the part's own CSS fade
-// runs instead.
+export { startShape, stretch, type StretchBox } from './motion/liquid'
 
-/** What the panel grows from: the opener element, or one found at open time, or a rectangle (such as the point of a right click). */
+/** What the panel grows from: the opener's ref, or a function that finds the opener or a rectangle at open time. */
 export type LiquidOrigin = RefObject<HTMLElement | null> | (() => HTMLElement | DOMRect | null)
 
-const able = () =>
-  typeof CSS !== 'undefined' &&
-  CSS.supports('clip-path', 'inset(0px round 1px)') &&
-  typeof Element !== 'undefined' &&
-  typeof Element.prototype.animate === 'function'
-
-const clamp = (v: number, max: number) => Math.max(0, Math.min(max, v))
-
-// How far the panel's shadow reaches past its box, so the clip can end there and the shadow grows in
-// with the panel instead of appearing all at once when the clip is removed.
-function shadowReach(el: HTMLElement) {
-  let reach = 0
-  for (const shadow of getComputedStyle(el).boxShadow.split(/,(?![^(]*\))/)) {
-    if (shadow.includes('inset')) continue
-    const [x = 0, y = 0, blur = 0, spread = 0] = (shadow.replace(/rgba?\([^)]*\)|#[\da-f]+/gi, '').match(/-?[\d.]+px/g) ?? []).map(parseFloat)
-    reach = Math.max(reach, Math.abs(x) + blur + spread, Math.abs(y) + blur + spread)
-  }
-  return Math.ceil(reach)
-}
-
-// The opener's footprint on the panel, as an inset from each edge. An opener above or below the panel
-// lands as a strip on the nearest edge; one beside it, on the nearest side; one inside it (a click
-// point), where it is.
-export function startShape(panel: DOMRect, from: DOMRect, radius: string) {
-  const w = panel.width
-  const h = panel.height
-  let top = clamp(from.top - panel.top, h)
-  let bottom = clamp(panel.bottom - from.bottom, h)
-  let left = clamp(from.left - panel.left, w)
-  let right = clamp(panel.right - from.right, w)
-  const fh = Math.min(from.height, h)
-  const fw = Math.min(from.width, w)
-  if (from.bottom <= panel.top + 1) [top, bottom] = [0, h - fh]
-  else if (from.top >= panel.bottom - 1) [top, bottom] = [h - fh, 0]
-  else if (from.right <= panel.left + 1) [left, right] = [0, w - fw]
-  else if (from.left >= panel.right - 1) [left, right] = [w - fw, 0]
-  // Never less than a sliver, so the shape always has somewhere to grow from.
-  if (w - left - right < 2) right = Math.max(0, w - left - 2)
-  if (h - top - bottom < 2) bottom = Math.max(0, h - top - 2)
-  return `inset(${top}px ${right}px ${bottom}px ${left}px round ${radius})`
-}
-
-// The phone layout of Dialog and AlertDialog, as their CSS sets it.
-const SHEET = '(max-width: 520px)'
-
-const live = (run: Animation | null) => run?.playState === 'running' || run?.playState === 'paused'
-
-// Grows the panel out of `found` (or folds it back) from wherever the last run left it.
-function clipMorph(p: HTMLElement, found: HTMLElement | DOMRect, state: 'open' | 'closed', last: Animation | null) {
-  const opener = found instanceof HTMLElement ? found : null
-  const from = found instanceof HTMLElement ? found.getBoundingClientRect() : found
-  const now = live(last) ? getComputedStyle(p).clipPath : null
-  last?.cancel()
-  // Set before measuring, so the part's CSS enter animation is not caught mid-scale.
-  p.dataset.liquid = ''
-  // Never rounder than half the opener's height: a pill's 999px corner would keep a tall panel a
-  // capsule for most of the growth.
-  const cap = Math.min(from.width, from.height) / 2
-  const radius = `${Math.min(cap, opener ? parseFloat(getComputedStyle(opener).borderRadius) || 0 : cap)}px`
-  const start = startShape(p.getBoundingClientRect(), from, radius)
-  const room = shadowReach(p)
-  const corner = getComputedStyle(p).borderRadius || '0px'
-  const end = `inset(${-room}px round calc(${corner} + ${room}px))`
-  // data-liquid stays set while the panel is open: taking it off would restart the part's CSS enter animation.
-  if (state === 'open') return p.animate({ clipPath: [now ?? start, end] }, { duration: motionMs('morph'), easing: easing('morph') })
-  // A close starts at the panel's own edge, not out past its shadow, so the edge moves on the first frame.
-  // It also fades by 65% of the fold: when the opener sits outside the panel, the shrinking clip would
-  // otherwise leave a strip of the panel on its near edge until the very end.
-  return p.animate(
-    [
-      { clipPath: now ?? `inset(0px round ${corner})`, opacity: 1 },
-      { opacity: 1, offset: 0.2 },
-      { opacity: 0, offset: 0.65 },
-      { clipPath: start, opacity: 0 },
-    ],
-    { duration: motionMs('morph-out'), easing: easing('morph'), fill: 'forwards' },
-  )
-}
-
-/**
- * Plays the growth when `state` turns open (once `ready`, that is, once the panel is in its place) and
- * the fold when it turns closed. Marks the panel with data-liquid while it runs, so the part's CSS can
- * stand its own enter and exit animation down. The part's usePresence exit is 'morph-out', so the
- * fold lands as the panel unmounts.
- */
+/** React's hold on createLiquid (motion/liquid.ts): grows when `state` turns open (once `ready`), folds when it turns closed. */
 export function useLiquid(panel: RefObject<HTMLElement | null>, origin: LiquidOrigin, state: 'open' | 'closed', ready: boolean) {
-  const run = useRef<Animation | null>(null)
+  const from = useRef(origin)
+  from.current = origin
+  const liquid = useRef<ReturnType<typeof createLiquid>>(null)
+  liquid.current ??= createLiquid(() => panel.current, (() => {
+    const o = from.current
+    return typeof o === 'function' ? o() : o.current
+  }) satisfies Origin)
   useLayoutEffect(() => {
-    const p = panel.current
-    if (!p || !ready || prefersReducedMotion() || !able()) return
-    const found = typeof origin === 'function' ? origin() : origin.current
-    if (!found) return
-    run.current = clipMorph(p, found, state, run.current)
+    if (ready) liquid.current!.play(state)
     // Plays once per open and once per close; the origin is read fresh each time.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, ready])
-  useLayoutEffect(() => () => run.current?.cancel(), [])
+  useLayoutEffect(() => () => liquid.current!.destroy(), [])
 }
 
-/**
- * A centred dialog grows out of the control that opened it (the one focus goes back to) and folds back
- * into it. Opened from code with no such control, it grows from the middle of the screen. On a phone
- * the dialog is a bottom sheet: it grows out of a control it covers, as one in the thumb zone is, and
- * otherwise rises from the bottom edge. A sheet the hand drags away (data-fluid) is carried by the drag.
- */
+/** React's hold on createDialogMorph (motion/liquid.ts). */
 export function useDialogMorph(panel: RefObject<HTMLElement | null>, open: boolean, mounted: boolean, state: 'open' | 'closed') {
-  const opener = useRef<HTMLElement | null>(null)
   const wasOpen = useRef(false)
-  const run = useRef<Animation | null>(null)
-  const rise = useRef(false)
+  const morph = useRef<ReturnType<typeof createDialogMorph>>(null)
+  morph.current ??= createDialogMorph(() => panel.current)
   // Runs before the focus trap moves focus into the dialog.
   useLayoutEffect(() => {
-    if (open && !wasOpen.current) opener.current = returnTarget()
+    if (open && !wasOpen.current) morph.current!.opening()
     wasOpen.current = open
   }, [open])
   useLayoutEffect(() => {
-    const p = panel.current
-    if (!p || !mounted || prefersReducedMotion() || !able()) return
-    const el = opener.current
-    const box = el && el !== document.body && el.isConnected ? el.getBoundingClientRect() : null
-    const found = el && box && box.width > 0 && box.height > 0 ? el : null
-    if (state === 'open' && !live(run.current)) {
-      const r = p.getBoundingClientRect()
-      rise.current = window.matchMedia(SHEET).matches && !(found && box && box.top >= r.top && box.bottom <= r.bottom + 1)
-    }
-    if (state === 'closed' && 'fluid' in p.dataset) return
-    if (!rise.current) {
-      run.current = clipMorph(p, found ?? new DOMRect(window.innerWidth / 2 - 1, window.innerHeight / 2 - 1, 2, 2), state, run.current)
-      return
-    }
-    const now = live(run.current) ? getComputedStyle(p).transform : null
-    run.current?.cancel()
-    p.dataset.liquid = ''
-    const down = 'translateY(100%)'
-    run.current =
-      state === 'open'
-        ? p.animate({ transform: [now ?? down, 'none'] }, { duration: motionMs('morph'), easing: easing('morph') })
-        : p.animate({ transform: [now ?? 'none', down] }, { duration: motionMs('morph-out'), easing: easing('morph'), fill: 'forwards' })
+    if (mounted) morph.current!.play(state)
   }, [state, mounted, panel])
-  useLayoutEffect(() => () => run.current?.cancel(), [])
+  useLayoutEffect(() => () => morph.current!.destroy(), [])
 }
 
-/** A highlight's place in its row: its start edge (left, or top on the y axis), its length, and (for rows that wrap) its top. */
-export type StretchBox = { x: number; w: number; y?: number }
-
-// The leading edge moves over this share of the time; the trailing edge starts the rest of the way in.
-const LEAD = 0.75
-const runs = new WeakMap<HTMLElement, Animation>()
-
-// Where a stretch caught half way has the highlight now.
-function placeNow(node: HTMLElement, axis: 'x' | 'y'): StretchBox {
-  const s = getComputedStyle(node)
-  const m = new DOMMatrixReadOnly(s.transform === 'none' ? undefined : s.transform)
-  return axis === 'x' ? { x: m.m41, w: parseFloat(s.width), y: m.m42 } : { x: m.m42, w: parseFloat(s.height) }
-}
-
-/**
- * Moves a highlight with two edges: the one nearest the new place leaves first and the far one
- * catches up, both on the morph curve, so it stretches toward the choice and settles there. A move
- * caught half way turns from where it is. `place` turns a box into the highlight's transform.
- */
-export function stretch(node: HTMLElement, from: StretchBox, to: StretchBox, place: (b: StretchBox) => string, axis: 'x' | 'y' = 'x') {
-  const last = runs.get(node) ?? null
-  const start = live(last) ? placeNow(node, axis) : from
-  last?.cancel()
-  const ms = motionMs('base')
-  if (!ms || prefersReducedMotion() || !able()) return
-  const size = axis === 'x' ? 'width' : 'height'
-  const ease = bezier(morphCurve())
-  const ahead = to.x + to.w / 2 >= start.x + start.w / 2
-  const frames: Keyframe[] = []
-  for (let i = 0; i <= 12; i++) {
-    const t = i / 12
-    const lead = ease(Math.min(1, t / LEAD))
-    const trail = ease(Math.max(0, (t - 1 + LEAD) / LEAD))
-    const a = start.x + (to.x - start.x) * (ahead ? trail : lead)
-    const b = start.x + start.w + (to.x + to.w - start.x - start.w) * (ahead ? lead : trail)
-    frames.push({ transform: place({ x: a, w: b - a, y: to.y }), [size]: `${b - a}px` })
-  }
-  node.dataset.liquid = ''
-  const run = node.animate(frames, { duration: ms })
-  runs.set(node, run)
-  // Only the latest stretch takes the mark off: a cancelled one settles later, mid-way through the next.
-  const done = () => {
-    if (runs.get(node) === run) delete node.dataset.liquid
-  }
-  run.finished.then(done, done)
-}
-
-/**
- * Liquid highlight: when the choice changes, the highlight stretches toward it (see stretch). Runs
- * only on a change of choice; a resize simply follows. Along one row, or one column with axis 'y'.
- */
+/** React's hold on createStretch (motion/liquid.ts): the highlight stretches when the choice changes. */
 export function useStretch(
   el: RefObject<HTMLElement | null>,
   box: StretchBox | null,
@@ -216,34 +49,14 @@ export function useStretch(
   place: (b: StretchBox) => string,
   axis: 'x' | 'y' = 'x',
 ) {
-  const last = useRef<{ box: StretchBox; choice: unknown } | null>(null)
-  const moved = useRef<HTMLElement | null>(null)
+  const fmt = useRef(place)
+  fmt.current = place
+  const run = useRef<ReturnType<typeof createStretch>>(null)
+  run.current ??= createStretch(() => el.current, (b) => fmt.current(b), axis)
   useLayoutEffect(() => {
-    const node = el.current
-    const prev = last.current
-    // A part often renders the new choice before it has measured its new place, so only a moved box
-    // counts; it then stretches if the choice behind it changed, and simply follows a resize.
-    // No highlight (nothing chosen): forget the old place, so the next one appears rather than stretching from it.
-    if (!box) {
-      last.current = null
-      return
-    }
-    if (prev && prev.box.x === box.x && prev.box.w === box.w && prev.box.y === box.y) return
-    last.current = { box, choice }
-    if (!node || !prev || !ready) return
-    if (prev.choice === choice || (prev.box.y ?? 0) !== (box.y ?? 0)) {
-      runs.get(node)?.cancel()
-      return
-    }
-    moved.current = node
-    stretch(node, prev.box, box, place, axis)
+    run.current!.update(box, choice, ready)
     // Keyed on the choice and the box; `place` is a pure formatter.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [choice, box?.x, box?.w, box?.y, ready])
-  useLayoutEffect(
-    () => () => {
-      if (moved.current) runs.get(moved.current)?.cancel()
-    },
-    [],
-  )
+  useLayoutEffect(() => () => run.current!.destroy(), [])
 }

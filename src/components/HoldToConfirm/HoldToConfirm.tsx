@@ -51,7 +51,8 @@ const GUARD = 500
  * the drawing is cut out where it is. Returns a stop, or null when motion is reduced.
  */
 function bud(row: HTMLElement, shell: HTMLElement, x: HTMLElement, way: 'in' | 'out') {
-  const ms = motionFor(way === 'in' ? 'morph' : 'morph-out')
+  // 400ms both ways: the drop is small, and at the morph's 600ms the cancel button felt late to arrive.
+  const ms = motionFor('reveal')
   if (!ms) return null
   const box = (el: HTMLElement): Box => {
     const r = el.getBoundingClientRect(),

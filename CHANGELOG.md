@@ -2,6 +2,27 @@
 
 What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.50.0 · 17 Nov 2026
+
+The motion now works without React: a new package, gooee-motion.
+
+### Added
+
+- `gooee-motion`: the motion of the parts as plain JavaScript, for Vue, Svelte, Angular, plain HTML or React. Panels that grow out of their opener (`createLiquid`, `createDialogMorph`), highlights that stretch or flow (`createStretch`, `createFlow`), the field edge and menu bead (`edgeFlow`, `bead`), the soft press (`createSoftPress`), flings and drag to close (`createFling`, `createDragClose`), scrubbed values (`createScrubber`) and the scroll frame loop (`onScrollFrame`). `npm i gooee-motion gooee-tokens`. No dependencies.
+
+### Changed
+
+- The parts' motion hooks now hold these plain functions, in `internal/motion/`. They behave as before, and `npx gooee add` copies the plain file with each hook.
+
+## 0.49.0 · 16 Nov 2026
+
+HoldToConfirm's cancel button arrives sooner, and the docs homepage opens far faster on a phone.
+
+### Changed
+
+- HoldToConfirm: the ✕ that cancels grows in and out in 400 ms (`--gooee-motion-reveal`), not the 600 ms morph, so it is there as soon as you start holding.
+- LivePill: the `label` guidance now says to start the name with the words the pill shows, such as "City map 63%, download", so voice control can find it by what people see.
+
 ## 0.48.0 · 16 Nov 2026
 
 The look now works without React: a new package, gooee-tokens.

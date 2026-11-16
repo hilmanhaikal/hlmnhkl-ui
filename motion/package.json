@@ -1,0 +1,33 @@
+{
+  "name": "gooee-motion",
+  "version": "0.50.0",
+  "description": "The Gooee UI motion with no framework: panels that grow out of what opened them, liquid highlights, soft presses, flings and scrubbed values. For Vue, Svelte, Angular, plain HTML or React.",
+  "license": "MIT",
+  "homepage": "https://gooee.dev/motion",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hilmanhaikal/gooee-ui.git",
+    "directory": "motion"
+  },
+  "type": "module",
+  "main": "./dist/motion/index.js",
+  "types": "./dist/motion/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/motion/index.d.ts",
+      "default": "./dist/motion/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "keywords": [
+    "animation",
+    "motion",
+    "morph",
+    "liquid",
+    "vanilla-js",
+    "framework-agnostic"
+  ]
+}

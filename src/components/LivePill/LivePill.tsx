@@ -8,7 +8,7 @@ import { useControllable } from '../../internal/useControllable'
 import styles from './LivePill.module.css'
 
 export type LivePillProps = Omit<ComponentPropsWithRef<'div'>, 'children' | 'title'> & {
-  /** Screen reader name of the pill, the whole state in words, such as "Map download, 63%". */
+  /** Screen reader name of the pill: start with the words it shows, then the rest of the state, such as "City map 63%, download". People using voice control say what they see. */
   label: string
   /** What the small pill shows, such as an icon, a word and a number. It stays on its spot when the pill opens. */
   compact: ReactNode
