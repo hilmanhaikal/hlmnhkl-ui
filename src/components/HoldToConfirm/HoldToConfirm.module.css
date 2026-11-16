@@ -6,6 +6,14 @@
   min-width: 0;
 }
 
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--gooee-space-2);
+  max-width: 100%;
+}
+
 .shell {
   position: relative;
   display: flex;
@@ -23,14 +31,19 @@
     box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
-/* The pill grows into its confirm step on the morph curve, and folds back a little quicker. */
+/* The confirm step: the button itself turns red in place and confirms on the next press. Its words stay. */
 .shell[data-phase="step"] {
+  background: var(--gooee-color-danger-solid);
+  box-shadow: none;
   transition:
-    width var(--gooee-motion-morph) var(--gooee-ease-morph),
-    height var(--gooee-motion-morph) var(--gooee-ease-morph),
-    border-radius var(--gooee-motion-morph) var(--gooee-ease-morph),
+    background-color var(--gooee-motion-base) var(--gooee-ease-morph),
     box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
+.shell[data-phase="step"] .main { color: var(--gooee-color-on-danger); }
+@media (hover: hover) {
+  .shell[data-phase="step"]:hover { background: var(--gooee-color-danger-solid-hover); }
+}
+.shell[data-phase="step"]:has(.main:focus-visible) { box-shadow: var(--gooee-focus-ring); }
 
 .shell:has(.main:focus-visible) {
   box-shadow: inset 0 0 0 var(--gooee-line-thick) var(--gooee-color-border-strong), var(--gooee-focus-ring);
@@ -60,18 +73,8 @@
   outline: none;
 }
 
-.shell[data-phase="step"] .main,
 .shell[data-phase="done"] .main { cursor: default; }
 .shell[data-disabled] .main { cursor: not-allowed; }
-
-.shell[data-stack] {
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.shell[data-stack][data-phase="step"] { border-radius: var(--gooee-radius-panel); }
-.shell[data-stack] .main { height: var(--gooee-control-h-lg); }
-.shell[data-stack] .step { padding: 0 var(--gooee-space-2) var(--gooee-space-2); }
 
 .faces { display: grid; }
 
@@ -108,57 +111,39 @@
   opacity: 0;
 }
 
-.step {
-  display: flex;
+.main { transition: color var(--gooee-motion-base) var(--gooee-ease-morph); }
+
+/* Cancel: a round button beside the red one, as tall as the pill. It buds out of the pill's edge
+   (HoldToConfirm.tsx draws the drop); closed, it takes no room and no focus. */
+.cancel {
+  display: inline-grid;
   flex: none;
-  align-items: center;
-  gap: var(--gooee-space-2);
-  padding-right: var(--gooee-space-1);
-}
-
-.step[inert] {
-  visibility: hidden;
-  transition: visibility 0s linear var(--gooee-motion-morph-out);
-}
-
-.cancel,
-.confirm {
-  height: var(--gooee-hit-min);
-  padding: 0 var(--gooee-space-5);
+  place-items: center;
+  width: var(--gooee-control-h-lg);
+  height: var(--gooee-control-h-lg);
+  padding: 0;
   border: 0;
   border-radius: var(--gooee-radius-full);
-  font: inherit;
-  font-weight: var(--gooee-weight-medium);
-  white-space: nowrap;
+  background: var(--gooee-color-surface);
+  box-shadow: inset 0 0 0 var(--gooee-line-thick) var(--gooee-color-border-strong);
+  color: var(--gooee-color-fg);
   cursor: pointer;
   outline: none;
   transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
-
-.cancel {
-  background: transparent;
-  color: var(--gooee-color-fg);
-}
-
-.confirm {
-  background: var(--gooee-color-danger-solid);
-  color: var(--gooee-color-on-danger);
-}
-
+.cancel svg { width: var(--gooee-icon-md); height: var(--gooee-icon-md); }
+/* Closed it takes no room, but stays on its open spot, so the drop flows back from where it was. */
+.cancel[inert] { position: absolute; top: 0; left: calc(100% + var(--gooee-space-2)); visibility: hidden; }
 @media (hover: hover) {
   .cancel:hover { background: var(--gooee-color-surface-hover); }
-  .confirm:hover { background: var(--gooee-color-danger-solid-hover); }
 }
+.cancel:focus-visible { box-shadow: inset 0 0 0 var(--gooee-line-thick) var(--gooee-color-border-strong), var(--gooee-focus-ring); }
 
-.cancel:focus-visible,
-.confirm:focus-visible {
-  box-shadow:
-    inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg),
-    inset 0 0 0 calc(var(--gooee-line-focus) * 2) var(--gooee-color-surface);
-}
+/* The drawn drop, over the row while it moves. */
+.bud { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 1; }
 
 .hint {
-  min-height: calc(var(--gooee-text-sm) * var(--gooee-leading-snug) * 2);
+  min-height: calc(round(nearest, var(--gooee-text-sm) * var(--gooee-leading-snug-ratio), 4px) * 2);
   margin: 0;
   color: var(--gooee-color-fg-muted);
   font-size: var(--gooee-text-sm);

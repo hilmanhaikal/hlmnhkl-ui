@@ -1754,7 +1754,7 @@
       "name": "hold-to-confirm",
       "type": "registry:item",
       "title": "HoldToConfirm",
-      "description": "Press and hold to run a risky action. A line burns along the button's own edge, out both ways from your finger, and the action runs when the ends meet. Let go early and it runs back. One tap or key press opens a Cancel and Confirm step in place instead.",
+      "description": "Press and hold to run a risky action. A line burns along the button's own edge, out both ways from your finger, and the action runs when the ends meet. Let go early and it runs back. One tap or key press opens a confirm step instead: the button turns red, a cancel button buds out beside it, and pressing the button again runs it.",
       "registryDependencies": [
         "hilmanhaikal/gooee-ui/core"
       ],
@@ -1793,6 +1793,16 @@
           "path": "registry/src/ui/internal/icons.tsx",
           "type": "registry:file",
           "target": "~/src/ui/internal/icons.tsx"
+        },
+        {
+          "path": "registry/src/ui/internal/liquidMatter.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/liquidMatter.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/liquidPath.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/liquidPath.ts"
         },
         {
           "path": "registry/src/ui/internal/motion.ts",
@@ -2065,7 +2075,7 @@
       "name": "live-pill",
       "type": "registry:item",
       "title": "LivePill",
-      "description": "A small status pill for something live, such as a download, a delivery or a timer. Tap it and its surface grows into a card from its own spot, with the pill's words still on the same pixels as the card's last row. It can be its own progress bar, and news can open it by itself.",
+      "description": "A small status pill for something live, such as a download, a delivery or a timer. Tap it and its surface grows into a card from its own spot. With progress, a ring leads the pill, as uploads show it across the web; open, the ring grows with the percent inside and the card's words beside it. Done closes the ring into a tick, stopped turns it red. News can open it by itself.",
       "registryDependencies": [
         "hilmanhaikal/gooee-ui/core"
       ],
@@ -2094,6 +2104,16 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/internal/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/motion.ts",
@@ -3818,7 +3838,7 @@
       "name": "tabs",
       "type": "registry:item",
       "title": "Tabs",
-      "description": "Switch between views. The underline runs to the new tab, splits, and what is left drains after it; the panel rises in.",
+      "description": "Switch between views. The panel rises into the chosen tab like a folder's index tab; picking another, the rise stretches over to it and settles. The words never move.",
       "registryDependencies": [
         "hilmanhaikal/gooee-ui/core"
       ],
@@ -3847,16 +3867,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/liquidMatter.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/liquidMatter.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/liquidPath.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/liquidPath.ts"
         },
         {
           "path": "registry/src/ui/internal/motion.ts",
@@ -4021,7 +4031,7 @@
       "name": "theme-toggle",
       "type": "registry:item",
       "title": "ThemeToggle",
-      "description": "One button that flips between the light and dark theme: the sun turns into the moon and back. On its own it sets data-theme on the page and remembers the choice; themeScript stops a saved dark theme flashing light on load.",
+      "description": "One button that flips between the light and dark theme: one shape morphs from the moon to the sun and back, and the new theme grows from the button in a circle. On its own it sets data-theme on the page and remembers the choice; themeScript stops a saved dark theme flashing light on load.",
       "registryDependencies": [
         "hilmanhaikal/gooee-ui/core"
       ],
@@ -4062,14 +4072,19 @@
           "target": "~/src/ui/internal/cx.ts"
         },
         {
-          "path": "registry/src/ui/internal/icons.module.css",
+          "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
+          "target": "~/src/ui/internal/feel.ts"
         },
         {
-          "path": "registry/src/ui/internal/icons.tsx",
+          "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
+          "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/themeReveal.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/themeReveal.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",

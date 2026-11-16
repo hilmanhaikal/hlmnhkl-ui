@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type CSSProperties, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
+import { CheckIcon } from '../../internal/icons'
 import { motionMs } from '../../internal/motion'
 import { useControllable } from '../../internal/useControllable'
 import styles from './LivePill.module.css'
@@ -21,10 +22,14 @@ export type LivePillProps = Omit<ComponentPropsWithRef<'div'>, 'children' | 'tit
   onOpenChange?: (open: boolean) => void
   /** Where it sits. At the bottom it is in thumb reach and grows up; at the top it grows down. */
   placement?: 'bottom' | 'top'
+  /** "center" keeps the pill in the middle of its row, like a status bar. "start" puts it at the row's start edge, and the card grows from there. */
+  align?: 'center' | 'start'
   /** Pins it to the screen edge, clear of the safe area. Leave off to place it yourself. */
   fixed?: boolean
-  /** From 0 to 1: the pill fills from its start like a progress bar, and its words change ink under the fill. */
+  /** From 0 to 1: a ring at the pill's start shows it. Open, the ring grows on its spot with the percent inside. */
   progress?: number
+  /** "done" closes the ring into a tick (also at progress 1). "stopped" turns it red with a mark; say why in the words. */
+  status?: 'done' | 'stopped'
   /** "paper" is a light pill with an outline; "ink" is a solid dark one. */
   tone?: 'paper' | 'ink'
   /** News for screen readers, said once each time it changes, such as "Download paused". Never a ticking number. */
@@ -46,8 +51,10 @@ export function LivePill({
   defaultOpen = false,
   onOpenChange,
   placement = 'bottom',
+  align = 'center',
   fixed = false,
   progress,
+  status,
   tone = 'paper',
   news,
   alert,
@@ -61,11 +68,16 @@ export function LivePill({
   const button = useRef<HTMLButtonElement>(null)
   const [shut, setShut] = useState<string>()
   const [rowH, setRowH] = useState<number>()
+  const [ringAt, setRingAt] = useState<[number, number]>()
+  const slot = useRef<HTMLSpanElement>(null)
+  const lead = useRef<HTMLSpanElement>(null)
   const [byAlert, setByAlert] = useState(false)
   const [held, setHeld] = useState(false)
   const [said, setSaid] = useState('')
   const lastNews = useRef(news)
   const lastAlert = useRef(alert)
+  const openNow = useRef(open)
+  openNow.current = open
 
   // Shut, the card is cut back to the button's own box, so the pill grows out of its own spot.
   useLayoutEffect(() => {
@@ -73,10 +85,18 @@ export function LivePill({
     const b = button.current
     if (!sh || !b) return
     const measure = () => {
+      // Open, the pill's button shrinks to the ring; the shut shape is read only while it is shut.
+      if (openNow.current) return
       // Real fractions, not whole pixels: a half-pixel miss shows as an outline thin on one side and thick on the other.
       const s = sh.getBoundingClientRect()
       const r = b.getBoundingClientRect()
-      setShut(`inset(${r.top - s.top}px ${s.right - r.right}px ${s.bottom - r.bottom}px ${r.left - s.left}px round ${r.height / 2}px)`)
+      // A page that scales its content (a zoom, an entrance) scales these boxes too; k turns them back into CSS pixels.
+      const k = s.width / sh.offsetWidth || 1
+      setShut(`inset(${(r.top - s.top) / k}px ${(s.right - r.right) / k}px ${(s.bottom - r.bottom) / k}px ${(r.left - s.left) / k}px round ${r.height / k / 2}px)`)
+      // Shut, the card's ring sits on the pill's ring slot: the distance between the two, read from layout.
+      const sl = slot.current?.getBoundingClientRect()
+      const ld = lead.current
+      if (sl && ld) setRingAt([(sl.left - s.left) / k - ld.offsetLeft, (sl.top - s.top) / k - ld.offsetTop])
       const row = b.parentElement as HTMLElement
       setRowH(row.offsetHeight)
     }
@@ -134,10 +154,12 @@ export function LivePill({
   }, [open, byAlert, held, alertMs])
 
   const p = progress === undefined ? undefined : Math.min(1, Math.max(0, progress))
-  const vars = { '--pill-shut': shut, '--pill-row': rowH === undefined ? undefined : `${rowH}px`, '--p': p, ...style } as CSSProperties
+  const state = status ?? (p === 1 ? 'done' : undefined)
+  const ring = p !== undefined || state !== undefined
+  const vars = { '--pill-shut': shut, '--pill-row': rowH === undefined ? undefined : `${rowH}px`, '--ring-x': ringAt && `${ringAt[0]}px`, '--ring-y': ringAt && `${ringAt[1]}px`, ...style } as CSSProperties
 
   return (
-    <div className={cx(styles.root, className)} data-placement={placement} data-fixed={fixed || undefined} style={vars} {...rest}>
+    <div className={cx(styles.root, className)} data-placement={placement} data-align={align} data-ring={ring || undefined} data-fixed={fixed || undefined} style={vars} {...rest}>
       <div
         ref={shell}
         className={styles.shell}
@@ -156,18 +178,27 @@ export function LivePill({
           if (!e.currentTarget.contains(e.relatedTarget as Node)) setHeld(false)
         }}
       >
-        <div className={styles.row}>
-          <button ref={button} type="button" className={styles.button} data-fill={p === undefined ? undefined : ''} aria-expanded={open} aria-label={label} onClick={() => (open ? close(false) : setOpen(true))}>
-            {p === undefined ? (
-              <span className={styles.face}>{compact}</span>
+        {ring && (
+          <span ref={lead} className={styles.lead} data-state={state} aria-hidden="true">
+            <svg className={styles.ring} viewBox="0 0 44 44">
+              <circle className={styles.track} cx="22" cy="22" r="20" />
+              <circle className={styles.arc} cx="22" cy="22" r="20" pathLength={100} strokeDasharray={`${state ? 100 : (p ?? 0) * 100} 100`} />
+            </svg>
+            {state === 'done' ? (
+              <CheckIcon className={styles.mark} />
+            ) : state === 'stopped' ? (
+              <svg className={styles.mark} viewBox="0 0 24 24">
+                <path d="M12 7v6M12 17v.01" />
+              </svg>
             ) : (
-              <span className={styles.stack}>
-                <span className={styles.face}>{compact}</span>
-                <span className={cx(styles.face, styles.over)} aria-hidden="true">
-                  {compact}
-                </span>
-              </span>
+              <span className={styles.pct}>{Math.round((p ?? 0) * 100)}%</span>
             )}
+          </span>
+        )}
+        <div className={styles.row}>
+          <button ref={button} type="button" className={styles.button} aria-expanded={open} aria-label={label} onClick={() => (open ? close(false) : setOpen(true))}>
+            {ring && <span ref={slot} className={styles.slot} />}
+            <span className={styles.face}>{compact}</span>
           </button>
         </div>
         <div className={styles.body} inert={!open} aria-hidden={!open || undefined}>

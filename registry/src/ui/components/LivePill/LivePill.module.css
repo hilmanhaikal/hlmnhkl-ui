@@ -1,7 +1,7 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
 .root {
   /* The row is the pill plus the card's inner padding, so the label keeps its pixels as the card grows round it. */
-  --pill-pad: calc(var(--gooee-space-6) - (var(--gooee-hit-min) - var(--gooee-text-sm) * var(--gooee-leading-normal)) / 2);
+  --pill-pad: calc(var(--gooee-space-6) - (var(--gooee-hit-min) - round(nearest, var(--gooee-text-sm) * var(--gooee-leading-normal-ratio), 4px)) / 2);
   position: relative;
   inline-size: 100%;
   max-inline-size: var(--gooee-panel-w-sm);
@@ -33,10 +33,12 @@
   --pill-line: var(--gooee-color-border);
   --pill-key: var(--gooee-color-border-strong);
   --pill-edge: color-mix(in srgb, var(--pill-fg) 16%, transparent);
-  --pill-fill: var(--gooee-color-inverse);
-  --pill-fill-fg: var(--gooee-color-inverse-fg);
+  /* As wide as its words, up to the whole row, and centred on the pill so the pill never moves. */
   position: absolute;
-  inset-inline: 0;
+  left: 50%;
+  translate: -50% 0;
+  inline-size: max-content;
+  max-inline-size: 100%;
   display: flex;
   flex-direction: column;
   border-radius: var(--gooee-radius-sheet);
@@ -54,8 +56,6 @@
   --pill-line: color-mix(in srgb, var(--pill-fg) 18%, var(--pill-bg));
   --pill-key: transparent;
   --pill-edge: transparent;
-  --pill-fill: var(--gooee-color-surface);
-  --pill-fill-fg: var(--gooee-color-fg);
 }
 
 /* Shut, it closes fast and falls away. Open, the surface pours out of the pill on the liquid curve. */
@@ -79,8 +79,20 @@
   visibility: hidden;
 }
 
-.shell:not([data-measured]):not([data-open]) .button {
+.shell:not([data-measured]):not([data-open]) :is(.button, .lead) {
   visibility: visible;
+}
+
+.root[data-align='start'] .shell {
+  left: auto;
+  inset-inline-start: calc(var(--pill-pad) * -1);
+  translate: none;
+}
+
+/* The card keeps the same inner padding at its start as above the pill, and the pill stays on its spot. */
+.root[data-align='start'] .row {
+  justify-content: flex-start;
+  padding-inline-start: var(--pill-pad);
 }
 
 .root[data-placement='bottom'] .shell {
@@ -126,7 +138,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* The outline sits over the fill, so both ends match. Mixed from the text colour, it fades into the fill. */
+/* The pill's outline, mixed from the text colour. */
 .button::after {
   content: '';
   position: absolute;
@@ -147,12 +159,7 @@
   box-shadow: inset 0 0 0 var(--gooee-line) transparent;
 }
 
-.stack {
-  display: grid;
-}
-
 .face {
-  grid-area: 1 / 1;
   display: inline-flex;
   align-items: center;
   gap: var(--gooee-space-3);
@@ -163,24 +170,6 @@
 .face svg {
   flex: none;
   font-size: var(--gooee-icon-md);
-}
-
-/* The pill as its own progress bar: words under the fill turn to the fill's own ink. */
-.over {
-  background: var(--pill-fill);
-  color: var(--pill-fill-fg);
-  clip-path: inset(0 calc(100% - var(--p) * 100%) 0 0);
-  transition:
-    clip-path var(--gooee-motion-slow) var(--gooee-ease-out),
-    opacity var(--gooee-motion-fast) var(--gooee-ease-out);
-}
-
-.over:dir(rtl) {
-  clip-path: inset(0 0 0 calc(100% - var(--p) * 100%));
-}
-
-.shell[data-open] .over {
-  opacity: 0;
 }
 
 .body {
@@ -205,4 +194,195 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* With progress, a ring leads the pill. Shut: a 24px ring 10px in from the pill's 22px corner (12 + 10 = 22).
+   Open: the same ring at 44px, 12px in from the card's corner, so the card's radius is 22 + 12 = 34.
+   Opening, the ring moves from the pill to the card's top start corner and grows; the card's words sit beside it. */
+.root[data-ring] {
+  --ring-l: var(--gooee-hit-min);
+  --ring-s: var(--gooee-space-7);
+  --ring-in: calc((var(--ring-l) - var(--ring-s)) / 2);
+  --card-in: var(--gooee-space-4);
+  --card-r: calc(var(--ring-l) / 2 + var(--card-in));
+  block-size: var(--ring-l);
+}
+
+.root[data-ring] .shell {
+  display: grid;
+  grid-template-columns: var(--ring-l) minmax(0, auto);
+  column-gap: var(--gooee-space-4);
+  padding: var(--card-in) var(--gooee-space-7) var(--card-in) var(--card-in);
+  border-radius: var(--card-r);
+}
+
+.root[data-ring] .shell[data-open] {
+  clip-path: inset(0 0 0 0 round var(--card-r));
+}
+
+.root[data-ring][data-align='start'] .shell {
+  inset-inline-start: 0;
+}
+
+.root[data-ring] .row {
+  position: absolute;
+  inset-inline-start: 0;
+  padding: 0;
+}
+
+/* Shut, the pill sits where the card's middle (or start) is, the same spot as without a ring. */
+.root[data-ring][data-align='center'] .row {
+  left: 50%;
+  translate: -50% 0;
+}
+
+.root[data-ring][data-align='center'] .shell[data-open] .row {
+  left: var(--card-in);
+  translate: none;
+}
+
+.root[data-ring][data-placement='top'] .row {
+  top: 0;
+}
+
+.root[data-ring][data-placement='bottom'] .row {
+  bottom: 0;
+}
+
+/* Open, the button is the ring: a 44px target that folds the card back. */
+.root[data-ring] .shell[data-open] .row {
+  inset-inline-start: var(--card-in);
+}
+
+.root[data-ring][data-placement='top'] .shell[data-open] .row {
+  top: var(--card-in);
+}
+
+.root[data-ring][data-placement='bottom'] .shell[data-open] .row {
+  bottom: var(--card-in);
+}
+
+.root[data-ring] .shell[data-open] .button {
+  inline-size: var(--ring-l);
+}
+
+.slot {
+  flex: none;
+  inline-size: var(--ring-s);
+  block-size: var(--ring-s);
+  margin-inline-start: var(--ring-in);
+}
+
+.root[data-ring] .face {
+  padding-inline: var(--gooee-space-3) var(--gooee-space-6);
+  transition: opacity var(--gooee-motion-base) var(--gooee-ease-out) var(--gooee-motion-fast);
+}
+
+.root[data-ring] .shell[data-open] .face {
+  opacity: 0;
+  transition: opacity var(--gooee-motion-instant) var(--gooee-ease-in);
+}
+
+.lead {
+  --ring-ink: var(--pill-fg);
+  position: relative;
+  grid-area: 1 / 1;
+  inline-size: var(--ring-l);
+  block-size: var(--ring-l);
+  color: var(--ring-ink);
+  /* Shut, the big ring is scaled down onto the pill's ring slot (24 of 44). LivePill measures the move. */
+  align-self: start;
+  scale: calc(24 / 44);
+  translate: var(--ring-x, 0) var(--ring-y, 0);
+  transform-origin: 0 0;
+  transition:
+    scale var(--gooee-motion-fast) var(--gooee-ease-in),
+    translate var(--gooee-motion-fast) var(--gooee-ease-in);
+}
+
+.shell[data-open] .lead {
+  scale: 1;
+  translate: 0 0;
+  transition:
+    scale var(--gooee-motion-liquid) var(--gooee-ease-liquid),
+    translate var(--gooee-motion-liquid) var(--gooee-ease-liquid);
+}
+
+.lead[data-state='stopped'] {
+  --ring-ink: var(--gooee-color-danger);
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  rotate: -90deg;
+  fill: none;
+}
+
+/* Strokes are in the 44px drawing: 5.5 shows as 3px when the ring is shut at 24px, 4 shows as 4px open. */
+.track,
+.arc {
+  stroke-width: 5.5;
+  transition: stroke-width var(--gooee-motion-fast) var(--gooee-ease-in);
+}
+
+.shell[data-open] :is(.track, .arc) {
+  stroke-width: 4;
+  transition: stroke-width var(--gooee-motion-liquid) var(--gooee-ease-liquid);
+}
+
+.track {
+  stroke: var(--pill-line);
+}
+
+.lead[data-state='stopped'] .track {
+  stroke: var(--ring-ink);
+}
+
+.arc {
+  stroke: var(--ring-ink);
+  stroke-linecap: round;
+  transition:
+    stroke-width var(--gooee-motion-fast) var(--gooee-ease-in),
+    stroke-dasharray var(--gooee-motion-slow) var(--gooee-ease-out);
+}
+
+.mark {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  inline-size: var(--gooee-space-6);
+  block-size: var(--gooee-space-6);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pct {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: var(--gooee-text-sm);
+  font-weight: var(--gooee-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: var(--gooee-leading-none);
+  opacity: 0;
+  transition: opacity var(--gooee-motion-instant) var(--gooee-ease-in);
+}
+
+.shell[data-open] .pct {
+  opacity: 1;
+  transition: opacity var(--gooee-motion-base) var(--gooee-ease-out) var(--gooee-motion-fast);
+}
+
+.root[data-ring] .body {
+  grid-area: 1 / 2;
+  align-self: start;
+  padding: 0;
 }

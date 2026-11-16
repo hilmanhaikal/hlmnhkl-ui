@@ -23,7 +23,7 @@
   animation-delay: calc(var(--i, 0) * var(--gooee-motion-stagger) * 3);
 }
 
-.text { height: 0.8em; border-radius: var(--gooee-radius-xs); }
+.text { height: 0.8em; height: round(nearest, 0.8em, 4px); border-radius: var(--gooee-radius-xs); }
 .rect { width: 100%; height: var(--gooee-skeleton-block); border-radius: var(--gooee-radius-md); }
 .circle { width: var(--gooee-skeleton-avatar); height: var(--gooee-skeleton-avatar); border-radius: var(--gooee-radius-full); }
 

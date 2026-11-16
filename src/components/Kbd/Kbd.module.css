@@ -13,7 +13,7 @@
   color: var(--gooee-color-fg);
   font-family: var(--gooee-font-mono);
   font-size: var(--gooee-text-xs);
-  line-height: 1;
+  line-height: var(--gooee-leading-none);
   vertical-align: middle;
   transition:
     transform var(--gooee-motion-instant) var(--gooee-ease-out),

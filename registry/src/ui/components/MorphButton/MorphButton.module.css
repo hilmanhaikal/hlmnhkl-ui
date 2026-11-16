@@ -121,13 +121,14 @@
 .shell[data-corner^="b"] .panel { padding: var(--gooee-space-6) var(--gooee-space-6) calc(var(--gooee-control-h-lg) + var(--gooee-space-3)); }
 
 .close {
+  /* On the corner's own centre, so it follows the curve: inset = corner - half its size. */
   position: absolute;
-  top: var(--gooee-space-1);
-  right: var(--gooee-space-1);
+  top: calc(var(--gooee-radius-panel) - var(--gooee-control-h-sm) / 2);
+  right: calc(var(--gooee-radius-panel) - var(--gooee-control-h-sm) / 2);
   display: grid;
   place-items: center;
-  width: var(--gooee-hit-min);
-  height: var(--gooee-hit-min);
+  width: var(--gooee-control-h-sm);
+  height: var(--gooee-control-h-sm);
   padding: 0;
   border: 0;
   border-radius: var(--gooee-radius-full);
@@ -135,6 +136,9 @@
   color: var(--gooee-color-fg-muted);
   cursor: pointer;
 }
+
+/* Looks 32px, keeps a 44px touch area. */
+.close::after { content: ""; position: absolute; inset: calc((var(--gooee-control-h-sm) - var(--gooee-hit-min)) / 2); border-radius: inherit; }
 
 .close svg {
   width: var(--gooee-icon-md);

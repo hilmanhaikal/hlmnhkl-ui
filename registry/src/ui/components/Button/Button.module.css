@@ -9,7 +9,7 @@
   place-items: center;
   max-width: 100%;
   min-height: var(--h);
-  padding: 0 var(--gooee-space-6);
+  padding: 0 var(--gooee-control-pad-md);
   --bg: transparent;
   --line: transparent;
   border: var(--gooee-line) solid var(--line);
@@ -17,7 +17,7 @@
   background: var(--bg);
   font-size: var(--gooee-text-md);
   font-weight: var(--gooee-weight-medium);
-  line-height: 1;
+  line-height: var(--gooee-leading-none);
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
@@ -92,8 +92,8 @@
   cursor: progress;
 }
 
-.sm { --h: var(--gooee-control-h-sm); padding: 0 var(--gooee-space-5); font-size: var(--gooee-text-sm); }
-.lg { --h: var(--gooee-control-h-lg); padding: 0 var(--gooee-space-7); font-size: var(--gooee-text-lg); }
+.sm { --h: var(--gooee-control-h-sm); padding: 0 var(--gooee-control-pad-sm); font-size: var(--gooee-text-sm); }
+.lg { --h: var(--gooee-control-h-lg); padding: 0 var(--gooee-control-pad-lg); font-size: var(--gooee-text-lg); }
 .full { display: grid; width: 100%; }
 
 .primary {

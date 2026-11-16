@@ -3,7 +3,7 @@
   display: inline-flex;
   width: fit-content;
   font-variant-numeric: tabular-nums;
-  line-height: 1.15;
+  line-height: var(--gooee-leading-tight);
 }
 
 .visual {
@@ -13,7 +13,7 @@
 
 .digit {
   display: inline-block;
-  height: 1.15em;
+  height: var(--gooee-leading-tight);
   overflow: hidden;
   animation: enter var(--gooee-motion-slow) var(--gooee-ease-out);
 }
@@ -26,7 +26,7 @@
 
 .cell {
   display: block;
-  height: 1.15em;
+  height: var(--gooee-leading-tight);
   text-align: center;
 }
 

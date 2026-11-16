@@ -1,21 +1,12 @@
-/* The sun and the moon share one spot: the one for the other theme turns away and shrinks as the
-   current one turns in. */
+/* One shape: the sun's disc grows and a bite slides over it into the moon's crescent, with the rays
+   drawing back in first (ThemeToggle.tsx draws every frame). */
 .icon {
-  display: grid;
   width: 1em;
   height: 1em;
+  overflow: visible;
 }
 
-.sun,
-.moon {
-  grid-area: 1 / 1;
-  width: 100%;
-  height: 100%;
-  transition:
-    transform var(--gooee-motion-slower) var(--gooee-ease-spring),
-    opacity var(--gooee-motion-base) var(--gooee-ease-out);
+.rays {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
 }
-
-/* Shows the theme the button switches to: the moon in light, the sun in dark. */
-.icon:not([data-theme-shown="dark"]) .sun { opacity: 0; transform: rotate(90deg) scale(0.4); }
-.icon[data-theme-shown="dark"] .moon { opacity: 0; transform: rotate(-90deg) scale(0.4); }

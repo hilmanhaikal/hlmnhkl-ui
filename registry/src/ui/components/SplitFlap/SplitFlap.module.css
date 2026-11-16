@@ -5,7 +5,7 @@
   font-size: var(--gooee-text-xl);
   font-weight: var(--gooee-weight-semibold);
   font-variant-numeric: tabular-nums;
-  line-height: 1;
+  line-height: var(--gooee-leading-none);
 }
 
 .root[data-size='sm'] {

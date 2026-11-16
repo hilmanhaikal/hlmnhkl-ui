@@ -1,5 +1,8 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
 .root {
+  /* The panel's surface; the chosen tab rises out of it in the same colour. */
+  --tabs-panel: var(--gooee-color-surface-sunken);
+  --tabs-r: var(--gooee-radius-md);
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -8,7 +11,9 @@
 .listScroll {
   overflow-x: auto;
   scrollbar-width: none;
-  border-bottom: var(--gooee-line) solid var(--gooee-color-border);
+  /* Room under the row for the rise to reach into the panel's corner; the panel overlaps it. */
+  padding-bottom: var(--tabs-r);
+  margin-bottom: calc(var(--tabs-r) * -1);
 }
 
 .listScroll::-webkit-scrollbar { display: none; }
@@ -27,7 +32,8 @@
   min-height: var(--gooee-hit-min);
   padding: 0 var(--gooee-space-4);
   border: 0;
-  border-radius: var(--gooee-radius-sm) var(--gooee-radius-sm) 0 0;
+  z-index: 1;
+  border-radius: var(--tabs-r) var(--tabs-r) 0 0;
   background: transparent;
   color: var(--gooee-color-fg-muted);
   font: inherit;
@@ -35,7 +41,7 @@
   font-weight: var(--gooee-weight-medium);
   white-space: nowrap;
   cursor: pointer;
-  transition: color var(--gooee-motion-base) var(--gooee-ease-out), background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: color var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 /* Narrow screens: a little less room around each tab, so a short row fits instead of scrolling. */
@@ -44,7 +50,7 @@
 }
 
 @media (hover: hover) {
-  .tab:hover:not(:disabled) { color: var(--gooee-color-fg); background: var(--gooee-color-surface-hover); }
+  .tab:hover:not(:disabled) { color: var(--gooee-color-fg); }
 }
 .tab[aria-selected="true"] { color: var(--gooee-color-fg); }
 .tab:disabled { opacity: var(--gooee-disabled-opacity); cursor: not-allowed; }
@@ -54,43 +60,38 @@
   box-shadow: inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg);
 }
 
-.indicator {
+/* The rise: the panel's surface grown up behind the chosen tab, with rounded top corners and soft inside
+   corners where it meets the panel. */
+.rise {
   position: absolute;
-  left: 0;
-  bottom: 0;
-  height: var(--gooee-indicator);
-  border-radius: var(--gooee-radius-full);
-  background: var(--gooee-color-accent);
-  pointer-events: none;
-}
-
-.indicator[data-ready] {
-  transition:
-    transform var(--gooee-motion-morph-out) var(--gooee-ease-out),
-    width var(--gooee-motion-morph-out) var(--gooee-ease-out);
-}
-
-/* A new tab flows the underline instead (internal/liquidMatter.ts useFlow): .liquid draws it meanwhile. */
-.indicator[data-flowing] {
-  opacity: 0;
-  transition: none;
-}
-
-.liquid {
-  position: absolute;
-  left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+  /* Down past the row by one corner: wherever the rise is, it fills the panel's round corner under it,
+     so the corner squares and rounds with the rise itself, never on its own. */
+  bottom: calc(var(--tabs-r) * -1);
+  border-radius: var(--tabs-r) var(--tabs-r) 0 0;
+  background: var(--tabs-panel);
   pointer-events: none;
 }
+
+.rise::before,
+.rise::after {
+  content: "";
+  position: absolute;
+  bottom: var(--tabs-r);
+}
+/* The inside corners: their size is set each frame (Tabs.tsx) from how far the rise is from each end. */
+.rise::before { --s: var(--tabs-in-start, var(--tabs-r)); right: 100%; width: var(--s); height: var(--s); background: radial-gradient(circle at 0 0, transparent var(--s), var(--tabs-panel) calc(var(--s) + 0.5px)); }
+.rise::after { --s: var(--tabs-in-end, var(--tabs-r)); left: 100%; width: var(--s); height: var(--s); background: radial-gradient(circle at 100% 0, transparent var(--s), var(--tabs-panel) calc(var(--s) + 0.5px)); }
+/* Past either end of the row an inside corner is clipped by the row itself, so it never shows outside the panel. */
 
 .panel {
-  padding-top: var(--gooee-space-6);
-  border-radius: var(--gooee-radius-sm);
-  animation: panelIn var(--gooee-motion-slow) var(--gooee-ease-out);
+  padding: var(--gooee-space-6);
+  border-radius: var(--tabs-corner-start, var(--tabs-r)) var(--tabs-corner-end, var(--tabs-r)) var(--tabs-r) var(--tabs-r);
+  background: var(--tabs-panel);
 }
+
+/* Only the words fade in, in place. The panel never moves or fades, so it stays one shape with the rise. */
+.panel > * { animation: panelIn var(--gooee-motion-slow) var(--gooee-ease-morph); }
 
 .panel:focus-visible {
   outline: none;
@@ -98,5 +99,5 @@
 }
 
 @keyframes panelIn {
-  from { opacity: 0; transform: translateY(var(--gooee-shift-md)); }
+  from { opacity: 0; }
 }

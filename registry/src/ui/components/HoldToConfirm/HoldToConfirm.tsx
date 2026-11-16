@@ -3,21 +3,23 @@
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { CheckIcon } from '../../internal/icons'
+import { CheckIcon, XIcon } from '../../internal/icons'
 import { bezier } from '../../internal/feel'
 import { morphCurve, prefersReducedMotion, readMotionMs } from '../../internal/motion'
+import { frames, layer, morphEase, motionFor } from '../../internal/liquidMatter'
+import { body, boxPath, lerp, loopsPath, pincher, seg, trace, type Box } from '../../internal/liquidPath'
 import styles from './HoldToConfirm.module.css'
 
 export type HoldToConfirmProps = {
   /** The action, as the button's label, such as "Delete workspace". */
   children: ReactNode
-  /** Called once the hold runs to the end, or Confirm is pressed in the confirm step. */
+  /** Called once the hold runs to the end, or the button is pressed again in the confirm step. */
   onConfirm: () => void
   /** Called when a hold is let go early, or the confirm step is cancelled. */
   onCancel?: () => void
-  /** The confirm step's button, such as "Delete". Keep it short. */
+  /** The action as a verb for the confirm step's line, such as "Delete": "Press it again to delete, or Cancel." */
   confirmLabel?: string
-  /** The confirm step's way back. */
+  /** The name of the round cancel button that buds out beside it in the confirm step. */
   cancelLabel?: string
   /** Shown in place of the label once it is done, such as "Workspace deleted". */
   doneLabel?: ReactNode
@@ -41,6 +43,72 @@ const HINT_AFTER = 300
 const LEAVE = 16
 // How long the done state shows before the button can be used again.
 const DONE_FOR = 2400
+// A click this soon after the step opens is the rest of a double-click, not a choice.
+const GUARD = 500
+
+/**
+ * The cancel drop buds out of the button's right edge, its neck stretches and breaks, and it grows into
+ * the round cancel button (`in`), or flows back into the button (`out`). The button keeps its own look:
+ * the drawing is cut out where it is. Returns a stop, or null when motion is reduced.
+ */
+function bud(row: HTMLElement, shell: HTMLElement, x: HTMLElement, way: 'in' | 'out') {
+  const ms = motionFor(way === 'in' ? 'morph' : 'morph-out')
+  if (!ms) return null
+  const box = (el: HTMLElement): Box => {
+    const r = el.getBoundingClientRect(),
+      o = row.getBoundingClientRect()
+    return { cx: r.left - o.left + r.width / 2, cy: r.top - o.top + r.height / 2, hw: r.width / 2, hh: r.height / 2, r: r.height / 2 }
+  }
+  const O = box(shell)
+  const look = getComputedStyle(x)
+  const line = parseFloat(look.getPropertyValue('--gooee-line-thick')) || 1.5
+  const T = box(x)
+  const T2: Box = { ...T, hw: T.hw - line / 2, hh: T.hh - line / 2, r: T.r - line / 2 }
+  const { svg, paths } = layer(row, styles.bud, null)
+  const path = paths[0]
+  path.style.fill = look.backgroundColor
+  path.style.stroke = look.getPropertyValue('--gooee-color-border-strong')
+  path.style.strokeWidth = `${line}px`
+  const clip = svg.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'clipPath'))
+  clip.id = `gooee-hold-${Math.random().toString(36).slice(2)}`
+  const hole = clip.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'path'))
+  hole.setAttribute('clip-rule', 'evenodd')
+  hole.setAttribute('d', `M-4000 -4000H4000V4000H-4000Z${boxPath({ ...O, hw: O.hw + 0.5, hh: O.hh + 0.5, r: O.r + 0.5 })}`)
+  path.setAttribute('clip-path', `url(#${clip.id})`)
+  const e = morphEase()
+  const pin = pincher(e, motionFor('fast'))
+  const edge = O.cx + O.hw - O.hh
+  const r0 = O.hh * 0.45
+  x.style.opacity = '0'
+  const stop = frames(
+    ms,
+    (k, now) => {
+      const u = way === 'in' ? k : 1 - k
+      const f = e(u)
+      const r = lerp(r0, T2.hh, e(seg(u, 0.25, 1)))
+      const D: Box = { cx: lerp(O.cx + O.hw - r0, T2.cx, f), cy: O.cy, hw: r, hh: r, r }
+      const p = pin(body(O, [edge, O.cy]), body(D), now)
+      path.setAttribute(
+        'd',
+        loopsPath(
+          trace(p.sdf, [
+            [edge, O.cy, 0, 1],
+            [D.cx, D.cy, 0, 1],
+          ]),
+        ),
+      )
+    },
+    () => {
+      svg.remove()
+      x.style.opacity = ''
+    },
+  )
+  return () => {
+    stop()
+    svg.remove()
+    x.style.opacity = ''
+  }
+}
 
 // The pill's outline as one closed path that starts on the bottom edge at x and runs left first. The
 // line is drawn at both ends of the path at once, so it burns out both ways from x and meets opposite.
@@ -77,11 +145,12 @@ export function HoldToConfirm({
   const rootRef = useRef<HTMLDivElement>(null)
   const shellRef = useRef<HTMLDivElement>(null)
   const mainRef = useRef<HTMLButtonElement>(null)
-  const stepRef = useRef<HTMLDivElement>(null)
+  const rowRef = useRef<HTMLDivElement>(null)
+  const stepAt = useRef(0)
   const cancelRef = useRef<HTMLButtonElement>(null)
   const runRef = useRef<SVGPathElement>(null)
   const [phase, setPhase] = useState<Phase>('idle')
-  const [size, setSize] = useState({ w: 0, h: 0, step: 0, stepH: 0, room: 0, inset: 1 })
+  const [size, setSize] = useState({ w: 0, h: 0, inset: 1 })
   const [path, setPath] = useState('')
   const [keep, setKeep] = useState(false)
   const [said, setSaid] = useState('')
@@ -98,20 +167,17 @@ export function HoldToConfirm({
   useLayoutEffect(() => {
     const root = rootRef.current
     const main = mainRef.current
-    const step = stepRef.current
-    if (!root || !main || !step) return
+    if (!root || !main) return
     const measure = () => {
       const w = main.offsetWidth
       const h = main.offsetHeight
       const inset = parseFloat(getComputedStyle(root).getPropertyValue('--gooee-hold-stroke')) / 2 || 1
-      setSize({ w, h, step: step.offsetWidth, stepH: step.offsetHeight, room: root.clientWidth, inset })
+      setSize({ w, h, inset })
       setPath(outline(w, h, inset, w / 2))
     }
     measure()
     const ro = new ResizeObserver(measure)
     ro.observe(main)
-    ro.observe(step)
-    ro.observe(root)
     return () => ro.disconnect()
   }, [])
 
@@ -173,6 +239,7 @@ export function HoldToConfirm({
     tapTimer.current = 0
     cancelAnimationFrame(raf.current)
     paint(0)
+    stepAt.current = performance.now()
     setPhase('step')
   }
 
@@ -191,6 +258,19 @@ export function HoldToConfirm({
       setSaid('')
     }, DONE_FOR)
     return () => window.clearTimeout(t)
+  }, [phase])
+
+  // The cancel drop buds out when the step opens and flows back when it closes, either way.
+  const wasOpen = useRef(false)
+  useLayoutEffect(() => {
+    const isOpen = phase === 'step'
+    if (isOpen === wasOpen.current) return
+    wasOpen.current = isOpen
+    const row = rowRef.current,
+      shell = shellRef.current,
+      x = cancelRef.current
+    if (!row || !shell || !x) return
+    return bud(row, shell, x, isOpen ? 'in' : 'out') ?? undefined
   }, [phase])
 
   useEffect(
@@ -243,6 +323,11 @@ export function HoldToConfirm({
   // Held Enter or Space works like a held finger, from the middle of the button. One press opens the
   // confirm step, since holding a key is hard for many people.
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (phaseRef.current === 'step') {
+      // In the step the button confirms with its own click; Escape steps back.
+      if (e.key === 'Escape') closeStep()
+      return
+    }
     if (e.key !== 'Enter' && e.key !== ' ') return
     e.preventDefault()
     if (e.repeat || disabled || phaseRef.current !== 'idle' || press.current) return
@@ -250,79 +335,80 @@ export function HoldToConfirm({
   }
 
   const onKeyUp = (e: KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key !== 'Enter' && e.key !== ' ') return
+    if (phaseRef.current === 'step' || (e.key !== 'Enter' && e.key !== ' ')) return
     e.preventDefault()
     if (press.current?.key === e.key) letGo(true)
   }
 
   // A screen reader or voice control sends a click with no press: it opens the confirm step.
   const onClick = (e: MouseEvent<HTMLButtonElement>) => {
+    // In the step, pressing the button again confirms it, unless it is the second half of a double-click.
+    if (phaseRef.current === 'step') {
+      if (e.detail === 0 || performance.now() - stepAt.current > GUARD) finish()
+      return
+    }
     if (disabled || phaseRef.current !== 'idle' || press.current) return
     if (e.detail === 0 || tapTimer.current) openStep()
   }
 
-  const onStepKey = (e: KeyboardEvent<HTMLDivElement>) => {
+  const onCancelKey = (e: KeyboardEvent<HTMLButtonElement>) => {
     if (e.key !== 'Escape') return
     e.stopPropagation()
     closeStep()
   }
 
-  // No room beside the label, as on a phone: the step opens under it and the pill grows into a card.
-  const stack = size.room > 0 && size.w + size.step > size.room
   const open = phase === 'step'
-  const shellW = open ? (stack ? Math.max(size.w, size.step) : size.w + size.step) : size.w
-  const shellH = open && stack ? size.h + size.stepH : size.h
-  const line = open ? (stepHint ?? `Choose ${cancelLabel} or ${confirmLabel}.`) : phase === 'done' ? '' : keep ? 'Keep holding' : hint
+  const line = open ? (stepHint ?? `Press it again to ${confirmLabel.toLowerCase()}, or ${cancelLabel}.`) : phase === 'done' ? '' : keep ? 'Keep holding' : hint
 
   return (
     <div ref={rootRef} className={cx(styles.root, className)}>
-      <div
-        ref={shellRef}
-        className={styles.shell}
-        data-phase={phase}
-        data-stack={stack || undefined}
-        data-disabled={disabled || undefined}
-        style={{ width: shellW || undefined, height: shellH || undefined }}
-      >
-        <button
-          ref={mainRef}
-          type="button"
-          className={styles.main}
-          aria-describedby={`${id}-hint`}
-          aria-expanded={open}
-          aria-controls={`${id}-step`}
-          aria-disabled={disabled || undefined}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerEnd}
-          onPointerCancel={onPointerEnd}
-          onContextMenu={(e) => e.preventDefault()}
-          onKeyDown={onKeyDown}
-          onKeyUp={onKeyUp}
-          onBlur={() => press.current?.pointer === 'key' && letGo(false)}
-          onClick={onClick}
-        >
-          <span className={styles.faces}>
-            <span className={styles.face} data-face="idle" aria-hidden={phase === 'done' || undefined}>
-              {children}
+      <div ref={rowRef} className={styles.row}>
+        <div ref={shellRef} className={styles.shell} data-phase={phase} data-disabled={disabled || undefined}>
+          <button
+            ref={mainRef}
+            type="button"
+            className={styles.main}
+            aria-describedby={`${id}-hint`}
+            aria-expanded={open}
+            aria-controls={`${id}-step`}
+            aria-disabled={disabled || undefined}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerEnd}
+            onPointerCancel={onPointerEnd}
+            onContextMenu={(e) => e.preventDefault()}
+            onKeyDown={onKeyDown}
+            onKeyUp={onKeyUp}
+            onBlur={() => press.current?.pointer === 'key' && letGo(false)}
+            onClick={onClick}
+          >
+            <span className={styles.faces}>
+              <span className={styles.face} data-face="idle" aria-hidden={phase === 'done' || undefined}>
+                {children}
+              </span>
+              <span className={styles.face} data-face="done" aria-hidden={phase !== 'done' || undefined}>
+                <CheckIcon />
+                {doneLabel}
+              </span>
             </span>
-            <span className={styles.face} data-face="done" aria-hidden={phase !== 'done' || undefined}>
-              <CheckIcon />
-              {doneLabel}
-            </span>
-          </span>
-          <svg className={styles.fuse} width={size.w} height={size.h} aria-hidden="true">
-            <path ref={runRef} d={path} className={styles.run} pathLength={1} />
-          </svg>
-        </button>
-        <div ref={stepRef} id={`${id}-step`} className={styles.step} role="group" aria-labelledby={`${id}-hint`} inert={!open} onKeyDown={onStepKey}>
-          <button ref={cancelRef} type="button" className={styles.cancel} onClick={closeStep}>
-            {cancelLabel}
-          </button>
-          <button type="button" className={styles.confirm} onClick={finish}>
-            {confirmLabel}
+            <svg className={styles.fuse} width={size.w} height={size.h} aria-hidden="true">
+              <path ref={runRef} d={path} className={styles.run} pathLength={1} />
+            </svg>
           </button>
         </div>
+        <button
+          ref={cancelRef}
+          id={`${id}-step`}
+          type="button"
+          className={styles.cancel}
+          aria-label={cancelLabel}
+          aria-describedby={`${id}-hint`}
+          inert={!open}
+          onClick={closeStep}
+          onKeyDown={onCancelKey}
+        >
+          <XIcon />
+        </button>
       </div>
       <p id={`${id}-hint`} className={styles.hint}>
         {line}

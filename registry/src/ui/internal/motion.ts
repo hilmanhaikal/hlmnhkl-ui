@@ -1,7 +1,7 @@
 // Gooee UI, MIT licence. https://gooee.dev
 import { MORPH, type Curve } from './feel'
 
-export type MotionToken = 'instant' | 'fast' | 'base' | 'slow' | 'slower' | 'liquid' | 'morph' | 'morph-out' | 'fling' | 'delay-tooltip'
+export type MotionToken = 'instant' | 'fast' | 'base' | 'slow' | 'slower' | 'liquid' | 'morph' | 'morph-out' | 'reveal' | 'fling' | 'delay-tooltip'
 
 // Reads a duration token at run time, so reduced motion (0ms) and Retime's speed are honoured by JS
 // timers too.

@@ -22,7 +22,7 @@
   font-size: var(--gooee-text-4xl);
   font-weight: var(--gooee-weight-semibold);
   letter-spacing: var(--gooee-tracking-tight);
-  line-height: 1;
+  line-height: var(--gooee-leading-none);
 }
 
 .detail {

@@ -15,7 +15,7 @@
   color: var(--gooee-color-fg);
   font-size: var(--gooee-text-md);
   font-weight: var(--gooee-weight-medium);
-  line-height: 1;
+  line-height: var(--gooee-leading-none);
   white-space: nowrap;
   cursor: pointer;
   user-select: none;

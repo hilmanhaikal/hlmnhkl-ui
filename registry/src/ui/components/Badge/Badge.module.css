@@ -11,7 +11,7 @@
   border-radius: var(--gooee-radius-full);
   font-size: var(--gooee-text-xs);
   font-weight: var(--gooee-weight-medium);
-  line-height: 1;
+  line-height: var(--gooee-leading-none);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }

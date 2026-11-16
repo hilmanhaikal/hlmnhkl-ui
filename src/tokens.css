@@ -62,20 +62,30 @@
   /* Type */
   --gooee-font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --gooee-font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-  --gooee-text-xs: 12px;
+  /* The golden scale: every second step is x1.618 (13, 21, 34, 55 run on Fibonacci). xs and lg are kept
+     as names: xs is the caption size, and a large control keeps body-size words and gains room instead. */
+  --gooee-text-xs: 13px;
   --gooee-text-sm: 13px;
-  --gooee-text-md: 15px;
+  --gooee-text-md: 16px;
   /* Text typed into a field. On a touch screen it is at least 16px, or iPhone Safari zooms
      the page in when the field is tapped. */
   --gooee-text-input: var(--gooee-text-md);
-  --gooee-text-lg: 17px;
-  --gooee-text-xl: 20px;
+  --gooee-text-lg: 16px;
+  --gooee-text-xl: 21px;
   --gooee-text-2xl: 26px;
   --gooee-text-3xl: 34px;
-  --gooee-text-4xl: 44px;
-  --gooee-leading-tight: 1.2;
-  --gooee-leading-snug: 1.4;
-  --gooee-leading-normal: 1.6;
+  --gooee-text-4xl: 42px;
+  --gooee-text-5xl: 55px;
+  /* Line height as a ratio of the text size. The leading tokens below round it to a whole 4px line box
+     on each element that uses them, so text never sits between pixels. */
+  --gooee-leading-none-ratio: 1;
+  --gooee-leading-tight-ratio: 1.2;
+  --gooee-leading-snug-ratio: 1.4;
+  --gooee-leading-normal-ratio: 1.618;
+  --gooee-leading-none: var(--gooee-leading-none-ratio);
+  --gooee-leading-tight: var(--gooee-leading-tight-ratio);
+  --gooee-leading-snug: var(--gooee-leading-snug-ratio);
+  --gooee-leading-normal: var(--gooee-leading-normal-ratio);
   /* Prose: the longest line of reading text, about the most an eye follows back to the next line */
   --gooee-prose-w: 68ch;
   --gooee-weight-regular: 400;
@@ -102,18 +112,24 @@
 
   /* Sizes */
   --gooee-line: 1px;
-  --gooee-line-thick: 1.5px;
+  /* Lines are 1px or 2px: whole pixels, never a half that blurs. */
+  --gooee-line-thick: 2px;
   --gooee-hit-min: 44px;
   --gooee-control-h-sm: 32px;
   --gooee-control-h-md: 40px;
   --gooee-control-h-lg: 48px;
+  /* A control's side padding is its height divided by the golden ratio, on the 4px grid: 20, 24, 28. */
+  --gooee-control-pad-sm: 20px;
+  --gooee-control-pad-md: 24px;
+  --gooee-control-pad-lg: 28px;
   --gooee-icon-sm: 14px;
   --gooee-icon-md: 16px;
   --gooee-icon-lg: 20px;
   --gooee-icon-xl: 28px;
-  --gooee-panel-w-sm: 380px;
-  --gooee-panel-w-md: 480px;
-  --gooee-panel-w-lg: 640px;
+  /* Each panel width is the one before times the golden ratio, on the 4px grid. */
+  --gooee-panel-w-sm: 320px;
+  --gooee-panel-w-md: 520px;
+  --gooee-panel-w-lg: 840px;
   --gooee-menu-w: 220px;
   --gooee-tooltip-w: 260px;
   --gooee-toast-w: 360px;
@@ -156,7 +172,7 @@
   --gooee-radius-sm: 8px;
   --gooee-radius-md: 12px;
   --gooee-radius-panel: 20px;
-  --gooee-radius-sheet: 28px;
+  --gooee-radius-sheet: 32px;
   --gooee-radius-control: 999px;
   --gooee-radius-full: 999px;
 
@@ -180,6 +196,9 @@
      back in 400ms, both on --gooee-ease-morph played forward, so a close starts moving at once */
   --gooee-motion-morph: calc(600ms * var(--gooee-motion-scale));
   --gooee-motion-morph-out: calc(400ms * var(--gooee-motion-scale));
+  /* A theme change: the new theme grows from the toggle in a circle over the whole screen. The morph's
+     close time: a whole-screen change reads best in about 200 to 400ms, and its icon ends with it. */
+  --gooee-motion-reveal: var(--gooee-motion-morph-out);
   /* Older names, kept so apps that use them still work. They are the morph now */
   --gooee-motion-pour: var(--gooee-motion-morph);
   --gooee-motion-liquid: var(--gooee-motion-morph);
@@ -336,6 +355,7 @@
     --gooee-motion-slower: 0ms;
     --gooee-motion-morph: 0ms;
     --gooee-motion-morph-out: 0ms;
+    --gooee-motion-reveal: 0ms;
     --gooee-motion-stagger: 0ms;
     --gooee-motion-shimmer: 0ms;
     --gooee-motion-spin: 1600ms;
@@ -728,4 +748,18 @@
   --gooee-code-number: var(--gooee-color-fg-muted);
   --gooee-code-comment: var(--gooee-color-fg-subtle);
   --gooee-code-gutter: var(--gooee-color-fg-subtle);
+}
+
+/* Where round() works (every current browser), each leading is a whole line box on the 4px grid. */
+@supports (line-height: round(nearest, 1em, 4px)) {
+  :root,
+  [data-theme] {
+    --gooee-leading-none: round(nearest, 1em, 4px);
+    --gooee-rise-room: round(up, 0.14em, 4px);
+    --gooee-flap-w: round(nearest, 0.92em, 4px);
+    --gooee-flap-h: round(nearest, 1.36em, 4px);
+    --gooee-leading-tight: round(nearest, calc(var(--gooee-leading-tight-ratio) * 1em), 4px);
+    --gooee-leading-snug: round(nearest, calc(var(--gooee-leading-snug-ratio) * 1em), 4px);
+    --gooee-leading-normal: round(nearest, calc(var(--gooee-leading-normal-ratio) * 1em), 4px);
+  }
 }

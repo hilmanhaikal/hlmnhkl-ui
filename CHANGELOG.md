@@ -2,6 +2,59 @@
 
 What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.45.1 · 16 Nov 2026
+
+Whole pixels in Safari and Firefox too.
+
+### Fixed
+
+- Prose: inline `code` no longer makes its line a fraction of a pixel taller in Safari and Firefox.
+- WeekSchedule: the day headers no longer come out a fraction of a pixel tall in Safari and Firefox.
+
+## 0.45.0 · 16 Nov 2026
+
+LivePill shows progress with a ring, the way uploads and downloads look across the web.
+
+### Added
+
+- LivePill `status`: `"done"` closes the ring into a tick (progress 1 does too), and `"stopped"` turns it red with a mark. Say why in the card's words, and offer one way out, such as Try again.
+- LivePill `align`: `"center"` (the default) keeps the pill in the middle of its row; `"start"` puts it at the row's start.
+
+### Changed
+
+- LivePill with `progress`: the fill behind the words is gone, so a number is never cut in half. A 24px ring leads the pill instead. Open, the ring moves to the card's top corner and grows to 44px with the percent inside, and the card's words sit beside it. Open, the ring is the button that folds the card back.
+- LivePill's card is only as wide as its words, up to the row, instead of always the full row.
+- LivePill measures in CSS pixels, so a page that scales its content while it loads no longer leaves the pill's shape off its spot.
+
+## 0.44.0 · 16 Nov 2026
+
+The golden grid: every part measured to the whole pixel, sized by the golden ratio. ThemeToggle morphs and reveals the new theme from the button.
+
+### Changed
+
+- Text sits on a golden scale: 13, 16, 21, 26, 34, 42 and 55px, every second step x1.618. Body text grows from 15px to 16px, `--gooee-text-xs` is 13px, `--gooee-text-lg` is 16px (a large control gets more room, not bigger words), `--gooee-text-xl` is 21px and `--gooee-text-4xl` is 42px. New: `--gooee-text-5xl` (55px).
+- Line heights land on whole pixels: the leading tokens round each line box to 4px on the element that uses them, so text never sits between pixels. The plain ratios are kept as `--gooee-leading-*-ratio`, and `--gooee-leading-none` is new. Browsers without CSS `round()` keep the ratios.
+- `--gooee-line-thick` is 2px instead of 1.5px: lines are always 1px or 2px.
+- Button side padding is the height divided by the golden ratio: 20, 24 and 28px, as the new `--gooee-control-pad-sm`, `-md` and `-lg`.
+- Panel widths are 320, 520 and 840px (each x1.618), and `--gooee-radius-sheet` is 32px.
+- The close button in Dialog, Popover, Sheet and MorphButton looks 32px, keeps a 44px touch area, and sits on its corner's own centre, so it follows the curve. In Toast and Drawer it is 32px in its row.
+- Nested corners are concentric: Menubar and Toolbar items allow for the border.
+- Whole-pixel fixes: AnimatedNumber, Countdown and Stat digit rows, SplitFlap flaps, Skeleton bars and the Dial, RulerScrubber and PickerWheel readouts. Chart and CalendarHeatmap tables draw whole-pixel lines.
+- Inline code in Prose is 13px, and AssistantThread answers and empty states give headings a real size.
+- ThemeToggle: one shape morphs from the sun to the moon (the disc grows and a bite slides over it), starting the moment it is pressed. The new theme then grows from the button in a circle over the screen, in 400ms. `reveal={false}` turns the circle off; reduced motion switches at once. New token: `--gooee-motion-reveal`.
+
+## 0.43.0 · 16 Nov 2026
+
+Tabs gets a new look: the panel rises into the chosen tab. HoldToConfirm's tap step stays one row, and SwipeActions keeps its More button clear of the row's words.
+
+### Changed
+
+- Tabs: the underline is gone. The panel now has a surface, and it rises into the chosen tab with soft inside corners, like a folder's index tab. Picking another tab, the rise stretches over to it and settles; near the row's ends its corners and the panel's blend into one straight edge. The words never move, and the panel no longer slides in. Set `--tabs-panel` to change the panel colour, such as white on a grey card.
+- HoldToConfirm: a tap, one key press or a screen reader no longer grows the button into a Cancel and Confirm box, which wrapped onto two rows in narrow places. The button turns red in place with its words unmoved, a round cancel button buds out of its right edge as a drop, and pressing the button again runs the action. Cancel, Escape or a confirm flows the drop back in. Focus still moves to Cancel first.
+- HoldToConfirm: the second click of a double-click no longer counts. A press within 0.5 s of the step opening is ignored.
+- SwipeActions: the row keeps room for its More button, so the button no longer covers the row's own trailing words, such as an amount.
+- HoldToConfirm: `confirmLabel` is now the verb in the step's line ("Press it again to delete, or Cancel.") instead of a button's text, and `cancelLabel` names the round cancel button. Your values keep working.
+
 ## 0.42.0 · 15 Nov 2026
 
 Picking an option now moves at the morph's pace, and every thumb casts one soft shadow.

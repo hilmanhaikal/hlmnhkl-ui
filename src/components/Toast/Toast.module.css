@@ -148,12 +148,12 @@
 .action:focus-visible { outline: none; box-shadow: var(--gooee-focus-ring); }
 
 .close {
+  position: relative;
   display: grid;
   place-items: center;
   flex: none;
-  width: var(--gooee-hit-min);
-  height: var(--gooee-hit-min);
-  margin-block: calc(var(--gooee-space-4) * -1);
+  width: var(--gooee-control-h-sm);
+  height: var(--gooee-control-h-sm);
   padding: 0;
   border: 0;
   border-radius: var(--gooee-radius-full);
@@ -163,6 +163,9 @@
   cursor: pointer;
   transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
+
+/* Looks 32px, keeps a 44px touch area. */
+.close::after { content: ""; position: absolute; inset: calc((var(--gooee-control-h-sm) - var(--gooee-hit-min)) / 2); border-radius: inherit; }
 
 @media (hover: hover) {
   .close:hover { background: var(--gooee-color-surface-hover); color: var(--gooee-color-fg); }
