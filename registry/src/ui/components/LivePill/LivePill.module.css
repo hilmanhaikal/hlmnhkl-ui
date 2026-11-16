@@ -319,6 +319,8 @@
   block-size: 100%;
   rotate: -90deg;
   fill: none;
+  /* Shut, the stroke is thicker in the drawing (5.5) and reaches past the 44 box; an svg crops by default. */
+  overflow: visible;
 }
 
 /* Strokes are in the 44px drawing: 5.5 shows as 3px when the ring is shut at 24px, 4 shows as 4px open. */

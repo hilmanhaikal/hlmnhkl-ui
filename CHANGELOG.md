@@ -17,6 +17,7 @@ Every bordered box is a whole number of 4px steps tall, and a few sizes move ont
 
 - FormField: a plain `<select>` inside is 44px tall in Safari too, with the library's chevron, instead of Safari's own 25px control.
 - Switch: the off thumb no longer shows a sliver of the on colour at its edge.
+- LivePill: the shut ring's edge is no longer cut off in Safari.
 
 ## 0.46.0 · 16 Nov 2026
 
