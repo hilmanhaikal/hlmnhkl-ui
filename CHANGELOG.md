@@ -2,6 +2,37 @@
 
 What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.47.0 · 16 Nov 2026
+
+Every bordered box is a whole number of 4px steps tall, and a few sizes move onto the grid.
+
+### Changed
+
+- Card, Table, CodeBlock, DataGrid, EmojiPicker, KanbanBoard columns, RichTextEditor, MentionInput, NumberInput and CalendarHeatmap's table draw their line inside the edge, where it takes no space. Their outer size is now their content's own 4px steps, 2px less than before. Card's image keeps the card's full corner.
+- Switch: the track is 28px (`--gooee-switch-h`, was 26) and the thumb sits 4px in on every side.
+- Badge: 24px tall (`--gooee-badge-h`, was 22). Sidebar and KanbanBoard counts follow.
+- Alert: 4px between the title and the text.
+
+### Fixed
+
+- FormField: a plain `<select>` inside is 44px tall in Safari too, with the library's chevron, instead of Safari's own 25px control.
+- Switch: the off thumb no longer shows a sliver of the on colour at its edge.
+
+## 0.46.0 · 16 Nov 2026
+
+Every bordered part lands on the 4px grid, and the docs gain a Golden grid page.
+
+### Changed
+
+- Bordered parts count their line inside their side space: on any side with a border, line + padding is a whole 4px step, so the outside edge and the words both land on the grid. This moves the words in about 90 parts by 1px.
+- SegmentedControl, ToggleGroup, Toolbar and Menubar: the track's inset is 4px (1px line + 3), so their items are 4px in from the edge and the inner corners follow (12 - 4 = 8). Items in a 40px track are 32px tall.
+- TagInput, MultiSelect and Combobox: chips and the arrow button sit 4px in from the field's edge. Combobox's arrow button is 36px.
+- Input, Select, Textarea, FormField and the other fields: the thicker line of the error state no longer moves the words. The line width lives in `--edge`, and the padding gives it back.
+
+### Fixed
+
+- Dial, arc: a finger following the curve turns it instead of scrolling the page. A plain up or down swipe still scrolls.
+
 ## 0.45.1 · 16 Nov 2026
 
 Whole pixels in Safari and Firefox too.

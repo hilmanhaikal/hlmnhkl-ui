@@ -28,8 +28,10 @@
   display: block;
   width: 100%;
   resize: none;
-  padding: var(--gooee-space-4) var(--gooee-space-5);
-  border: var(--gooee-line) solid var(--gooee-color-border-strong);
+  /* The line's width lives in --edge, so the padding takes it back and the words never move when it thickens. */
+  --edge: var(--gooee-line);
+  padding: calc(var(--gooee-space-4) - var(--edge)) calc(var(--gooee-space-5) - var(--edge));
+  border: var(--edge) solid var(--gooee-color-border-strong);
   border-radius: var(--gooee-radius-md);
   background: var(--gooee-color-surface);
   font-size: var(--gooee-text-input);
@@ -68,7 +70,7 @@
 .textarea[data-invalid] {
   --gooee-flow-edge: var(--gooee-color-danger);
   border-color: var(--gooee-color-danger);
-  border-width: var(--gooee-line-thick);
+  --edge: var(--gooee-line-thick);
 }
 
 .textarea[data-invalid][data-edge] { box-shadow: inset 0 0 0 calc(var(--gooee-line-focus) - var(--gooee-line-thick)) var(--gooee-flow-edge); }

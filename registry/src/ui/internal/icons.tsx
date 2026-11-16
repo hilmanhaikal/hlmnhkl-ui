@@ -224,6 +224,13 @@ export const PaletteIcon = (p: IconProps) => (
     <circle cx="14.75" cy="7.75" r="1.1" fill="currentColor" stroke="none" />
   </Svg>
 )
+// Lucide's ruler: a rule laid on a slant with four marks.
+export const RulerIcon = (p: IconProps) => (
+  <Svg m="draw" {...p}>
+    <path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" />
+    <path d="m14.5 12.5 2-2M11.5 9.5l2-2M8.5 6.5l2-2M17.5 15.5l2-2" />
+  </Svg>
+)
 export const SlidersIcon = (p: IconProps) => (
   <Svg m="bounce" {...p}>
     <path d="M4 7h9M17 7h3M4 17h3M11 17h9" />

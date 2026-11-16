@@ -74,7 +74,7 @@
   display: grid;
   place-content: center;
   min-block-size: var(--gooee-deck-card-h);
-  padding: var(--gooee-space-6);
+  padding: calc(var(--gooee-space-6) - var(--gooee-line));
   border: var(--gooee-line) dashed var(--gooee-color-border-strong);
   border-radius: var(--gooee-radius-panel);
   color: var(--gooee-color-fg-muted);

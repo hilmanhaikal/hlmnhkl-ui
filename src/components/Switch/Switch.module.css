@@ -16,7 +16,8 @@
   --w: var(--gooee-switch-w);
   --h: var(--gooee-switch-h);
   --pad: var(--gooee-switch-pad);
-  --thumb: calc(var(--h) - var(--pad) * 2);
+  /* The thumb sits inside the line as well as the pad, so the gap round it is even: 1 + 3 = 4. */
+  --thumb: calc(var(--h) - (var(--pad) + var(--gooee-line)) * 2);
   position: relative;
   flex: none;
   width: var(--w);
@@ -39,7 +40,7 @@
   inset: calc(var(--gooee-line) * -1);
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-accent);
-  clip-path: inset(var(--in) calc(var(--w) - var(--in) - var(--thumb) + var(--gooee-line) * 2) var(--in) var(--in) round var(--gooee-radius-full));
+  clip-path: inset(var(--in) calc(var(--w) - var(--in) - var(--thumb)) var(--in) var(--in) round var(--gooee-radius-full));
   transition: clip-path var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
@@ -63,8 +64,9 @@
 
 .thumb {
   position: absolute;
-  top: calc(var(--pad) - var(--gooee-line));
-  left: calc(var(--pad) - var(--gooee-line));
+  /* Inside the line by the pad: 1 + 3 = 4 from the outside, the same spot as the fill's dot. */
+  top: var(--pad);
+  left: var(--pad);
   width: var(--thumb);
   height: var(--thumb);
   border-radius: var(--gooee-radius-full);
@@ -80,7 +82,7 @@
 }
 
 .track[data-on] .thumb {
-  transform: translateX(calc(var(--w) - var(--thumb) - var(--pad) * 2));
+  transform: translateX(calc(var(--w) - var(--thumb) - (var(--pad) + var(--gooee-line)) * 2));
 }
 
 .text {

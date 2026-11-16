@@ -131,7 +131,7 @@
   position: absolute;
   left: 50%;
   top: calc(var(--base) + var(--gooee-space-7));
-  padding: 0 var(--gooee-space-3);
+  padding: 0 calc(var(--gooee-space-3) - var(--gooee-line));
   border: var(--gooee-line) solid var(--gooee-color-border-strong);
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-surface);

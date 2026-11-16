@@ -3,21 +3,23 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  border: var(--gooee-line) solid var(--gooee-color-border);
+  /* The line is drawn inside the edge and takes no space, so the outer size is the content's own 4px steps. */
+  outline: var(--gooee-line) solid var(--gooee-color-border);
+  outline-offset: calc(var(--gooee-line) * -1);
   border-radius: var(--gooee-radius-panel);
   background: var(--gooee-color-surface);
   box-shadow: var(--gooee-shadow-1);
   transition:
     transform var(--gooee-motion-slow) var(--gooee-ease-spring),
     box-shadow var(--gooee-motion-slow) var(--gooee-ease-out),
-    border-color var(--gooee-motion-base) var(--gooee-ease-out);
+    outline-color var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 @media (hover: hover) {
   .interactive:hover {
     transform: translateY(calc(var(--gooee-shift-sm) * -1));
     box-shadow: var(--gooee-shadow-3);
-    border-color: var(--gooee-color-border-strong);
+    outline-color: var(--gooee-color-border-strong);
   }
 
   /* The lift moves the card off a pointer on its lower edge, and it would drop back and lift again.
@@ -35,7 +37,7 @@
 .media {
   overflow: hidden;
   border-bottom: var(--gooee-line) solid var(--gooee-color-border);
-  border-radius: calc(var(--gooee-radius-panel) - var(--gooee-line)) calc(var(--gooee-radius-panel) - var(--gooee-line)) 0 0;
+  border-radius: var(--gooee-radius-panel) var(--gooee-radius-panel) 0 0;
 }
 
 .media > * { transition: transform var(--gooee-motion-slower) var(--gooee-ease-out); }
@@ -77,6 +79,6 @@
   display: flex;
   align-items: center;
   gap: var(--gooee-space-3);
-  padding: var(--gooee-space-4) var(--gooee-space-6);
+  padding: calc(var(--gooee-space-4) - var(--gooee-line)) var(--gooee-space-6) var(--gooee-space-4) var(--gooee-space-6);
   border-top: var(--gooee-line) solid var(--gooee-color-border);
 }

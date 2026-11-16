@@ -3,7 +3,7 @@
   display: inline-flex;
   /* Its own width in a column layout too; fullWidth (.full) still fills the row. */
   width: fit-content;
-  padding: var(--gooee-space-1);
+  padding: calc(var(--gooee-space-2) - var(--gooee-line));
   border: var(--gooee-line) solid var(--gooee-color-border);
   border-radius: var(--gooee-radius-control);
   background: var(--gooee-color-surface-sunken);
@@ -16,8 +16,8 @@
 
 .pill {
   position: absolute;
-  top: var(--gooee-space-1);
-  bottom: var(--gooee-space-1);
+  top: calc(var(--gooee-space-2) - var(--gooee-line));
+  bottom: calc(var(--gooee-space-2) - var(--gooee-line));
   left: 0;
   z-index: -1;
   border-radius: var(--gooee-radius-control);
@@ -73,7 +73,7 @@
   justify-content: center;
   gap: var(--gooee-space-3);
   --pad: var(--gooee-space-5);
-  min-height: calc(var(--gooee-control-h-md) - var(--gooee-space-1) * 2);
+  min-height: calc(var(--gooee-control-h-md) - var(--gooee-space-2) * 2);
   padding: 0 var(--pad);
   border: 0;
   border-radius: var(--gooee-radius-control);
@@ -98,7 +98,7 @@
 
 .sm .item {
   --pad: var(--gooee-space-4);
-  min-height: calc(var(--gooee-control-h-sm) - var(--gooee-space-1) * 2);
+  min-height: calc(var(--gooee-control-h-sm) - var(--gooee-space-2) * 2);
   font-size: var(--gooee-text-xs);
 }
 

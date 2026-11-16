@@ -18,24 +18,28 @@
   max-width: 100%;
   min-height: var(--gooee-hit-min);
   padding: 0;
-  border: var(--gooee-line) solid var(--gooee-color-border-strong);
+  /* The line width lives in --edge, so the padding gives it back and the words stay put when it thickens. */
+  --edge: var(--gooee-line);
+  /* The line is drawn inside the edge and takes no space, so the outer size is the content's own 4px steps. */
+  outline: var(--edge) solid var(--gooee-color-border-strong);
+  outline-offset: calc(var(--edge) * -1);
   border-radius: var(--gooee-radius-control);
   background: var(--gooee-color-surface);
   transition:
-    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
+    outline-color var(--gooee-motion-fast) var(--gooee-ease-out),
     box-shadow var(--gooee-motion-base) var(--gooee-ease-out);
 }
 
 @media (hover: hover) {
-  .field:hover { border-color: var(--gooee-color-fg-muted); }
+  .field:hover { outline-color: var(--gooee-color-fg-muted); }
 }
 
 .field:focus-within {
-  border-color: var(--gooee-color-fg);
+  outline-color: var(--gooee-color-fg);
   box-shadow: 0 0 0 var(--gooee-halo) var(--gooee-color-surface-active);
 }
 
-.field[data-invalid] { border-color: var(--gooee-color-danger); border-width: var(--gooee-line-thick); }
+.field[data-invalid] { outline-color: var(--gooee-color-danger); --edge: var(--gooee-line-thick); }
 .field[data-disabled] { opacity: 0.6; background: var(--gooee-color-surface-sunken); }
 
 .step {

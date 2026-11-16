@@ -24,8 +24,10 @@
   align-items: center;
   gap: var(--gooee-space-3);
   min-height: var(--h);
-  padding: 0 var(--gooee-space-5);
-  border: var(--gooee-line) solid var(--gooee-color-border-strong);
+  /* The line's width lives in --edge, so the padding takes it back and the words never move when it thickens. */
+  --edge: var(--gooee-line);
+  padding: 0 calc(var(--gooee-space-5) - var(--edge));
+  border: var(--edge) solid var(--gooee-color-border-strong);
   border-radius: var(--gooee-radius-md);
   background: var(--gooee-color-surface);
   cursor: text;
@@ -36,7 +38,7 @@
     background-color var(--gooee-motion-fast) var(--gooee-ease-out);
 }
 
-.sm { --h: var(--gooee-control-h-sm); gap: var(--gooee-space-2); padding: 0 var(--gooee-space-4); }
+.sm { --h: var(--gooee-control-h-sm); gap: var(--gooee-space-2); padding: 0 calc(var(--gooee-space-4) - var(--edge)); }
 .lg { --h: var(--gooee-control-h-lg); }
 .floating { --h: var(--gooee-field-h-floating); }
 
@@ -72,7 +74,7 @@
 /* Red border, plus the thicker line and the nudge, so the error does not rely on colour. */
 .field[data-invalid] {
   border-color: var(--gooee-color-danger);
-  border-width: var(--gooee-line-thick);
+  --edge: var(--gooee-line-thick);
   animation: nudge var(--gooee-motion-slow) var(--gooee-ease-out);
 }
 

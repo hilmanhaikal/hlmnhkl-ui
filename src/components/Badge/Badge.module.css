@@ -5,7 +5,7 @@
   gap: var(--gooee-space-2);
   max-width: 100%;
   height: var(--gooee-badge-h);
-  padding: 0 var(--gooee-space-3);
+  padding: 0 calc(var(--gooee-space-3) - var(--gooee-line));
   border: var(--gooee-line) solid transparent;
   border-radius: var(--gooee-radius-full);
   font-size: var(--gooee-text-xs);

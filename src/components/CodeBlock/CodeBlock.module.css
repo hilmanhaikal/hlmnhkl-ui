@@ -2,7 +2,9 @@
 .root {
   min-width: 0;
   overflow: hidden;
-  border: var(--gooee-line) solid var(--gooee-color-border);
+  /* The line is drawn inside the edge and takes no space, so the outer size is the content's own 4px steps. */
+  outline: var(--gooee-line) solid var(--gooee-color-border);
+  outline-offset: calc(var(--gooee-line) * -1);
   border-radius: var(--gooee-radius-md);
   background: var(--gooee-code-bg);
   color: var(--gooee-code-fg);
@@ -55,7 +57,7 @@
 .gutter {
   position: sticky;
   left: 0;
-  padding: 0 var(--gooee-space-4) 0 var(--gooee-space-5);
+  padding: 0 calc(var(--gooee-space-4) - var(--gooee-line)) 0 var(--gooee-space-5);
   border-right: var(--gooee-line) solid var(--gooee-color-border);
   background: var(--gooee-code-bg);
   color: var(--gooee-code-gutter);

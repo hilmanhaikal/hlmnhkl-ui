@@ -250,7 +250,8 @@
   width: 100%;
   height: var(--gooee-ruler-h);
   border-radius: var(--gooee-radius-md);
-  /* A sideways swipe turns it; up and down still scrolls the page. */
+  /* A sideways swipe turns it; up and down still scrolls the page. Dial.tsx takes a touch that follows
+     the curve, so the page does not scroll under a turn. */
   touch-action: pan-y;
 }
 

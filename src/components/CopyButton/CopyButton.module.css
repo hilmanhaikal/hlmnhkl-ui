@@ -28,7 +28,7 @@
 }
 
 .sm { --s: var(--gooee-control-h-sm); }
-.withLabel { padding: 0 var(--gooee-space-5) 0 var(--gooee-space-4); }
+.withLabel { padding: 0 calc(var(--gooee-space-5) - var(--gooee-line)) 0 calc(var(--gooee-space-4) - var(--gooee-line)); }
 
 @media (hover: hover) {
   .root:hover { background: var(--gooee-color-surface-hover); }

@@ -6,7 +6,7 @@
   max-width: calc(100vw - var(--gooee-space-5) * 2);
   max-height: calc(100dvh - 2 * var(--gooee-space-5));
   overflow-y: auto;
-  padding: var(--gooee-space-2);
+  padding: calc(var(--gooee-space-2) - var(--gooee-line));
   border: var(--gooee-line) solid var(--gooee-glass-edge, var(--gooee-color-border));
   border-radius: var(--gooee-radius-md);
   background: var(--gooee-glass-bg, var(--gooee-color-surface));

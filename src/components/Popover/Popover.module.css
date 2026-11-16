@@ -3,7 +3,7 @@
   z-index: var(--gooee-z-popover);
   width: max-content;
   max-width: min(var(--gooee-panel-w-sm), calc(100vw - var(--gooee-space-5) * 2));
-  padding: var(--gooee-space-5);
+  padding: calc(var(--gooee-space-5) - var(--gooee-line));
   border: var(--gooee-line) solid var(--gooee-glass-edge, var(--gooee-color-border));
   border-radius: var(--gooee-radius-panel);
   background: var(--gooee-glass-bg, var(--gooee-color-surface));

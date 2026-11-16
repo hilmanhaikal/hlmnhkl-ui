@@ -109,7 +109,7 @@
 }
 
 .root :where(th, td) {
-  padding: var(--gooee-space-3) var(--gooee-space-4);
+  padding: var(--gooee-space-3) var(--gooee-space-4) calc(var(--gooee-space-3) - var(--gooee-line)) var(--gooee-space-4);
   border-bottom: var(--gooee-line) solid var(--gooee-color-border);
   text-align: left;
 }

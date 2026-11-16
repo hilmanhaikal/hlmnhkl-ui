@@ -78,6 +78,7 @@
 .btn:focus-visible { outline: none; box-shadow: var(--gooee-focus-ring); }
 
 .edge {
+  padding: 0 calc(var(--gooee-space-3) - var(--gooee-line));
   font-size: var(--gooee-icon-md);
   border: var(--gooee-line) solid var(--gooee-color-border);
 }

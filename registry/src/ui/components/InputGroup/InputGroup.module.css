@@ -97,13 +97,16 @@
 
 .addon > svg { flex: none; font-size: var(--gooee-icon-md); }
 
+/* The divider takes its width back from the padding on its side, so the words stay on the grid. */
 .addon[data-side="prefix"] {
+  padding-inline-end: calc(var(--gooee-space-4) - var(--gooee-line));
   border-inline-end: var(--gooee-line) solid var(--gooee-color-border);
   border-start-start-radius: calc(var(--r) - var(--gooee-line));
   border-end-start-radius: calc(var(--r) - var(--gooee-line));
 }
 
 .addon[data-side="suffix"] {
+  padding-inline-start: calc(var(--gooee-space-4) - var(--gooee-line));
   border-inline-start: var(--gooee-line) solid var(--gooee-color-border);
   border-start-end-radius: calc(var(--r) - var(--gooee-line));
   border-end-end-radius: calc(var(--r) - var(--gooee-line));

@@ -29,14 +29,34 @@
 /* Plain native controls inside get the library's field look, so a bare <input> or <select> fits in. */
 .control > :is(input:not([type="checkbox"], [type="radio"], [type="range"]), select, textarea) {
   min-height: var(--gooee-hit-min);
-  padding: var(--gooee-space-3) var(--gooee-space-5);
-  border: var(--gooee-line) solid var(--gooee-color-border-strong);
+  /* The line's width lives in --edge, so the padding takes it back and the words never move when it thickens. */
+  --edge: var(--gooee-line);
+  padding: calc(var(--gooee-space-3) - var(--edge)) calc(var(--gooee-space-5) - var(--edge));
+  border: var(--edge) solid var(--gooee-color-border-strong);
   border-radius: var(--gooee-radius-md);
   background: var(--gooee-color-surface);
   font-size: var(--gooee-text-md);
   transition:
     border-color var(--gooee-motion-fast) var(--gooee-ease-out),
     box-shadow var(--gooee-motion-base) var(--gooee-ease-out);
+}
+
+/* Safari draws a native select at its own height and ignores the 44px; without its native look it takes
+   the field's size. The arrow is the library's chevron, drawn as two thin strokes in the muted ink. */
+.control > select:not([multiple]) {
+  --arrow: calc(var(--gooee-space-2) + var(--gooee-line));
+  --stroke: calc(var(--gooee-line) * 1.5);
+  appearance: none;
+  /* Room for the chevron, the line included: 44px, a whole number of grid steps. */
+  padding-inline-end: calc(var(--gooee-hit-min) - var(--edge));
+  background-image:
+    linear-gradient(45deg, transparent calc(50% - var(--stroke) / 2), var(--gooee-color-fg-muted) calc(50% - var(--stroke) / 2) calc(50% + var(--stroke) / 2), transparent calc(50% + var(--stroke) / 2)),
+    linear-gradient(-45deg, transparent calc(50% - var(--stroke) / 2), var(--gooee-color-fg-muted) calc(50% - var(--stroke) / 2) calc(50% + var(--stroke) / 2), transparent calc(50% + var(--stroke) / 2));
+  background-position:
+    calc(100% - var(--gooee-space-5) - var(--arrow)) 50%,
+    calc(100% - var(--gooee-space-5)) 50%;
+  background-size: var(--arrow) var(--arrow);
+  background-repeat: no-repeat;
 }
 
 @media (hover: hover) {
@@ -51,7 +71,7 @@
 
 .root[data-invalid] .control > :is(input, select, textarea) {
   border-color: var(--gooee-color-danger);
-  border-width: var(--gooee-line-thick);
+  --edge: var(--gooee-line-thick);
   animation: nudge var(--gooee-motion-slow) var(--gooee-ease-out);
 }
 

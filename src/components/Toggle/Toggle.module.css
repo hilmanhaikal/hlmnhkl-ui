@@ -7,7 +7,7 @@
   gap: var(--gooee-space-3);
   flex: none;
   min-height: var(--h);
-  padding: 0 var(--gooee-space-6);
+  padding: 0 calc(var(--gooee-space-6) - var(--gooee-line));
   border: var(--gooee-line) solid var(--gooee-color-border-strong);
   border-radius: var(--gooee-radius-control);
   background: var(--gooee-color-surface);
@@ -39,8 +39,8 @@
   .root::after { inset-inline: min(0px, calc((100% - var(--gooee-hit-min)) / 2)); }
 }
 
-.sm { --h: var(--gooee-control-h-sm); padding: 0 var(--gooee-space-5); font-size: var(--gooee-text-sm); }
-.lg { --h: var(--gooee-control-h-lg); padding: 0 var(--gooee-space-8); font-size: var(--gooee-text-lg); }
+.sm { --h: var(--gooee-control-h-sm); padding: 0 calc(var(--gooee-space-5) - var(--gooee-line)); font-size: var(--gooee-text-sm); }
+.lg { --h: var(--gooee-control-h-lg); padding: 0 calc(var(--gooee-space-8) - var(--gooee-line)); font-size: var(--gooee-text-lg); }
 
 .iconOnly {
   width: var(--h);

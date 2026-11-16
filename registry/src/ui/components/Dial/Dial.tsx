@@ -1,7 +1,7 @@
 // Gooee UI, MIT licence. https://gooee.dev
 'use client'
 
-import { useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type PointerEvent, type ReactNode } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type PointerEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { clamp, lastStep, pull, roundTo, steps, wheelSteps, stepKey } from '../../internal/feel'
 import { Roll } from '../../internal/Roll'
@@ -169,6 +169,37 @@ export function Dial({
     if (variant !== 'arc') return
     const el = sc.ref.current
     setRim({ r: tokenNumber(el, '--gooee-dial-arc-radius'), gap: tokenNumber(el, '--gooee-dial-arc-gap') })
+  }, [variant, sc.ref])
+
+  // The arc lets an up-and-down swipe scroll the page, but a finger following the curve also moves up or
+  // down. Once a touch moves more sideways than half its rise, it is a turn: the page stops taking it.
+  useEffect(() => {
+    if (variant !== 'arc') return
+    const el = sc.ref.current
+    if (!el) return
+    let from: { x: number; y: number } | null = null
+    let turning = false
+    const start = (e: TouchEvent) => {
+      from = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+      turning = false
+    }
+    const move = (e: TouchEvent) => {
+      if (!from) return
+      if (!turning) {
+        const dx = Math.abs(e.touches[0].clientX - from.x)
+        const dy = Math.abs(e.touches[0].clientY - from.y)
+        if (dx + dy < 2) return
+        turning = dx > dy / 2
+        if (!turning) from = null
+      }
+      if (turning && e.cancelable) e.preventDefault()
+    }
+    el.addEventListener('touchstart', start, { passive: true })
+    el.addEventListener('touchmove', move, { passive: false })
+    return () => {
+      el.removeEventListener('touchstart', start)
+      el.removeEventListener('touchmove', move)
+    }
   }, [variant, sc.ref])
 
   const shown = land(sc.at)
