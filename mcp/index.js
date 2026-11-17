@@ -64,7 +64,9 @@ function notFound(raw) {
 
 function describe(i) {
   const lines = [`# ${i.name}`, '', i.description, '', `Install: \`${i.install}\``]
-  lines.push(`Import: \`import { ${i.exports.join(', ')} } from './ui/components/${i.name}'\` (from src/, the default folder)`, `Docs: ${i.docs}`, '')
+  lines.push(`Import: \`import { ${i.exports.join(', ')} } from './ui/components/${i.name}'\` (from src/, the default folder)`)
+  if (i.vue.length) lines.push(`Vue: \`${i.install} --vue\`, then ${i.vue.map((v) => `\`import ${v} from './ui/components/${i.name}/${v}.vue'\``).join(', ')}`)
+  lines.push(`Docs: ${i.docs}`, '')
   if (i.a11y.length) lines.push('Accessibility:', ...i.a11y.map((a) => `- ${a}`), '')
   for (const p of i.props) lines.push(`## ${p.component} props`, '', p.table, '')
   if (i.example) lines.push('Example:', '', '```tsx', i.example, '```')
@@ -118,30 +120,34 @@ function createServer() {
     'get_install_steps',
     {
       title: 'Get install steps for Gooee UI components',
-      description: 'The commands and imports to add free components to a React project: init once, one add command, then the imports.',
+      description: 'The commands and imports to add free components to a React or Vue project: init once, one add command, then the imports.',
       inputSchema: fromJsonSchema({
         type: 'object',
-        properties: { names: { type: 'array', items: NAME, minItems: 1, maxItems: 20, description: 'The components to add.' } },
+        properties: {
+          names: { type: 'array', items: NAME, minItems: 1, maxItems: 20, description: 'The components to add.' },
+          framework: { type: 'string', enum: ['react', 'vue'], description: 'The app\'s framework. Default: react.' },
+        },
         required: ['names'],
         additionalProperties: false,
       }),
       annotations: READ_ONLY,
     },
-    async ({ names }) => {
+    async ({ names, framework = 'react' }) => {
       const found = names.map((n) => [n, find(n)])
       const missing = found.find(([, i]) => !i)
       if (missing) return notFound(missing[0])
       const free = found.map(([, i]) => i).filter((i) => i.tier === 'free')
       const pro = found.map(([, i]) => i).filter((i) => i.tier === 'pro')
       const lines = []
+      const vue = framework === 'vue'
       if (free.length) {
         lines.push(
           'From the project folder:',
-          '1. Once per project: `npx gooee@latest init` (adds src/ui/tokens.css, src/ui/base.css and gooee.json).',
-          `2. \`npx gooee@latest add ${free.map((i) => i.id).join(' ')}\` (their imports come along).`,
-          "3. Once at the app root, tokens first: `import './ui/tokens.css'` then `import './ui/base.css'`.",
-          '4. In your code:',
-          ...free.map((i) => `   import { ${i.exports.join(', ')} } from './ui/components/${i.name}'`),
+          `1. Once per project: \`npx gooee@latest init${vue ? ' --vue' : ''}\` (adds src/ui/tokens.css, src/ui/base.css and gooee.json).`,
+          `2. \`npx gooee@latest add ${free.map((i) => i.id).join(' ')}${vue ? ' --vue' : ''}\` (their imports come along).`,
+          `3. Once at the app root${vue ? ' (src/main.ts)' : ''}, tokens first: \`import './ui/tokens.css'\` then \`import './ui/base.css'\`.`,
+          `4. In your code${vue ? ', inside <script setup lang="ts">' : ''}:`,
+          ...free.flatMap((i) => (vue ? i.vue.map((v) => `   import ${v} from './ui/components/${i.name}/${v}.vue'`) : [`   import { ${i.exports.join(', ')} } from './ui/components/${i.name}'`])),
         )
       }
       if (pro.length) lines.push('', ...pro.map(proNote))

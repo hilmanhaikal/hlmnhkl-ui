@@ -2,6 +2,23 @@
 
 What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.52.0 · 17 Nov 2026
+
+The MCP server gives Vue install steps too.
+
+### Added
+
+- gooee-mcp: `get_install_steps` takes `framework: "vue"` and answers with `init --vue`, `add <names> --vue` and an import line for each `.vue` file (Tabs gives Tabs, TabList, Tab and TabPanel). `get_component` and `llms-full.txt` show the Vue import line next to the React one.
+
+## 0.51.2 · 17 Nov 2026
+
+Docs site only. No changes to the library.
+
+### Fixed
+
+- Homepage: the curl draws its loop beside the card again at 1440 wide. Since the content grew to 1360px, the card sat 5px further right, and none of the loop's fitted shapes fit there. Each shape may now move 4px left or right to fit, which also fills the same gap at 1490 wide.
+- Homepage: the news banner shows the newest release that changed the parts, so a docs-only version never fills it with "Docs site only".
+
 ## 0.51.1 · 17 Nov 2026
 
 Docs and package description only. No changes to the components.
