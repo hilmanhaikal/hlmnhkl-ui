@@ -4,16 +4,12 @@ import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type P
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
 import { MinusIcon, PlusIcon } from '../../internal/icons'
+import { createHold, parseNumber, type NumberInputLabels } from '../../internal/motion/numberInput'
 import { useControllable } from '../../internal/useControllable'
 import { AnimatedNumber } from '../AnimatedNumber'
 import styles from './NumberInput.module.css'
 
-export type NumberInputLabels = {
-  /** Name of the minus button. A function gets the field label; a string is used as it is. */
-  decrease: string | ((label: string) => string)
-  /** Name of the plus button. A function gets the field label; a string is used as it is. */
-  increase: string | ((label: string) => string)
-}
+export type { NumberInputLabels }
 
 const defaultLabels: NumberInputLabels = {
   decrease: (label) => `Decrease ${label}`,
@@ -55,32 +51,6 @@ export type NumberInputProps = {
   className?: string
 }
 
-// Input timings, so reduced motion does not change them
-function tokenMs(name: string, fallback: number): number {
-  if (typeof window === 'undefined') return fallback
-  const raw = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
-  if (!raw) return fallback
-  // The browser may report 500ms as .5s
-  return raw.endsWith('ms') ? parseFloat(raw) : parseFloat(raw) * 1000
-}
-
-function parseNumber(text: string, locale?: string): number | null {
-  const parts = new Intl.NumberFormat(locale).formatToParts(-12345.6)
-  const group = parts.find((p) => p.type === 'group')?.value ?? ','
-  const decimal = parts.find((p) => p.type === 'decimal')?.value ?? '.'
-  const minus = parts.find((p) => p.type === 'minusSign')?.value ?? '-'
-  // sv, nb and fi write minus as U+2212, which the cleanup below would drop
-  const clean = text
-    .split(minus).join('-')
-    .replace(/\u2212/g, '-')
-    .split(group).join('')
-    .split(decimal).join('.')
-    .replace(/[^\d.-]/g, '')
-  if (clean === '' || clean === '-' || clean === '.') return null
-  const n = Number(clean)
-  return Number.isFinite(n) ? n : null
-}
-
 export function NumberInput({
   label,
   value: valueProp,
@@ -112,7 +82,7 @@ export function NumberInput({
   // The hold timer keeps calling the bump from its first render, so it reads the typed text from a ref
   const typed = useRef<string | null>(null)
   typed.current = editing ? text : null
-  const hold = useRef<{ timer?: number; count: number }>({ count: 0 })
+  const [hold] = useState(createHold)
   const decimals = (String(step).split('.')[1] ?? '').length
   const fmt = useMemo(() => new Intl.NumberFormat(locale, format), [locale, format])
   const plain = useMemo(() => new Intl.NumberFormat(locale, { useGrouping: false, maximumFractionDigits: 20 }), [locale])
@@ -136,25 +106,18 @@ export function NumberInput({
     commit(current === null ? base : base + dir * size)
   }
 
-  const stopHold = () => {
-    window.clearTimeout(hold.current.timer)
-    hold.current.count = 0
-  }
+  const stopHold = hold.stop
   const startHold = (dir: 1 | -1) => (e: PointerEvent<HTMLButtonElement>) => {
     // Chromium still sends pointer events to a disabled button
     if (e.button !== 0 || e.currentTarget.disabled) return
     e.preventDefault()
-    bump(dir)
-    // A disabled button gets no pointerup, so listen on the window
-    window.addEventListener('pointerup', stopHold, { once: true })
-    const tick = () => {
-      const v = valueRef.current
-      if (v !== null && (dir > 0 ? v >= max : v <= min)) return stopHold()
-      hold.current.count++
-      bump(dir, hold.current.count > 12 ? step * 5 : step)
-      hold.current.timer = window.setTimeout(tick, tokenMs('--gooee-motion-repeat', 70))
-    }
-    hold.current.timer = window.setTimeout(tick, tokenMs('--gooee-motion-repeat-delay', 400))
+    hold.start(
+      (big) => bump(dir, big ? step * 5 : step),
+      () => {
+        const v = valueRef.current
+        return v !== null && (dir > 0 ? v >= max : v <= min)
+      },
+    )
   }
   useEffect(() => stopHold, [])
 

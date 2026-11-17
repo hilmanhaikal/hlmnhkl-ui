@@ -1,14 +1,11 @@
 // Gooee UI, MIT licence. https://gooee.dev
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type KeyboardEvent, type ReactNode } from 'react'
 import { flushSync } from 'react-dom'
 import { cx } from '../../internal/cx'
-import { clamp, pull, speedTracker } from '../../internal/feel'
-import { release } from '../../internal/fling'
 import { UndoIcon } from '../../internal/icons'
-import { easing, readMotionMs } from '../../internal/motion'
-import { tokenNumber } from '../../internal/useScrub'
+import { createSwipeDeck, type DeckSide } from '../../internal/motion/swipeDeck'
 import styles from './SwipeDeck.module.css'
 
 export type SwipeDeckSide = 'start' | 'end'
@@ -38,18 +35,8 @@ export type SwipeDeckProps<T> = Omit<ComponentPropsWithRef<'div'>, 'children' | 
   empty?: ReactNode
 }
 
-type Side = -1 | 1
+type Side = DeckSide
 type Done<T> = { item: T; side: Side; dir: SwipeDeckSide }
-
-// A press is a drag only once it moves this far sideways, so a tap on a card's own button stays a tap.
-const SLOP = 8
-// The throw rule: past --gooee-deck-throw of the card's width, or a flick this fast that has moved at least FLICK_MIN.
-const FLICK = 600
-const FLICK_MIN = 40
-const TILT = 0.06
-const TILT_MAX = 14
-// The speed a card leaves at, or comes back at on undo, when no hand threw it.
-const THROW_SPEED = 1800
 
 export function SwipeDeck<T>({
   items,
@@ -74,56 +61,33 @@ export function SwipeDeck<T>({
   const top = useRef<HTMLDivElement>(null)
   const knob = useRef<HTMLSpanElement>(null)
   const buttons = useRef<Record<Side, HTMLButtonElement | null>>({ [-1]: null, [1]: null })
-  const at = useRef(0)
-  const stop = useRef(() => {})
-  const busy = useRef(false)
-  const queued = useRef<Side | null>(null)
-  const moved = useRef(false)
-  const undoing = useRef<Side | null>(null)
-  const drag = useRef<{ x: number; y: number; base: number; id: number; sideways: boolean; speed: ReturnType<typeof speedTracker> } | null>(null)
   // The top card is the first one not yet decided, found by key, so the app may trim or replace items.
   const gone = new Set(done.map((d) => getKey(d.item)))
   const left = items.filter((item) => !gone.has(getKey(item)))
   const latest = useRef({ left, count: done.length, onDecide, getName, decided })
   latest.current = { left, count: done.length, onDecide, getName, decided }
 
-  const rtl = () => !!root.current && getComputedStyle(root.current).direction === 'rtl'
-  // Right is the end side, or the start side in a right-to-left page.
-  const named = (side: Side): SwipeDeckSide => ((side > 0) !== rtl() ? 'end' : 'start')
-  const physical = (dir: SwipeDeckSide): Side => ((dir === 'end') !== rtl() ? 1 : -1)
-  const widthOf = () => top.current?.offsetWidth || deck.current?.offsetWidth || 300
-  const share = useRef(0.35)
-  const line = () => widthOf() * share.current
-  const reduced = () => readMotionMs('morph-out') === 0
-
-  const paint = (x: number) => {
-    at.current = x
-    const el = top.current
-    if (el) {
-      el.style.transform = x ? `translate3d(${x.toFixed(1)}px, 0, 0) rotate(${clamp(x * TILT, -TILT_MAX, TILT_MAX).toFixed(2)}deg)` : ''
-      // Past a card's width away it fades as it goes, so it leaves before any edge cuts it.
-      const w = widthOf()
-      const fade = clamp(1 - (Math.abs(x) - w) / (w * 0.8), 0, 1)
-      el.style.opacity = fade < 1 ? fade.toFixed(3) : ''
-    }
-    const T = line()
-    const near = pull(T - Math.min(Math.abs(x), T), T)
-    deck.current?.style.setProperty('--rise', near.toFixed(3))
-    const side: Side | 0 = x > 0 ? 1 : x < 0 ? -1 : 0
-    for (const dir of ['start', 'end'] as SwipeDeckSide[]) {
-      const btn = buttons.current[dir === 'start' ? -1 : 1]
-      if (btn) btn.style.setProperty('--fill', side === physical(dir) ? near.toFixed(3) : '0')
-    }
-    setArmed(Math.abs(x) >= T - 0.5 ? side : 0)
-    if (knob.current) knob.current.style.transform = `translateX(${clamp(x, -widthOf() / 2, widthOf() / 2).toFixed(1)}px)`
-  }
-
-  const offStage = (side: Side) => side * ((root.current?.offsetWidth ?? 400) / 2 + widthOf() * 1.2)
+  // The drag, the throw and undo's way back (motion/swipeDeck.ts).
+  const core = useRef<ReturnType<typeof createSwipeDeck>>(null)
+  core.current ??= createSwipeDeck({
+    root: () => root.current,
+    deck: () => deck.current,
+    top: () => top.current,
+    knob: () => knob.current,
+    button: (side) => buttons.current[side],
+    setArmed,
+    hasCards: () => latest.current.left.length > 0,
+    // The next card must be in place before the top card's transform resets, or the thrown card
+    // shows in the middle for a frame.
+    commit: (side) => flushSync(() => commit(side)),
+  })
+  const swipe = core.current
+  const { named, physical, fly } = swipe
 
   const commit = (side: Side) => {
     const { left, count, onDecide, getName, decided } = latest.current
     const [item, next] = left
-    if (!item) return void (busy.current = false)
+    if (!item) return
     const dir = named(side)
     setDone((d) => [...d, { item, side, dir }])
     latest.current = { ...latest.current, left: left.slice(1), count: count + 1 }
@@ -132,143 +96,20 @@ export function SwipeDeck<T>({
     onDecide?.(item, dir)
   }
 
-  const finish = (side: Side) => {
-    stop.current = () => {}
-    // The next card must be in place before the top card's transform resets, or the thrown card
-    // shows in the middle for a frame.
-    flushSync(() => commit(side))
-    paint(0)
-  }
-
-  const fly = (side: Side, velocity: number) => {
-    const el = top.current
-    if (!el || !latest.current.left.length) return
-    if (busy.current) {
-      queued.current = side
-      return
-    }
-    busy.current = true
-    stop.current()
-    if (reduced()) {
-      const anim = el.animate({ opacity: [1, 0] }, { duration: readMotionMs('base'), easing: easing('out'), fill: 'forwards' })
-      let ended = false
-      const end = () => {
-        if (ended) return
-        ended = true
-        anim.cancel()
-        finish(side)
-      }
-      anim.finished.then(end, end)
-      // Stopped (the deck went away mid-fade): the fade ends and nothing is decided.
-      stop.current = () => {
-        ended = true
-        anim.cancel()
-      }
-      return
-    }
-    const speed = side * Math.max(Math.abs(velocity), THROW_SPEED)
-    stop.current = release(at.current, offStage(side), speed, paint, () => finish(side))
-  }
-
-  const back = (velocity = 0) => {
-    stop.current()
-    stop.current = release(at.current, 0, velocity, paint)
-  }
-
   const undo = () => {
     if (!done.length) return
-    if (busy.current) return
     const last = done[done.length - 1]
-    busy.current = true
-    queued.current = null
-    undoing.current = last.side
+    if (!swipe.undo(last.side)) return
     setDone((d) => d.slice(0, -1))
     const count = done.length - 1
     setNews(`Brought back: ${getName(last.item)}. Card ${count + 1} of ${count + left.length + 1}.`)
     onUndo?.(last.item)
   }
 
-  // A key pressed mid-move plays once, when the move has ended.
-  const playQueue = () => {
-    busy.current = false
-    const q = queued.current
-    queued.current = null
-    if (q !== null) fly(q, 0)
-  }
-
-  // Undo plays the throw backwards: the card comes in from where it left.
-  useLayoutEffect(() => {
-    const side = undoing.current
-    const el = top.current
-    if (side === null) return playQueue()
-    undoing.current = null
-    if (!el) return playQueue()
-    if (reduced()) {
-      const anim = el.animate({ opacity: [0, 1] }, { duration: readMotionMs('base'), easing: easing('out') })
-      let ended = false
-      anim.finished.then(
-        () => !ended && playQueue(),
-        () => !ended && playQueue(),
-      )
-      stop.current = () => {
-        ended = true
-        anim.cancel()
-      }
-      return
-    }
-    paint(offStage(side))
-    stop.current = release(offStage(side), 0, -side * THROW_SPEED, paint, playQueue)
-  }, [done.length])
-
-  useLayoutEffect(() => {
-    share.current = tokenNumber(root.current, '--gooee-deck-throw') || share.current
-  }, [])
-  useEffect(() => () => stop.current(), [])
-
-  const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
-    if ((e.pointerType === 'mouse' && e.button !== 0) || busy.current) return
-    moved.current = false
-    drag.current = { x: e.clientX, y: e.clientY, base: at.current, id: e.pointerId, sideways: false, speed: speedTracker() }
-  }
-
-  const onPointerMove = (e: PointerEvent<HTMLDivElement>) => {
-    const d = drag.current
-    if (!d || d.id !== e.pointerId) return
-    const dx = e.clientX - d.x
-    const dy = e.clientY - d.y
-    if (!d.sideways) {
-      // Up or down first means the page scrolls, and the card lets go.
-      if (Math.abs(dy) > SLOP && Math.abs(dy) > Math.abs(dx)) return void (drag.current = null)
-      if (Math.abs(dx) < SLOP) return
-      d.sideways = true
-      moved.current = true
-      stop.current()
-      d.base = at.current - dx
-      try {
-        e.currentTarget.setPointerCapture(e.pointerId)
-      } catch {
-        // A pointer the browser no longer knows cannot be captured, and needs no capture.
-      }
-      deck.current?.setAttribute('data-dragging', '')
-    }
-    const raw = d.base + dx
-    d.speed.add(raw, e.timeStamp)
-    paint(raw)
-  }
-
-  const letGo = (e: PointerEvent<HTMLDivElement>, cancelled: boolean) => {
-    const d = drag.current
-    if (!d || d.id !== e.pointerId) return
-    drag.current = null
-    if (!d.sideways) return
-    deck.current?.removeAttribute('data-dragging')
-    if (cancelled) return back()
-    const x = at.current
-    const v = d.speed.speed(e.timeStamp)
-    if (Math.abs(x) >= line()) return fly(x > 0 ? 1 : -1, v)
-    if (Math.abs(v) > FLICK && Math.abs(x) >= FLICK_MIN && Math.sign(v) === Math.sign(x)) return fly(v > 0 ? 1 : -1, v)
-    back(v)
-  }
+  // Undo plays the throw backwards, and a key pressed mid-move plays once the move has ended.
+  useLayoutEffect(() => swipe.changed(), [done.length])
+  useLayoutEffect(() => swipe.mount(), [])
+  useEffect(() => () => swipe.destroy(), [])
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.target !== e.currentTarget || e.altKey || e.ctrlKey || e.metaKey) return
@@ -312,16 +153,11 @@ export function SwipeDeck<T>({
                 data-depth={depth}
                 inert={depth > 0}
                 aria-hidden={depth > 0 || undefined}
-                onPointerDown={depth === 0 ? onPointerDown : undefined}
-                onPointerMove={depth === 0 ? onPointerMove : undefined}
-                onPointerUp={depth === 0 ? (e) => letGo(e, false) : undefined}
-                onPointerCancel={depth === 0 ? (e) => letGo(e, true) : undefined}
-                onClickCapture={(e) => {
-                  if (!moved.current) return
-                  moved.current = false
-                  e.preventDefault()
-                  e.stopPropagation()
-                }}
+                onPointerDown={depth === 0 ? swipe.down : undefined}
+                onPointerMove={depth === 0 ? swipe.move : undefined}
+                onPointerUp={depth === 0 ? swipe.up : undefined}
+                onPointerCancel={depth === 0 ? swipe.cancel : undefined}
+                onClickCapture={swipe.clickCapture}
                 onDragStart={(e) => e.preventDefault()}
               >
                 {renderCard(item)}

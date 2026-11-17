@@ -634,6 +634,9 @@
   --gooee-flap-h: 1.36em;
   --gooee-flap-top: var(--gooee-color-surface-sunken);
   --gooee-flap-bottom: var(--gooee-color-surface-hover);
+  /* Tabs: the panel, and the chosen tab that rises out of it. In light it takes the pressed grey, as the
+     sunken one is too close to a white or near-white page to see; the dark one stands out already. */
+  --gooee-tabs-panel: var(--gooee-color-surface-active);
 }
 
 /* In the dark the top half is the lighter one, as on a lit board. Both are set again here, so a dark
@@ -642,12 +645,14 @@
   :root:not([data-theme="light"]) {
     --gooee-flap-top: var(--gooee-color-surface-active);
     --gooee-flap-bottom: var(--gooee-color-surface-hover);
+    --gooee-tabs-panel: var(--gooee-color-surface-sunken);
   }
 }
 
 [data-theme="dark"] {
   --gooee-flap-top: var(--gooee-color-surface-active);
   --gooee-flap-bottom: var(--gooee-color-surface-hover);
+  --gooee-tabs-panel: var(--gooee-color-surface-sunken);
 }
 
 :root,

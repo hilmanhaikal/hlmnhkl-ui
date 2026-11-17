@@ -10,6 +10,7 @@ import { Portal } from '../../internal/Portal'
 import { useControllable } from '../../internal/useControllable'
 import { useFloating } from '../../internal/useFloating'
 import { usePresence } from '../../internal/usePresence'
+import { createListbox } from '../../internal/motion/listbox'
 import { FieldMessage } from '../../internal/FieldMessage'
 import styles from './Select.module.css'
 
@@ -76,7 +77,6 @@ export function Select({
   const triggerRef = useRef<HTMLButtonElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
   const optionRefs = useRef<Array<HTMLDivElement | null>>([])
-  const typeahead = useRef({ text: '', at: 0 })
   const { mounted, state } = usePresence(open, 'morph-out')
   const { style, side, ready } = useFloating(triggerRef, listRef, { open: mounted, side: 'bottom', align: 'start', offset: 6, matchWidth: true })
   // The list grows out of the field and folds back into it.
@@ -88,17 +88,12 @@ export function Select({
   const selectedIndex = options.findIndex((o) => o.value === value)
   const selected = selectedIndex >= 0 ? options[selectedIndex] : null
 
-  const enabled = (i: number) => i >= 0 && i < options.length && !options[i].disabled
-  const step = (from: number, dir: 1 | -1) => {
-    let i = from
-    for (let n = 0; n < options.length; n++) {
-      i = (i + dir + options.length) % options.length
-      if (enabled(i)) return i
-    }
-    return from
-  }
-  const first = () => step(-1, 1)
-  const last = () => step(options.length, -1)
+  // Arrows, Home, End, Enter, Space, Tab and type-ahead (motion/listbox.ts).
+  const optionsRef = useRef(options)
+  optionsRef.current = options
+  const list = useRef<ReturnType<typeof createListbox>>(null)
+  list.current ??= createListbox(() => optionsRef.current)
+  const { enabled, first } = list.current
 
   const openList = (at?: number) => {
     if (disabled) return
@@ -129,41 +124,15 @@ export function Select({
   }, [open])
 
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
-    const k = e.key
-    if (!open) {
-      if (k === 'ArrowDown' || k === 'Enter' || k === ' ') {
-        e.preventDefault()
-        openList()
-      } else if (k === 'ArrowUp') {
-        e.preventDefault()
-        openList(enabled(selectedIndex) ? selectedIndex : last())
-      } else if (k.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        openList()
-        runTypeahead(k)
-      }
-      return
-    }
-    if (k === 'ArrowDown') { e.preventDefault(); setActive((a) => step(a, 1)) }
-    else if (k === 'ArrowUp') { e.preventDefault(); setActive((a) => step(a, -1)) }
-    else if (k === 'Home') { e.preventDefault(); setActive(first()) }
-    else if (k === 'End') { e.preventDefault(); setActive(last()) }
-    else if (k === 'Enter' || k === ' ') { e.preventDefault(); choose(active) }
-    else if (k === 'Tab') { if (enabled(active)) setValue(options[active].value); setOpen(false) }
-    else if (k.length === 1) runTypeahead(k)
-  }
-
-  const runTypeahead = (ch: string) => {
-    const now = Date.now()
-    const t = typeahead.current
-    t.text = now - t.at > 600 ? ch.toLowerCase() : t.text + ch.toLowerCase()
-    t.at = now
-    const start = Math.max(active, 0)
-    for (let n = 0; n < options.length; n++) {
-      const i = (start + n + (t.text.length === 1 ? 1 : 0)) % options.length
-      if (enabled(i) && options[i].label.toLowerCase().startsWith(t.text)) {
-        setActive(i)
-        return
-      }
+    const r = list.current!.key(e, open, active, selectedIndex)
+    if (!r) return
+    if (r.prevent) e.preventDefault()
+    if (r.open) openList(r.active)
+    else if (r.active !== undefined) setActive(r.active)
+    if (r.choose) choose(active)
+    if (r.tab) {
+      if (enabled(active)) setValue(options[active].value)
+      setOpen(false)
     }
   }
 

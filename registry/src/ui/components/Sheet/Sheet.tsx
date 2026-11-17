@@ -1,18 +1,18 @@
 // Gooee UI, MIT licence. https://gooee.dev
 'use client'
 
-import { useEffect, useId, useLayoutEffect, useRef, useState, type FocusEvent, type KeyboardEvent, type PointerEvent, type ReactNode, type RefObject } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from 'react'
 import { cx } from '../../internal/cx'
-import { release, rubber, speedTracker, useDragClose } from '../../internal/fling'
-import { returnTarget, useFocusTrap } from '../../internal/focus'
+import { useDragClose } from '../../internal/fling'
+import { useFocusTrap } from '../../internal/focus'
 import { XIcon } from '../../internal/icons'
+import { createDetentSheet, DETENT_NAME, detentHeights, detentOrder, type SheetDetent } from '../../internal/motion/sheetDetents'
 import { useDismiss, useScrollLock } from '../../internal/layers'
 import { Portal } from '../../internal/Portal'
 import { usePresence } from '../../internal/usePresence'
 import styles from './Sheet.module.css'
 
-/** A height a sheet can rest at: low with only its title showing, half the screen, or nearly all of it. */
-export type SheetDetent = 'peek' | 'half' | 'full'
+export type { SheetDetent }
 
 export type SheetProps = {
   /** Whether the sheet is open. You always control it. */
@@ -118,38 +118,18 @@ function PlainSheet({ open, onOpenChange, title, description, children, footer, 
   )
 }
 
-// Shares of the screen, from the heights Apple Maps on the web and Vaul rest at.
-const SHARE: Record<SheetDetent, number> = { peek: 0.19, half: 0.5, full: 0.96 }
-const ORDER: SheetDetent[] = ['peek', 'half', 'full']
-const NAME: Record<SheetDetent, string> = { peek: 'Low', half: 'Half', full: 'Full' }
-// px per second: faster than this, a let-go is a flick and moves one height its way.
-const FLICK = 400
-// How far ahead, in seconds, a slow let-go is carried before the nearest height is picked.
-const PROJECT = 0.2
-// A press is not a drag until it moves this far, so taps on the content still work.
-const SLOP = 6
-
-const nearest = (v: number, hs: number[]) => hs.reduce((best, h, i) => (Math.abs(h - v) < Math.abs(hs[best] - v) ? i : best), 0)
-
-// A flick moves one height from where the drag began, never two, even when the hand has already
-// passed the next one. Real sheets measured all do this.
-function pick(pos: number, v: number, start: number, hs: number[]) {
-  if (Math.abs(v) <= FLICK) return nearest(pos + v * PROJECT, hs)
-  return Math.max(0, Math.min(hs.length - 1, start + Math.sign(v)))
-}
-
 type DetentProps = BaseProps & Required<Pick<SheetProps, 'detents' | 'heightLabel'>> & Pick<SheetProps, 'detent' | 'defaultDetent' | 'onDetentChange'>
 
 function DetentSheet({ open, onOpenChange, title, description, children, footer, closeLabel, initialFocus, className, detents, detent, defaultDetent, onDetentChange, heightLabel }: DetentProps) {
   const id = useId()
-  const order = ORDER.filter((d) => detents.includes(d))
+  const order = detentOrder(detents)
   const top = order.length - 1
   const [inner, setInner] = useState<SheetDetent>(defaultDetent ?? order[0])
   const index = Math.max(0, order.indexOf(detent ?? inner))
   const atTop = index === top
   const { mounted, state } = usePresence(open, 'morph-out')
   const [vh, setVh] = useState(() => (typeof window === 'undefined' ? 0 : window.innerHeight))
-  const heights = order.map((d) => Math.round(vh * SHARE[d]))
+  const heights = detentHeights(order, vh)
   const [dragging, setDragging] = useState(false)
   const [target, setTarget] = useState(index)
   const [said, setSaid] = useState('')
@@ -158,69 +138,38 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
   const overlayRef = useRef<HTMLDivElement>(null)
   const grabRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
-  const at = useRef(0)
-  const aimed = useRef(-1)
-  const stopGlide = useRef(() => {})
-  const unlisten = useRef(() => {})
-  const opener = useRef<HTMLElement | null>(null)
   const trapStart = useRef<HTMLElement | null>(null)
-  const drag = useRef<{ y0: number; at0: number; start: number; pointer: number; live: boolean; speed: ReturnType<typeof speedTracker> } | null>(null)
-  const live = useRef({ heights, index, open })
-  live.current = { heights, index, open }
-
-  const change = (i: number) => {
-    if (detent === undefined) setInner(order[i])
-    onDetentChange?.(order[i])
+  const live = useRef({ order, heights, index, open, onOpenChange, change: (_: number) => {} })
+  live.current = {
+    order,
+    heights,
+    index,
+    open,
+    onOpenChange,
+    change: (i: number) => {
+      if (detent === undefined) setInner(order[i])
+      onDetentChange?.(order[i])
+    },
   }
 
-  const paint = (v: number) => {
-    at.current = v
-    const hs = live.current.heights
-    const panel = panelRef.current
-    if (!panel) return
-    panel.style.transform = `translateY(${hs[hs.length - 1] - v}px)`
-    // The dim follows the height between the two highest, so it never jumps.
-    const lo = hs.length > 1 ? hs[hs.length - 2] : 0
-    const dim = Math.max(0, Math.min(1, (v - lo) / (hs[hs.length - 1] - lo || 1)))
-    overlayRef.current?.style.setProperty('opacity', String(dim))
-  }
-
-  const settle = (to: number, v: number, done?: () => void) => {
-    stopGlide.current()
-    stopGlide.current = release(at.current, to, v, paint, done)
-  }
-
-  const shownHidden = () => {
-    const active = document.activeElement as HTMLElement | null
-    return !!active && !!bodyRef.current?.contains(active) && active.getBoundingClientRect().top > window.innerHeight - 8
-  }
-
-  const go = (i: number, v = 0, spoken = true) => {
-    const hs = live.current.heights
-    if (i < 0) {
-      // A glide carries it off at the hand's speed, so the CSS close stays out of the way.
-      panelRef.current?.setAttribute('data-fluid', '')
-      settle(0, v)
-      onOpenChange(false)
-      requestAnimationFrame(() => {
-        if (live.current.open) {
-          panelRef.current?.removeAttribute('data-fluid')
-          settle(hs[live.current.index], 0)
-        }
-      })
-      return
-    }
-    aimed.current = i
-    setTarget(i)
-    if (i !== live.current.index) {
-      change(i)
-      if (spoken) setSaid(`${NAME[order[i]]} height`)
-    }
-    // Shrunk below a focused control: focus goes to the grabber, so it never sits on something hidden.
-    settle(hs[i], v, () => shownHidden() && grabRef.current?.focus({ preventScroll: true }))
-  }
-
-  const stepDown = () => (live.current.index > 0 ? go(live.current.index - 1) : onOpenChange(false))
+  // Drag, flick, the grabber's keys and where focus goes (motion/sheetDetents.ts).
+  const core = useRef<ReturnType<typeof createDetentSheet>>(null)
+  core.current ??= createDetentSheet({
+    panel: () => panelRef.current,
+    overlay: () => overlayRef.current,
+    grabber: () => grabRef.current,
+    body: () => bodyRef.current,
+    order: () => live.current.order,
+    heights: () => live.current.heights,
+    index: () => live.current.index,
+    open: () => live.current.open,
+    change: (i) => live.current.change(i),
+    close: () => live.current.onOpenChange(false),
+    target: setTarget,
+    dragging: setDragging,
+    say: setSaid,
+  })
+  const sheet = core.current
 
   useEffect(() => {
     const onResize = () => setVh(window.innerHeight)
@@ -229,38 +178,24 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
   }, [])
 
   useLayoutEffect(() => {
-    if (!open) return
-    opener.current = returnTarget()
-    aimed.current = -1
-  }, [open])
+    if (open) sheet.opening()
+  }, [open, sheet])
 
   useLayoutEffect(() => {
-    if (!open || !mounted) return
-    if (aimed.current === -1) {
-      aimed.current = index
-      setTarget(index)
-      paint(heights[index])
-      if (!atTop) (initialFocus?.current ?? grabRef.current)?.focus({ preventScroll: true })
-      return
-    }
-    if (drag.current?.live) return
-    if (aimed.current !== index) {
-      aimed.current = index
-      setTarget(index)
-      settle(heights[index], 0)
-    } else paint(heights[index])
+    if (open && mounted) sheet.sync(initialFocus?.current)
+    // Synced when the height or the screen changes; initialFocus is read at that moment.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, mounted, index, vh])
 
   // Closed, it gives focus back to its opener, and opens next time at the default height.
   useEffect(() => {
     if (open) return
     setInner(defaultDetent ?? order[0])
-    const panel = panelRef.current
-    const active = document.activeElement
-    if (panel && opener.current?.isConnected && (!active || active === document.body || panel.contains(active))) opener.current.focus({ preventScroll: true })
+    sheet.closed()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
-  useEffect(() => () => stopGlide.current(), [])
+  useEffect(() => () => sheet.destroy(), [sheet])
 
   // Before the trap's own effect: at the top, focus stays where it is in the sheet.
   useLayoutEffect(() => {
@@ -270,127 +205,13 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
   }, [atTop, open])
   useScrollLock(open && atTop)
   useFocusTrap(panelRef, open && mounted && atTop, { initialFocus: trapStart, restore: false })
-  useDismiss(open, [panelRef], stepDown, { outside: atTop })
+  useDismiss(open, [panelRef], sheet.stepDown, { outside: atTop })
 
-  const onPointerMove = (e: globalThis.PointerEvent) => {
-    const d = drag.current
-    const hs = live.current.heights
-    if (!d || d.pointer !== e.pointerId) return
-    const dy = d.y0 - e.clientY
-    if (!d.live) {
-      if (Math.abs(dy) < SLOP) return
-      if (bodyRef.current?.contains(e.target as Node) && live.current.index === top && dy > 0) return endDrag()
-      // A tap must not stop a settle half way, so the glide is caught only once it is a drag.
-      stopGlide.current()
-      d.live = true
-      d.at0 = at.current
-      d.start = nearest(at.current, hs)
-      d.speed.add(at.current)
-      d.y0 = e.clientY + (dy > 0 ? SLOP : -SLOP)
-      // Only now, so a tap on a button inside still clicks it.
-      if (e.target instanceof Element && panelRef.current?.contains(e.target)) panelRef.current.setPointerCapture?.(e.pointerId)
-      window.addEventListener('selectstart', block)
-      setDragging(true)
-    }
-    // A drag moves the sheet, never selects the page's text: a selection left over from one drag
-    // would turn the next press on it into the browser's own drag, which cancels the pointer. Safari
-    // keeps growing the selection it began on the press, so it is cleared on every move.
-    const selection = window.getSelection()
-    if (selection && !selection.isCollapsed) selection.removeAllRanges()
-    let raw = d.at0 + (d.y0 - e.clientY)
-    const full = hs[hs.length - 1]
-    if (raw > full) raw = full + rubber(raw - full, window.innerHeight - full)
-    if (raw < 0) raw = 0
-    d.speed.add(raw)
-    paint(raw)
-    const next = pick(raw, d.speed.speed(), d.start, hs)
-    setTarget((t) => (t === next ? t : next))
-  }
-
-  const onPointerUp = (e: globalThis.PointerEvent) => {
-    const d = drag.current
-    if (!d || d.pointer !== e.pointerId) return
-    endDrag()
-    if (!d.live) return
-    setDragging(false)
-    const hs = live.current.heights
-    const cancelled = e.type === 'pointercancel'
-    const v = cancelled ? 0 : d.speed.speed()
-    const pos = at.current
-    if (!cancelled && d.start === 0 && (v < -FLICK || pos < hs[0] * 0.5)) return go(-1, v)
-    go(pick(pos, v, d.start, hs), v)
-  }
-
-  // The hand often leaves the sheet before the drag counts as one, so the moves are followed on the window.
-  const block = (e: Event) => e.preventDefault()
-
-  const endDrag = () => {
-    drag.current = null
-    unlisten.current()
-  }
-
-  const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
-    if ((e.pointerType === 'mouse' && e.button !== 0) || drag.current) return
-    const el = e.target as Element
-    if (el.closest('input, textarea, select, [contenteditable="true"]')) return
-    const hs = live.current.heights
-    // At the top the content scrolls; a drag on it moves the sheet only from the top of the content.
-    if (bodyRef.current?.contains(el) && live.current.index === top && (bodyRef.current?.scrollTop ?? 0) > 0) return
-    drag.current = { y0: e.clientY, at0: at.current, start: nearest(at.current, hs), pointer: e.pointerId, live: false, speed: speedTracker() }
-    const move = onPointerMove
-    const up = onPointerUp
-    window.addEventListener('pointermove', move)
-    window.addEventListener('pointerup', up)
-    window.addEventListener('pointercancel', up)
-    window.addEventListener('dragstart', block)
-    // Safari starts a text selection on the press itself, so a press outside the content (the grabber,
-    // the edges) blocks it at once. Text in the content can still be selected by dragging inside it.
-    if (!bodyRef.current?.contains(el)) window.addEventListener('selectstart', block)
-    unlisten.current = () => {
-      window.removeEventListener('pointermove', move)
-      window.removeEventListener('pointerup', up)
-      window.removeEventListener('pointercancel', up)
-      window.removeEventListener('dragstart', block)
-      window.removeEventListener('selectstart', block)
-    }
-  }
-
-  useEffect(() => () => unlisten.current(), [])
-
-  // A touch at the top of the content, moving down, belongs to the sheet: the browser would scroll it.
   useEffect(() => {
     const body = bodyRef.current
     if (!body) return
-    let y = 0
-    const start = (e: TouchEvent) => (y = e.touches[0].clientY)
-    const move = (e: TouchEvent) => {
-      if (drag.current?.live || (live.current.index === live.current.heights.length - 1 && body.scrollTop <= 0 && e.touches[0].clientY > y)) e.preventDefault()
-    }
-    body.addEventListener('touchstart', start, { passive: true })
-    body.addEventListener('touchmove', move, { passive: false })
-    return () => {
-      body.removeEventListener('touchstart', start)
-      body.removeEventListener('touchmove', move)
-    }
-  }, [mounted])
-
-  const onGrabKey = (e: KeyboardEvent<HTMLDivElement>) => {
-    const i = live.current.index
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      return go(i === top ? 0 : i + 1, 0, false)
-    }
-    const keys: Record<string, number> = { ArrowUp: i + 1, ArrowRight: i + 1, ArrowDown: i - 1, ArrowLeft: i - 1, Home: 0, End: top, PageUp: top, PageDown: 0 }
-    if (!(e.key in keys)) return
-    e.preventDefault()
-    go(Math.max(0, Math.min(top, keys[e.key])), 0, false)
-  }
-
-  // Tabbing onto a control hidden below the screen's edge grows the sheet to the top, so it shows.
-  const onFocus = (e: FocusEvent<HTMLDivElement>) => {
-    if (!bodyRef.current?.contains(e.target) || live.current.index === top) return
-    if (e.target.getBoundingClientRect().bottom > window.innerHeight - 4) go(top)
-  }
+    return sheet.holdTouch(body)
+  }, [mounted, sheet])
 
   if (!mounted) return null
   const shown = order[dragging ? target : index]
@@ -411,8 +232,8 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
         data-top={atTop || undefined}
         data-dragging={dragging || undefined}
         style={{ height: heights[top] }}
-        onPointerDown={onPointerDown}
-        onFocus={onFocus}
+        onPointerDown={sheet.down}
+        onFocus={(e) => sheet.focusIn(e.target)}
       >
         <div
           ref={grabRef}
@@ -424,11 +245,11 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
           aria-valuemin={0}
           aria-valuemax={top}
           aria-valuenow={index}
-          aria-valuetext={NAME[order[index]]}
+          aria-valuetext={DETENT_NAME[order[index]]}
           aria-controls={`${id}-sheet`}
           data-detent={shown}
-          onKeyDown={onGrabKey}
-          onClick={() => go(index === top ? 0 : index + 1)}
+          onKeyDown={sheet.grabKey}
+          onClick={sheet.grabClick}
         >
           <span className={styles.pill} />
         </div>

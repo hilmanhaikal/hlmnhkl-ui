@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { cx } from '../../internal/cx'
 import { CopyIcon, XIcon } from '../../internal/icons'
 import { copyRun, type CopyRun } from '../../internal/liquidMore'
+import { capShift, writeText } from '../../internal/motion/copyButton'
 import styles from './CopyButton.module.css'
 
 export type CopyButtonProps = {
@@ -25,27 +26,6 @@ export type CopyButtonProps = {
   onCopy?: (value: string) => void
   /** Extra class for the button. */
   className?: string
-}
-
-async function writeText(text: string) {
-  try {
-    await navigator.clipboard.writeText(text)
-    return true
-  } catch {
-    // Fallback for http pages and older browsers.
-    const ta = document.createElement('textarea')
-    ta.value = text
-    ta.setAttribute('readonly', '')
-    ta.style.position = 'fixed'
-    ta.style.opacity = '0'
-    const prev = document.activeElement as HTMLElement | null
-    document.body.appendChild(ta)
-    ta.select()
-    const ok = document.execCommand('copy')
-    ta.remove()
-    prev?.focus()
-    return ok
-  }
 }
 
 export function CopyButton({
@@ -88,34 +68,8 @@ export function CopyButton({
   }, [copied, status])
   useLayoutEffect(() => () => run.current?.stop(), [])
 
-  // With a label, the icon sits on the middle of the label's capital letters, not of its line.
-  useLayoutEffect(() => {
-    const root = rootRef.current
-    const icons = iconsRef.current
-    const text = labelRef.current?.firstChild
-    root?.style.removeProperty('--cap-shift')
-    if (!root || !icons || !text) return
-    const place = () => {
-      root.style.removeProperty('--cap-shift')
-      const range = document.createRange()
-      range.selectNodeContents(text)
-      const box = range.getBoundingClientRect()
-      const look = getComputedStyle(root)
-      const pen = document.createElement('canvas').getContext('2d')
-      if (!pen || !box.height) return
-      pen.font = `${look.fontWeight} ${look.fontSize} ${look.fontFamily}`
-      const m = pen.measureText('H')
-      const cap = box.top + m.fontBoundingBoxAscent - m.actualBoundingBoxAscent / 2
-      const r = icons.getBoundingClientRect()
-      root.style.setProperty('--cap-shift', `${Math.round((cap - r.top - r.height / 2) * 100) / 100}px`)
-    }
-    place()
-    let live = true
-    document.fonts?.ready.then(() => live && place())
-    return () => {
-      live = false
-    }
-  }, [showLabel, label, size])
+  // With a label, the icon sits on the middle of the label's capital letters (motion/copyButton.ts).
+  useLayoutEffect(() => capShift(rootRef.current, iconsRef.current, labelRef.current?.firstChild), [showLabel, label, size])
 
   const copy = async () => {
     const ok = await writeText(value)

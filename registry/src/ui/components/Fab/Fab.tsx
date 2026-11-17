@@ -4,6 +4,7 @@
 import { useId, useRef, useState, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { useDismiss } from '../../internal/layers'
+import { foldOnScroll } from '../../internal/motion/fab'
 import { useScrollFrame } from '../../internal/scrollFrame'
 import styles from './Fab.module.css'
 
@@ -41,20 +42,9 @@ export function Fab({ label, icon, onClick, extended = false, actions, position 
   const firstRef = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
   const [compact, setCompact] = useState(false)
-  const last = useRef<number | null>(null)
-
-  // Extended: down the page it folds to the icon, back up it opens again. It reads the scroll, never a timer.
-  useScrollFrame(
-    () => {
-      const y = window.scrollY
-      const prev = last.current
-      last.current = y
-      if (prev === null || Math.abs(y - prev) < 4) return
-      const next = y > prev && y > 80
-      return () => setCompact(next)
-    },
-    extended,
-  )
+  // Extended, it folds to the icon down the page and opens again on the way up (motion/fab.ts).
+  const [fold] = useState(() => foldOnScroll(setCompact))
+  useScrollFrame(fold, extended)
 
   useDismiss(open, [rootRef], (reason) => {
     setOpen(false)

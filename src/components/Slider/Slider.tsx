@@ -2,8 +2,7 @@
 
 import { useEffect, useId, useRef, useState, type ComponentPropsWithRef, type KeyboardEvent, type PointerEvent } from 'react'
 import { cx } from '../../internal/cx'
-import { bezier, nearestMark } from '../../internal/feel'
-import { morphCurve, motionMs, prefersReducedMotion } from '../../internal/motion'
+import { createSlider } from '../../internal/motion/slider'
 import { useControllable } from '../../internal/useControllable'
 import styles from './Slider.module.css'
 
@@ -57,65 +56,25 @@ export function Slider({
   const [value, setValue] = useControllable(valueProp, defaultValue ?? min, onValueChange)
   // Where the thumb is drawn while it glides to a click or settles on a mark; the value is set already.
   const [shown, setShown] = useState<number | null>(null)
-  // `grab` is how far from the thumb's centre it was picked up, so the thumb does not jump to the pointer.
-  const press = useRef<{ x: number; lastX: number; moved: boolean; grab: number } | null>(null)
-  const glide = useRef(0)
-  const latest = useRef(value)
-  latest.current = value
+  const latest = useRef({ value, min, max, step, marks })
+  latest.current = { value, min, max, step, marks }
+  const set = useRef(setValue)
+  set.current = setValue
+  // The glide, the grab and the landing on marks (motion/slider.ts).
+  const slider = useRef<ReturnType<typeof createSlider>>(null)
+  slider.current ??= createSlider(
+    () => latest.current,
+    (v) => {
+      latest.current = { ...latest.current, value: v }
+      set.current(v)
+    },
+    setShown,
+  )
   const at = shown ?? value
   const pct = max === min ? 0 : ((at - min) / (max - min)) * 100
   const text = formatValue(value)
-  // A let-go within half of this (3% of the track) of a mark lands on it.
-  const reach = (max - min) * 0.06
-  const decimals = (String(step).split('.')[1] ?? '').length
-  const toStep = (v: number) => Math.min(max, Math.max(min, Number((Math.round((v - min) / step) * step + min).toFixed(decimals))))
 
-  useEffect(() => () => cancelAnimationFrame(glide.current), [])
-
-  // The thumb travels from where it is drawn to `to` on the morph curve. A click and a landing both use it.
-  function glideTo(from: number, to: number) {
-    cancelAnimationFrame(glide.current)
-    const ms = motionMs('morph-out')
-    if (!ms || from === to || prefersReducedMotion()) return setShown(null)
-    const ease = bezier(morphCurve())
-    const t0 = performance.now()
-    const tick = (now: number) => {
-      const p = Math.min(1, (now - t0) / ms)
-      setShown(p < 1 ? from + (to - from) * ease(p) : null)
-      if (p < 1) glide.current = requestAnimationFrame(tick)
-    }
-    glide.current = requestAnimationFrame(tick)
-  }
-
-  // The value under the pointer, before any step, from the input's own geometry: the thumb's centre
-  // runs from half a thumb in at each end.
-  function track(input: HTMLInputElement) {
-    const r = input.getBoundingClientRect()
-    const thumb = parseFloat(getComputedStyle(input).getPropertyValue('--thumb')) || 0
-    return { left: r.left + thumb / 2, width: Math.max(1, r.width - thumb), thumb }
-  }
-
-  function fromPointer(input: HTMLInputElement, x: number) {
-    const t = track(input)
-    return min + Math.min(1, Math.max(0, (x - t.left) / t.width)) * (max - min)
-  }
-
-  function change(input: HTMLInputElement, native: number) {
-    const p = press.current
-    const next = p && marks?.length ? toStep(fromPointer(input, p.lastX - p.grab)) : native
-    // A press that has not moved is a click: the value jumps, the thumb glides there. Once it moves, the hand leads.
-    if (p && !p.moved) glideTo(at, next)
-    else if (shown !== null) {
-      cancelAnimationFrame(glide.current)
-      setShown(null)
-    }
-    latest.current = next
-    setValue(next)
-  }
-
-  const endPress = () => {
-    press.current = null
-  }
+  useEffect(() => () => slider.current!.destroy(), [])
 
   return (
     <div className={cx(styles.root, className)} data-disabled={disabled || undefined}>
@@ -136,50 +95,32 @@ export function Slider({
           aria-valuenow={value}
           aria-valuetext={formatValue === String ? undefined : text}
           // Only "input": the browser's "change" on release carries the thumb's mid-glide place, not the value.
-          onChange={(e) => e.nativeEvent.type === 'input' && change(e.currentTarget, Number(e.target.value))}
+          onChange={(e) => e.nativeEvent.type === 'input' && slider.current!.input(e.currentTarget, Number(e.target.value))}
           onPointerDown={(e: PointerEvent<HTMLInputElement>) => {
-            const t = track(e.currentTarget)
-            const centre = t.left + ((value - min) / (max - min || 1)) * t.width
-            const grab = marks?.length && Math.abs(e.clientX - centre) <= t.thumb / 2 ? e.clientX - centre : 0
-            press.current = { x: e.clientX, lastX: e.clientX, moved: false, grab }
+            slider.current!.down(e.currentTarget, e.clientX)
             onPointerDown?.(e)
           }}
           onPointerMove={(e: PointerEvent<HTMLInputElement>) => {
-            const p = press.current
-            if (p) {
-              p.lastX = e.clientX
-              if (Math.abs(e.clientX - p.x) > 3) p.moved = true
-            }
+            slider.current!.move(e.clientX)
             onPointerMove?.(e)
           }}
           onPointerUp={(e: PointerEvent<HTMLInputElement>) => {
-            endPress()
-            // Let go near a mark: it lands on the mark.
-            const now = latest.current
-            const mark = marks?.length ? nearestMark(now, marks) : null
-            if (mark !== null && mark !== now && Math.abs(mark - now) < reach / 2) {
-              glideTo(at, mark)
-              setValue(mark)
-            }
+            slider.current!.up()
             onPointerUp?.(e)
           }}
           onPointerCancel={(e: PointerEvent<HTMLInputElement>) => {
-            endPress()
+            slider.current!.end()
             onPointerCancel?.(e)
           }}
-          onLostPointerCapture={endPress}
+          onLostPointerCapture={slider.current.end}
           onBlur={(e) => {
-            endPress()
+            slider.current!.end()
             onBlur?.(e)
           }}
           onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-            endPress()
+            slider.current!.end()
             onKeyDown?.(e)
-            if (e.defaultPrevented || !marks?.length || (e.key !== 'PageUp' && e.key !== 'PageDown')) return
-            const sorted = [...marks].sort((a, b) => a - b)
-            const next = e.key === 'PageUp' ? (sorted.find((m) => m > value) ?? max) : ([...sorted].reverse().find((m) => m < value) ?? min)
-            e.preventDefault()
-            setValue(next)
+            if (!e.defaultPrevented && slider.current!.key(e.key)) e.preventDefault()
           }}
           {...rest}
         />

@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type FocusEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { easing, motionMs } from '../../internal/motion'
+import { flipRows, groupRows, nextSort, readCell as read, revealCell, scrollEdges, sortRows, type TableSort } from '../../internal/motion/table'
 import { useControllable } from '../../internal/useControllable'
 import { Skeleton } from '../Skeleton'
 import styles from './Table.module.css'
@@ -21,7 +21,7 @@ export type TableColumn<T> = {
   width?: CSSProperties['width']
 }
 
-export type TableSort = { key: string; direction: 'ascending' | 'descending' }
+export type { TableSort }
 
 export type TableLabels = {
   /** Name of the checkbox in the header. */
@@ -112,8 +112,6 @@ function Check({ checked, mixed, label, disabled, onChange }: { checked: boolean
   )
 }
 
-const read = (row: unknown, key: string) => (row as Record<string, unknown>)[key]
-
 export function Table<T>({
   columns,
   rows,
@@ -145,24 +143,11 @@ export function Table<T>({
   const measure = () => {
     const el = scrollRef.current
     if (!el) return
-    const start = el.scrollLeft > 1
-    const end = el.scrollLeft + el.clientWidth < el.scrollWidth - 1
+    const { start, end } = scrollEdges(el)
     setMore((m) => (m.start === start && m.end === end ? m : { start, end }))
-    // The sticky first column's width, so a cell that takes focus scrolls clear of it (WCAG 2.4.11).
-    const first = el.querySelector<HTMLElement>('thead th')
-    el.style.setProperty('--first-w', first && getComputedStyle(first).left === '0px' ? `${first.offsetWidth}px` : '0px')
   }
-  // Browsers do not scroll a sticky header cell into view on focus, so its button could stay under the
-  // sticky first column. Nudge the sideways scroll until the focused cell is clear on both sides.
   const reveal = (e: FocusEvent<HTMLDivElement>) => {
-    const el = scrollRef.current
-    const cell = e.target.closest('th, td')
-    if (!el || !cell || cell === cell.parentElement?.firstElementChild) return
-    const box = el.getBoundingClientRect()
-    const r = cell.getBoundingClientRect()
-    const under = r.left - box.left - (parseFloat(el.style.getPropertyValue('--first-w')) || 0)
-    if (under < 0) el.scrollLeft += under
-    else if (r.right > box.right) el.scrollLeft += r.right - box.right
+    if (scrollRef.current) revealCell(scrollRef.current, e.target)
   }
   useEffect(() => {
     const el = scrollRef.current
@@ -180,28 +165,9 @@ export function Table<T>({
   const lastShape = useRef('')
   const groupOrder = useRef<string[]>([])
 
-  const sorted = useMemo(() => {
-    if (!sort) return rows
-    const col = columns.find((c) => c.key === sort.key)
-    if (!col) return rows
-    const value = (r: T) => (col.sortValue ? col.sortValue(r) : (read(r, col.key) as string | number))
-    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
-    const out = [...rows].sort((a, b) => {
-      const va = value(a)
-      const vb = value(b)
-      const c = typeof va === 'number' && typeof vb === 'number' ? va - vb : collator.compare(String(va ?? ''), String(vb ?? ''))
-      return sort.direction === 'ascending' ? c : -c
-    })
-    return out
-  }, [rows, columns, sort])
+  const sorted = useMemo(() => sortRows(rows, columns, sort), [rows, columns, sort])
 
-  // Groups take the order they first appear in, and keep it: a sort, or a row moving to another group,
-  // never shuffles the groups themselves. A group seen for the first time joins at the end.
-  let groups: Array<{ key: string; rows: T[] }> | null = null
-  if (groupBy) {
-    for (const key of new Set(rows.map(groupBy))) if (!groupOrder.current.includes(key)) groupOrder.current.push(key)
-    groups = groupOrder.current.map((key) => ({ key, rows: sorted.filter((r) => groupBy(r) === key) })).filter((g) => g.rows.length)
-  }
+  const groups = groupBy ? groupRows(rows, sorted, groupBy, groupOrder.current) : null
   const shape = groups ? groups.map((g) => g.key).join('|') : ''
   const order = groups ? groups.map((g) => `${g.key}:${g.rows.map(getRowId).join(',')}`).join('|') : sorted.map(getRowId).join('|')
 
@@ -210,31 +176,14 @@ export function Table<T>({
   useLayoutEffect(() => {
     const table = tableRef.current
     if (!table) return
-    const duration = motionMs('slow')
-    const ease = easing(shape !== lastShape.current ? 'spring' : 'out')
+    lastTops.current = flipRows(table, lastTops.current, shape !== lastShape.current)
     lastShape.current = shape
-    const now = new Map<string, number>()
-    table.querySelectorAll<HTMLElement>('tbody [data-row-id]').forEach((tr) => {
-      const rid = tr.dataset.rowId!
-      const top = tr.offsetTop
-      now.set(rid, top)
-      const before = lastTops.current.get(rid)
-      if (before !== undefined && before !== top && duration > 0) {
-        tr.animate([{ transform: `translateY(${before - top}px)` }, { transform: 'none' }], { duration, easing: ease })
-      }
-    })
-    lastTops.current = now
   }, [order])
 
   const labelOf = (c: TableColumn<T>) => c.label ?? (typeof c.header === 'string' ? c.header : c.key)
 
   const toggleSort = (key: string) => {
-    const same = sort?.key === key
-    const next: TableSort | null = !same
-      ? { key, direction: 'ascending' }
-      : sort.direction === 'ascending'
-        ? { key, direction: 'descending' }
-        : null
+    const next = nextSort(sort, key)
     setSort(next)
     const col = columns.find((c) => c.key === key)
     const name = col ? labelOf(col) : key

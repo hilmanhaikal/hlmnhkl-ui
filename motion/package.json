@@ -1,6 +1,6 @@
 {
   "name": "gooee-motion",
-  "version": "0.50.0",
+  "version": "0.51.0",
   "description": "The Gooee UI motion with no framework: panels that grow out of what opened them, liquid highlights, soft presses, flings and scrubbed values. For Vue, Svelte, Angular, plain HTML or React.",
   "license": "MIT",
   "homepage": "https://gooee.dev/motion",

@@ -2,6 +2,27 @@
 
 What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.51.0 · 17 Nov 2026
+
+Every part now comes in Vue too: all 151 components, with the same look, motion, keys and accessibility as React.
+
+### Added
+
+- Vue 3.5 versions of every component, as `.vue` files next to the React ones. They import the same CSS module, so the look cannot drift. Values use `v-model`, callbacks are events, and content you pass in is a slot.
+- `npx gooee add <part> --vue` copies a part with the plain motion code it uses. `npx gooee init --vue` sets a Vue app up. A part's page in the docs shows its Vue demos and code once you pick Vue at the top of the menu.
+- Toast (Vue) exports `toastKey`, so a second Vue app on the page can send toasts through the same provider: `provide(toastKey, useToast())`.
+- They render on the server too, so Nuxt pages can use them. Dialogs, drawers and other layers open and trap focus once the page is live in the browser.
+
+### Changed
+
+- The logic the parts share between frameworks is plain JavaScript now, in `internal/motion/`: motion, focus trap, Esc and outside tap, scroll lock, drags, keys, lists, grids, media and scroll scenes. The React parts call it and behave as before.
+
+### Fixed
+
+- Icons: `next build` with Turbopack (the Next.js 16 default) failed on the icon motion. Every animation name is now local to its CSS module, so any bundler reads it.
+- Tabs: in light mode the panel and the chosen tab were almost the colour of the page, so you could not see them. They now use `--gooee-tabs-panel`, the pressed grey in light. Dark is unchanged.
+- DataGrid, Table and CalendarHeatmap (table view): the frame's lines showed again beside the rows and over the sticky head. The rows were painting over them. The frame is now a layer on top that takes no clicks.
+
 ## 0.50.0 · 17 Nov 2026
 
 The motion now works without React: a new package, gooee-motion.

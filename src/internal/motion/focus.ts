@@ -33,3 +33,56 @@ export function returnTarget(): HTMLElement | null {
   if (pressed && (!active || active === document.body || (active !== pressed && active.contains(pressed)))) return pressed
   return active
 }
+
+/**
+ * Keeps Tab inside `root` until the returned function is called, starting on `initialFocus` or the first
+ * focusable (close buttons opt out with data-skip-initial-focus). On release, focus goes back to where it
+ * came from, if it is still inside the layer.
+ */
+export function trapFocus(root: HTMLElement, { initialFocus, restore = true }: { initialFocus?: HTMLElement | null; restore?: boolean } = {}) {
+  const previous = returnTarget()
+  // Close buttons opt out of first focus, so focus lands on the content or the safe action.
+  const list = focusables(root)
+  const first = initialFocus ?? list.find((el) => !el.hasAttribute('data-skip-initial-focus')) ?? list[0] ?? root
+  first.focus({ preventScroll: true })
+
+  // Safari's plain Tab skips buttons, so it can jump from the middle of the layer to the page behind,
+  // or off the page. A Tab that lands outside goes back to the end it wrapped past.
+  let check = 0
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key !== 'Tab') return
+    const items = focusables(root)
+    if (items.length === 0) {
+      e.preventDefault()
+      root.focus()
+      return
+    }
+    const firstEl = items[0]
+    const lastEl = items[items.length - 1]
+    const current = document.activeElement
+    if (e.shiftKey && (current === firstEl || current === root)) {
+      e.preventDefault()
+      lastEl.focus()
+    } else if (!e.shiftKey && current === lastEl) {
+      e.preventDefault()
+      firstEl.focus()
+    } else {
+      const back = e.shiftKey
+      clearTimeout(check)
+      check = window.setTimeout(() => {
+        if (root.contains(document.activeElement)) return
+        const now = focusables(root)
+        now[back ? now.length - 1 : 0]?.focus({ preventScroll: true })
+      })
+    }
+  }
+  root.addEventListener('keydown', onKey)
+  return () => {
+    clearTimeout(check)
+    root.removeEventListener('keydown', onKey)
+    // Give focus back only if it is still in the layer, so a click elsewhere keeps its own focus.
+    const now = document.activeElement
+    const stillInside = !now || now === document.body || root.contains(now)
+    if (restore && stillInside && previous && document.contains(previous)) previous.focus({ preventScroll: true })
+  }
+}

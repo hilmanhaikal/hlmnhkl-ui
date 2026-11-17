@@ -5,7 +5,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentProp
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
 import { mergeRefs } from '../../internal/mergeRefs'
-import { pour, type Pour } from '../../internal/liquidMore'
+import { createCheckboxPour } from '../../internal/motion/checkbox'
 import { useControllable } from '../../internal/useControllable'
 import styles from './Checkbox.module.css'
 
@@ -63,36 +63,19 @@ export function Checkbox({
 
   const state = mixed ? 'mixed' : checked ? 'on' : 'off'
 
-  // Ink pours in from the side that was pressed (a key fills it evenly from below), levels, and then
-  // the mark draws. Clearing drains it the same way.
+  // Ink pours in from the side that was pressed, levels, and then the mark draws (motion/checkbox.ts).
   const boxRef = useRef<HTMLSpanElement>(null)
-  const pressedAt = useRef<{ x: number; t: number } | null>(null)
-  const pouring = useRef<Pour | null>(null)
-  const filled = state !== 'off'
-  const was = useRef({ filled, state })
-  useLayoutEffect(() => {
-    const prev = was.current
-    was.current = { filled, state }
-    if (prev.filled === filled) return
-    const box = boxRef.current
-    const at = pressedAt.current
-    pressedAt.current = null
-    if (!box) return
-    const r = box.getBoundingClientRect()
-    const side = at && performance.now() - at.t < 1000 ? Math.max(-1, Math.min(1, (at.x - r.left - r.width / 2) / (r.width / 2))) : 0
-    const mark = box.querySelector<SVGPathElement>(prev.state === 'mixed' || state === 'mixed' ? '[data-mark="dash"]' : '[data-mark="tick"]')
-    pouring.current = pour(box, mark, filled ? 1 : 0, side, styles.pour, pouring.current)
-  }, [filled, state])
-  useLayoutEffect(() => () => pouring.current?.stop(), [])
+  const cup = useRef<ReturnType<typeof createCheckboxPour>>(null)
+  cup.current ??= createCheckboxPour(() => boxRef.current, styles.pour, state)
+  useLayoutEffect(() => cup.current!.set(state), [state])
+  useLayoutEffect(() => () => cup.current!.destroy(), [])
 
   return (
     <div
       className={cx(styles.root, className)}
       data-disabled={disabled || undefined}
       data-invalid={error ? true : undefined}
-      onPointerDown={(e) => {
-        pressedAt.current = { x: e.clientX, t: performance.now() }
-      }}
+      onPointerDown={(e) => cup.current!.press(e.clientX)}
     >
       <span className={styles.boxWrap}>
         <input
@@ -111,7 +94,7 @@ export function Checkbox({
           }}
           onPointerDown={onPointerDown}
           onKeyDown={(e) => {
-            pressedAt.current = null
+            cup.current!.key()
             onKeyDown?.(e)
           }}
           {...rest}

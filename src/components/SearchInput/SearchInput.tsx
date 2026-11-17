@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import { cx } from '../../internal/cx'
 import { SearchIcon, XIcon } from '../../internal/icons'
 import { mergeRefs } from '../../internal/mergeRefs'
+import { shortcutFocus } from '../../internal/motion/keys'
 import { useControllable } from '../../internal/useControllable'
 import { Input, type InputProps } from '../Input'
 import { Kbd } from '../Kbd'
@@ -24,9 +25,6 @@ export type SearchInputProps = Omit<InputProps, 'type' | 'leading' | 'trailing' 
   clearLabel?: string
 }
 
-const isTyping = (el: Element | null) =>
-  !!el && (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement || (el as HTMLElement).isContentEditable)
-
 export function SearchInput({
   value: valueProp,
   defaultValue = '',
@@ -42,20 +40,9 @@ export function SearchInput({
   const [value, setValue] = useControllable(valueProp, defaultValue, onValueChange)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Ignored while another field has focus, so it never steals typed text, and while a modal
-  // this field is not in is open, so focus never leaves the modal.
   useEffect(() => {
     if (!shortcut) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== shortcut || e.metaKey || e.ctrlKey || e.altKey || isTyping(document.activeElement)) return
-      const modals = document.querySelectorAll('[aria-modal="true"]')
-      if (modals.length && !modals[modals.length - 1].contains(inputRef.current)) return
-      e.preventDefault()
-      inputRef.current?.focus()
-      inputRef.current?.select()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    return shortcutFocus(shortcut, () => inputRef.current)
   }, [shortcut])
 
   return (

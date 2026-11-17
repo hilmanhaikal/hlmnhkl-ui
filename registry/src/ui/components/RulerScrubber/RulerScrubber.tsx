@@ -3,11 +3,12 @@
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { clamp, follow, lastStep, pull, roundTo, stepKey, steps, wheelSteps } from '../../internal/feel'
+import { clamp, follow, pull, roundTo, wheelSteps } from '../../internal/feel'
 import { morphCurve, readMotionMs } from '../../internal/motion'
+import { measureRuler, rulerScale, rulerScrub, type RulerFit } from '../../internal/motion/ruler'
 import { Roll } from '../../internal/Roll'
 import { useControllable } from '../../internal/useControllable'
-import { ink, sideways, tokenNumber, useOnChange, useScrub } from '../../internal/useScrub'
+import { ink, useOnChange, useScrub } from '../../internal/useScrub'
 import styles from './RulerScrubber.module.css'
 
 export type RulerScrubberProps = Omit<ComponentPropsWithRef<'div'>, 'defaultValue' | 'onChange' | 'children'> & {
@@ -64,54 +65,24 @@ export function RulerScrubber({
 }: RulerScrubberProps) {
   const labelId = useId()
   const detailId = useId()
-  const top = lastStep(min, max, step)
+  const scale = { min, max, step, marks }
+  const { top, all, labelled, land } = rulerScale(scale)
   const [raw, setValue] = useControllable(valueProp, defaultValue ?? min, onValueChange)
   const value = clamp(raw, min, top)
-  const all = steps(min, max, step)
-  const labelled = new Set((marks ?? all.filter((_, i) => i % 10 === 0)).map((v) => roundTo(v, step, min)))
   const strongSet = new Set(strong.map((v) => roundTo(v, step, min)))
-  const land = (p: number) => clamp(roundTo(p, step, min), min, top)
   const markText = formatMark ?? formatValue
   // The px between two ticks (a token) and how many ticks fit either side of the needle.
-  const [fit, setFit] = useState({ gap: 0, span: 24, width: 0, tag: 0 })
+  const [fit, setFit] = useState<RulerFit>({ gap: 0, span: 24, width: 0, tag: 0 })
   const tagRef = useRef<HTMLSpanElement>(null)
   const wheel = useRef(wheelSteps())
 
-  const sc = useScrub({
-    value,
-    min,
-    max: top,
-    edge: step,
-    land,
-    // The hand at 4000px a second at most, so a hard throw still stops in reach.
-    maxSpeed: fit.gap ? (4000 / fit.gap) * step : undefined,
-    // Dragging left brings higher values in, like pulling a tape.
-    move: (e, last) => (-(e.clientX - last.x) / (fit.gap || 1)) * step * (e.shiftKey ? 0.25 : 1),
-    key: (k, t) => stepKey(k, t, { min, max, step, marks: [...labelled] }),
-    // A tap without a drag goes to the tick under it, so the ruler works with one plain press.
-    tap: (e, at) => {
-      if (!fit.gap) return null
-      const r = e.currentTarget.getBoundingClientRect()
-      return land(at + ((e.clientX - (r.left + r.width / 2)) / fit.gap) * step)
-    },
-    wheel: (e, t) => {
-      const dx = sideways(e)
-      if (dx === null || !fit.gap) return null
-      const n = wheel.current(dx, fit.gap, e.timeStamp)
-      const to = clamp(roundTo(t + n * step, step, min), min, top)
-      return to === t && (t === min || t === top) ? null : to
-    },
-    onSettle: setValue,
-    haptics,
-  })
+  // The drag, keys, tap and wheel (motion/ruler.ts) on the shared scrubber.
+  const sc = useScrub({ value, ...rulerScrub(scale, fit, wheel.current), onSettle: setValue, haptics })
 
   useLayoutEffect(() => {
     const el = sc.ref.current
     if (!el) return
-    const measure = () => {
-      const gap = tokenNumber(el, '--gooee-ruler-tick-gap')
-      setFit({ gap, span: gap ? Math.ceil(el.clientWidth / 2 / gap) + 1 : 24, width: el.clientWidth, tag: tagRef.current?.offsetWidth ?? 0 })
-    }
+    const measure = () => setFit(measureRuler(el, tagRef.current))
     measure()
     const ro = new ResizeObserver(measure)
     ro.observe(el)

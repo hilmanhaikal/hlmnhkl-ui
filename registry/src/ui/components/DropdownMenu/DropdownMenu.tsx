@@ -18,6 +18,7 @@ import { useDismiss } from '../../internal/layers'
 import { useLiquid } from '../../internal/liquid'
 import { useBead } from '../../internal/liquidMore'
 import { mergeRefs } from '../../internal/mergeRefs'
+import { createMenuKeys, itemKey, menuButtonKey, menuItems } from '../../internal/motion/menuKeys'
 import { Portal } from '../../internal/Portal'
 import { useFloating, type Align } from '../../internal/useFloating'
 import { usePresence } from '../../internal/usePresence'
@@ -63,7 +64,6 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
   const [focusAt, setFocusAt] = useState<'first' | 'last'>('first')
   const anchorRef = useRef<HTMLElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
-  const typeahead = useRef({ text: '', at: 0 })
   const { mounted, state } = usePresence(open, 'morph-out')
   const floating = useFloating(anchorRef, menuRef, { open: mounted, side: 'bottom', align, offset: 6 })
   // The menu grows out of its button and folds back into it.
@@ -77,12 +77,9 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
   }
   useDismiss(open, [anchorRef, menuRef], (reason) => close(reason === 'escape'))
 
-  const menuItems = () =>
-    Array.from(menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not([aria-disabled="true"])') ?? [])
-
   useEffect(() => {
     if (!open) return
-    const list = menuItems()
+    const list = menuItems(menuRef.current)
     ;(focusAt === 'first' ? list[0] : list[list.length - 1])?.focus({ preventScroll: true })
   }, [open, focusAt])
 
@@ -91,33 +88,11 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
     setOpen(true)
   }
 
-  const onMenuKey = (e: KeyboardEvent) => {
-    const list = menuItems()
-    const i = list.indexOf(document.activeElement as HTMLElement)
-    const go = (n: number) => {
-      e.preventDefault()
-      list[(n + list.length) % list.length]?.focus()
-    }
-    if (e.key === 'ArrowDown') go(i + 1)
-    else if (e.key === 'ArrowUp') go(i - 1)
-    else if (e.key === 'Home') go(0)
-    else if (e.key === 'End') go(list.length - 1)
-    // The menu is portalled, so focus goes back to the trigger and Tab carries on from there.
-    else if (e.key === 'Tab') close()
-    else if (e.key.length === 1 && /\S/.test(e.key)) {
-      const now = Date.now()
-      const t = typeahead.current
-      t.text = now - t.at > 600 ? e.key.toLowerCase() : t.text + e.key.toLowerCase()
-      t.at = now
-      for (let n = 1; n <= list.length; n++) {
-        const el = list[(i + n) % list.length]
-        if (el.textContent?.trim().toLowerCase().startsWith(t.text)) {
-          el.focus()
-          break
-        }
-      }
-    }
-  }
+  // Arrows, Home, End, type-ahead and Tab (motion/menuKeys.ts).
+  const closeRef = useRef(close)
+  closeRef.current = close
+  const keys = useRef<ReturnType<typeof createMenuKeys>>(null)
+  keys.current ??= createMenuKeys(() => menuRef.current, () => closeRef.current())
 
   if (!isValidElement(trigger)) return null
   const tp = trigger.props
@@ -140,13 +115,8 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
         },
         onKeyDown: (e: KeyboardEvent<HTMLElement>) => {
           tp.onKeyDown?.(e)
-          if (e.key === 'ArrowDown') {
-            e.preventDefault()
-            openMenu('first')
-          } else if (e.key === 'ArrowUp') {
-            e.preventDefault()
-            openMenu('last')
-          }
+          const at = menuButtonKey(e)
+          if (at) openMenu(at)
         },
       } as TriggerProps)}
       {mounted && (
@@ -161,7 +131,7 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
             data-state={state}
             data-side={floating.side}
             style={floating.style}
-            onKeyDown={onMenuKey}
+            onKeyDown={keys.current}
           >
             {items.map((item, i) => {
               if (item.type === 'separator') return <div key={i} role="separator" className={styles.separator} />
@@ -188,12 +158,7 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
                     close()
                     item.onSelect?.()
                   }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      e.currentTarget.click()
-                    }
-                  }}
+                  onKeyDown={itemKey}
                 >
                   {item.icon && <span className={styles.icon}>{item.icon}</span>}
                   <span className={styles.label}>

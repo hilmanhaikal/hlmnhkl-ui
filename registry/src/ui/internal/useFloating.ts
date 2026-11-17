@@ -1,10 +1,8 @@
 // Gooee UI, MIT licence. https://gooee.dev
 import { useCallback, useLayoutEffect, useState, type CSSProperties, type RefObject } from 'react'
+import { floatingStyle, follow, place, type Align, type Place, type Side } from './motion/floating'
 
-export type Side = 'top' | 'bottom' | 'left' | 'right'
-export type Align = 'start' | 'center' | 'end'
-
-const MARGIN = 8
+export type { Align, Side } from './motion/floating'
 
 type Options = {
   open: boolean
@@ -14,45 +12,20 @@ type Options = {
   matchWidth?: boolean
 }
 
-// Before the first measure the layer is see-through, not hidden, so focus can still move into it.
+/** React's hold on place and follow (motion/floating.ts). */
 export function useFloating(
   anchorRef: RefObject<HTMLElement | null>,
   floatingRef: RefObject<HTMLElement | null>,
   { open, side = 'bottom', align = 'center', offset = 8, matchWidth = false }: Options,
 ) {
-  const [pos, setPos] = useState<{ top: number; left: number; side: Side; width?: number } | null>(null)
+  const [pos, setPos] = useState<Place | null>(null)
   // Measured since this open began.
   const [fresh, setFresh] = useState(false)
 
   const update = useCallback(() => {
-    const a = anchorRef.current
-    const f = floatingRef.current
-    if (!a || !f) return
-    const r = a.getBoundingClientRect()
-    const width = matchWidth ? r.width : undefined
-    const fw = width ?? f.offsetWidth
-    const fh = f.offsetHeight
-    const vw = window.innerWidth
-    const vh = window.innerHeight
-
-    let s = side
-    if (s === 'bottom' && r.bottom + offset + fh > vh - MARGIN && r.top - offset - fh > MARGIN) s = 'top'
-    else if (s === 'top' && r.top - offset - fh < MARGIN && r.bottom + offset + fh < vh - MARGIN) s = 'bottom'
-    else if (s === 'right' && r.right + offset + fw > vw - MARGIN && r.left - offset - fw > MARGIN) s = 'left'
-    else if (s === 'left' && r.left - offset - fw < MARGIN && r.right + offset + fw < vw - MARGIN) s = 'right'
-
-    let top = 0
-    let left = 0
-    if (s === 'bottom' || s === 'top') {
-      top = s === 'bottom' ? r.bottom + offset : r.top - offset - fh
-      left = align === 'start' ? r.left : align === 'end' ? r.right - fw : r.left + r.width / 2 - fw / 2
-    } else {
-      left = s === 'right' ? r.right + offset : r.left - offset - fw
-      top = align === 'start' ? r.top : align === 'end' ? r.bottom - fh : r.top + r.height / 2 - fh / 2
-    }
-    left = Math.min(Math.max(MARGIN, left), Math.max(MARGIN, vw - fw - MARGIN))
-    top = Math.min(Math.max(MARGIN, top), Math.max(MARGIN, vh - fh - MARGIN))
-    setPos({ top, left, side: s, width })
+    const at = place(anchorRef.current, floatingRef.current, { side, align, offset, matchWidth })
+    if (!at) return
+    setPos(at)
     setFresh(true)
   }, [anchorRef, floatingRef, side, align, offset, matchWidth])
 
@@ -63,23 +36,10 @@ export function useFloating(
       setFresh(false)
       return
     }
-    update()
-    const f = floatingRef.current
-    const ro = new ResizeObserver(update)
-    if (f) ro.observe(f)
-    if (anchorRef.current) ro.observe(anchorRef.current)
-    window.addEventListener('scroll', update, true)
-    window.addEventListener('resize', update)
-    return () => {
-      ro.disconnect()
-      window.removeEventListener('scroll', update, true)
-      window.removeEventListener('resize', update)
-    }
+    return follow(anchorRef.current, floatingRef.current, update)
   }, [open, update, floatingRef, anchorRef])
 
-  const style: CSSProperties = pos
-    ? { position: 'fixed', top: pos.top, left: pos.left, width: pos.width }
-    : { position: 'fixed', top: 0, left: 0, opacity: 0, pointerEvents: 'none' }
+  const style = floatingStyle(pos) as CSSProperties
 
   // ready: the layer is in its place, so a part can measure it there (for its opening animation).
   return { style, side: pos?.side ?? side, update, ready: pos !== null && fresh }

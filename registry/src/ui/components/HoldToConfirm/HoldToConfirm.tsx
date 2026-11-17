@@ -4,10 +4,8 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { CheckIcon, XIcon } from '../../internal/icons'
-import { bezier } from '../../internal/feel'
-import { morphCurve, prefersReducedMotion, readMotionMs } from '../../internal/motion'
-import { frames, layer, morphEase, motionFor } from '../../internal/liquidMatter'
-import { body, boxPath, lerp, loopsPath, pincher, seg, trace, type Box } from '../../internal/liquidPath'
+import { prefersReducedMotion } from '../../internal/motion'
+import { bud, createFuse, cssMs, DONE_FOR, GUARD, HINT_AFTER, LEAVE, outline, TAP } from '../../internal/motion/holdToConfirm'
 import styles from './HoldToConfirm.module.css'
 
 export type HoldToConfirmProps = {
@@ -35,101 +33,6 @@ export type HoldToConfirmProps = {
 
 type Phase = 'idle' | 'step' | 'done'
 
-// A press shorter than this is a tap: it opens the confirm step, like one key press does.
-const TAP = 250
-// Held this long, the hint changes to "Keep holding".
-const HINT_AFTER = 300
-// A finger that slides this far off the button lets go.
-const LEAVE = 16
-// How long the done state shows before the button can be used again.
-const DONE_FOR = 2400
-// A click this soon after the step opens is the rest of a double-click, not a choice.
-const GUARD = 500
-
-/**
- * The cancel drop buds out of the button's right edge, its neck stretches and breaks, and it grows into
- * the round cancel button (`in`), or flows back into the button (`out`). The button keeps its own look:
- * the drawing is cut out where it is. Returns a stop, or null when motion is reduced.
- */
-function bud(row: HTMLElement, shell: HTMLElement, x: HTMLElement, way: 'in' | 'out') {
-  // 400ms both ways: the drop is small, and at the morph's 600ms the cancel button felt late to arrive.
-  const ms = motionFor('reveal')
-  if (!ms) return null
-  const box = (el: HTMLElement): Box => {
-    const r = el.getBoundingClientRect(),
-      o = row.getBoundingClientRect()
-    return { cx: r.left - o.left + r.width / 2, cy: r.top - o.top + r.height / 2, hw: r.width / 2, hh: r.height / 2, r: r.height / 2 }
-  }
-  const O = box(shell)
-  const look = getComputedStyle(x)
-  const line = parseFloat(look.getPropertyValue('--gooee-line-thick')) || 1.5
-  const T = box(x)
-  const T2: Box = { ...T, hw: T.hw - line / 2, hh: T.hh - line / 2, r: T.r - line / 2 }
-  const { svg, paths } = layer(row, styles.bud, null)
-  const path = paths[0]
-  path.style.fill = look.backgroundColor
-  path.style.stroke = look.getPropertyValue('--gooee-color-border-strong')
-  path.style.strokeWidth = `${line}px`
-  const clip = svg.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'clipPath'))
-  clip.id = `gooee-hold-${Math.random().toString(36).slice(2)}`
-  const hole = clip.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'path'))
-  hole.setAttribute('clip-rule', 'evenodd')
-  hole.setAttribute('d', `M-4000 -4000H4000V4000H-4000Z${boxPath({ ...O, hw: O.hw + 0.5, hh: O.hh + 0.5, r: O.r + 0.5 })}`)
-  path.setAttribute('clip-path', `url(#${clip.id})`)
-  const e = morphEase()
-  const pin = pincher(e, motionFor('fast'))
-  const edge = O.cx + O.hw - O.hh
-  const r0 = O.hh * 0.45
-  x.style.opacity = '0'
-  const stop = frames(
-    ms,
-    (k, now) => {
-      const u = way === 'in' ? k : 1 - k
-      const f = e(u)
-      const r = lerp(r0, T2.hh, e(seg(u, 0.25, 1)))
-      const D: Box = { cx: lerp(O.cx + O.hw - r0, T2.cx, f), cy: O.cy, hw: r, hh: r, r }
-      const p = pin(body(O, [edge, O.cy]), body(D), now)
-      path.setAttribute(
-        'd',
-        loopsPath(
-          trace(p.sdf, [
-            [edge, O.cy, 0, 1],
-            [D.cx, D.cy, 0, 1],
-          ]),
-        ),
-      )
-    },
-    () => {
-      svg.remove()
-      x.style.opacity = ''
-    },
-  )
-  return () => {
-    stop()
-    svg.remove()
-    x.style.opacity = ''
-  }
-}
-
-// The pill's outline as one closed path that starts on the bottom edge at x and runs left first. The
-// line is drawn at both ends of the path at once, so it burns out both ways from x and meets opposite.
-function outline(w: number, h: number, inset: number, x: number) {
-  const r = h / 2 - inset
-  const t = inset
-  const b = h - inset
-  const l = h / 2
-  const rr = w - h / 2
-  const px = Math.max(l, Math.min(rr, x))
-  return `M${px},${b} H${l} A${r},${r} 0 0 1 ${l},${t} H${rr} A${r},${r} 0 0 1 ${rr},${b} Z`
-}
-
-const ms = (el: Element | null, name: string, fallback: number) => {
-  const raw = el ? getComputedStyle(el).getPropertyValue(name).trim() : ''
-  const v = parseFloat(raw)
-  if (!Number.isFinite(v)) return fallback
-  return raw.endsWith('ms') ? v : raw.endsWith('s') ? v * 1000 : v
-}
-
 export function HoldToConfirm({
   children,
   onConfirm,
@@ -156,8 +59,9 @@ export function HoldToConfirm({
   const [keep, setKeep] = useState(false)
   const [said, setSaid] = useState('')
 
-  const p = useRef(0)
-  const raf = useRef(0)
+  // The burning line (motion/holdToConfirm.ts).
+  const fuse = useRef<ReturnType<typeof createFuse>>(null)
+  fuse.current ??= createFuse(() => runRef.current)
   const tapTimer = useRef(0)
   const press = useRef<{ t0: number; pointer: number | 'key'; key?: string } | null>(null)
   const phaseRef = useRef(phase)
@@ -182,16 +86,10 @@ export function HoldToConfirm({
     return () => ro.disconnect()
   }, [])
 
-  const paint = (v: number) => {
-    p.current = v
-    const run = runRef.current
-    if (!run) return
-    run.style.strokeDasharray = `${v / 2} ${1 - v} ${v / 2} 0`
-    run.style.opacity = v > 0 ? '1' : '0'
-  }
+  const paint = (v: number) => fuse.current!.paint(v)
 
   const finish = () => {
-    cancelAnimationFrame(raf.current)
+    fuse.current!.stop()
     press.current = null
     paint(1)
     setKeep(false)
@@ -203,42 +101,14 @@ export function HoldToConfirm({
     calls.current.onConfirm()
   }
 
-  // Forward at an even speed: it is a clock.
-  const run = () => {
-    cancelAnimationFrame(raf.current)
-    const total = ms(shellRef.current, '--gooee-hold-time', 1500)
-    let last = performance.now()
-    const step = (now: number) => {
-      const next = Math.min(1, p.current + (now - last) / total)
-      last = now
-      paint(next)
-      if (press.current && now - press.current.t0 > HINT_AFTER) setKeep(true)
-      if (next >= 1) return finish()
-      raf.current = requestAnimationFrame(step)
-    }
-    raf.current = requestAnimationFrame(step)
-  }
-
-  // Back fast on the morph curve: a rubber band, not a clock.
-  const rewind = () => {
-    cancelAnimationFrame(raf.current)
-    const from = p.current
-    const length = readMotionMs('fast')
-    if (!length || !from) return paint(0)
-    const ease = bezier(morphCurve())
-    const t0 = performance.now()
-    const step = (now: number) => {
-      const t = Math.min(1, (now - t0) / length)
-      paint(from * (1 - ease(t)))
-      if (t < 1) raf.current = requestAnimationFrame(step)
-    }
-    raf.current = requestAnimationFrame(step)
-  }
+  // Forward at an even speed, and back fast on the morph curve.
+  const run = () => fuse.current!.forward(cssMs(shellRef.current, '--gooee-hold-time', 1500), (now) => press.current && now - press.current.t0 > HINT_AFTER && setKeep(true), finish)
+  const rewind = () => fuse.current!.rewind()
 
   const openStep = () => {
     window.clearTimeout(tapTimer.current)
     tapTimer.current = 0
-    cancelAnimationFrame(raf.current)
+    fuse.current!.stop()
     paint(0)
     stepAt.current = performance.now()
     setPhase('step')
@@ -271,12 +141,12 @@ export function HoldToConfirm({
       shell = shellRef.current,
       x = cancelRef.current
     if (!row || !shell || !x) return
-    return bud(row, shell, x, isOpen ? 'in' : 'out') ?? undefined
+    return bud(row, shell, x, isOpen ? 'in' : 'out', styles.bud) ?? undefined
   }, [phase])
 
   useEffect(
     () => () => {
-      cancelAnimationFrame(raf.current)
+      fuse.current!.stop()
       window.clearTimeout(tapTimer.current)
     },
     [],

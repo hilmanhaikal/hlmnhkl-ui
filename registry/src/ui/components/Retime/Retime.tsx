@@ -4,35 +4,9 @@
 import { useEffect, useRef } from 'react'
 import { useControllable } from '../../internal/useControllable'
 import { SegmentedControl } from '../SegmentedControl'
+import { applyRetime, commitSpeed, defaultRetimeLabels, RETIME_EVENT, retimeSpeeds, savedSpeed, type RetimeLabels, type RetimeSpeed } from '../../internal/motion/retime'
 
-export type RetimeSpeed = 'off' | 'slower' | 'normal' | 'faster'
-
-export type RetimeLabels = Record<RetimeSpeed, string>
-
-const defaultLabels: RetimeLabels = { off: 'Off', slower: 'Slower', normal: 'Normal', faster: 'Faster' }
-
-// How long motion takes compared with normal. Off is 0, so nothing moves at all.
-const SCALE: Record<RetimeSpeed, number> = { off: 0, slower: 1.5, normal: 1, faster: 0.6 }
-
-const STORAGE_KEY = 'gooee-motion-speed'
-const CHANGE_EVENT = 'gooee-retime'
-
-/** Retimes every animation in the library at once. Reduced motion in the system still wins. */
-export function applyRetime(speed: RetimeSpeed) {
-  if (typeof document === 'undefined') return
-  document.documentElement.style.setProperty('--gooee-motion-scale', String(SCALE[speed]))
-  // Other Retime controls on the page (a header and a menu, say) follow the same choice.
-  window.dispatchEvent(new CustomEvent<RetimeSpeed>(CHANGE_EVENT, { detail: speed }))
-}
-
-function savedSpeed(): RetimeSpeed | null {
-  try {
-    const v = localStorage.getItem(STORAGE_KEY)
-    return v && v in SCALE ? (v as RetimeSpeed) : null
-  } catch {
-    return null
-  }
-}
+export { applyRetime, type RetimeLabels, type RetimeSpeed }
 
 export type RetimeProps = {
   /** Visible label. */
@@ -66,7 +40,7 @@ export function Retime({
   fullWidth,
   className,
 }: RetimeProps) {
-  const labels = { ...defaultLabels, ...labelsProp }
+  const labels = { ...defaultRetimeLabels, ...labelsProp }
   const [speed, setSpeed] = useControllable(value, defaultValue, onValueChange)
 
   // A speed saved on an earlier visit comes back after the first render, so server and client agree.
@@ -86,21 +60,14 @@ export function Retime({
   useEffect(() => {
     if (value !== undefined) return
     const follow = (e: Event) => setSpeed((e as CustomEvent<RetimeSpeed>).detail)
-    window.addEventListener(CHANGE_EVENT, follow)
-    return () => window.removeEventListener(CHANGE_EVENT, follow)
+    window.addEventListener(RETIME_EVENT, follow)
+    return () => window.removeEventListener(RETIME_EVENT, follow)
   }, [value, setSpeed])
 
   useEffect(() => {
     if (pending.current && pending.current !== speed) return
     pending.current = null
-    if (document.documentElement.style.getPropertyValue('--gooee-motion-scale') === String(SCALE[speed])) return
-    applyRetime(speed)
-    if (!remember) return
-    try {
-      localStorage.setItem(STORAGE_KEY, speed)
-    } catch {
-      // Not saved; the speed still holds for this visit.
-    }
+    commitSpeed(speed, remember)
   }, [speed, remember])
 
   return (
@@ -109,7 +76,7 @@ export function Retime({
       size={size}
       value={speed}
       onValueChange={(v) => setSpeed(v as RetimeSpeed)}
-      options={(['off', 'slower', 'normal', 'faster'] as const).map((s) => ({ value: s, label: labels[s] }))}
+      options={retimeSpeeds.map((s) => ({ value: s, label: labels[s] }))}
       fullWidth={fullWidth}
       className={className}
     />

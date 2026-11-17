@@ -5,12 +5,21 @@
   position: relative;
   container-type: inline-size;
   min-width: 0;
-  /* The line is drawn inside the edge and takes no space, so the outer size is the content's own 4px steps. */
-  outline: var(--gooee-line) solid var(--gooee-color-border);
-  outline-offset: calc(var(--gooee-line) * -1);
+  isolation: isolate;
   border-radius: var(--gooee-radius-panel);
   background: var(--gooee-color-surface);
   overflow: hidden;
+}
+
+/* The frame is a layer over the rows, so sticky cells and the fade (::after) never cover it. Inside the edge, it takes no space. */
+.root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border: var(--gooee-line) solid var(--gooee-color-border);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .scroll {

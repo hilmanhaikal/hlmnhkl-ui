@@ -4,6 +4,7 @@
 import { useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { useFlow } from '../../internal/liquidMatter'
+import { measureSegments, segmentInk, segmentKey } from '../../internal/motion/segmented'
 import { useControllable } from '../../internal/useControllable'
 import styles from './SegmentedControl.module.css'
 
@@ -50,14 +51,8 @@ export function SegmentedControl({
 
   useLayoutEffect(() => {
     const measure = () => {
-      // Tight mode only when the segments overflow at their normal size, so a wide screen keeps the normal look
-      const root = rootRef.current
-      if (root) {
-        root.removeAttribute('data-tight')
-        if (root.scrollWidth > root.clientWidth) root.setAttribute('data-tight', '')
-      }
-      const el = refs.current[index]
-      if (el) setPill({ x: el.offsetLeft, w: el.offsetWidth })
+      const place = measureSegments(rootRef.current, refs.current[index])
+      if (place) setPill(place)
     }
     measure()
     const ro = new ResizeObserver(measure)
@@ -74,51 +69,12 @@ export function SegmentedControl({
 
   // The pill flows to the new choice. The labels stay put; under the liquid they take the chosen
   // colour, from a copy of the row clipped to the same outline.
-  const inkRef = useRef<HTMLDivElement | null>(null)
-  const ink = (outline: string | null) => {
-    const root = rootRef.current
-    if (!outline || !root) {
-      inkRef.current?.remove()
-      inkRef.current = null
-      return
-    }
-    if (!inkRef.current) {
-      const layer = document.createElement('div')
-      layer.className = styles.ink
-      layer.setAttribute('aria-hidden', 'true')
-      layer.inert = true
-      for (const el of refs.current) {
-        if (!el) continue
-        const copy = el.cloneNode(true) as HTMLElement
-        copy.removeAttribute('id')
-        copy.style.left = `${el.offsetLeft}px`
-        copy.style.top = `${el.offsetTop}px`
-        copy.style.width = `${el.offsetWidth}px`
-        copy.style.height = `${el.offsetHeight}px`
-        layer.append(copy)
-      }
-      root.append(layer)
-      inkRef.current = layer
-    }
-    inkRef.current.style.clipPath = `path('${outline}')`
-  }
-  useFlow(rootRef, pillRef, pill, index, ready, styles.liquid, false, ink)
-
-  const move = (from: number, dir: 1 | -1) => {
-    let i = from
-    for (let n = 0; n < options.length; n++) {
-      i = (i + dir + options.length) % options.length
-      if (!options[i].disabled) return i
-    }
-    return from
-  }
+  const ink = useRef<ReturnType<typeof segmentInk>>(null)
+  ink.current ??= segmentInk(() => rootRef.current, () => refs.current, styles.ink)
+  useFlow(rootRef, pillRef, pill, index, ready, styles.liquid, false, ink.current)
 
   const onKeyDown = (e: KeyboardEvent) => {
-    let next = -1
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = move(tabStop, 1)
-    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = move(tabStop, -1)
-    else if (e.key === 'Home') next = move(-1, 1)
-    else if (e.key === 'End') next = move(options.length, -1)
+    const next = segmentKey(e.key, tabStop, options.map((o) => !!o.disabled))
     if (next < 0) return
     e.preventDefault()
     setValue(options[next].value)

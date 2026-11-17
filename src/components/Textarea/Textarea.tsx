@@ -5,6 +5,7 @@ import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
 import { useEdgeFlow } from '../../internal/liquidMore'
 import { mergeRefs } from '../../internal/mergeRefs'
+import { growTextarea } from '../../internal/motion/textarea'
 import styles from './Textarea.module.css'
 
 export type TextareaProps = ComponentPropsWithRef<'textarea'> & {
@@ -53,28 +54,7 @@ export function Textarea({
   useEdgeFlow(inner, boxRef, ':focus', styles.edge)
   const countRef = useRef<HTMLSpanElement>(null)
 
-  const resize = useCallback(() => {
-    const el = inner.current
-    if (!el) return
-    if (countRef.current) countRef.current.textContent = `${el.value.length} / ${maxLength}`
-    if (!autoGrow) return
-    const cs = getComputedStyle(el)
-    const line = parseFloat(cs.lineHeight) || 24
-    const pad = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom)
-    const border = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth)
-    const prev = el.style.height
-    el.style.transition = 'none'
-    el.style.height = 'auto'
-    const min = line * minRows + pad + border
-    const max = line * maxRows + pad + border
-    const next = Math.min(Math.max(el.scrollHeight + border, min), max)
-    // Restore the old height and force layout, so the transition runs
-    el.style.height = prev || `${next}px`
-    void el.offsetHeight
-    el.style.transition = ''
-    el.style.height = `${next}px`
-    el.style.overflowY = el.scrollHeight + border > max ? 'auto' : 'hidden'
-  }, [autoGrow, minRows, maxRows, maxLength])
+  const resize = useCallback(() => growTextarea(inner.current, countRef.current, { autoGrow, minRows, maxRows, maxLength }), [autoGrow, minRows, maxRows, maxLength])
 
   useLayoutEffect(resize, [resize, value])
 

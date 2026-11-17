@@ -29,6 +29,7 @@ Options:
   --overwrite     add: replace files that are already there
   --with-base     add: also copy base.css (init always does)
   --yes           update: replace without asking
+  --vue           add, diff, update: the Vue version of a part (.vue), not the React one
   --dry-run       Show what would happen, write nothing
 
 In this repo, run: npm run add -- <command> ...`
@@ -47,7 +48,7 @@ function fromEntry(folder, both = true) {
   const clean = folder.replace(/^\.\//, '').replace(/\/$/, '')
   const inSrc = clean.startsWith('src/')
   const rel = inSrc ? clean.slice(4) : clean
-  const where = inSrc ? 'in your entry file inside src/ (for example src/main.tsx):' : 'in a file at your project root:'
+  const where = inSrc ? `in your entry file inside src/ (for example src/main.${framework === 'vue' ? 'ts' : 'tsx'}):` : 'in a file at your project root:'
   const lines = [`import './${rel}/tokens.css'`, ...(both ? [`import './${rel}/base.css'`] : [])]
   return `${where}\n${lines.map((l) => `       ${l}`).join('\n')}`
 }
@@ -78,6 +79,7 @@ function parseArgs(argv) {
     else if (arg === '--overwrite') opts.overwrite = true
     else if (arg === '--dry-run') opts.dryRun = true
     else if (arg === '--with-base') opts.withBase = true
+    else if (arg === '--vue') framework = 'vue'
     else if (arg === '--yes' || arg === '-y') opts.yes = true
     else if (arg.startsWith('-')) fail(`Unknown option ${arg}.`)
     else rest.push(arg)
@@ -190,13 +192,33 @@ function listFiles(dir) {
   })
 }
 
+// React or Vue, from --vue. A part folder holds both: Switch.tsx and Switch.vue share Switch.module.css.
+let framework = 'react'
+const forFramework = (file) => (file.endsWith('.vue') ? framework === 'vue' : framework === 'react' || file.endsWith('.css'))
+
 const filesOf = (item) => {
   const k = kindOf(item.kind)
-  return k.single ? [join(k.dir, `${item.name}.css`)] : listFiles(join(k.dir, item.name))
+  if (k.single) return [join(k.dir, `${item.name}.css`)]
+  const files = listFiles(join(k.dir, item.name))
+  if (framework === 'vue' && !files.some((f) => f.endsWith('.vue'))) {
+    const withVue = KINDS.filter((x) => !x.single)
+      .flatMap((x) => (existsSync(x.dir) ? readdirSync(x.dir).filter((d) => existsSync(join(x.dir, d, `${d}.vue`))) : []))
+      .map(kebab)
+    fail(`${item.name} has no Vue version yet. These do: ${withVue.join(', ') || 'none'}.`, false)
+  }
+  const kept = files.filter(forFramework)
+  // A Vue part also needs the plain .ts helpers in its own folder that it imports (Tabs reads tabsContext.ts).
+  if (framework === 'vue')
+    for (let i = 0; i < kept.length; i++)
+      for (const spec of importsOf(kept[i])) {
+        const target = files.find((f) => resolve(f) === resolveImport(kept[i], spec))
+        if (target && !kept.includes(target)) kept.push(target)
+      }
+  return kept
 }
 
 function importsOf(file) {
-  if (!/\.(ts|tsx)$/.test(file)) return []
+  if (!/\.(ts|tsx|vue)$/.test(file)) return []
   const code = readFileSync(file, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
   const found = []
   const re = /(?:\bfrom\s*|\bimport\s*\(?\s*)['"]([^'"]+)['"]/g
@@ -271,10 +293,10 @@ function plan(items) {
 // It is left out when comparing, so it never counts as a change.
 function credit(file, pro) {
   const text = pro ? `Gooee UI Pro, see LICENSE-PRO.md. ${SITE}` : `Gooee UI, MIT licence. ${SITE}`
-  return file.endsWith('.css') ? `/* ${text} */\n` : `// ${text}\n`
+  return file.endsWith('.css') ? `/* ${text} */\n` : file.endsWith('.vue') ? `<!-- ${text} -->\n` : `// ${text}\n`
 }
 // Copies made before the rename start with the old name, hlmnhkl/ui, so diff and update still see them as ours.
-const withoutCredit = (text) => text.replace(/^(\/\/ (?:Gooee UI|hlmnhkl\/ui)[^\n]*|\/\* (?:Gooee UI|hlmnhkl\/ui)[^\n]*\*\/)\n/, '')
+const withoutCredit = (text) => text.replace(/^(\/\/ (?:Gooee UI|hlmnhkl\/ui)[^\n]*|\/\* (?:Gooee UI|hlmnhkl\/ui)[^\n]*\*\/|<!-- Gooee UI[^\n]*-->)\n/, '')
 
 // The project folder (npm runs scripts from the repo root; INIT_CWD is where the command was typed).
 const CWD = process.env.INIT_CWD ?? process.cwd()
@@ -365,7 +387,7 @@ function runInit(opts) {
     console.log(`  ${CONFIG}: added, so later commands put files in ${folder}`)
   }
   console.log(`\nNext:\n  1. Import both once, tokens first, ${fromEntry(folder)}`)
-  console.log(`  2. Add your first component: npx gooee add button`)
+  console.log(`  2. Add your first component: npx gooee add button${framework === 'vue' ? ' --vue' : ''}`)
   console.log(`  See everything there is: npx gooee list, or ${SITE}`)
 }
 

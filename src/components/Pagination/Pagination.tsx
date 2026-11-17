@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import { cx } from '../../internal/cx'
 import { ChevronLeftIcon, ChevronRightIcon } from '../../internal/icons'
 import { useControllable } from '../../internal/useControllable'
+import { pageRange } from './range'
 import styles from './Pagination.module.css'
 
 export type PaginationProps = {
@@ -29,20 +30,6 @@ export type PaginationProps = {
   className?: string
 }
 
-const span = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i)
-
-// Always the same number of slots, so the row keeps its width. A gap hides at least two pages.
-function range(page: number, count: number, siblings: number): Array<number | 'gap'> {
-  const total = siblings * 2 + 5
-  if (count <= total) return span(1, count)
-  const side = total - 2
-  const leftGap = page - siblings > 3
-  const rightGap = page + siblings < count - 2
-  if (!leftGap) return [...span(1, side), 'gap', count]
-  if (!rightGap) return [1, 'gap', ...span(count - side + 1, count)]
-  return [1, 'gap', ...span(page - siblings, page + siblings), 'gap', count]
-}
-
 export function Pagination({
   pageCount,
   page: pageProp,
@@ -61,7 +48,7 @@ export function Pagination({
   const listRef = useRef<HTMLUListElement>(null)
   const [pill, setPill] = useState<{ x: number; w: number } | null>(null)
   const [ready, setReady] = useState(false)
-  const pages = range(page, pageCount, siblings)
+  const pages = pageRange(page, pageCount, siblings)
 
   useLayoutEffect(() => {
     const list = listRef.current

@@ -1,6 +1,6 @@
 {
   "name": "gooee",
-  "version": "0.50.0",
+  "version": "0.51.0",
   "description": "React components in black, white and grey with one blue accent. Copy them into your app with npx gooee add <name>.",
   "license": "MIT",
   "homepage": "https://gooee.dev",
@@ -31,8 +31,10 @@
   "devDependencies": {
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-vue": "6.0.10",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vue": "3.5.44"
   }
 }

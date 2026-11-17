@@ -2,9 +2,9 @@
 
 import { useRef, useState, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { focusables } from '../../internal/focus'
 import { CheckCircleIcon, ErrorIcon, InfoIcon, WarningIcon, XIcon } from '../../internal/icons'
-import { easing, motionMs } from '../../internal/motion'
+import { foldAway } from '../../internal/motion/alert'
+import { focusPast } from '../../internal/motion/collapseOut'
 import styles from './Alert.module.css'
 
 export type AlertVariant = 'info' | 'success' | 'warning' | 'error'
@@ -36,35 +36,15 @@ export function Alert({ variant = 'info', title, children, onDismiss, dismissLab
   const Icon = icons[variant]
   const urgent = variant === 'error' || variant === 'warning'
 
-  // The close button is about to unmount, so focus moves to the next control (or the one before) instead of the body.
-  const finish = () => {
-    const el = ref.current
-    if (el?.contains(document.activeElement)) {
-      const others = focusables(document.body).filter((n) => !el.contains(n))
-      const next = others.find((n) => el.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_FOLLOWING)
-      const prev = [...others].reverse().find((n) => el.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_PRECEDING)
-      ;(next ?? prev)?.focus({ preventScroll: true })
-    }
-    onDismiss?.()
-  }
-
-  // Folds the height to zero, so content below slides up instead of jumping.
+  // Fades, then folds the height (motion/alert.ts). The close button is about to unmount, so focus moves on first.
   const dismiss = () => {
     const el = ref.current
     if (!el || leaving) return
     setLeaving(true)
-    const ms = motionMs('slow')
-    if (ms === 0 || !el.animate) return finish()
-    const h = el.offsetHeight
-    const anim = el.animate(
-      [
-        { height: `${h}px`, opacity: 1, transform: 'scale(1)' },
-        { height: `${h}px`, opacity: 0, transform: 'scale(0.98)', offset: 0.45 },
-        { height: '0px', opacity: 0, transform: 'scale(0.98)', paddingTop: '0px', paddingBottom: '0px', marginTop: '0px', marginBottom: '0px', borderWidth: '0px' },
-      ],
-      { duration: ms, easing: easing('morph'), fill: 'forwards' },
-    )
-    anim.onfinish = finish
+    foldAway(el, () => {
+      focusPast(el)
+      onDismiss?.()
+    })
   }
 
   return (

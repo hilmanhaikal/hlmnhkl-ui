@@ -1,7 +1,7 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
 .root {
-  /* The panel's surface; the chosen tab rises out of it in the same colour. */
-  --tabs-panel: var(--gooee-color-surface-sunken);
+  /* The panel's surface; the chosen tab rises out of it in the same colour (--gooee-tabs-panel, by theme). */
+  --tabs-panel: var(--gooee-tabs-panel);
   --tabs-r: var(--gooee-radius-md);
   display: flex;
   flex-direction: column;

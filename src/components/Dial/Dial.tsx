@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type PointerEvent, type ReactNode } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { clamp, lastStep, pull, roundTo, steps, wheelSteps, stepKey } from '../../internal/feel'
+import { clamp, pull, roundTo, wheelSteps } from '../../internal/feel'
+import { arcTouch, CX, CY, DOT, dialScale, dialScrub, H, KNOB, polar, SWEEP, W, type Rim } from '../../internal/motion/dial'
 import { Roll } from '../../internal/Roll'
 import { useControllable } from '../../internal/useControllable'
-import { ink, sideways, tokenNumber, useOnChange, useScrub } from '../../internal/useScrub'
+import { ink, tokenNumber, useOnChange, useScrub } from '../../internal/useScrub'
 import styles from './Dial.module.css'
 
 export type DialProps = Omit<ComponentPropsWithRef<'div'>, 'defaultValue' | 'onChange' | 'children'> & {
@@ -43,41 +44,6 @@ export type DialProps = Omit<ComponentPropsWithRef<'div'>, 'defaultValue' | 'onC
   haptics?: boolean
 }
 
-// The printed and mercury dials sweep 270 degrees, with the dead part at the bottom.
-const SWEEP = 270
-
-// Mercury is drawn in this box (SVG units): knob, bump and level dots.
-const W = 280
-const H = 252
-const CX = W / 2
-const CY = 128
-const KNOB = 58
-const DOT = 84
-const polar = (deg: number, r: number) => [CX + r * Math.sin((deg * Math.PI) / 180), CY - r * Math.cos((deg * Math.PI) / 180)] as const
-
-/** A drag around a centre: the change in angle since the last move, never the angle itself, so a press never jumps. */
-function turn(unitsPerDeg: number, centre: (r: DOMRect) => { x: number; y: number }) {
-  return (e: PointerEvent<HTMLElement>, last: { x: number; y: number }, el: HTMLElement) => {
-    const c = centre(el.getBoundingClientRect())
-    // Near the centre the angle swings wildly, so it does not count.
-    if (Math.hypot(e.clientX - c.x, e.clientY - c.y) < 16) return 0
-    let d = ((Math.atan2(e.clientY - c.y, e.clientX - c.x) - Math.atan2(last.y - c.y, last.x - c.x)) * 180) / Math.PI
-    if (d > 180) d -= 360
-    if (d < -180) d += 360
-    return d * unitsPerDeg * (e.shiftKey ? 0.25 : 1)
-  }
-}
-
-/** Where a tap sits around a centre, in degrees clockwise from the top, or null too near the centre to tell. */
-function angleAt(e: PointerEvent<HTMLElement>, centre: (r: DOMRect) => { x: number; y: number }) {
-  const c = centre(e.currentTarget.getBoundingClientRect())
-  if (Math.hypot(e.clientX - c.x, e.clientY - c.y) < 16) return null
-  return (Math.atan2(e.clientX - c.x, c.y - e.clientY) * 180) / Math.PI
-}
-
-const mercuryCentre = (r: DOMRect) => ({ x: r.left + r.width / 2, y: r.top + (r.height * CY) / H })
-const knobCentre = (r: DOMRect) => ({ x: r.left + r.width / 2, y: r.top + r.height / 2 })
-
 export function Dial({
   label,
   value: valueProp,
@@ -101,68 +67,18 @@ export function Dial({
   const labelId = useId()
   const detailId = useId()
   const goo = useId().replace(/:/g, '')
-  const top = lastStep(min, max, step)
+  const scale = { min, max, step, marks, variant }
+  const { top, all, labelled, land, stepDeg } = dialScale(scale)
   const [raw, setValue] = useControllable(valueProp, defaultValue ?? min, onValueChange)
   const value = clamp(raw, min, top)
-  const all = steps(min, max, step)
-  const labelled = (marks ?? [min, max]).map((v) => roundTo(v, step, min))
   const strongSet = new Set(strong.map((v) => roundTo(v, step, min)))
-  const land = (p: number) => clamp(roundTo(p, step, min), min, top)
   const markText = formatMark ?? formatValue
-  const stepDeg = SWEEP / Math.max(1, all.length - 1)
   // The arc's rim: its radius and the length of one step along it, both tokens.
-  const [rim, setRim] = useState<{ r: number; gap: number } | null>(null)
+  const [rim, setRim] = useState<Rim | null>(null)
   const wheel = useRef(wheelSteps())
 
-  const sc = useScrub({
-    value,
-    min,
-    max: top,
-    edge: step * (variant === 'arc' ? 0.8 : variant === 'mercury' ? 0.12 : 0.6),
-    land,
-    coast: variant === 'arc' ? 0.2 : 0,
-    maxSpeed: 160 * step,
-    move:
-      variant === 'arc'
-        ? (e, last) => (-(e.clientX - last.x) / (rim?.gap || 1)) * step * (e.shiftKey ? 0.25 : 1)
-        : variant === 'mercury'
-          ? turn(step / stepDeg, mercuryCentre)
-          : turn((max - min) / SWEEP, knobCentre),
-    key: (k, t) => stepKey(k, t, { min, max, step, marks: labelled }),
-    // A tap without a drag goes to the mark under it, so the dial works with one plain press.
-    tap: (e, at) => {
-      if (variant === 'arc') {
-        if (!rim?.gap || !rim.r) return null
-        const r = e.currentTarget.getBoundingClientRect()
-        // The rim curves, so the tap's sideways distance becomes a length along the arc.
-        const along = rim.r * Math.asin(clamp((e.clientX - (r.left + r.width / 2)) / rim.r, -1, 1))
-        return land(at + (along / rim.gap) * step)
-      }
-      if (variant === 'mercury') {
-        const a = angleAt(e, mercuryCentre)
-        // Past either end of the sweep, land clamps to the nearer end (the dead part is split at the bottom).
-        return a === null ? null : land(min + ((a + 135) / stepDeg) * step)
-      }
-      const a = angleAt(e, knobCentre)
-      if (a === null) return null
-      // The printed face turns, so the tap is read on the face: min at 0 and max 270 degrees back from it.
-      const back = (((((at - min) / (max - min || 1)) * SWEEP - a) % 360) + 360) % 360
-      if (back > SWEEP) return back < SWEEP + (360 - SWEEP) / 2 ? top : min
-      return land(min + (back / SWEEP) * (max - min))
-    },
-    wheel:
-      variant === 'arc'
-        ? (e, t) => {
-            const dx = sideways(e)
-            if (dx === null || !rim?.gap) return null
-            const n = wheel.current(dx, rim.gap, e.timeStamp)
-            const to = clamp(roundTo(t + n * step, step, min), min, top)
-            return to === t && (t === min || t === top) ? null : to
-          }
-        : undefined,
-    onSettle: setValue,
-    haptics,
-  })
+  // The drag, keys, tap and wheel (motion/dial.ts) on the shared scrubber.
+  const sc = useScrub({ value, ...dialScrub(scale, rim, wheel.current), onSettle: setValue, haptics })
 
   useLayoutEffect(() => {
     if (variant !== 'arc') return
@@ -170,35 +86,11 @@ export function Dial({
     setRim({ r: tokenNumber(el, '--gooee-dial-arc-radius'), gap: tokenNumber(el, '--gooee-dial-arc-gap') })
   }, [variant, sc.ref])
 
-  // The arc lets an up-and-down swipe scroll the page, but a finger following the curve also moves up or
-  // down. Once a touch moves more sideways than half its rise, it is a turn: the page stops taking it.
+  // The arc takes only sideways touches, so the page still scrolls under a finger on it (motion/dial.ts).
   useEffect(() => {
-    if (variant !== 'arc') return
     const el = sc.ref.current
-    if (!el) return
-    let from: { x: number; y: number } | null = null
-    let turning = false
-    const start = (e: TouchEvent) => {
-      from = { x: e.touches[0].clientX, y: e.touches[0].clientY }
-      turning = false
-    }
-    const move = (e: TouchEvent) => {
-      if (!from) return
-      if (!turning) {
-        const dx = Math.abs(e.touches[0].clientX - from.x)
-        const dy = Math.abs(e.touches[0].clientY - from.y)
-        if (dx + dy < 2) return
-        turning = dx > dy / 2
-        if (!turning) from = null
-      }
-      if (turning && e.cancelable) e.preventDefault()
-    }
-    el.addEventListener('touchstart', start, { passive: true })
-    el.addEventListener('touchmove', move, { passive: false })
-    return () => {
-      el.removeEventListener('touchstart', start)
-      el.removeEventListener('touchmove', move)
-    }
+    if (variant !== 'arc' || !el) return
+    return arcTouch(el)
   }, [variant, sc.ref])
 
   const shown = land(sc.at)

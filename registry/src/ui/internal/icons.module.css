@@ -6,24 +6,37 @@
 .icon[data-motion="swing"] { transform-origin: 50% 12%; }
 .icon[data-motion="grow"] { transform-origin: 50% 86%; }
 
-.icon[data-motion="nudge-r"] { --gooee-icon-play: gooee-icon-nudge-r; }
-.icon[data-motion="nudge-l"] { --gooee-icon-play: gooee-icon-nudge-l; }
-.icon[data-motion="nudge-u"] { --gooee-icon-play: gooee-icon-nudge-u; }
-.icon[data-motion="nudge-d"] { --gooee-icon-play: gooee-icon-nudge-d; }
-.icon[data-motion="nudge-ur"] { --gooee-icon-play: gooee-icon-nudge-ur; }
-.icon[data-motion="swing"] { --gooee-icon-play: gooee-icon-swing; }
-.icon[data-motion="turn"] { --gooee-icon-play: gooee-icon-turn; }
-.icon[data-motion="pop"] { --gooee-icon-play: gooee-icon-pop; }
-.icon[data-motion="blink"] { --gooee-icon-play: gooee-icon-blink; }
-.icon[data-motion="wiggle"] { --gooee-icon-play: gooee-icon-wiggle; }
-.icon[data-motion="bounce"] { --gooee-icon-play: gooee-icon-bounce; }
-.icon[data-motion="grow"] { --gooee-icon-play: gooee-icon-grow; }
 
 @media (prefers-reduced-motion: no-preference) {
   :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon,
   .icon:hover {
-    animation: var(--gooee-icon-play, none) var(--gooee-motion-slow) var(--gooee-ease-out);
+    animation-duration: var(--gooee-motion-slow);
+    animation-timing-function: var(--gooee-ease-out);
   }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="nudge-r"],
+  .icon[data-motion="nudge-r"]:hover { animation-name: nudge-r; }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="nudge-l"],
+  .icon[data-motion="nudge-l"]:hover { animation-name: nudge-l; }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="nudge-u"],
+  .icon[data-motion="nudge-u"]:hover { animation-name: nudge-u; }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="nudge-d"],
+  .icon[data-motion="nudge-d"]:hover { animation-name: nudge-d; }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="nudge-ur"],
+  .icon[data-motion="nudge-ur"]:hover { animation-name: nudge-ur; }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="swing"],
+  .icon[data-motion="swing"]:hover { animation-name: swing; }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="turn"],
+  .icon[data-motion="turn"]:hover { animation-name: turn; }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="pop"],
+  .icon[data-motion="pop"]:hover { animation-name: pop; }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="blink"],
+  .icon[data-motion="blink"]:hover { animation-name: blink; }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="wiggle"],
+  .icon[data-motion="wiggle"]:hover { animation-name: wiggle; }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="bounce"],
+  .icon[data-motion="bounce"]:hover { animation-name: bounce; }
+  :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="grow"],
+  .icon[data-motion="grow"]:hover { animation-name: grow; }
   :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="draw"] > *,
   .icon[data-motion="draw"]:hover > * {
     stroke-dasharray: 1;
@@ -31,33 +44,32 @@
   }
 }
 
-@keyframes :global(gooee-icon-nudge-r) { 40% { transform: translateX(0.12em); } }
-@keyframes :global(gooee-icon-nudge-l) { 40% { transform: translateX(-0.12em); } }
-@keyframes :global(gooee-icon-nudge-u) { 40% { transform: translateY(-0.12em); } }
-@keyframes :global(gooee-icon-nudge-d) { 40% { transform: translateY(0.12em); } }
-@keyframes :global(gooee-icon-nudge-ur) { 40% { transform: translate(0.1em, -0.1em); } }
-@keyframes :global(gooee-icon-swing) {
+@keyframes nudge-r { 40% { transform: translateX(0.12em); } }
+@keyframes nudge-l { 40% { transform: translateX(-0.12em); } }
+@keyframes nudge-u { 40% { transform: translateY(-0.12em); } }
+@keyframes nudge-d { 40% { transform: translateY(0.12em); } }
+@keyframes nudge-ur { 40% { transform: translate(0.1em, -0.1em); } }
+@keyframes swing {
   25% { transform: rotate(14deg); }
   50% { transform: rotate(-10deg); }
   75% { transform: rotate(5deg); }
 }
-@keyframes :global(gooee-icon-turn) { to { transform: rotate(1turn); } }
-@keyframes :global(gooee-icon-pop) { 40% { transform: scale(1.18); } }
-@keyframes :global(gooee-icon-blink) { 45% { transform: scaleY(0.12); } }
-@keyframes :global(gooee-icon-wiggle) {
+@keyframes turn { to { transform: rotate(1turn); } }
+@keyframes pop { 40% { transform: scale(1.18); } }
+@keyframes blink { 45% { transform: scaleY(0.12); } }
+@keyframes wiggle {
   20% { transform: rotate(-10deg); }
   40% { transform: rotate(9deg); }
   60% { transform: rotate(-6deg); }
   80% { transform: rotate(3deg); }
 }
-@keyframes :global(gooee-icon-grow) {
+@keyframes grow {
   40% { transform: scale(0.94, 1.14); }
   70% { transform: scale(1.02, 0.97); }
 }
-@keyframes :global(gooee-icon-bounce) {
+@keyframes bounce {
   35% { transform: translateY(-0.14em); }
   65% { transform: translateY(0.03em); }
 }
-/* Named in this file (not global): only the rule above plays it. The others are global because their
-   name travels in --gooee-icon-play, which CSS modules do not rename. */
+/* Every name is local to this file, so a bundler's CSS modules (Turbopack too) rename them in step. */
 @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }

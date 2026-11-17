@@ -46,6 +46,11 @@
           "target": "~/src/ui/components/Accordion/Accordion.tsx"
         },
         {
+          "path": "registry/src/ui/components/Accordion/accordionContext.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/components/Accordion/accordionContext.ts"
+        },
+        {
           "path": "registry/src/ui/components/Accordion/index.ts",
           "type": "registry:file",
           "target": "~/src/ui/components/Accordion/index.ts"
@@ -112,11 +117,6 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
-          "path": "registry/src/ui/internal/focus.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/focus.ts"
-        },
-        {
           "path": "registry/src/ui/internal/icons.module.css",
           "type": "registry:file",
           "target": "~/src/ui/internal/icons.module.css"
@@ -135,6 +135,16 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/alert.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/alert.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/collapseOut.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/collapseOut.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/focus.ts",
@@ -286,6 +296,11 @@
           "path": "registry/src/ui/internal/motion/focus.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/focus.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/layers.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/layers.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/liquid.ts",
@@ -691,6 +706,11 @@
           "target": "~/src/ui/internal/mergeRefs.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/buttonGroup.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/buttonGroup.ts"
+        },
+        {
           "path": "registry/src/ui/tokens.css",
           "type": "registry:file",
           "target": "~/src/ui/tokens.css"
@@ -819,11 +839,6 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
-          "path": "registry/src/ui/internal/liquidMore.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/liquidMore.ts"
-        },
-        {
           "path": "registry/src/ui/internal/liquidPath.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidPath.ts"
@@ -837,6 +852,11 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/checkbox.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/checkbox.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/liquidMatter.ts",
@@ -920,11 +940,6 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
-          "path": "registry/src/ui/internal/liquidMore.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/liquidMore.ts"
-        },
-        {
           "path": "registry/src/ui/internal/liquidPath.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidPath.ts"
@@ -938,6 +953,11 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/checkbox.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/checkbox.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/liquidMatter.ts",
@@ -1080,6 +1100,11 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/copyButton.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/copyButton.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/liquidMatter.ts",
@@ -1250,6 +1275,11 @@
           "target": "~/src/ui/internal/motion.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/copyButton.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/copyButton.ts"
+        },
+        {
           "path": "registry/src/ui/internal/motion/liquidMatter.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/liquidMatter.ts"
@@ -1314,6 +1344,16 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/dial.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/dial.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/scrubLook.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/scrubLook.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/scrubber.ts",
@@ -1425,6 +1465,11 @@
           "path": "registry/src/ui/internal/motion/focus.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/focus.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/layers.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/layers.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/liquid.ts",
@@ -1549,9 +1594,19 @@
           "target": "~/src/ui/internal/motion.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/floating.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/floating.ts"
+        },
+        {
           "path": "registry/src/ui/internal/motion/focus.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/focus.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/layers.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/layers.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/liquid.ts",
@@ -1567,6 +1622,11 @@
           "path": "registry/src/ui/internal/motion/liquidMore.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/liquidMore.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/menuKeys.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/menuKeys.ts"
         },
         {
           "path": "registry/src/ui/internal/useFloating.ts",
@@ -1664,6 +1724,16 @@
           "path": "registry/src/ui/internal/layers.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/layers.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/fab.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/fab.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/layers.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/layers.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/scrollFrame.ts",
@@ -1788,6 +1858,11 @@
           "target": "~/src/ui/internal/motion.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/formField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/formField.ts"
+        },
+        {
           "path": "registry/src/ui/tokens.css",
           "type": "registry:file",
           "target": "~/src/ui/tokens.css"
@@ -1880,11 +1955,6 @@
           "target": "~/src/ui/internal/icons.tsx"
         },
         {
-          "path": "registry/src/ui/internal/liquidMatter.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/liquidMatter.ts"
-        },
-        {
           "path": "registry/src/ui/internal/liquidPath.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidPath.ts"
@@ -1893,6 +1963,11 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/holdToConfirm.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/holdToConfirm.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/liquidMatter.ts",
@@ -2114,6 +2189,11 @@
           "target": "~/src/ui/internal/cx.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/keys.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/keys.ts"
+        },
+        {
           "path": "registry/src/ui/tokens.css",
           "type": "registry:file",
           "target": "~/src/ui/tokens.css"
@@ -2214,6 +2294,11 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/livePill.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/livePill.ts"
         },
         {
           "path": "registry/src/ui/internal/useControllable.ts",
@@ -2333,6 +2418,16 @@
           "target": "~/src/ui/internal/motion/focus.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/layers.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/layers.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/morphButton.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/morphButton.ts"
+        },
+        {
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
@@ -2419,6 +2514,11 @@
           "target": "~/src/ui/internal/motion.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/numberInput.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/numberInput.ts"
+        },
+        {
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
@@ -2453,6 +2553,11 @@
           "path": "registry/src/ui/components/Pagination/index.ts",
           "type": "registry:file",
           "target": "~/src/ui/components/Pagination/index.ts"
+        },
+        {
+          "path": "registry/src/ui/components/Pagination/range.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/components/Pagination/range.ts"
         },
         {
           "path": "registry/src/ui/internal/cx.ts",
@@ -2617,6 +2722,16 @@
           "target": "~/src/ui/internal/motion.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/pickerWheel.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/pickerWheel.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/scrubLook.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/scrubLook.ts"
+        },
+        {
           "path": "registry/src/ui/internal/motion/scrubber.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/scrubber.ts"
@@ -2718,9 +2833,19 @@
           "target": "~/src/ui/internal/motion.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/floating.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/floating.ts"
+        },
+        {
           "path": "registry/src/ui/internal/motion/focus.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/focus.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/layers.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/layers.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/liquid.ts",
@@ -2947,6 +3072,16 @@
           "target": "~/src/ui/internal/motion/liquidMatter.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/retime.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/retime.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/segmented.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/segmented.ts"
+        },
+        {
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
@@ -3008,6 +3143,16 @@
           "target": "~/src/ui/internal/motion.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/ruler.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/ruler.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/scrubLook.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/scrubLook.ts"
+        },
+        {
           "path": "registry/src/ui/internal/motion/scrubber.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/scrubber.ts"
@@ -3067,6 +3212,11 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/scrollArea.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/scrollArea.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -3180,6 +3330,11 @@
           "target": "~/src/ui/internal/motion.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/keys.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/keys.ts"
+        },
+        {
           "path": "registry/src/ui/internal/motion/liquidMatter.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/liquidMatter.ts"
@@ -3254,6 +3409,11 @@
           "path": "registry/src/ui/internal/motion/liquidMatter.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/liquidMatter.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/segmented.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/segmented.ts"
         },
         {
           "path": "registry/src/ui/internal/useControllable.ts",
@@ -3357,9 +3517,19 @@
           "target": "~/src/ui/internal/motion.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/floating.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/floating.ts"
+        },
+        {
           "path": "registry/src/ui/internal/motion/focus.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/focus.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/layers.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/layers.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/liquid.ts",
@@ -3375,6 +3545,11 @@
           "path": "registry/src/ui/internal/motion/liquidMore.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/liquidMore.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/listbox.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/listbox.ts"
         },
         {
           "path": "registry/src/ui/internal/useControllable.ts",
@@ -3483,6 +3658,16 @@
           "target": "~/src/ui/internal/motion/focus.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/layers.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/layers.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/sheetDetents.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/sheetDetents.ts"
+        },
+        {
           "path": "registry/src/ui/internal/usePresence.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/usePresence.ts"
@@ -3568,6 +3753,11 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/slider.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/slider.ts"
         },
         {
           "path": "registry/src/ui/internal/useControllable.ts",
@@ -3698,6 +3888,11 @@
           "target": "~/src/ui/internal/motion.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/splitFlap.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/splitFlap.ts"
+        },
+        {
           "path": "registry/src/ui/tokens.css",
           "type": "registry:file",
           "target": "~/src/ui/tokens.css"
@@ -3780,11 +3975,6 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
-          "path": "registry/src/ui/internal/fling.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/fling.ts"
-        },
-        {
           "path": "registry/src/ui/internal/icons.module.css",
           "type": "registry:file",
           "target": "~/src/ui/internal/icons.module.css"
@@ -3805,14 +3995,9 @@
           "target": "~/src/ui/internal/motion/fling.ts"
         },
         {
-          "path": "registry/src/ui/internal/motion/scrubber.ts",
+          "path": "registry/src/ui/internal/motion/swipeDeck.ts",
           "type": "registry:file",
-          "target": "~/src/ui/internal/motion/scrubber.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/useScrub.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/useScrub.ts"
+          "target": "~/src/ui/internal/motion/swipeDeck.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -3856,11 +4041,6 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
-          "path": "registry/src/ui/internal/liquidMatter.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/liquidMatter.ts"
-        },
-        {
           "path": "registry/src/ui/internal/liquidPath.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidPath.ts"
@@ -3874,6 +4054,11 @@
           "path": "registry/src/ui/internal/motion/liquidMatter.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/liquidMatter.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/switchThumb.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/switchThumb.ts"
         },
         {
           "path": "registry/src/ui/internal/useControllable.ts",
@@ -3940,6 +4125,11 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/table.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/table.ts"
         },
         {
           "path": "registry/src/ui/internal/useControllable.ts",
@@ -4034,6 +4224,11 @@
           "target": "~/src/ui/components/Tabs/index.ts"
         },
         {
+          "path": "registry/src/ui/components/Tabs/tabsContext.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/components/Tabs/tabsContext.ts"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -4047,6 +4242,11 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/tabs.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/tabs.ts"
         },
         {
           "path": "registry/src/ui/internal/useControllable.ts",
@@ -4095,11 +4295,6 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
-          "path": "registry/src/ui/internal/focus.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/focus.ts"
-        },
-        {
           "path": "registry/src/ui/internal/icons.module.css",
           "type": "registry:file",
           "target": "~/src/ui/internal/icons.module.css"
@@ -4118,6 +4313,11 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/collapseOut.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/collapseOut.ts"
         },
         {
           "path": "registry/src/ui/internal/motion/focus.ts",
@@ -4206,6 +4406,11 @@
           "target": "~/src/ui/internal/motion/liquidMore.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/textarea.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/textarea.ts"
+        },
+        {
           "path": "registry/src/ui/tokens.css",
           "type": "registry:file",
           "target": "~/src/ui/tokens.css"
@@ -4265,6 +4470,16 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/themeIcon.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/themeIcon.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/themeReveal.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/themeReveal.ts"
         },
         {
           "path": "registry/src/ui/internal/themeReveal.ts",
@@ -4328,11 +4543,6 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
-          "path": "registry/src/ui/internal/fling.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/fling.ts"
-        },
-        {
           "path": "registry/src/ui/internal/icons.module.css",
           "type": "registry:file",
           "target": "~/src/ui/internal/icons.module.css"
@@ -4341,11 +4551,6 @@
           "path": "registry/src/ui/internal/icons.tsx",
           "type": "registry:file",
           "target": "~/src/ui/internal/icons.tsx"
-        },
-        {
-          "path": "registry/src/ui/internal/liquidMatter.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/liquidMatter.ts"
         },
         {
           "path": "registry/src/ui/internal/liquidPath.ts",
@@ -4366,6 +4571,11 @@
           "path": "registry/src/ui/internal/motion/liquidMatter.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/liquidMatter.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/toast.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/toast.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -4475,14 +4685,29 @@
           "target": "~/src/ui/internal/motion.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/floating.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/floating.ts"
+        },
+        {
           "path": "registry/src/ui/internal/motion/focus.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/focus.ts"
         },
         {
+          "path": "registry/src/ui/internal/motion/layers.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/layers.ts"
+        },
+        {
           "path": "registry/src/ui/internal/motion/liquid.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/liquid.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/tooltip.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/tooltip.ts"
         },
         {
           "path": "registry/src/ui/internal/useFloating.ts",

@@ -4,21 +4,10 @@
 import { createContext, useContext, useId, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
+import type { FormFieldControlProps, FormFieldLabels } from '../../internal/motion/formField'
 import styles from './FormField.module.css'
 
-/** Props to spread on the control, so its label, help and error are wired up. */
-export type FormFieldControlProps = {
-  /** Id the label points to with htmlFor. */
-  id: string
-  /** Id of the help or error text, whichever is showing. */
-  'aria-describedby'?: string
-  /** Set when the field has an error. */
-  'aria-invalid'?: true
-  /** Set when the field is required. */
-  'aria-required'?: true
-  /** Set when the field is disabled. */
-  disabled?: boolean
-}
+export type { FormFieldControlProps, FormFieldLabels }
 
 type FieldContext = { controlProps: FormFieldControlProps; labelId: string }
 
@@ -50,10 +39,6 @@ export type FormFieldProps = {
   labels?: Partial<FormFieldLabels>
   /** Extra class for the root element. */
   className?: string
-}
-
-export type FormFieldLabels = {
-  optional: string
 }
 
 const defaultLabels: FormFieldLabels = {
