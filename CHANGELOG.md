@@ -2,6 +2,14 @@
 
 What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 0.51.1 · 17 Nov 2026
+
+Docs and package description only. No changes to the components.
+
+### Changed
+
+- The README, the npm description, `llms.txt` and the MCP server now say what Gooee UI is: React and Vue components. The README shows how to add a Vue part with `--vue`, and lists Nuxt.
+
 ## 0.51.0 · 17 Nov 2026
 
 Every part now comes in Vue too: all 151 components, with the same look, motion, keys and accessibility as React.

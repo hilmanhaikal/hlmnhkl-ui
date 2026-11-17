@@ -1,6 +1,6 @@
 # Gooee UI
 
-React components where every part grows from the spot you touch. A button becomes its panel, a pill becomes a card, a card becomes its page: the edges move and the words stay still. Black, white and grey with one blue accent, and copied into your app so the code is yours.
+React and Vue components where every part grows from the spot you touch. A button becomes its panel, a pill becomes a card, a card becomes its page: the edges move and the words stay still. Black, white and grey with one blue accent, and copied into your app so the code is yours.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hilmanhaikal/gooee-ui/main/.github/assets/home-dark-0.37.png">
@@ -34,7 +34,19 @@ import { Button } from './ui/components/Button'
 <Button onClick={save}>Save</Button>
 ```
 
-Using Next.js or React Router? The [installation guide](https://gooee.dev/installation) has the steps for each.
+Using Vue? Add `--vue` (`npx gooee@latest add button --vue`) and import the `.vue` file:
+
+```vue
+<script setup lang="ts">
+import Button from './ui/components/Button/Button.vue'
+</script>
+
+<template>
+  <Button @click="save">Save</Button>
+</template>
+```
+
+Using Next.js, React Router or Nuxt? The [installation guide](https://gooee.dev/installation) has the steps for each.
 
 ### With the shadcn CLI
 
@@ -56,6 +68,7 @@ It writes the same files as `npx gooee add button`, into `src/ui`, with `tokens.
 
 | Option | What it does |
 | --- | --- |
+| `--vue` | `add`: copy the Vue 3.5 version of each part instead of React |
 | `--to <folder>` | Where the files go. Default: the folder in `gooee.json`, else `src/ui` |
 | `--dry-run` | Print what would happen, write nothing |
 | `--overwrite` | `add`: replace files that are already there. Without it, they are skipped and listed |
@@ -84,8 +97,8 @@ Setup for other tools: [MCP server](https://gooee.dev/mcp).
 - **One look, set by tokens.** Every colour, size and timing comes from one file, `tokens.css`. Colour appears only to mean something: good, caution or bad.
 - **Light and dark.** Dark follows the system, or set `data-theme="dark"` on `<html>`.
 - **Accessible.** Keyboard support per the WAI-ARIA patterns, visible focus, screen reader labels, and reduced motion. On touch screens every control gives at least a 44px target, even the small sizes; only the six PIN boxes and the seven calendar days get narrower when the row has no room, about 36px wide on a 320px phone. CalendarHeatmap's days are small by design, since a year must fit on screen; its month table gives the same numbers at full size.
-- **Small.** React 19 and CSS Modules. No other runtime packages: no animation library, no icon package.
-- **Works in** Vite, Next.js (App Router) and React Router.
+- **Small.** React 19 or Vue 3.5, and CSS Modules. No other runtime packages: no animation library, no icon package.
+- **Works in** Vite, Next.js (App Router), React Router and Nuxt.
 
 ## Pro
 

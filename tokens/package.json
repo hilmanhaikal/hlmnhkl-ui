@@ -1,6 +1,6 @@
 {
   "name": "gooee-tokens",
-  "version": "0.51.0",
+  "version": "0.51.1",
   "description": "The Gooee UI look as plain CSS: every colour, size, space, corner and timing token, on the golden grid. For any framework, or none.",
   "license": "MIT",
   "homepage": "https://gooee.dev/tokens",

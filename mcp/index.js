@@ -74,7 +74,7 @@ function describe(i) {
 function createServer() {
   const server = new McpServer(
     { name: 'gooee', version: docs.version },
-    { instructions: [`Gooee UI ${docs.version}: React components copied into the project. ${docs.site}`, ...docs.rules.map((r) => `- ${r}`)].join('\n') },
+    { instructions: [`Gooee UI ${docs.version}: React and Vue components copied into the project. ${docs.site}`, ...docs.rules.map((r) => `- ${r}`)].join('\n') },
   )
 
   server.registerTool(
