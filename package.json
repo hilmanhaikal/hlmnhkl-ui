@@ -1,6 +1,6 @@
 {
   "name": "gooee",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React and Vue components in black, white and grey with one blue accent. Copy them into your app with npx gooee add <name>.",
   "license": "MIT",
   "homepage": "https://gooee.dev",

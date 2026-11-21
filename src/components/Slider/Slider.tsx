@@ -58,6 +58,8 @@ export function Slider({
   const auto = useId()
   const inputId = id ?? auto
   const [value, setValue] = useControllable(valueProp, defaultValue ?? min, onValueChange)
+  // A form library's onChange runs after the slider's own instead of replacing it.
+  const { onChange, ...inputRest } = rest as typeof rest & Pick<ComponentPropsWithRef<'input'>, 'onChange'>
   // Where the thumb is drawn while it glides to a click or settles on a mark; the value is set already.
   const [shown, setShown] = useState<number | null>(null)
   const latest = useRef({ value, min, max, step, marks })
@@ -103,7 +105,10 @@ export function Slider({
           aria-valuenow={value}
           aria-valuetext={formatValue === String ? undefined : text}
           // Only "input": the browser's "change" on release carries the thumb's mid-glide place, not the value.
-          onChange={(e) => e.nativeEvent.type === 'input' && slider.current!.input(e.currentTarget, Number(e.target.value))}
+          onChange={(e) => {
+            if (e.nativeEvent.type === 'input') slider.current!.input(e.currentTarget, Number(e.target.value))
+            onChange?.(e)
+          }}
           onPointerDown={(e: PointerEvent<HTMLInputElement>) => {
             slider.current!.down(e.currentTarget, e.clientX)
             onPointerDown?.(e)
@@ -133,7 +138,7 @@ export function Slider({
             slider.current!.keyUp()
             onKeyUp?.(e)
           }}
-          {...rest}
+          {...inputRest}
         />
         {showValue && (
           <span className={styles.bubble} data-slot="slider-bubble" aria-hidden="true">{text}</span>

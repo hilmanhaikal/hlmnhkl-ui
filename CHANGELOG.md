@@ -2,6 +2,16 @@
 
 What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 1.0.1 · 21 Nov 2026
+
+Three fixes for long lists, dates typed on a phone and checkboxes in form libraries.
+
+### Fixed
+
+- Select, DropdownMenu, ContextMenu, Menubar and MentionInput: in a long list, each option waited longer to appear than the one before it. Option 100 took about two seconds, so a Select opened on a choice near the end (a country list) looked empty. No option now waits longer than the 13th, like Combobox and MultiSelect.
+- DatePicker and DateRangePicker: a date could not be typed on an iPhone. Its number pad has no "/", and the field needed one. Digits alone now work in the locale's order: 23112026 or 231126, and 16 or 12 digits for a range. The separators appear as you type, so the field shows 23/11/2026.
+- Checkbox and Slider (React): an `onChange` from a form library, such as react-hook-form's `register`, replaced the part's own, so the box stayed stuck. SearchInput ignored it. Each now updates first, then calls your `onChange` with the change event.
+
 ## 1.0.0 · 21 Nov 2026
 
 The stable release, with names, tokens and styling hooks you can rely on.

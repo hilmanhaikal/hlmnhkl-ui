@@ -47,6 +47,8 @@ export function Checkbox({
   const errorId = `${inputId}-error`
   const describedBy = [description ? `${inputId}-desc` : null, error ? errorId : null, describedByProp].filter(Boolean).join(' ')
   const [checked, setChecked] = useControllable(checkedProp, defaultChecked, onCheckedChange)
+  // A form library's onChange, such as react-hook-form's register, runs after the box updates instead of replacing it.
+  const { onChange, ...inputRest } = rest as typeof rest & Pick<ComponentPropsWithRef<'input'>, 'onChange'>
   const inner = useRef<HTMLInputElement>(null)
   // Like a native checkbox, a click clears the mixed look until the prop sets it again.
   const [mixed, setMixed] = useState(indeterminate)
@@ -89,16 +91,18 @@ export function Checkbox({
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy || undefined}
           onChange={(e) => {
-            if (!mixed) return setChecked(e.target.checked)
-            setMixed(false)
-            setChecked(true)
+            if (mixed) {
+              setMixed(false)
+              setChecked(true)
+            } else setChecked(e.target.checked)
+            onChange?.(e)
           }}
           onPointerDown={onPointerDown}
           onKeyDown={(e) => {
             cup.current!.key()
             onKeyDown?.(e)
           }}
-          {...rest}
+          {...inputRest}
         />
         <span ref={boxRef} data-slot="checkbox-box" className={styles.box} data-state={state} aria-hidden="true">
           <span className={styles.fill} data-pour-fill />

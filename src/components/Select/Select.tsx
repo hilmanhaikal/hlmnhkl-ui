@@ -212,7 +212,7 @@ export function Select({
                 data-highlighted={i === active || undefined}
                 data-selected={o.value === value || undefined}
                 data-disabled={o.disabled || undefined}
-                style={{ ['--i' as string]: i }}
+                style={{ ['--i' as string]: Math.min(i, 12) }}
                 onPointerMove={() => enabled(i) && active !== i && setActive(i)}
                 onClick={() => choose(i)}
               >

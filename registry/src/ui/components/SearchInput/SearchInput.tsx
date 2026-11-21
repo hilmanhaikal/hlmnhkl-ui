@@ -41,9 +41,11 @@ export function SearchInput({
   className,
   ref,
   onKeyDown,
-  ...rest
+  ...props
 }: SearchInputProps) {
   const [value, setValue] = useControllable(valueProp, defaultValue, onValueChange)
+  // A form library's onChange runs after the field's own instead of being dropped.
+  const { onChange, ...rest } = props as typeof props & Pick<InputProps, 'onChange'>
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -62,7 +64,10 @@ export function SearchInput({
       value={value}
       leading={<SearchIcon />}
       aria-keyshortcuts={shortcut}
-      onChange={(e) => setValue(e.target.value)}
+      onChange={(e) => {
+        setValue(e.target.value)
+        onChange?.(e)
+      }}
       onKeyDown={(e) => {
         onKeyDown?.(e)
         // Enter during IME composition picks a word, not a search

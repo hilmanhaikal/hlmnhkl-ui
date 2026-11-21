@@ -153,7 +153,7 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
                   className={styles.item}
                   data-disabled={item.disabled || undefined}
                   data-destructive={item.destructive || undefined}
-                  style={{ ['--i' as string]: n }}
+                  style={{ ['--i' as string]: Math.min(n, 12) }}
                   onPointerMove={(e) => !item.disabled && e.currentTarget.focus()}
                   onClick={() => {
                     if (item.disabled) return

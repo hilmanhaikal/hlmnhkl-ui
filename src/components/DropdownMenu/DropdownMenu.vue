@@ -167,7 +167,7 @@ const labelledBy = () => triggerId
           :class="styles.item"
           :data-disabled="item.disabled || undefined"
           :data-destructive="item.destructive || undefined"
-          :style="{ '--i': stagger[i] }"
+          :style="{ '--i': Math.min(stagger[i], 12) }"
           @pointermove="(e: PointerEvent) => !item.disabled && (e.currentTarget as HTMLElement).focus()"
           @click="select(item)"
           @keydown="itemKey"

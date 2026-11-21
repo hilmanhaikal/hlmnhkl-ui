@@ -225,7 +225,7 @@ const describedBy = computed(
           :data-highlighted="i === active || undefined"
           :data-selected="o.value === value || undefined"
           :data-disabled="o.disabled || undefined"
-          :style="{ '--i': i }"
+          :style="{ '--i': Math.min(i, 12) }"
           @pointermove="enabled(i) && active !== i && (active = i)"
           @click="choose(i)"
         >
