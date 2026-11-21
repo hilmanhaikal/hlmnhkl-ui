@@ -49,9 +49,9 @@ export function createHold() {
       if (atEnd()) return stop()
       count++
       bump(count > 12)
-      timer = window.setTimeout(tick, tokenMs('--gooee-motion-repeat', 70))
+      timer = window.setTimeout(tick, tokenMs('--gooee-delay-number-input-repeat-every', 70))
     }
-    timer = window.setTimeout(tick, tokenMs('--gooee-motion-repeat-delay', 400))
+    timer = window.setTimeout(tick, tokenMs('--gooee-delay-number-input-repeat', 400))
   }
   return { start, stop }
 }

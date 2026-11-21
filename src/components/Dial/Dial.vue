@@ -9,43 +9,40 @@ import styles from './Dial.module.css'
 
 // The Vue Dial: the same look (Dial.module.css), turn and landing as the React one.
 
-const props = withDefaults(
-  defineProps<{
-    /** Visible name of the dial, also read by screen readers. */
-    label: string
-    /** Starting value when there is no v-model. Undefined starts at min. */
-    defaultValue?: number
-    /** Lowest value. */
-    min?: number
-    /** Highest value. */
-    max?: number
-    /** Size of one step. Every step is a mark the dial is drawn onto. */
-    step?: number
-    /** Values with a printed label. Page Up and Page Down jump between them. Defaults to min and max. */
-    marks?: number[]
-    /** Values drawn stronger, such as the usual setting. */
-    strong?: number[]
-    /** "printed": the scale is printed on the knob and turns under a fixed index. "mercury": a solid knob with a few named levels. "arc": the rim of a large dial, swiped sideways. */
-    variant?: 'printed' | 'mercury' | 'arc'
-    /** Turns the value into the readout and what screen readers hear. */
-    formatValue?: (value: number) => string
-    /** Turns a mark into its printed label. Defaults to formatValue. */
-    formatMark?: (value: number) => string
-    /** A line under the readout, such as what the value means. The detail slot replaces it. */
-    detail?: string
-    /** A double click goes back to this value. */
-    resetValue?: number
-    /** A short buzz on each step while it turns, on phones that can (Android). */
-    haptics?: boolean
-  }>(),
-  { min: 0, max: 100, step: 1, strong: () => [], variant: 'printed', formatValue: String, haptics: false },
-)
-const emit = defineEmits<{ /** The value under the index while the dial still turns. */ scrub: [value: number] }>()
+const { defaultValue, min = 0, max = 100, step = 1, marks, strong = [], variant = 'printed', formatValue = String, formatMark, detail, resetValue, haptics = false } = defineProps<{
+  /** Visible name of the dial, also read by screen readers. */
+  label: string
+  /** Starting value when there is no v-model. Undefined starts at min. */
+  defaultValue?: number
+  /** Lowest value. */
+  min?: number
+  /** Highest value. */
+  max?: number
+  /** Size of one step. Every step is a mark the dial is drawn onto. */
+  step?: number
+  /** Values with a printed label. Page Up and Page Down jump between them. Defaults to min and max. */
+  marks?: number[]
+  /** Values drawn stronger, such as the usual setting. */
+  strong?: number[]
+  /** "printed": the scale is printed on the knob and turns under a fixed index. "mercury": a solid knob with a few named levels. "arc": the rim of a large dial, swiped sideways. */
+  variant?: 'printed' | 'mercury' | 'arc'
+  /** Turns the value into the readout and what screen readers hear. */
+  formatValue?: (value: number) => string
+  /** Turns a mark into its printed label. Defaults to formatValue. */
+  formatMark?: (value: number) => string
+  /** A line under the readout, such as what the value means. The detail slot replaces it. */
+  detail?: string
+  /** A double click goes back to this value. */
+  resetValue?: number
+  /** A short buzz on each step while it turns, on phones that can (Android). */
+  haptics?: boolean
+}>()
+const emit = defineEmits<{ /** The value the dial came to rest on, once it rests. */ valueCommit: [value: number] }>()
 const slots = useSlots()
 
-/** The value, set once the dial comes to rest. Use v-model, or leave it out and the dial keeps its own value. */
+/** The value under the index, set on each new one while the dial turns. Use v-model, or leave it out and the dial keeps its own value. */
 const model = defineModel<number>()
-const local = ref(props.defaultValue ?? props.min)
+const local = ref(defaultValue ?? min)
 const raw = computed({
   get: () => model.value ?? local.value,
   set: (next: number) => {
@@ -57,17 +54,17 @@ const raw = computed({
 const labelId = useId()
 const detailId = useId()
 const goo = useId().replace(/:/g, '')
-const scale = computed(() => ({ min: props.min, max: props.max, step: props.step, marks: props.marks, variant: props.variant }))
+const scale = computed(() => ({ min, max, step, marks, variant }))
 const dial = computed(() => dialScale(scale.value))
-const value = computed(() => clamp(raw.value, props.min, dial.value.top))
-const strongSet = computed(() => new Set(props.strong.map((v) => roundTo(v, props.step, props.min))))
-const markText = (v: number) => (props.formatMark ?? props.formatValue)(v)
+const value = computed(() => clamp(raw.value, min, dial.value.top))
+const strongSet = computed(() => new Set(strong.map((v) => roundTo(v, step, min))))
+const markText = (v: number) => (formatMark ?? formatValue)(v)
 // The arc's rim: its radius and the length of one step along it, both tokens.
 const rim = ref<Rim | null>(null)
 const wheel = wheelSteps()
 
 // The drag, keys, tap and wheel (motion/dial.ts) on the shared scrubber.
-const sc = useScrub(() => ({ value: value.value, ...dialScrub(scale.value, rim.value, wheel), onSettle: (v: number) => (raw.value = v), haptics: props.haptics }))
+const sc = useScrub(() => ({ value: value.value, ...dialScrub(scale.value, rim.value, wheel), onMark: (v: number) => (raw.value = v), onSettle: (v: number) => emit('valueCommit', v), haptics }))
 const scrubEl = sc.el
 
 // The arc takes only sideways touches, so the page still scrolls under a finger on it (motion/dial.ts).
@@ -75,42 +72,42 @@ let stopTouch = () => {}
 const measureRim = () => {
   stopTouch()
   stopTouch = () => {}
-  if (props.variant !== 'arc' || !scrubEl.value) return
+  if (variant !== 'arc' || !scrubEl.value) return
   rim.value = { r: tokenNumber(scrubEl.value, '--gooee-dial-arc-radius'), gap: tokenNumber(scrubEl.value, '--gooee-dial-arc-gap') }
   stopTouch = arcTouch(scrubEl.value)
 }
 onMounted(measureRim)
-watch(() => props.variant, measureRim, { flush: 'post' })
+watch(() => variant, measureRim, { flush: 'post' })
 onBeforeUnmount(() => stopTouch())
 
 const shown = computed(() => dial.value.land(sc.at.value))
-watch(shown, (v) => emit('scrub', v))
 
-const hasDetail = computed(() => !!(props.detail || slots.detail))
+const hasDetail = computed(() => !!(detail || slots.detail))
 const index = computed(() => dial.value.all.indexOf(value.value))
 const sliderAttrs = computed(() => ({
   role: 'slider',
   tabindex: 0,
   'aria-labelledby': labelId,
   'aria-describedby': hasDetail.value ? detailId : undefined,
-  'aria-valuemin': props.min,
+  'aria-valuemin': min,
   'aria-valuemax': dial.value.top,
   'aria-valuenow': value.value,
-  'aria-valuetext': props.variant === 'mercury' && index.value >= 0 ? `${props.formatValue(value.value)}, ${index.value + 1} of ${dial.value.all.length}` : props.formatValue(value.value),
+  'aria-valuetext': variant === 'mercury' && index.value >= 0 ? `${formatValue(value.value)}, ${index.value + 1} of ${dial.value.all.length}` : formatValue(value.value),
+  'data-slot': 'dial-control',
   'data-moving': sc.moving.value || undefined,
 }))
-const onDblclick = () => props.resetValue !== undefined && sc.go(dial.value.land(props.resetValue))
+const onDblclick = () => resetValue !== undefined && sc.go(dial.value.land(resetValue))
 
 // Mercury: the bump on the knob and each level's dot and drop.
 const mercury = computed(() => {
   const { all, stepDeg } = dial.value
   const at = sc.at.value
-  const [bx, by] = polar(-135 + ((at - props.min) / props.step) * stepDeg, KNOB)
+  const [bx, by] = polar(-135 + ((at - min) / step) * stepDeg, KNOB)
   const levels = all.map((v, i) => {
     const a = -135 + i * stepDeg
     const [x, y] = polar(a, DOT)
     const [lx, ly] = polar(a, DOT + 22)
-    const p = pull(at - v, props.step)
+    const p = pull(at - v, step)
     const [dx, dy] = polar(a, DOT - 12 * p)
     return { v, x, y, lx, ly, anchor: Math.abs(a) < 1 ? 'middle' : a < 0 ? 'end' : 'start', on: v === shown.value, dx, dy, dr: p * 9 }
   })
@@ -124,9 +121,9 @@ const arcMarks = computed(() => {
   if (degPerStep <= 0) return []
   const at = sc.at.value
   return dial.value.all.flatMap((v, i) => {
-    const a = ((v - at) / props.step) * degPerStep
+    const a = ((v - at) / step) * degPerStep
     if (Math.abs(a) > 22) return []
-    const p = pull(at - v, props.step * 1.2)
+    const p = pull(at - v, step * 1.2)
     const tier = dial.value.labelled.includes(v) ? 'major' : i % 2 === 0 ? 'mid' : 'minor'
     return [{ v, a, p, tier }]
   })
@@ -134,7 +131,6 @@ const arcMarks = computed(() => {
 
 // Printed: the face turns under the index.
 const printed = computed(() => {
-  const { min, max, step, marks } = props
   const { all, labelled, top } = dial.value
   const turned = ((sc.at.value - min) / (max - min || 1)) * SWEEP
   // The face prints min, the middle and max unless marks say otherwise; the keys still jump by marks.
@@ -154,11 +150,11 @@ const printed = computed(() => {
 </script>
 
 <template>
-  <div :class="[styles.root, styles[variant]]">
+  <div data-slot="dial" :class="[styles.root, styles[variant]]">
     <div :class="styles.head">
-      <span :id="labelId" :class="styles.label">{{ label }}</span>
+      <span :id="labelId" data-slot="dial-label" :class="styles.label">{{ label }}</span>
       <Roll :text="formatValue(shown)" :class="styles.readout" :still="sc.moving.value" />
-      <span v-if="hasDetail" :id="detailId" :class="styles.detail"><slot name="detail">{{ detail }}</slot></span>
+      <span v-if="hasDetail" :id="detailId" data-slot="dial-detail" :class="styles.detail"><slot name="detail">{{ detail }}</slot></span>
     </div>
     <div v-if="variant === 'mercury'" ref="scrubEl" :class="styles.mercuryHit" v-bind="sliderAttrs" v-on="sc.handlers" @dblclick="onDblclick">
       <svg :viewBox="`0 0 ${W} ${H}`" :class="styles.mercurySvg" aria-hidden="true">
@@ -170,8 +166,8 @@ const printed = computed(() => {
           </filter>
         </defs>
         <g v-for="l in mercury.levels" :key="l.v">
-          <circle :cx="l.x" :cy="l.y" :r="3.5" :class="styles.dot" :data-on="l.on || undefined" />
-          <text :x="l.lx" :y="l.ly" :text-anchor="l.anchor" dominant-baseline="middle" :class="styles.level" :data-on="l.on || undefined">{{ markText(l.v) }}</text>
+          <circle :cx="l.x" :cy="l.y" :r="3.5" data-slot="dial-tick" :class="styles.dot" :data-selected="l.on || undefined" />
+          <text :x="l.lx" :y="l.ly" :text-anchor="l.anchor" dominant-baseline="middle" data-slot="dial-mark" :class="styles.level" :data-selected="l.on || undefined">{{ markText(l.v) }}</text>
         </g>
         <g :filter="`url(#${goo})`" :class="styles.metal">
           <circle :cx="CX" :cy="CY" :r="KNOB" />
@@ -187,8 +183,8 @@ const printed = computed(() => {
         <div :class="styles.hub">
           <span :class="styles.disc" />
           <span v-for="m in arcMarks" :key="m.v" :class="styles.arcMark" :style="{ transform: `rotate(${m.a}deg) translateY(calc(var(--gooee-dial-arc-radius) * -1))` }">
-            <i :class="styles.arcTick" :data-tier="m.tier" :style="{ background: ink(m.p, 'var(--gooee-color-border-strong)', 'var(--gooee-color-accent)'), transform: `scaleY(${1 + m.p * 0.7})` }" />
-            <span v-if="m.tier === 'major'" :class="styles.arcNum" :style="{ color: ink(m.p), transform: `translateX(-50%) scale(${1 + m.p * 0.3})` }">{{ markText(m.v) }}</span>
+            <i data-slot="dial-tick" :class="styles.arcTick" :data-tier="m.tier" :style="{ background: ink(m.p, 'var(--gooee-color-border-strong)', 'var(--gooee-color-accent)'), transform: `scaleY(${1 + m.p * 0.7})` }" />
+            <span v-if="m.tier === 'major'" data-slot="dial-mark" :class="styles.arcNum" :style="{ color: ink(m.p), transform: `translateX(-50%) scale(${1 + m.p * 0.3})` }">{{ markText(m.v) }}</span>
             <span v-if="strongSet.has(m.v)" :class="styles.arcStrong" />
           </span>
         </div>
@@ -205,15 +201,16 @@ const printed = computed(() => {
         <div :class="styles.face" :style="{ transform: `rotate(${printed.turned}deg)` }" aria-hidden="true">
           <span v-for="t in printed.ticks" :key="t.v" :class="styles.spoke" :style="{ transform: `rotate(${t.at}deg)` }">
             <i
+              data-slot="dial-tick"
               :class="styles.tick"
               :data-major="t.major || undefined"
               :data-fine="t.fine || undefined"
               :data-strong="strongSet.has(t.v) || undefined"
-              :data-current="t.v === shown || undefined"
+              :data-selected="t.v === shown || undefined"
               :style="{ background: ink(t.p, 'var(--gooee-color-border-strong)', 'var(--gooee-color-accent)'), transform: `scaleY(${1 + t.p * 0.5})` }"
             />
             <span v-if="t.num" :class="styles.numAt" :style="{ transform: `translateY(var(--num-r)) rotate(${-(t.at + printed.turned)}deg)` }">
-              <span :class="styles.num" :style="{ color: ink(t.p), transform: `translate(-50%, -50%) scale(${1 + t.p * 0.45})`, fontWeight: `calc(var(--gooee-weight-medium) + (var(--gooee-weight-semibold) - var(--gooee-weight-medium)) * ${t.p.toFixed(3)})` }">{{
+              <span data-slot="dial-mark" :class="styles.num" :style="{ color: ink(t.p), transform: `translate(-50%, -50%) scale(${1 + t.p * 0.45})`, fontWeight: `calc(var(--gooee-weight-medium) + (var(--gooee-weight-semibold) - var(--gooee-weight-medium)) * ${t.p.toFixed(3)})` }">{{
                 markText(t.v)
               }}</span>
             </span>

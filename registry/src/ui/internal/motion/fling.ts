@@ -1,6 +1,6 @@
 // Gooee UI, MIT licence. https://gooee.dev
 import { morphTo, rubber, speedTracker } from '../feel'
-import { morphCurve, readMotionMs } from '../motion'
+import { morphCurve, motionMs } from '../motion'
 
 /** An element, or a function that returns it, for frameworks that hand it over later (a React ref). */
 export type Target = HTMLElement | (() => HTMLElement | null)
@@ -15,16 +15,21 @@ export type PointerLike = Pick<PointerEvent, 'clientY' | 'pointerId' | 'pointerT
  * reduced motion (0ms) jumps. Returns a stop function.
  */
 export function release(from: number, to: number, velocity: number, onFrame: (value: number) => void, onDone?: () => void) {
-  return morphTo({ from, to, velocity, duration: readMotionMs('morph-out'), curve: morphCurve(), onFrame, onDone })
+  return morphTo({ from, to, velocity, duration: motionMs('morph-out'), curve: morphCurve(), onFrame, onDone }).stop
+}
+
+export type FlingOptions = {
+  /** The axis the hand drags along. */
+  axis: 'x' | 'y'
 }
 
 /**
  * A panel that the hand drags along one axis and lets go of. `fling` glides it to a place at the hand's
  * speed. While it runs, data-fluid on the panel turns its CSS motion off; once it closes on the way out,
  * the CSS close keyframes stay off too, so they do not start over. Call `opened` and `closed` as the
- * panel opens and closes.
+ * panel opens and closes. `stop` halts a glide where it is; `destroy` when the panel goes.
  */
-export function createFling(target: Target, axis: 'x' | 'y') {
+export function createFling(target: Target, { axis }: FlingOptions) {
   let at = 0
   let to = 0
   let stop = () => {}
@@ -51,6 +56,7 @@ export function createFling(target: Target, axis: 'x' | 'y') {
       })
     },
     stop: () => stop(),
+    destroy: () => stop(),
     // Opened again, even mid-close on the same panel: it starts at rest, not where the old glide was going.
     opened() {
       stop()
@@ -84,10 +90,11 @@ export type DragCloseOptions = {
 /**
  * A bottom sheet the hand drags down to close. Feed it the pointer events of the part it is held by, or
  * call `listen` on that part. A let-go past a third of its height, or a flick down, closes it; any other
- * let-go glides it back.
+ * let-go glides it back. `destroy` stops listening and stops the glide.
  */
 export function createDragClose(target: Target, { onClose, isOpen, can = () => true }: DragCloseOptions) {
-  const fling = createFling(target, 'y')
+  const fling = createFling(target, { axis: 'y' })
+  let ac = new AbortController()
   let drag: { y: number; dy: number; pointer: number; speed: ReturnType<typeof speedTracker> } | null = null
 
   const down = (e: PointerLike) => {
@@ -134,15 +141,18 @@ export function createDragClose(target: Target, { onClose, isOpen, can = () => t
     down,
     move,
     up,
-    /** Listens on the part it is held by. Returns a function that stops listening. */
+    /** Listens on the part it is held by, until `destroy`. */
     listen(handle: HTMLElement) {
-      const ac = new AbortController()
       const opts = { signal: ac.signal }
       handle.addEventListener('pointerdown', down, opts)
       handle.addEventListener('pointermove', move, opts)
       handle.addEventListener('pointerup', up, opts)
       handle.addEventListener('pointercancel', up, opts)
-      return () => ac.abort()
+    },
+    destroy() {
+      ac.abort()
+      ac = new AbortController()
+      fling.destroy()
     },
   }
 }

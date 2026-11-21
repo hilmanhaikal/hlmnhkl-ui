@@ -93,19 +93,21 @@ export function frames(ms: number, draw: (u: number, now: number) => void, done:
 /** A highlight's place in its row: its start edge and its width. */
 export type Place = { x: number; w: number }
 
+type El = HTMLElement | (() => HTMLElement | null)
+const get = (t: El) => (typeof t === 'function' ? t() : t)
+
 type Flow = { front: Box; rest: Box; stop: () => void; svg: SVGSVGElement; pin: ReturnType<typeof pincher> }
 
 export type FlowOptions = {
+  /** Where the liquid layer goes while it moves: the row the highlight sits in. */
+  host: El
   /** The liquid layer's class. */
-  cls: string
+  className: string
   /** A thin underline, which only splits and joins. */
   line?: boolean
   /** Gets the drawn outline each frame (null at the end), for text that changes colour under the liquid. */
   ink?: (outline: string | null) => void
 }
-
-type El = HTMLElement | (() => HTMLElement | null)
-const get = (t: El) => (typeof t === 'function' ? t() : t)
 
 /**
  * Flow: when the choice changes, the highlight `mark` runs to the new place on a neck that thins and
@@ -114,7 +116,7 @@ const get = (t: El) => (typeof t === 'function' ? t() : t)
  * caught half way starts from the shape on screen. Call `update` whenever the choice or its place
  * changes, and `destroy` when the part goes.
  */
-export function createFlow(host: El, mark: El, { cls, line = false, ink }: FlowOptions) {
+export function createFlow(mark: El, { host, className, line = false, ink }: FlowOptions) {
   let last: { place: Place; choice: unknown } | null = null
   let run: Flow | null = null
   const end = () => {
@@ -154,7 +156,7 @@ export function createFlow(host: El, mark: El, { cls, line = false, ink }: FlowO
     let f = run
     if (f) f.stop()
     else {
-      const { svg, paths } = layer(root, cls, m.nextSibling)
+      const { svg, paths } = layer(root, className, m.nextSibling)
       const look = getComputedStyle(m)
       const { shadows, ring } = shadowOf(m)
       paths[0].style.fill = look.backgroundColor

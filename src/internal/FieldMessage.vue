@@ -24,13 +24,13 @@ const shown = computed(() => (hasError.value ? props.error : lastError.value))
 <template>
   <div v-if="help" :class="[styles.collapse, !hasError && styles.open]">
     <div :class="styles.inner">
-      <p :id="helpId" :class="styles.help">{{ help }}</p>
+      <p :id="helpId" data-slot="field-help" :class="styles.help">{{ help }}</p>
     </div>
   </div>
   <div :class="[styles.collapse, hasError && styles.open]" aria-live="polite">
     <div :class="styles.inner">
       <!-- Hidden from screen readers while it closes, so only the live error is read. -->
-      <p v-if="shown" :id="hasError ? errorId : undefined" :class="styles.error" :aria-hidden="hasError ? undefined : true">
+      <p v-if="shown" :id="hasError ? errorId : undefined" data-slot="field-error" :class="styles.error" :aria-hidden="hasError ? undefined : true">
         <svg viewBox="0 0 16 16" aria-hidden="true" :class="styles.mark">
           <circle cx="8" cy="8" r="7" />
           <path d="M8 4.5v4.25M8 11v.01" />

@@ -9,7 +9,7 @@ import styles from './PickerWheel.module.css'
 // One column of the Vue PickerWheel: its rows are the marks. A drag follows the hand; a let-go lands on a row.
 
 const props = defineProps<{ column: WheelColumn; index: number; haptics: boolean }>()
-const emit = defineEmits<{ change: [index: number]; shown: [index: number] }>()
+const emit = defineEmits<{ commit: [index: number]; shown: [index: number] }>()
 
 const n = computed(() => props.column.options.length)
 const strong = computed(() => new Set(props.column.strong ?? []))
@@ -19,9 +19,10 @@ const wheel = wheelSteps()
 // The keys, tap and wheel of one column (motion/pickerWheel.ts) on the shared scrubber.
 const sc = useScrub(() => ({
   ...columnScrub(props.column, props.index, st, wheel),
-  onSettle: (to: number) => {
+  onSettle: (to: number, from: number) => {
     st.rested = to
-    emit('change', wrap(to, n.value))
+    // A loop turned all the way round rests on the row it left: no news.
+    if (wrap(to, n.value) !== wrap(Math.round(from), n.value)) emit('commit', wrap(to, n.value))
   },
   haptics: props.haptics,
 }))
@@ -51,6 +52,7 @@ const rows = computed(() => drumRows(sc.at.value, n.value, !!props.column.loop))
   <div
     ref="scrubEl"
     :class="styles.column"
+    data-slot="picker-wheel-column"
     role="spinbutton"
     tabindex="0"
     :aria-label="column.label"
@@ -62,9 +64,9 @@ const rows = computed(() => drumRows(sc.at.value, n.value, !!props.column.loop))
     :data-moving="sc.moving.value || undefined"
     v-on="sc.handlers"
   >
-    <span :class="styles.band" :style="{ '--grip': grip.toFixed(3) }" aria-hidden="true" />
+    <span :class="styles.band" data-slot="picker-wheel-band" :style="{ '--grip': grip.toFixed(3) }" aria-hidden="true" />
     <div :class="styles.drum" aria-hidden="true">
-      <span v-for="r in rows" :key="r.k" :class="styles.row" :data-strong="strong.has(r.i) || undefined" :style="{ '--d': r.d.toFixed(3), color: ink(pull(r.d, 1)) }">{{ column.options[r.i] }}</span>
+      <span v-for="r in rows" :key="r.k" :class="styles.row" data-slot="picker-wheel-row" :data-strong="strong.has(r.i) || undefined" :style="{ '--d': r.d.toFixed(3), color: ink(pull(r.d, 1)) }">{{ column.options[r.i] }}</span>
     </div>
   </div>
 </template>

@@ -6,7 +6,7 @@ import { clamp, pull, roundTo, wheelSteps } from '../../internal/feel'
 import { arcTouch, CX, CY, DOT, dialScale, dialScrub, H, KNOB, polar, SWEEP, W, type Rim } from '../../internal/motion/dial'
 import { Roll } from '../../internal/Roll'
 import { useControllable } from '../../internal/useControllable'
-import { ink, tokenNumber, useOnChange, useScrub } from '../../internal/useScrub'
+import { ink, tokenNumber, useScrub } from '../../internal/useScrub'
 import styles from './Dial.module.css'
 
 export type DialProps = Omit<ComponentPropsWithRef<'div'>, 'defaultValue' | 'onChange' | 'children'> & {
@@ -16,10 +16,10 @@ export type DialProps = Omit<ComponentPropsWithRef<'div'>, 'defaultValue' | 'onC
   value?: number
   /** Starting value when you do not control it. Undefined starts at min. */
   defaultValue?: number
-  /** Called once the dial comes to rest on a new value. */
+  /** Called with each new value under the index, while the dial still turns. */
   onValueChange?: (value: number) => void
-  /** Called with the value under the index while the dial still turns. */
-  onScrub?: (value: number) => void
+  /** Called once the dial comes to rest on a new value. */
+  onValueCommit?: (value: number) => void
   /** Lowest value. */
   min?: number
   /** Highest value. */
@@ -49,7 +49,7 @@ export function Dial({
   value: valueProp,
   defaultValue,
   onValueChange,
-  onScrub,
+  onValueCommit,
   min = 0,
   max = 100,
   step = 1,
@@ -78,7 +78,7 @@ export function Dial({
   const wheel = useRef(wheelSteps())
 
   // The drag, keys, tap and wheel (motion/dial.ts) on the shared scrubber.
-  const sc = useScrub({ value, ...dialScrub(scale, rim, wheel.current), onSettle: setValue, haptics })
+  const sc = useScrub({ value, ...dialScrub(scale, rim, wheel.current), onMark: setValue, onSettle: (v) => onValueCommit?.(v), haptics })
 
   useLayoutEffect(() => {
     if (variant !== 'arc') return
@@ -94,7 +94,6 @@ export function Dial({
   }, [variant, sc.ref])
 
   const shown = land(sc.at)
-  useOnChange(shown, onScrub)
 
   const index = all.indexOf(value)
   const slider = {
@@ -107,6 +106,7 @@ export function Dial({
     'aria-valuemax': top,
     'aria-valuenow': value,
     'aria-valuetext': variant === 'mercury' && index >= 0 ? `${formatValue(value)}, ${index + 1} of ${all.length}` : formatValue(value),
+    'data-slot': 'dial-control',
     'data-moving': sc.moving || undefined,
     onDoubleClick: resetValue === undefined ? undefined : () => sc.go(land(resetValue)),
     ...sc.handlers,
@@ -114,12 +114,12 @@ export function Dial({
 
   const head = (
     <div className={styles.head}>
-      <span id={labelId} className={styles.label}>
+      <span id={labelId} data-slot="dial-label" className={styles.label}>
         {label}
       </span>
       <Roll text={formatValue(shown)} className={styles.readout} still={sc.moving} />
       {detail && (
-        <span id={detailId} className={styles.detail}>
+        <span id={detailId} data-slot="dial-detail" className={styles.detail}>
           {detail}
         </span>
       )}
@@ -130,7 +130,7 @@ export function Dial({
     const angle = -135 + ((sc.at - min) / step) * stepDeg
     const [bx, by] = polar(angle, KNOB)
     return (
-      <div className={cx(styles.root, styles.mercury, className)} {...rest}>
+      <div data-slot="dial" className={cx(styles.root, styles.mercury, className)} {...rest}>
         {head}
         <div className={styles.mercuryHit} {...slider}>
           <svg viewBox={`0 0 ${W} ${H}`} className={styles.mercurySvg} aria-hidden>
@@ -148,8 +148,8 @@ export function Dial({
               const on = v === shown
               return (
                 <g key={v}>
-                  <circle cx={x} cy={y} r={3.5} className={styles.dot} data-on={on || undefined} />
-                  <text x={lx} y={ly} textAnchor={Math.abs(a) < 1 ? 'middle' : a < 0 ? 'end' : 'start'} dominantBaseline="middle" className={styles.level} data-on={on || undefined}>
+                  <circle cx={x} cy={y} r={3.5} data-slot="dial-tick" className={styles.dot} data-selected={on || undefined} />
+                  <text x={lx} y={ly} textAnchor={Math.abs(a) < 1 ? 'middle' : a < 0 ? 'end' : 'start'} dominantBaseline="middle" data-slot="dial-mark" className={styles.level} data-selected={on || undefined}>
                     {markText(v)}
                   </text>
                 </g>
@@ -174,7 +174,7 @@ export function Dial({
   if (variant === 'arc') {
     const degPerStep = rim && rim.r ? (rim.gap / rim.r) * (180 / Math.PI) : 0
     return (
-      <div className={cx(styles.root, styles.arc, className)} {...rest}>
+      <div data-slot="dial" className={cx(styles.root, styles.arc, className)} {...rest}>
         {head}
         <div className={styles.arcStage} {...slider}>
           <span className={styles.arcIndex} aria-hidden />
@@ -189,9 +189,9 @@ export function Dial({
                   const tier = labelled.includes(v) ? 'major' : i % 2 === 0 ? 'mid' : 'minor'
                   return (
                     <span key={v} className={styles.arcMark} style={{ transform: `rotate(${a}deg) translateY(calc(var(--gooee-dial-arc-radius) * -1))` }}>
-                      <i className={styles.arcTick} data-tier={tier} style={{ background: ink(p, 'var(--gooee-color-border-strong)', 'var(--gooee-color-accent)'), transform: `scaleY(${1 + p * 0.7})` }} />
+                      <i data-slot="dial-tick" className={styles.arcTick} data-tier={tier} style={{ background: ink(p, 'var(--gooee-color-border-strong)', 'var(--gooee-color-accent)'), transform: `scaleY(${1 + p * 0.7})` }} />
                       {tier === 'major' && (
-                        <span className={styles.arcNum} style={{ color: ink(p), transform: `translateX(-50%) scale(${1 + p * 0.3})` }}>
+                        <span data-slot="dial-mark" className={styles.arcNum} style={{ color: ink(p), transform: `translateX(-50%) scale(${1 + p * 0.3})` }}>
                           {markText(v)}
                         </span>
                       )}
@@ -216,7 +216,7 @@ export function Dial({
   const dense = all.length > 49
   const ticks = all.length <= 121 ? all : all.filter((v) => isMajor(v) || strongSet.has(v))
   return (
-    <div className={cx(styles.root, styles.printed, className)} {...rest}>
+    <div data-slot="dial" className={cx(styles.root, styles.printed, className)} {...rest}>
       {head}
       <div className={styles.bezel}>
         <span className={styles.index} aria-hidden />
@@ -233,10 +233,10 @@ export function Dial({
               const major = isMajor(v)
               return (
                 <span key={v} className={styles.spoke} style={{ transform: `rotate(${at}deg)` }}>
-                  <i className={styles.tick} data-major={major || undefined} data-fine={(dense && !major) || undefined} data-strong={strongSet.has(v) || undefined} data-current={v === shown || undefined} style={{ background: ink(p, 'var(--gooee-color-border-strong)', 'var(--gooee-color-accent)'), transform: `scaleY(${1 + p * 0.5})` }} />
+                  <i data-slot="dial-tick" className={styles.tick} data-major={major || undefined} data-fine={(dense && !major) || undefined} data-strong={strongSet.has(v) || undefined} data-selected={v === shown || undefined} style={{ background: ink(p, 'var(--gooee-color-border-strong)', 'var(--gooee-color-accent)'), transform: `scaleY(${1 + p * 0.5})` }} />
                   {printed.includes(v) && (
                     <span className={styles.numAt} style={{ transform: `translateY(var(--num-r)) rotate(${-(at + turned)}deg)` }}>
-                      <span className={styles.num} style={{ color: ink(p), transform: `translate(-50%, -50%) scale(${1 + p * 0.45})`, fontWeight: `calc(var(--gooee-weight-medium) + (var(--gooee-weight-semibold) - var(--gooee-weight-medium)) * ${p.toFixed(3)})` }}>
+                      <span data-slot="dial-mark" className={styles.num} style={{ color: ink(p), transform: `translate(-50%, -50%) scale(${1 + p * 0.45})`, fontWeight: `calc(var(--gooee-weight-medium) + (var(--gooee-weight-semibold) - var(--gooee-weight-medium)) * ${p.toFixed(3)})` }}>
                         {markText(v)}
                       </span>
                     </span>

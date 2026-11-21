@@ -22,7 +22,7 @@ let tokens: ScrollTokens | null = null
 export function readScrollTokens(): ScrollTokens {
   const s = getComputedStyle(document.documentElement)
   const n = (name: string) => parseFloat(s.getPropertyValue(name))
-  return { ease: n('--gooee-scroll-ease'), start: n('--gooee-draft-start'), end: n('--gooee-draft-end'), turn: n('--gooee-story-turn'), turnNarrow: n('--gooee-story-turn-narrow') }
+  return { ease: n('--gooee-scroll-ease'), start: n('--gooee-scroll-draft-start'), end: n('--gooee-scroll-draft-end'), turn: n('--gooee-scroll-story-turn'), turnNarrow: n('--gooee-scroll-story-turn-narrow') }
 }
 
 /** The tokens, read once each time the loop starts or the window changes size. */
@@ -127,19 +127,21 @@ function stop() {
 
 /**
  * Calls `read` once (with the other parts that start in the same task, before the first paint) and then
- * every frame while the page moves. Returns a function that stops it.
+ * every frame while the page moves, until `destroy`.
  */
-export function onScrollFrame(read: ScrollReader) {
+export function createScrollFrame(read: ScrollReader) {
   const ref = { current: read }
   if (!readers.size) start()
   readers.add(ref)
   mounting.add(ref)
   if (mounting.size === 1) queueMicrotask(runMounts)
   wake()
-  return () => {
-    readers.delete(ref)
-    mounting.delete(ref)
-    if (!readers.size) stop()
+  return {
+    destroy() {
+      if (!readers.delete(ref)) return
+      mounting.delete(ref)
+      if (!readers.size) stop()
+    },
   }
 }
 

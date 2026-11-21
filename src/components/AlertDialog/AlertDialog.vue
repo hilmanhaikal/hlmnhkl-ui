@@ -10,21 +10,23 @@ import styles from './AlertDialog.module.css'
 
 // The Vue AlertDialog: the same look, morph and focus as the React one.
 
-const props = withDefaults(
-  defineProps<{
-    /** The question, such as "Delete this project?". Also the accessible name. The title slot replaces it. */
-    title?: string
-    /** What happens if they confirm. Read out with the title when the dialog opens. The description slot replaces it. */
-    description?: string
-    /** Text of the confirm button. Name the action, such as "Delete project", not "OK". */
-    confirmLabel: string
-    /** Text of the cancel button. */
-    cancelLabel?: string
-    /** "danger" gives the confirm button the solid red look, for actions that destroy something. */
-    tone?: 'default' | 'danger'
-  }>(),
-  { cancelLabel: 'Cancel', tone: 'default' },
-)
+const {
+  title,
+  description,
+  cancelLabel = 'Cancel',
+  tone = 'neutral',
+} = defineProps<{
+  /** The question, such as "Delete this project?". Also the accessible name. The title slot replaces it. */
+  title?: string
+  /** What happens if they confirm. Read out with the title when the dialog opens. The description slot replaces it. */
+  description?: string
+  /** Text of the confirm button. Name the action, such as "Delete project", not "OK". */
+  confirmLabel: string
+  /** Text of the cancel button. */
+  cancelLabel?: string
+  /** "danger" gives the confirm button the solid red look, for actions that destroy something. */
+  tone?: 'neutral' | 'danger'
+}>()
 
 /** Shows the dialog. Use v-model:open; Confirm, Cancel or Esc set it false. A tap outside never closes it. */
 const open = defineModel<boolean>('open', { required: true })
@@ -102,21 +104,21 @@ onBeforeUnmount(() => {
 
 <template>
   <Teleport v-if="mounted" to="body">
-    <div :class="dialog.overlay" :data-state="state" aria-hidden="true" />
+    <div data-slot="alert-dialog-overlay" :class="dialog.overlay" :data-state="state" aria-hidden="true" />
     <div :class="dialog.positioner">
-      <div ref="panel" role="alertdialog" aria-modal="true" :aria-labelledby="`${id}-title`" :aria-describedby="`${id}-desc`" tabindex="-1" :class="[dialog.panel, dialog.sm]" :data-state="state">
+      <div ref="panel" role="alertdialog" aria-modal="true" :aria-labelledby="`${id}-title`" :aria-describedby="`${id}-desc`" tabindex="-1" data-slot="alert-dialog" :class="[dialog.panel, dialog.sm]" :data-state="state">
         <header :class="[dialog.header, styles.header]">
           <div :class="dialog.titles">
-            <h2 :id="`${id}-title`" :class="dialog.title">
-              <slot name="title">{{ props.title }}</slot>
+            <h2 :id="`${id}-title`" data-slot="alert-dialog-title" :class="dialog.title">
+              <slot name="title">{{ title }}</slot>
             </h2>
-            <p :id="`${id}-desc`" :class="dialog.description">
-              <slot name="description">{{ props.description }}</slot>
+            <p :id="`${id}-desc`" data-slot="alert-dialog-description" :class="dialog.description">
+              <slot name="description">{{ description }}</slot>
             </p>
           </div>
         </header>
-        <div v-if="slots.default" :class="dialog.body"><slot /></div>
-        <footer :class="dialog.footer">
+        <div v-if="slots.default" data-slot="alert-dialog-body" :class="dialog.body"><slot /></div>
+        <footer data-slot="alert-dialog-footer" :class="dialog.footer">
           <Button ref="cancelButton" variant="secondary" @click="cancel">{{ cancelLabel }}</Button>
           <Button :variant="tone === 'danger' ? 'danger' : 'primary'" @click="confirm">{{ confirmLabel }}</Button>
         </footer>

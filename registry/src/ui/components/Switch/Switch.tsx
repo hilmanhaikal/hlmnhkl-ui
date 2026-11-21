@@ -50,7 +50,7 @@ export function Switch({
   useLayoutEffect(() => thumb.current!.set(checked), [checked])
   useLayoutEffect(() => () => thumb.current!.destroy(), [])
   return (
-    <div className={cx(styles.root, labelPosition === 'start' && styles.start, className)} data-disabled={disabled || undefined}>
+    <div className={cx(styles.root, labelPosition === 'start' && styles.start, className)} data-slot="switch" data-state={checked ? 'checked' : 'unchecked'} data-disabled={disabled || undefined}>
       <button
         id={switchId}
         type="button"
@@ -58,7 +58,8 @@ export function Switch({
         aria-checked={checked}
         aria-describedby={describedBy || undefined}
         className={styles.track}
-        data-on={checked || undefined}
+        data-slot="switch-track"
+        data-state={checked ? 'checked' : 'unchecked'}
         disabled={disabled}
         onClick={(e) => {
           setChecked(!checked)
@@ -66,11 +67,11 @@ export function Switch({
         }}
         {...rest}
       >
-        <span ref={thumbRef} className={styles.thumb} aria-hidden="true" />
+        <span ref={thumbRef} className={styles.thumb} data-slot="switch-thumb" aria-hidden="true" />
       </button>
       <span className={styles.text}>
-        <label htmlFor={switchId} className={styles.label}>{label}</label>
-        {description && <span id={`${switchId}-desc`} className={styles.description}>{description}</span>}
+        <label htmlFor={switchId} className={styles.label} data-slot="field-label">{label}</label>
+        {description && <span id={`${switchId}-desc`} className={styles.description} data-slot="switch-description">{description}</span>}
       </span>
       {/* Submits like a checkbox: "on" when on, nothing when off */}
       {name && checked && <input type="hidden" name={name} value="on" />}

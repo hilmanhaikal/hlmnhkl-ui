@@ -1,16 +1,17 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .roll {
   display: inline-grid;
   overflow: hidden;
   /* Room for descenders inside the clip, given back below so the line keeps its height. */
-  padding-block-end: var(--gooee-rise-room);
-  margin-block-end: calc(var(--gooee-rise-room) * -1);
+  padding-block-end: var(--gooee-text-rise-room, round(up, 0.14em, 4px));
+  margin-block-end: calc(var(--gooee-text-rise-room, round(up, 0.14em, 4px)) * -1);
   font-variant-numeric: tabular-nums;
 }
 
 .in {
   grid-area: 1 / 1;
-  animation: rollUp var(--gooee-motion-fast) var(--gooee-ease-out);
+  animation: rollUp var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 .in[data-dir='down'] {
@@ -29,4 +30,5 @@
     transform: translateY(-40%);
     opacity: 0;
   }
+}
 }

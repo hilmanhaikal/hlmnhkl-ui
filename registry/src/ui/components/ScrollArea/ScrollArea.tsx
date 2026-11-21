@@ -35,12 +35,13 @@ export function ScrollArea({ label, maxHeight, orientation = 'vertical', classNa
   useEffect(() => a.destroy, [a])
 
   const track = (axis: ScrollAxis) => (
-    <div className={styles.track} data-axis={axis} aria-hidden="true" onPointerDown={(e) => a.trackDown(axis, e)}>
+    <div className={styles.track} data-slot="scroll-area-scrollbar" data-orientation={axis === 'y' ? 'vertical' : 'horizontal'} aria-hidden="true" onPointerDown={(e) => a.trackDown(axis, e)}>
       <div
         ref={(el) => {
           thumbs.current[axis] = el
         }}
         className={styles.thumb}
+        data-slot="scroll-area-thumb"
         onPointerDown={(e) => a.thumbDown(axis, e)}
         onPointerMove={a.thumbMove}
         onPointerUp={a.thumbUp}
@@ -50,9 +51,9 @@ export function ScrollArea({ label, maxHeight, orientation = 'vertical', classNa
   )
 
   return (
-    <div ref={rootRef} className={cx(styles.root, className)} data-orientation={orientation} onPointerEnter={a.wake} onPointerMove={a.wake}>
-      <div ref={viewportRef} className={styles.viewport} style={{ maxHeight }} role="region" aria-label={label} tabIndex={0} onScroll={a.onScroll}>
-        <div className={styles.content}>{children}</div>
+    <div ref={rootRef} className={cx(styles.root, className)} data-slot="scroll-area" data-orientation={orientation} onPointerEnter={a.wake} onPointerMove={a.wake}>
+      <div ref={viewportRef} className={styles.viewport} data-slot="scroll-area-viewport" style={{ maxHeight }} role="region" aria-label={label} tabIndex={0} onScroll={a.onScroll}>
+        <div className={styles.content} data-slot="scroll-area-content">{children}</div>
       </div>
       {showY && track('y')}
       {showX && track('x')}

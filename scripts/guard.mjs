@@ -7,7 +7,7 @@ const base = process.argv[2] || 'origin/main'
 const git = (...a) => execFileSync('git', a, { encoding: 'utf8' })
 const files = git('diff', '--name-only', `${base}...HEAD`).split('\n').filter(Boolean)
 
-const allowed = [/^src\/components\/[A-Za-z]+\//, /^src\/internal\//, /^src\/(tokens|base)\.css$/, /^src\/index\.ts$/, /^(README|CHANGELOG|COMPONENTS)\.md$/]
+const allowed = [/^src\/components\/[A-Za-z]+\//, /^src\/(icons|internal)\//, /^src\/(tokens|base)\.css$/, /^src\/index\.ts$/, /^(README|CHANGELOG|COMPONENTS)\.md$/]
 const problems = files.filter((f) => !allowed.some((re) => re.test(f))).map((f) => `${f}: only component code and docs can change in a pull request`)
 
 const risky = [

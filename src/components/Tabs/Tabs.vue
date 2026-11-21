@@ -27,7 +27,7 @@ provide(tabsKey, {
 </script>
 
 <template>
-  <div :class="styles.root" data-gooee-tabs="">
+  <div :class="styles.root" data-slot="tabs" data-gooee-tabs="">
     <slot />
   </div>
 </template>

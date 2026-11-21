@@ -21,7 +21,7 @@ export function FieldMessage({ helpId, errorId, help, error }: Props) {
       {help && (
         <div className={cx(styles.collapse, !hasError && styles.open)}>
           <div className={styles.inner}>
-            <p id={helpId} className={styles.help}>{help}</p>
+            <p id={helpId} data-slot="field-help" className={styles.help}>{help}</p>
           </div>
         </div>
       )}
@@ -29,7 +29,7 @@ export function FieldMessage({ helpId, errorId, help, error }: Props) {
         <div className={styles.inner}>
           {shown ? (
             // Hidden from screen readers while it closes, so only the live error is read.
-            <p id={hasError ? errorId : undefined} className={styles.error} aria-hidden={hasError ? undefined : true}>
+            <p id={hasError ? errorId : undefined} data-slot="field-error" className={styles.error} aria-hidden={hasError ? undefined : true}>
               <svg viewBox="0 0 16 16" aria-hidden="true" className={styles.mark}>
                 <circle cx="8" cy="8" r="7" />
                 <path d="M8 4.5v4.25M8 11v.01" />

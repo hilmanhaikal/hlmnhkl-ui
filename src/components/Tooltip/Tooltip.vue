@@ -2,7 +2,7 @@
 import { onBeforeUnmount, ref, shallowRef, useId, watch, type VNode } from 'vue'
 import type { Side } from '../../internal/motion/floating'
 import { dismissable } from '../../internal/motion/layers'
-import { createLiquid } from '../../internal/motion/liquid'
+import { createMorph } from '../../internal/motion/liquid'
 import { createTipTimer, tipEdge } from '../../internal/motion/tooltip'
 import { useFloating } from '../../internal/vue/useFloating'
 import { usePresence } from '../../internal/vue/usePresence'
@@ -12,17 +12,14 @@ import styles from './Tooltip.module.css'
 // The Vue Tooltip: the same look (Tooltip.module.css), timing and growth as the React one.
 // The default slot is the trigger: one focusable element, such as a Button.
 
-const props = withDefaults(
-  defineProps<{
-    /** Short text shown on hover and focus. It also describes the trigger to screen readers. The content slot replaces it. */
-    content?: string
-    /** Preferred side of the trigger. It flips when there is no room. */
-    side?: Side
-    /** Delay before showing on hover. Defaults to the tooltip delay token. */
-    delay?: number
-  }>(),
-  { side: 'top' },
-)
+const { side = 'top', delay } = defineProps<{
+  /** Short text shown on hover and focus. It also describes the trigger to screen readers. The content slot replaces it. */
+  content?: string
+  /** Preferred side of the trigger. It flips when there is no room. */
+  side?: Side
+  /** Delay before showing on hover. Defaults to the tooltip delay token. */
+  delay?: number
+}>()
 const slots = defineSlots<{ default?: () => VNode[]; content?: () => unknown }>()
 
 const id = useId()
@@ -31,19 +28,16 @@ const anchor = shallowRef<HTMLElement | null>(null)
 const setAnchor = elementRef(anchor)
 const tip = ref<HTMLElement | null>(null)
 const { mounted, state } = usePresence(open, 'morph-out')
-const { style, side: placed, ready } = useFloating(anchor, tip, mounted, () => ({ side: props.side, offset: 8 }))
+const { style, side: placed, ready } = useFloating(anchor, tip, mounted, () => ({ side, offset: 8 }))
 // Vue sets a bare number as no length at all, so the place gets its unit here.
 // The tip grows out of the edge of the target it points to, a sliver as wide as the target, and folds back into it.
-const liquid = createLiquid(
-  () => tip.value,
-  () => tipEdge(anchor.value, placed.value),
-)
+const liquid = createMorph(() => tip.value, { origin: () => tipEdge(anchor.value, placed.value) })
 watch([state, () => mounted.value && ready.value], ([s, on]) => on && liquid.play(s), { flush: 'post' })
 
 // When it shows and hides (motion/tooltip.ts).
 const timer = createTipTimer(
   (v) => (open.value = v),
-  () => props.delay,
+  () => delay,
 )
 
 // Esc hides it without moving focus (WCAG 1.4.13), and only it, not a dialog behind it.
@@ -83,6 +77,7 @@ const trigger = () => {
       ref="tip"
       role="tooltip"
       :class="styles.tip"
+      data-slot="tooltip-content"
       :data-state="state"
       :data-side="placed"
       :style="style"

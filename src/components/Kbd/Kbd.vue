@@ -17,5 +17,5 @@ watchEffect((stop) => {
 </script>
 
 <template>
-  <kbd :class="styles.root" :data-down="down || undefined"><slot /></kbd>
+  <kbd data-slot="kbd" :class="styles.root" :data-state="down ? 'on' : 'off'"><slot /></kbd>
 </template>

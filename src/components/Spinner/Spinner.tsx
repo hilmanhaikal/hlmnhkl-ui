@@ -18,10 +18,10 @@ export function Spinner({ size = 'md', label = 'Loading', className }: SpinnerPr
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   return (
-    <span className={cx(styles.root, styles[size], className)} role={label ? 'status' : undefined}>
+    <span className={cx(styles.root, styles[size], className)} data-slot="spinner" role={label ? 'status' : undefined}>
       <svg className={styles.svg} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <circle className={styles.track} cx="12" cy="12" r="9.5" />
-        <circle className={styles.arc} cx="12" cy="12" r="9.5" pathLength="100" />
+        <circle className={styles.track} data-slot="spinner-track" cx="12" cy="12" r="9.5" />
+        <circle className={styles.arc} data-slot="spinner-indicator" cx="12" cy="12" r="9.5" pathLength="100" />
       </svg>
       {label && <span className={styles.srOnly}>{mounted ? label : null}</span>}
     </span>

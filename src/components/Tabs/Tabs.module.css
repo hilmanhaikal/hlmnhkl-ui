@@ -1,6 +1,7 @@
+@layer gooee.components {
 .root {
   /* The panel's surface; the chosen tab rises out of it in the same colour (--gooee-tabs-panel, by theme). */
-  --tabs-panel: var(--gooee-tabs-panel);
+  --tabs-panel: var(--gooee-tabs-panel, light-dark(var(--gooee-color-surface-active), var(--gooee-color-surface-sunken)));
   --tabs-r: var(--gooee-radius-md);
   display: flex;
   flex-direction: column;
@@ -56,7 +57,7 @@
 
 .tab:focus-visible {
   outline: none;
-  box-shadow: inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg);
+  box-shadow: inset 0 0 0 var(--gooee-focus-width) var(--gooee-color-fg);
 }
 
 /* The rise: the panel's surface grown up behind the chosen tab, with rounded top corners and soft inside
@@ -99,4 +100,5 @@
 
 @keyframes panelIn {
   from { opacity: 0; }
+}
 }

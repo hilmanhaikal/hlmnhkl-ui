@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   --s: var(--gooee-control-h-md);
   position: relative;
@@ -17,8 +18,8 @@
   font-weight: var(--gooee-weight-medium);
   cursor: pointer;
   transition:
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    border-color var(--gooee-motion-base) var(--gooee-ease-out);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    border-color var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .root::after {
@@ -34,8 +35,8 @@
   .root:hover { background: var(--gooee-color-surface-hover); }
 }
 .root:focus-visible { outline: none; box-shadow: var(--gooee-focus-ring); }
-.root[data-copied] { border-color: var(--gooee-color-fg); }
-.root[data-failed] { border-color: var(--gooee-color-danger); color: var(--gooee-color-danger); }
+.root[data-status='copied'] { border-color: var(--gooee-color-fg); }
+.root[data-status='failed'] { border-color: var(--gooee-color-danger); color: var(--gooee-color-danger); }
 
 /* With a label, CopyButton.tsx sets --cap-shift so the icon sits on the middle of the capitals. */
 .icons {
@@ -67,10 +68,10 @@
 }
 
 .fail,
-.root[data-failed] .copy {
+.root[data-status='failed'] .copy {
   transition:
-    opacity var(--gooee-motion-fast) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+    opacity var(--gooee-motion-fast) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .check {
@@ -86,11 +87,11 @@
 
 .fail { opacity: 0; transform: scale(0.4); }
 
-.root[data-copied] .copy { opacity: 0; }
-.root[data-failed] .copy { opacity: 0; transform: scale(0.4) rotate(-45deg); }
-.root[data-failed] .fail { opacity: 1; transform: none; }
+.root[data-status='copied'] .copy { opacity: 0; }
+.root[data-status='failed'] .copy { opacity: 0; transform: scale(0.4) rotate(-45deg); }
+.root[data-status='failed'] .fail { opacity: 1; transform: none; }
 
-.root[data-copied] .check { stroke-dashoffset: 0; }
+.root[data-status='copied'] .check { stroke-dashoffset: 0; }
 
 .labels {
   display: grid;
@@ -102,18 +103,18 @@
 .labelFailed {
   grid-area: 1 / 1;
   transition:
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring),
-    opacity var(--gooee-motion-base) var(--gooee-ease-out);
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph),
+    opacity var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .labelDone { transform: translateY(100%); opacity: 0; }
 /* Out of the layout until a copy fails, so the longer words do not widen every button. */
 .labelFailed { display: none; }
-.root[data-failed] .labelFailed { display: block; }
-.root[data-copied] .labelIdle,
-.root[data-failed] .labelIdle { transform: translateY(-100%); opacity: 0; }
-.root[data-copied] .labelDone,
-.root[data-failed] .labelFailed { transform: none; opacity: 1; }
+.root[data-status='failed'] .labelFailed { display: block; }
+.root[data-status='copied'] .labelIdle,
+.root[data-status='failed'] .labelIdle { transform: translateY(-100%); opacity: 0; }
+.root[data-status='copied'] .labelDone,
+.root[data-status='failed'] .labelFailed { transform: none; opacity: 1; }
 
 .srOnly {
   position: absolute;
@@ -122,4 +123,5 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
 }

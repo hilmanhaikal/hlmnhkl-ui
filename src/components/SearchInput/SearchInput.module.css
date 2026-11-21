@@ -1,3 +1,4 @@
+@layer gooee.components {
 /* Hide the browser's own clear button */
 .root input::-webkit-search-cancel-button,
 .root input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }
@@ -16,10 +17,10 @@
   color: var(--gooee-color-fg);
   font-size: var(--gooee-icon-sm);
   cursor: pointer;
-  animation: popIn var(--gooee-motion-slow) var(--gooee-ease-spring);
+  animation: popIn var(--gooee-motion-slow) var(--gooee-ease-morph);
   transition:
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .clear::after {
@@ -36,7 +37,7 @@
 
 .hint {
   display: inline-flex;
-  animation: fadeIn var(--gooee-motion-base) var(--gooee-ease-out);
+  animation: fadeIn var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 /* Touch screens rarely have a keyboard; the shortcut still works */
@@ -50,4 +51,5 @@
 
 @keyframes fadeIn {
   from { opacity: 0; }
+}
 }

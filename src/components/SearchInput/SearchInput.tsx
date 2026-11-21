@@ -2,15 +2,20 @@
 
 import { useEffect, useRef } from 'react'
 import { cx } from '../../internal/cx'
-import { SearchIcon, XIcon } from '../../internal/icons'
+import { SearchIcon, XIcon } from '../../icons/icons'
 import { mergeRefs } from '../../internal/mergeRefs'
 import { shortcutFocus } from '../../internal/motion/keys'
 import { useControllable } from '../../internal/useControllable'
-import { Input, type InputProps } from '../Input'
+import { Input, type InputLabels, type InputProps } from '../Input'
 import { Kbd } from '../Kbd'
 import styles from './SearchInput.module.css'
 
-export type SearchInputProps = Omit<InputProps, 'type' | 'leading' | 'trailing' | 'value' | 'defaultValue' | 'onChange'> & {
+export type SearchInputLabels = InputLabels & {
+  /** Screen reader name for the clear button. */
+  clear: string
+}
+
+export type SearchInputProps = Omit<InputProps, 'type' | 'leading' | 'trailing' | 'value' | 'defaultValue' | 'onChange' | 'labels'> & {
   /** Search text, when you control it. */
   value?: string
   /** Starting value when you do not control it. */
@@ -21,8 +26,8 @@ export type SearchInputProps = Omit<InputProps, 'type' | 'leading' | 'trailing' 
   onSearch?: (value: string) => void
   /** A single key, such as "/". Pressing it anywhere on the page focuses the field. */
   shortcut?: string
-  /** Screen reader name for the clear button. */
-  clearLabel?: string
+  /** Text for the label and the clear button, so you can translate it. Missing keys use the English defaults. */
+  labels?: Partial<SearchInputLabels>
 }
 
 export function SearchInput({
@@ -31,7 +36,7 @@ export function SearchInput({
   onValueChange,
   onSearch,
   shortcut,
-  clearLabel = 'Clear search',
+  labels,
   className,
   ref,
   onKeyDown,
@@ -48,6 +53,7 @@ export function SearchInput({
   return (
     <Input
       {...rest}
+      labels={labels}
       ref={mergeRefs(inputRef, ref)}
       className={cx(styles.root, className)}
       type="search"
@@ -72,7 +78,8 @@ export function SearchInput({
           <button
             type="button"
             className={styles.clear}
-            aria-label={clearLabel}
+            data-slot="search-input-clear"
+            aria-label={labels?.clear ?? 'Clear search'}
             onClick={() => {
               setValue('')
               inputRef.current?.focus()
@@ -81,7 +88,7 @@ export function SearchInput({
             <XIcon />
           </button>
         ) : shortcut ? (
-          <span className={styles.hint} aria-hidden="true">
+          <span className={styles.hint} data-slot="search-input-shortcut" aria-hidden="true">
             <Kbd listen={shortcut}>{shortcut}</Kbd>
           </span>
         ) : null

@@ -63,20 +63,21 @@ export function InputGroup({
   }
 
   const addon = (node: ReactNode, side: 'prefix' | 'suffix') => (
-    <span id={text(node) ? `${inputId}-${side}` : undefined} className={styles.addon} data-side={side} onPointerDown={focusField}>
+    <span id={text(node) ? `${inputId}-${side}` : undefined} data-slot={`input-group-${side}`} className={styles.addon} onPointerDown={focusField}>
       {node}
     </span>
   )
 
   return (
-    <div className={cx(styles.root, className)}>
-      <label htmlFor={inputId} className={cx(styles.label, hideLabel && styles.srOnly)}>{label}</label>
-      <div className={cx(styles.group, styles[size])} data-invalid={error ? true : undefined} data-disabled={disabled || undefined}>
+    <div data-slot="input-group" className={cx(styles.root, className)}>
+      <label htmlFor={inputId} data-slot="field-label" className={cx(styles.label, hideLabel && styles.srOnly)}>{label}</label>
+      <div data-slot="input-group-field" className={cx(styles.group, styles[size])} data-invalid={error ? true : undefined} data-disabled={disabled || undefined}>
         {prefix !== undefined && prefix !== null && addon(prefix, 'prefix')}
         <input
           {...rest}
           id={inputId}
           ref={mergeRefs(inner, ref)}
+          data-slot="input-group-control"
           className={styles.input}
           disabled={disabled}
           aria-invalid={error ? true : undefined}

@@ -6,22 +6,19 @@ import styles from './Toggle.module.css'
 // other attributes and listeners go to the button.
 defineOptions({ inheritAttrs: false })
 
-const props = withDefaults(
-  defineProps<{
-    /** Starting pressed state when there is no v-model. */
-    defaultPressed?: boolean
-    /** Height and text size, the same as Button. */
-    size?: 'sm' | 'md' | 'lg'
-    type?: 'button' | 'submit' | 'reset'
-  }>(),
-  { defaultPressed: false, size: 'md', type: 'button' },
-)
-/** Pressed state. Use v-model:pressed, or leave it out and the toggle keeps its own state. */
-const model = defineModel<boolean | undefined>('pressed', { type: Boolean, default: undefined })
+const { defaultPressed = false, size = 'md', type = 'button' } = defineProps<{
+  /** Starting pressed state when there is no v-model. */
+  defaultPressed?: boolean
+  /** Height and text size, the same as Button. */
+  size?: 'sm' | 'md' | 'lg'
+  type?: 'button' | 'submit' | 'reset'
+}>()
+/** Pressed state. Use v-model, or leave it out and the toggle keeps its own state. */
+const model = defineModel<boolean | undefined>({ type: Boolean, default: undefined })
 const slots = useSlots() as { default?: () => unknown; icon?: () => unknown }
 const attrs = useAttrs()
 
-const own = ref(props.defaultPressed)
+const own = ref(defaultPressed)
 const pressed = computed(() => model.value ?? own.value)
 const rest = computed(() => {
   const { onClick: _onClick, ...others } = attrs
@@ -43,10 +40,11 @@ const onClick = (e: MouseEvent) => {
     :type="type"
     :aria-pressed="pressed"
     :class="[styles.root, styles[size], !slots.default && styles.iconOnly]"
-    :data-on="pressed || undefined"
+    data-slot="toggle"
+    :data-state="pressed ? 'on' : 'off'"
     @click="onClick"
   >
-    <span v-if="slots.icon" :class="styles.icon"><slot name="icon" /></span>
+    <span v-if="slots.icon" :class="styles.icon" data-slot="toggle-icon"><slot name="icon" /></span>
     <slot />
   </button>
 </template>

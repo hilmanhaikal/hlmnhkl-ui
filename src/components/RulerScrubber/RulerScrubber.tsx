@@ -3,11 +3,11 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { clamp, follow, pull, roundTo, wheelSteps } from '../../internal/feel'
-import { morphCurve, readMotionMs } from '../../internal/motion'
+import { morphCurve, motionMs } from '../../internal/motion'
 import { measureRuler, rulerScale, rulerScrub, type RulerFit } from '../../internal/motion/ruler'
 import { Roll } from '../../internal/Roll'
 import { useControllable } from '../../internal/useControllable'
-import { ink, useOnChange, useScrub } from '../../internal/useScrub'
+import { ink, useScrub } from '../../internal/useScrub'
 import styles from './RulerScrubber.module.css'
 
 export type RulerScrubberProps = Omit<ComponentPropsWithRef<'div'>, 'defaultValue' | 'onChange' | 'children'> & {
@@ -17,10 +17,10 @@ export type RulerScrubberProps = Omit<ComponentPropsWithRef<'div'>, 'defaultValu
   value?: number
   /** Starting value when you do not control it. Undefined starts at min. */
   defaultValue?: number
-  /** Called once the ruler comes to rest on a new value. */
+  /** Called with each new value under the needle, while the ruler still moves. */
   onValueChange?: (value: number) => void
-  /** Called with the value under the needle while the ruler still moves. */
-  onScrub?: (value: number) => void
+  /** Called once the ruler comes to rest on a new value. */
+  onValueCommit?: (value: number) => void
   /** Lowest value. */
   min?: number
   /** Highest value. */
@@ -48,7 +48,7 @@ export function RulerScrubber({
   value: valueProp,
   defaultValue,
   onValueChange,
-  onScrub,
+  onValueCommit,
   min = 0,
   max = 100,
   step = 1,
@@ -76,7 +76,7 @@ export function RulerScrubber({
   const wheel = useRef(wheelSteps())
 
   // The drag, keys, tap and wheel (motion/ruler.ts) on the shared scrubber.
-  const sc = useScrub({ value, ...rulerScrub(scale, fit, wheel.current), onSettle: setValue, haptics })
+  const sc = useScrub({ value, ...rulerScrub(scale, fit, wheel.current), onMark: setValue, onSettle: (v) => onValueCommit?.(v), haptics })
 
   useLayoutEffect(() => {
     const el = sc.ref.current
@@ -91,24 +91,23 @@ export function RulerScrubber({
   // The ticks lean and grow only while the ruler moves. The lean eases in as it starts and settles flat as it stops.
   const [lean, setLean] = useState(0)
   const leaning = useRef<ReturnType<typeof follow> | null>(null)
-  if (!leaning.current) leaning.current = follow({ time: () => readMotionMs('morph-out'), curve: morphCurve(), onFrame: setLean })
+  if (!leaning.current) leaning.current = follow({ time: () => motionMs('morph-out'), curve: morphCurve(), onFrame: setLean })
   useEffect(() => {
-    leaning.current?.set(sc.moving && readMotionMs('morph-out') > 0 ? 1 : 0)
+    leaning.current?.set(sc.moving && motionMs('morph-out') > 0 ? 1 : 0)
   }, [sc.moving])
   useEffect(() => () => leaning.current?.stop(), [])
 
   const shown = land(sc.at)
-  useOnChange(shown, onScrub)
 
   return (
-    <div className={cx(styles.root, className)} {...rest}>
+    <div className={cx(styles.root, className)} data-slot="ruler-scrubber" {...rest}>
       <div className={styles.head}>
-        <span id={labelId} className={styles.label}>
+        <span id={labelId} className={styles.label} data-slot="field-label">
           {label}
         </span>
         <Roll text={formatValue(shown)} className={styles.readout} />
         {detail && (
-          <span id={detailId} className={styles.detail}>
+          <span id={detailId} className={styles.detail} data-slot="ruler-scrubber-detail">
             {detail}
           </span>
         )}
@@ -116,6 +115,7 @@ export function RulerScrubber({
       <div
         ref={sc.ref}
         className={styles.track}
+        data-slot="ruler-scrubber-track"
         role="slider"
         tabIndex={0}
         aria-labelledby={labelId}
@@ -128,7 +128,7 @@ export function RulerScrubber({
         data-leaning={lean > 0 || undefined}
         {...sc.handlers}
       >
-        <span className={styles.needle} aria-hidden />
+        <span className={styles.needle} data-slot="ruler-scrubber-needle" aria-hidden />
         <div className={styles.clip} aria-hidden>
           {all.map((v, i) => {
             const d = (v - sc.at) / step
@@ -138,9 +138,10 @@ export function RulerScrubber({
             const tilt = -Math.sign(d) * 14 * Math.sin(Math.PI * Math.min(1, Math.abs(d) / 6)) * (1 - on)
             const tier = labelled.has(v) ? 'major' : i % 2 === 0 ? 'mid' : 'minor'
             return (
-              <span key={v} className={styles.mark} style={{ transform: `translateX(calc(${d.toFixed(3)} * var(--gooee-ruler-tick-gap)))` }}>
+              <span key={v} className={styles.mark} style={{ transform: `translateX(calc(${d.toFixed(3)} * var(--gooee-ruler-scrubber-tick-gap)))` }}>
                 <i
                   className={styles.tick}
+                  data-slot="ruler-scrubber-tick"
                   data-tier={tier}
                   style={{
                     background: ink(on, tier === 'major' ? 'var(--gooee-color-fg-muted)' : 'var(--gooee-color-border-strong)', 'var(--gooee-color-accent)'),
@@ -148,7 +149,7 @@ export function RulerScrubber({
                   }}
                 />
                 {tier === 'major' && (
-                  <span className={styles.num} style={{ color: ink(pull(d, 2)) }}>
+                  <span className={styles.num} data-slot="ruler-scrubber-number" style={{ color: ink(pull(d, 2)) }}>
                     {markText(v)}
                   </span>
                 )}
@@ -159,7 +160,7 @@ export function RulerScrubber({
         {strongLabel && (
           <div className={styles.tags} aria-hidden>
             {/* Measured once, so a tag near an end can stay whole inside the ruler. */}
-            <span ref={tagRef} className={styles.tag} data-measure>
+            <span ref={tagRef} className={styles.tag} data-slot="ruler-scrubber-tag" data-measure>
               {strongLabel}
             </span>
             {[...strongSet].map((v) => {
@@ -167,7 +168,7 @@ export function RulerScrubber({
               const room = (fit.width - fit.tag) / 2
               if (!fit.gap || Math.abs(x) > fit.width / 2) return null
               return (
-                <span key={v} className={styles.tag} style={{ transform: `translateX(calc(${clamp(x, -room, room).toFixed(1)}px - 50%))` }}>
+                <span key={v} className={styles.tag} data-slot="ruler-scrubber-tag" style={{ transform: `translateX(calc(${clamp(x, -room, room).toFixed(1)}px - 50%))` }}>
                   {strongLabel}
                 </span>
               )

@@ -27,10 +27,11 @@ export function IconButton({
     <button
       type={type}
       aria-label={label}
+      data-slot="icon-button"
       className={cx(styles.root, styles[variant], styles[size], className)}
       {...rest}
     >
-      <span className={styles.icon}>{icon}</span>
+      <span data-slot="icon-button-icon" className={styles.icon}>{icon}</span>
     </button>
   )
 }

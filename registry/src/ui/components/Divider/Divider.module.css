@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .root {
   flex: none;
   background: var(--gooee-color-border);
@@ -8,8 +9,8 @@
 .vertical { align-self: stretch; width: var(--gooee-line); min-height: 1em; }
 
 .animated.horizontal,
-.animated .line { animation: drawX var(--gooee-motion-slower) var(--gooee-ease-out); }
-.animated.vertical { animation: drawY var(--gooee-motion-slower) var(--gooee-ease-out); }
+.animated .line { animation: drawX var(--gooee-motion-slower) var(--gooee-ease-morph); }
+.animated.vertical { animation: drawY var(--gooee-motion-slower) var(--gooee-ease-morph); }
 
 .labelled {
   display: flex;
@@ -33,8 +34,9 @@
   color: var(--gooee-color-fg-muted);
 }
 
-.animated .text { animation: fade var(--gooee-motion-slower) var(--gooee-ease-out); }
+.animated .text { animation: fade var(--gooee-motion-slower) var(--gooee-ease-morph); }
 
 @keyframes drawX { from { transform: scaleX(0); } }
 @keyframes drawY { from { transform: scaleY(0); } }
 @keyframes fade { from { opacity: 0; } }
+}

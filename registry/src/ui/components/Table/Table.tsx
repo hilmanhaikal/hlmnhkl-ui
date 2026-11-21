@@ -101,9 +101,9 @@ function Check({ checked, mixed, label, disabled, onChange }: { checked: boolean
     if (ref.current) ref.current.indeterminate = Boolean(mixed)
   }, [mixed])
   return (
-    <span className={styles.check}>
-      <input ref={ref} type="checkbox" aria-label={label} checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} className={styles.checkInput} />
-      <span className={styles.checkBox} data-state={mixed ? 'mixed' : checked ? 'on' : 'off'} aria-hidden="true">
+    <span className={styles.check} data-slot="table-checkbox">
+      <input ref={ref} type="checkbox" data-slot="table-checkbox-input" aria-label={label} checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} className={styles.checkInput} />
+      <span className={styles.checkBox} data-slot="table-checkbox-indicator" data-state={mixed ? 'indeterminate' : checked ? 'checked' : 'unchecked'} aria-hidden="true">
         <svg viewBox="0 0 16 16">
           <path className={styles.tick} d="M3.5 8.5l3 3 6-7" pathLength="1" />
           <path className={styles.dash} d="M4 8h8" pathLength="1" />
@@ -163,22 +163,18 @@ export function Table<T>({
   const [announce, setAnnounce] = useState('')
   const tableRef = useRef<HTMLTableElement>(null)
   const lastTops = useRef(new Map<string, number>())
-  const lastShape = useRef('')
   const groupOrder = useRef<string[]>([])
 
   const sorted = useMemo(() => sortRows(rows, columns, sort), [rows, columns, sort])
 
   const groups = groupBy ? groupRows(rows, sorted, groupBy, groupOrder.current) : null
-  const shape = groups ? groups.map((g) => g.key).join('|') : ''
   const order = groups ? groups.map((g) => `${g.key}:${g.rows.map(getRowId).join(',')}`).join('|') : sorted.map(getRowId).join('|')
 
-  // FLIP: rows glide to their new place after a sort. When the groups themselves change, they snap
-  // there with the spring, so the table visibly splits apart and closes up again.
+  // FLIP: rows glide to their new place after a sort or a regroup.
   useLayoutEffect(() => {
     const table = tableRef.current
     if (!table) return
-    lastTops.current = flipRows(table, lastTops.current, shape !== lastShape.current)
-    lastShape.current = shape
+    lastTops.current = flipRows(table, lastTops.current)
   }, [order])
 
   const labelOf = (c: TableColumn<T>) => c.label ?? (typeof c.header === 'string' ? c.header : c.key)
@@ -206,14 +202,14 @@ export function Table<T>({
     const rid = getRowId(row)
     const on = selectedSet.has(rid)
     return (
-      <tr key={rid} role="row" data-row-id={rid} className={styles.row} data-selected={on || undefined} style={{ ['--i' as string]: Math.min(ri, 12) }}>
+      <tr key={rid} role="row" data-row-id={rid} className={styles.row} data-slot="table-row" data-selected={on || undefined} style={{ ['--i' as string]: Math.min(ri, 12) }}>
         {selectable && (
-          <td role="cell" className={styles.checkCell}>
+          <td role="cell" className={styles.checkCell} data-slot="table-cell">
             <Check checked={on} label={labels.selectRow(nameOf(row))} onChange={(v) => setSelected(v ? [...selected, rid] : selected.filter((s) => s !== rid))} />
           </td>
         )}
         {columns.map((c) => (
-          <td key={c.key} role="cell" className={styles.td} data-align={c.align ?? 'start'} data-label={labelOf(c)}>
+          <td key={c.key} role="cell" className={styles.td} data-slot="table-cell" data-align={c.align ?? 'start'} data-label={labelOf(c)}>
             {/* One wrapper, so the card layout always gets a label and a value */}
             <span>{c.cell ? c.cell(row) : String(read(row, c.key) ?? '')}</span>
           </td>
@@ -223,17 +219,17 @@ export function Table<T>({
   }
 
   return (
-    <div className={cx(styles.root, className)} data-layout={layout} data-more-start={more.start || undefined} data-more-end={more.end || undefined}>
-      <div ref={scrollRef} onScroll={measure} onFocus={reveal} className={styles.scroll} style={{ maxHeight }} tabIndex={scrollable ? 0 : undefined} role={scrollable ? 'region' : undefined} aria-labelledby={scrollable ? `${id}-cap` : undefined}>
+    <div className={cx(styles.root, className)} data-slot="table" data-layout={layout} data-more-start={more.start || undefined} data-more-end={more.end || undefined}>
+      <div ref={scrollRef} onScroll={measure} onFocus={reveal} className={styles.scroll} data-slot="table-container" style={{ maxHeight }} tabIndex={scrollable ? 0 : undefined} role={scrollable ? 'region' : undefined} aria-labelledby={scrollable ? `${id}-cap` : undefined}>
         {/* Explicit roles keep table semantics when rows restyle as cards (layout="stack") */}
-        <table ref={tableRef} role="table" className={styles.table} aria-labelledby={`${id}-cap`} aria-busy={loading || undefined}>
-          <caption id={`${id}-cap`} className={cx(styles.caption, hideCaption && styles.srOnly)}>
+        <table ref={tableRef} role="table" className={styles.table} data-slot="table-element" aria-labelledby={`${id}-cap`} aria-busy={loading || undefined}>
+          <caption id={`${id}-cap`} className={cx(styles.caption, hideCaption && styles.srOnly)} data-slot="table-caption">
             {caption}
           </caption>
-          <thead role="rowgroup" className={styles.head}>
+          <thead role="rowgroup" className={styles.head} data-slot="table-header">
             <tr role="row">
               {selectable && (
-                <th role="columnheader" scope="col" className={styles.checkCell}>
+                <th role="columnheader" scope="col" className={styles.checkCell} data-slot="table-head">
                   <Check
                     checked={allOn}
                     mixed={someOn}
@@ -253,14 +249,15 @@ export function Table<T>({
                     scope="col"
                     aria-sort={c.sortable ? (dir ?? 'none') : undefined}
                     className={styles.th}
+                    data-slot="table-head"
                     data-align={c.align ?? 'start'}
                     data-sortable={c.sortable || undefined}
                     style={{ width: c.width }}
                   >
                     {c.sortable ? (
-                      <button type="button" className={styles.sortButton} disabled={loading} data-active={active || undefined} onClick={() => toggleSort(c.key)}>
+                      <button type="button" className={styles.sortButton} data-slot="table-sort" disabled={loading} data-state={active ? 'active' : 'inactive'} onClick={() => toggleSort(c.key)}>
                         <span>{c.header}</span>
-                        <svg viewBox="0 0 16 16" className={styles.sortIcon} data-dir={dir} aria-hidden="true">
+                        <svg viewBox="0 0 16 16" className={styles.sortIcon} data-slot="table-sort-icon" data-dir={dir} aria-hidden="true">
                           <path d="M8 12.5v-9M4.5 7L8 3.5 11.5 7" />
                         </svg>
                       </button>
@@ -273,12 +270,12 @@ export function Table<T>({
             </tr>
           </thead>
           {loading ? (
-            <tbody role="rowgroup">
+            <tbody role="rowgroup" data-slot="table-body">
               {Array.from({ length: loadingRows }, (_, r) => (
-                <tr key={r} aria-hidden="true" className={cx(styles.row, styles.loadingRow)}>
-                  {selectable && <td className={styles.checkCell} />}
+                <tr key={r} aria-hidden="true" className={cx(styles.row, styles.loadingRow)} data-slot="table-row">
+                  {selectable && <td className={styles.checkCell} data-slot="table-cell" />}
                   {columns.map((c, i) => (
-                    <td key={c.key} className={styles.td} data-align={c.align ?? 'start'} data-label={labelOf(c)}>
+                    <td key={c.key} className={styles.td} data-slot="table-cell" data-align={c.align ?? 'start'} data-label={labelOf(c)}>
                       <Skeleton shape="text" width={`${[72, 56, 84][(r + i) % 3]}%`} />
                     </td>
                   ))}
@@ -287,22 +284,22 @@ export function Table<T>({
             </tbody>
           ) : groups && groups.length > 0 ? (
             groups.map((g) => (
-              <tbody key={g.key} role="rowgroup" className={styles.group}>
-                <tr role="row" data-row-id={`group:${g.key}`} className={styles.groupRow}>
-                  <th role="rowheader" scope="rowgroup" colSpan={colCount} className={styles.groupHead}>
+              <tbody key={g.key} role="rowgroup" className={styles.group} data-slot="table-body">
+                <tr role="row" data-row-id={`group:${g.key}`} className={styles.groupRow} data-slot="table-group-row">
+                  <th role="rowheader" scope="rowgroup" colSpan={colCount} className={styles.groupHead} data-slot="table-group-head">
                     <span>{g.key}</span>{' '}
-                    <span className={styles.groupCount}>{labels.groupCount(g.rows.length)}</span>
+                    <span className={styles.groupCount} data-slot="table-group-count">{labels.groupCount(g.rows.length)}</span>
                   </th>
                 </tr>
                 {g.rows.map(renderRow)}
               </tbody>
             ))
           ) : (
-            <tbody role="rowgroup">
+            <tbody role="rowgroup" data-slot="table-body">
               {sorted.map(renderRow)}
               {sorted.length === 0 && (
                 <tr role="row">
-                  <td role="cell" colSpan={colCount} className={styles.empty}>
+                  <td role="cell" colSpan={colCount} className={styles.empty} data-slot="table-empty">
                     {emptyText}
                   </td>
                 </tr>

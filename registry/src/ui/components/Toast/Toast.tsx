@@ -2,18 +2,21 @@
 'use client'
 
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { CheckCircleIcon, ErrorIcon, InfoIcon, XIcon } from '../../internal/icons'
+import { CheckCircleIcon, ErrorIcon, InfoIcon, XIcon } from '../../icons/icons'
 import { motionMs } from '../../internal/motion'
-import { createToastBud, createToastSwipe, toastId, toastLayout, toastSay, toastStack, toastTimer, watchToastHeight, type ToastLeaving, type ToastOrigin, type ToastVariant } from '../../internal/motion/toast'
+import { createToastBud, createToastSwipe, toastId, toastLayout, toastSay, toastStack, toastTimer, watchToastHeight, type ToastLeaving, type ToastOrigin, type ToastTone } from '../../internal/motion/toast'
 import { Spinner } from '../Spinner'
 import styles from './Toast.module.css'
 
-export type { ToastVariant }
+export type { ToastTone }
 
 export type ToastOptions = {
   title: string
   description?: string
-  variant?: ToastVariant
+  /** Sets the icon and colour. Danger is announced at once. */
+  tone?: ToastTone
+  /** Shows a spinner and keeps the toast until you update it with loading: false. */
+  loading?: boolean
   /** Milliseconds before it leaves. Infinity keeps it until dismissed. */
   duration?: number
   action?: { label: string; onClick: () => void }
@@ -37,18 +40,26 @@ export function useToast(): Api {
   return c
 }
 
+export type ToastLabels = {
+  /** Name of each close button. The toast title is added after it. */
+  dismiss: string
+}
+
+const defaultLabels: ToastLabels = { dismiss: 'Dismiss' }
+
 export type ToastProviderProps = {
   /** Your app. Anything inside can call useToast. */
   children: ReactNode
-  /** How many toasts stay visible in the stack. */
-  visible?: number
+  /** Most toasts shown in the stack at once. */
+  max?: number
   /** Name of the notification region for screen readers. */
   label?: string
-  /** Screen reader name for each close button. The toast title is added after it. */
-  dismissLabel?: string
+  /** Screen reader text, so you can translate it. Missing keys use the English defaults. */
+  labels?: Partial<ToastLabels>
 }
 
-export function ToastProvider({ children, visible = 3, label = 'Notifications', dismissLabel = 'Dismiss' }: ToastProviderProps) {
+export function ToastProvider({ children, max = 3, label = 'Notifications', labels: labelsProp }: ToastProviderProps) {
+  const labels = { ...defaultLabels, ...labelsProp }
   const [items, setItems] = useState<Item[]>([])
   const [heights, setHeights] = useState<Record<number, number>>({})
   const [expanded, setExpanded] = useState(false)
@@ -63,9 +74,9 @@ export function ToastProvider({ children, visible = 3, label = 'Notifications', 
     return () => pending.forEach((t) => window.clearTimeout(t))
   }, [])
 
-  const say = (opts: Partial<ToastOptions>, variant?: ToastVariant) => {
+  const say = (opts: Partial<ToastOptions>, tone?: ToastTone) => {
     const fresh = (prev: string) => toastSay(prev, opts)
-    if (variant === 'error') setUrgent(fresh)
+    if (tone === 'danger') setUrgent(fresh)
     else setAnnounce(fresh)
   }
 
@@ -83,28 +94,29 @@ export function ToastProvider({ children, visible = 3, label = 'Notifications', 
     () => ({
       toast: (opts) => {
         const id = toastId()
-        setItems((list) => [...list, { duration: 5000, variant: 'default', ...opts, id, leaving: false }])
-        say(opts, opts.variant)
+        setItems((list) => [...list, { duration: 5000, tone: 'neutral', ...opts, id, leaving: false }])
+        say(opts, opts.tone)
         return id
       },
       update: (id, opts) => {
         setItems((list) => list.map((t) => (t.id === id ? { ...t, ...opts } : t)))
-        if (opts.title) say(opts, opts.variant ?? itemsRef.current.find((t) => t.id === id)?.variant)
+        if (opts.title) say(opts, opts.tone ?? itemsRef.current.find((t) => t.id === id)?.tone)
       },
       dismiss: (id) => remove(id),
     }),
     [remove],
   )
 
-  const { layout, frontHeight, height } = toastLayout(items, heights, expanded, visible)
+  const { layout, frontHeight, height } = toastLayout(items, heights, expanded, max)
 
   return (
-    <ToastCtx.Provider value={api}>
+    <ToastCtx value={api}>
       {children}
       <div className={styles.srOnly} role="status" aria-live="polite" aria-atomic="true">{announce}</div>
       <div className={styles.srOnly} role="alert" aria-atomic="true">{urgent}</div>
       <section
         className={styles.viewport}
+        data-slot="toast-viewport"
         // Toasts are not part of an open dialog, but tapping one should not close it.
         data-gooee-layer-ignore=""
         aria-label={label}
@@ -114,7 +126,7 @@ export function ToastProvider({ children, visible = 3, label = 'Notifications', 
         onFocus={() => setExpanded(true)}
         onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setExpanded(false)}
       >
-        <ol className={styles.list}>
+        <ol className={styles.list} data-slot="toast-list">
           {layout.map(({ t, index, y }) => (
             <ToastItem
               key={t.id}
@@ -122,15 +134,15 @@ export function ToastProvider({ children, visible = 3, label = 'Notifications', 
               index={index}
               y={y}
               expanded={expanded}
-              hidden={index >= visible}
+              hidden={index >= max}
               onHeight={(h) => setHeights((m) => (m[t.id] === h ? m : { ...m, [t.id]: h }))}
               onDismiss={(dir) => remove(t.id, dir)}
-              dismissLabel={dismissLabel}
+              labels={labels}
             />
           ))}
         </ol>
       </section>
-    </ToastCtx.Provider>
+    </ToastCtx>
   )
 }
 
@@ -142,18 +154,17 @@ type ItemProps = {
   hidden: boolean
   onHeight: (h: number) => void
   onDismiss: (dir: Item['leaving']) => void
-  dismissLabel: string
+  labels: ToastLabels
 }
 
-const icons: Record<ToastVariant, ReactNode> = {
-  default: null,
+const icons: Record<ToastTone, ReactNode> = {
+  neutral: null,
   success: <CheckCircleIcon />,
-  error: <ErrorIcon />,
+  danger: <ErrorIcon />,
   info: <InfoIcon />,
-  loading: <Spinner size="sm" label={null} />,
 }
 
-function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, dismissLabel }: ItemProps) {
+function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, labels }: ItemProps) {
   const ref = useRef<HTMLLIElement>(null)
   const [dragging, setDragging] = useState(false)
   const [hover, setHover] = useState(false)
@@ -189,11 +200,11 @@ function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, dism
   const remaining = useRef(item.duration ?? 5000)
   useEffect(() => {
     remaining.current = item.duration ?? 5000
-  }, [item.duration, item.variant])
+  }, [item.duration, item.tone, item.loading])
   useEffect(() => {
-    if (paused || !Number.isFinite(remaining.current) || item.variant === 'loading') return
+    if (paused || !Number.isFinite(remaining.current) || item.loading) return
     return toastTimer(remaining, () => onDismiss('down'))
-  }, [paused, item.variant, item.duration])
+  }, [paused, item.tone, item.loading, item.duration])
 
   const { y: stackedY, scale } = toastStack(index, y, expanded)
 
@@ -201,6 +212,7 @@ function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, dism
     <li
       ref={ref}
       className={styles.toast}
+      data-slot="toast"
       data-leaving={item.leaving || undefined}
       data-dragging={dragging || undefined}
       data-hidden={hidden || undefined}
@@ -219,15 +231,20 @@ function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, dism
       onPointerUp={swipe.up}
       onPointerCancel={swipe.up}
     >
-      {icons[item.variant ?? 'default'] && <span className={styles.icon} data-variant={item.variant}>{icons[item.variant ?? 'default']}</span>}
-      <div className={styles.text}>
-        <p className={styles.title}>{item.title}</p>
-        {item.description && <p className={styles.description}>{item.description}</p>}
+      {(item.loading || icons[item.tone ?? 'neutral']) && (
+        <span className={styles.icon} data-slot="toast-icon" data-tone={item.loading ? undefined : item.tone}>
+          {item.loading ? <Spinner size="sm" label={null} /> : icons[item.tone ?? 'neutral']}
+        </span>
+      )}
+      <div className={styles.text} data-slot="toast-content">
+        <p className={styles.title} data-slot="toast-title">{item.title}</p>
+        {item.description && <p className={styles.description} data-slot="toast-description">{item.description}</p>}
       </div>
       {item.action && (
         <button
           type="button"
           className={styles.action}
+          data-slot="toast-action"
           onClick={() => {
             item.action?.onClick()
             onDismiss('down')
@@ -236,7 +253,7 @@ function ToastItem({ item, index, y, expanded, hidden, onHeight, onDismiss, dism
           {item.action.label}
         </button>
       )}
-      <button type="button" className={styles.close} aria-label={`${dismissLabel}: ${item.title}`} onClick={() => onDismiss('down')}>
+      <button type="button" className={styles.close} data-slot="toast-close" aria-label={`${labels.dismiss}: ${item.title}`} onClick={() => onDismiss('down')}>
         <XIcon />
       </button>
     </li>

@@ -63,7 +63,7 @@ export function createThemeIcon(body: () => SVGPathElement | null, start: number
     cancelAnimationFrame(raf)
     if (!el) return
     const from = shown
-    const length = motionMs('reveal')
+    const length = motionMs('morph-out')
     if (from === to || !length || prefersReducedMotion()) {
       shown = to
       draw(el, to)

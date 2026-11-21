@@ -83,7 +83,7 @@ export function bezier([x1, y1, x2, y2]: Curve) {
   }
 }
 
-export type MorphOptions = {
+export type MorphToOptions = {
   from: number
   to: number
   /** Units per second at the start. Toward `to`, a let-go carries on at the hand's speed, so the move takes less time. */
@@ -96,12 +96,12 @@ export type MorphOptions = {
   onDone?: () => void
 }
 
-/** Runs from `from` to `to` on the curve and stops there. Returns a stop function. */
-export function morphTo({ from, to, velocity = 0, duration, curve = MORPH, onFrame, onDone }: MorphOptions) {
+/** Runs from `from` to `to` on the curve and stops there. `stop` halts it where it is. */
+export function morphTo({ from, to, velocity = 0, duration, curve = MORPH, onFrame, onDone }: MorphToOptions) {
   if (!duration || from === to) {
     onFrame(to)
     onDone?.()
-    return () => {}
+    return { stop: () => {} }
   }
   const D = to - from
   // The curve starts at y1 / x1 times its average speed. A let-go toward `to` shortens the move until
@@ -126,13 +126,15 @@ export function morphTo({ from, to, velocity = 0, duration, curve = MORPH, onFra
     onFrame(from + D * ease(t))
     raf = requestAnimationFrame(step)
   })
-  return () => {
-    cancelAnimationFrame(raf)
-    clearTimeout(backstop)
+  return {
+    stop() {
+      cancelAnimationFrame(raf)
+      clearTimeout(backstop)
+    },
   }
 }
 
-export type GlideOptions = Omit<MorphOptions, 'to' | 'onDone'> & {
+export type GlideOptions = Omit<MorphToOptions, 'to' | 'onDone'> & {
   /** Where it comes to rest, given where the coast would end. */
   land: (end: number) => number
   /** How far a flick carries: its speed times this, in seconds. 0 lands under the hand. */
@@ -155,7 +157,7 @@ export function glide({ from, velocity = 0, land, coast = 0.2, maxSpeed = Infini
   }
   const v = clamp(velocity, -maxSpeed, maxSpeed)
   const to = land(from + v * coast)
-  return { to, stop: morphTo({ from, to, velocity: v, duration, curve, onFrame, onDone: () => onDone?.(to) }) }
+  return { to, stop: morphTo({ from, to, velocity: v, duration, curve, onFrame, onDone: () => onDone?.(to) }).stop }
 }
 
 /** A number that moves toward a target on the curve, over `time()` ms from where it is. A time of 0 jumps. */
@@ -171,7 +173,7 @@ export function follow({ value = 0, time, curve, onFrame }: { value?: number; ti
       if (target === to) return
       to = target
       stop()
-      stop = morphTo({ from: at, to, duration: time(), curve, onFrame: (v) => onFrame((at = v)) })
+      stop = morphTo({ from: at, to, duration: time(), curve, onFrame: (v) => onFrame((at = v)) }).stop
     },
     stop() {
       stop()

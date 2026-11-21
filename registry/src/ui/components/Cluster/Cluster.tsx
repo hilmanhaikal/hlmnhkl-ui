@@ -23,5 +23,5 @@ export function Cluster({ gap = 3, rowGap, align = 'center', justify = 'start', 
   // One cast keeps the ref and attribute types simple; every option is a block element.
   const Tag = as as 'div'
   const vars = { '--cluster-gap': space(gap), '--cluster-row-gap': space(rowGap ?? gap), ...style } as CSSProperties
-  return <Tag className={cx(styles.root, styles[`align-${align}`], styles[`justify-${justify}`], !wrap && styles.nowrap, className)} style={vars} {...rest} />
+  return <Tag data-slot="cluster" className={cx(styles.root, styles[`align-${align}`], styles[`justify-${justify}`], !wrap && styles.nowrap, className)} style={vars} {...rest} />
 }

@@ -1,3 +1,17 @@
+/* The script reads these tokens, so each is registered with its default: set it on :root to change it. */
+@property --gooee-dial-arc-radius {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 620px;
+}
+
+@property --gooee-dial-arc-gap {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 20px;
+}
+
+@layer gooee.components {
 .root {
   display: grid;
   justify-items: center;
@@ -52,15 +66,15 @@
 /* Printed knob */
 
 .printed {
-  --num-r: calc(var(--gooee-dial-size) * -0.29);
+  --num-r: calc(var(--gooee-dial-size, 208px) * -0.29);
 }
 
 .bezel {
   position: relative;
   display: grid;
   place-items: center;
-  width: var(--gooee-dial-ring);
-  height: var(--gooee-dial-ring);
+  width: var(--gooee-dial-ring, 244px);
+  height: var(--gooee-dial-ring, 244px);
   border-radius: var(--gooee-radius-full);
   border: var(--gooee-line) solid var(--gooee-color-border);
 }
@@ -77,8 +91,8 @@
 }
 
 .knob {
-  width: var(--gooee-dial-size);
-  height: var(--gooee-dial-size);
+  width: var(--gooee-dial-size, 208px);
+  height: var(--gooee-dial-size, 208px);
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-surface-raised);
   box-shadow: var(--gooee-shadow-2), inset 0 0 0 var(--gooee-line) var(--gooee-color-border);
@@ -112,7 +126,7 @@
 .tick {
   position: absolute;
   left: calc(var(--gooee-indicator) / -2);
-  top: calc(var(--gooee-dial-size) / -2 + var(--gooee-space-3));
+  top: calc(var(--gooee-dial-size, 208px) / -2 + var(--gooee-space-3));
   width: var(--gooee-indicator);
   height: var(--gooee-space-3);
   border-radius: var(--gooee-radius-full);
@@ -194,7 +208,7 @@
 }
 
 .mercuryHit {
-  width: min(100%, calc(var(--gooee-dial-ring) + var(--gooee-space-9)));
+  width: min(100%, calc(var(--gooee-dial-ring, 244px) + var(--gooee-space-9)));
   border-radius: var(--gooee-radius-panel);
   touch-action: none;
 }
@@ -224,7 +238,7 @@
   fill: var(--gooee-color-border-strong);
 }
 
-.dot[data-on] {
+.dot[data-selected] {
   fill: var(--gooee-color-accent);
 }
 
@@ -234,7 +248,7 @@
   fill: var(--gooee-color-fg-muted);
 }
 
-.level[data-on] {
+.level[data-selected] {
   fill: var(--gooee-color-accent);
   font-weight: var(--gooee-weight-semibold);
 }
@@ -246,9 +260,9 @@
 }
 
 .arcStage {
-  --rim: calc(var(--gooee-ruler-h) / 2);
+  --rim: calc(var(--gooee-ruler-scrubber-h, 120px) / 2);
   width: 100%;
-  height: var(--gooee-ruler-h);
+  height: var(--gooee-ruler-scrubber-h, 120px);
   border-radius: var(--gooee-radius-md);
   /* A sideways swipe turns it; up and down still scrolls the page. Dial.tsx takes a touch that follows
      the curve, so the page does not scroll under a turn. */
@@ -342,4 +356,5 @@
   margin-left: calc(var(--gooee-indicator) / -2);
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-fg);
+}
 }

@@ -61,16 +61,16 @@ export function FormField({ label, children, help, error, required, optional, di
   }
 
   return (
-    <Ctx.Provider value={{ controlProps, labelId }}>
-      <div className={cx(styles.root, className)} data-invalid={error ? true : undefined} data-disabled={disabled || undefined}>
-        <label id={labelId} htmlFor={controlId} className={styles.label}>
+    <Ctx value={{ controlProps, labelId }}>
+      <div data-slot="form-field" className={cx(styles.root, className)} data-invalid={error ? true : undefined} data-disabled={disabled || undefined}>
+        <label id={labelId} htmlFor={controlId} data-slot="field-label" className={styles.label}>
           {label}
-          {required && <span className={styles.required} aria-hidden="true"> *</span>}
-          {optional && !required && <span className={styles.optional}> {labels.optional}</span>}
+          {required && <span data-slot="form-field-required" className={styles.required} aria-hidden="true"> *</span>}
+          {optional && !required && <span data-slot="form-field-optional" className={styles.optional}> {labels.optional}</span>}
         </label>
-        <div className={styles.control}>{typeof children === 'function' ? children(controlProps) : children}</div>
+        <div data-slot="form-field-control" className={styles.control}>{typeof children === 'function' ? children(controlProps) : children}</div>
         <FieldMessage helpId={helpId} errorId={errorId} help={help} error={error} />
       </div>
-    </Ctx.Provider>
+    </Ctx>
   )
 }

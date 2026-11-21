@@ -1,3 +1,4 @@
+@layer gooee.base {
 *,
 *::before,
 *::after {
@@ -18,7 +19,7 @@ body {
   line-height: var(--gooee-leading-normal);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color var(--gooee-motion-base) var(--gooee-ease-out), color var(--gooee-motion-base) var(--gooee-ease-out);
+  transition: background-color var(--gooee-motion-base) var(--gooee-ease-morph), color var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 button,
@@ -36,4 +37,5 @@ svg {
 
 :focus:not(:focus-visible) {
   outline: none;
+}
 }

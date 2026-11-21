@@ -28,13 +28,14 @@ export function Fieldset({ legend, description, error, disabled, className, chil
     <fieldset
       {...rest}
       id={id}
+      data-slot="fieldset"
       className={cx(styles.root, className)}
       disabled={disabled}
       aria-describedby={describedBy || undefined}
     >
-      <legend className={styles.legend}>{legend}</legend>
-      {description && <p id={descId} className={styles.description}>{description}</p>}
-      <div className={styles.fields}>{children}</div>
+      <legend data-slot="fieldset-legend" className={styles.legend}>{legend}</legend>
+      {description && <p id={descId} data-slot="fieldset-description" className={styles.description}>{description}</p>}
+      <div data-slot="fieldset-fields" className={styles.fields}>{children}</div>
       <FieldMessage helpId={`${base}-help`} errorId={errorId} error={error} />
     </fieldset>
   )

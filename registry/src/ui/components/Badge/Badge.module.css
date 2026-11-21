@@ -1,11 +1,12 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .root {
   display: inline-flex;
   width: fit-content;
   align-items: center;
   gap: var(--gooee-space-2);
   max-width: 100%;
-  height: var(--gooee-badge-h);
+  height: var(--gooee-badge-h, 24px);
   padding: 0 calc(var(--gooee-space-3) - var(--gooee-line));
   border: var(--gooee-line) solid transparent;
   border-radius: var(--gooee-radius-full);
@@ -23,7 +24,7 @@
 .root[data-tone="success"] { --tone: var(--gooee-color-success); --tone-soft: var(--gooee-color-success-soft); --tone-fill: var(--gooee-color-success); --tone-on: var(--gooee-color-inverse-fg); }
 .root[data-tone="warning"] { --tone: var(--gooee-color-warning); --tone-soft: var(--gooee-color-warning-soft); --tone-fill: var(--gooee-color-warning); --tone-on: var(--gooee-color-inverse-fg); }
 /* Danger fills with the solid red, because the dark theme's text red is too light for white text. */
-.root[data-tone="danger"] { --tone: var(--gooee-color-danger); --tone-soft: var(--gooee-color-danger-soft); --tone-fill: var(--gooee-color-danger-solid); --tone-on: var(--gooee-color-on-danger); }
+.root[data-tone="danger"] { --tone: var(--gooee-color-danger); --tone-soft: var(--gooee-color-danger-soft); --tone-fill: var(--gooee-color-danger-solid); --tone-on: var(--gooee-color-danger-fg); }
 
 .solid[data-tone] { background: var(--tone-fill); color: var(--tone-on); }
 .outline[data-tone] { border-color: var(--tone); color: var(--tone); }
@@ -35,7 +36,7 @@
   min-width: 0;
   overflow-x: clip;
   text-overflow: ellipsis;
-  animation: pop var(--gooee-motion-slow) var(--gooee-ease-spring);
+  animation: pop var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .dot {
@@ -53,7 +54,7 @@
   inset: 0;
   border-radius: inherit;
   background: currentColor;
-  animation: pulse calc(var(--gooee-motion-slower) * 3) var(--gooee-ease-out) infinite;
+  animation: pulse calc(var(--gooee-motion-slower) * 3) var(--gooee-ease-morph) infinite;
 }
 
 @keyframes pop {
@@ -67,4 +68,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .dot[data-pulse]::after { animation: none; }
+}
 }

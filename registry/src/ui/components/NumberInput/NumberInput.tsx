@@ -4,7 +4,7 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
-import { MinusIcon, PlusIcon } from '../../internal/icons'
+import { MinusIcon, PlusIcon } from '../../icons/icons'
 import { createHold, parseNumber, type NumberInputLabels } from '../../internal/motion/numberInput'
 import { useControllable } from '../../internal/useControllable'
 import { AnimatedNumber } from '../AnimatedNumber'
@@ -35,7 +35,7 @@ export type NumberInputProps = {
   /** Step for Page Up and Page Down. Defaults to ten steps. */
   largeStep?: number
   /** Passed to Intl.NumberFormat, for currency, units or decimals. */
-  format?: Intl.NumberFormatOptions
+  formatOptions?: Intl.NumberFormatOptions
   /** Locale for showing and reading numbers. Undefined uses the browser locale. */
   locale?: string
   /** Hint under the field. Hidden while an error shows. */
@@ -61,7 +61,7 @@ export function NumberInput({
   max = Infinity,
   step = 1,
   largeStep,
-  format,
+  formatOptions,
   locale,
   help,
   error,
@@ -85,7 +85,7 @@ export function NumberInput({
   typed.current = editing ? text : null
   const [hold] = useState(createHold)
   const decimals = (String(step).split('.')[1] ?? '').length
-  const fmt = useMemo(() => new Intl.NumberFormat(locale, format), [locale, format])
+  const fmt = useMemo(() => new Intl.NumberFormat(locale, formatOptions), [locale, formatOptions])
   const plain = useMemo(() => new Intl.NumberFormat(locale, { useGrouping: false, maximumFractionDigits: 20 }), [locale])
 
   const clamp = (n: number) => Number(Math.min(max, Math.max(min, n)).toFixed(decimals))
@@ -141,13 +141,14 @@ export function NumberInput({
   const describedBy = [help && !error ? helpId : null, error ? errorId : null].filter(Boolean).join(' ')
 
   return (
-    <div className={cx(styles.root, className)}>
-      <label htmlFor={id} className={styles.label}>{label}</label>
-      <div className={styles.field} data-invalid={error ? true : undefined} data-disabled={disabled || undefined}>
+    <div className={cx(styles.root, className)} data-slot="number-input">
+      <label htmlFor={id} className={styles.label} data-slot="field-label">{label}</label>
+      <div className={styles.field} data-slot="number-input-field" data-invalid={error ? true : undefined} data-disabled={disabled || undefined}>
         <button
           type="button"
           tabIndex={-1}
           className={styles.step}
+          data-slot="number-input-decrement"
           aria-label={nameOf(labels.decrease)}
           aria-controls={id}
           disabled={disabled || atMin}
@@ -163,6 +164,7 @@ export function NumberInput({
           <input
             id={id}
             className={styles.input}
+            data-slot="number-input-input"
             type="text"
             inputMode={decimals || min < 0 ? 'decimal' : 'numeric'}
             role="spinbutton"
@@ -189,7 +191,7 @@ export function NumberInput({
           />
           {!editing && value !== null && (
             <span className={styles.rolling} aria-hidden="true">
-              <AnimatedNumber value={value} format={format} locale={locale} />
+              <AnimatedNumber value={value} formatOptions={formatOptions} locale={locale} />
             </span>
           )}
         </div>
@@ -197,6 +199,7 @@ export function NumberInput({
           type="button"
           tabIndex={-1}
           className={styles.step}
+          data-slot="number-input-increment"
           aria-label={nameOf(labels.increase)}
           aria-controls={id}
           disabled={disabled || atMax}

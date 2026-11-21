@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   --h: var(--gooee-control-h-md);
   position: relative;
@@ -20,11 +21,11 @@
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition:
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    color var(--gooee-motion-fast) var(--gooee-ease-out),
-    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    border-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 /* Invisible hit area, as in Button, so the small size still gets a 44px target. */
@@ -58,8 +59,8 @@
 .iconOnly.sm .icon { font-size: var(--gooee-icon-md); }
 
 @media (hover: hover) {
-  .root:hover:not(:disabled):not([data-on]) { background: var(--gooee-color-surface-hover); }
-  .root[data-on]:hover:not(:disabled) { background: var(--gooee-color-accent-hover); }
+  .root:hover:not(:disabled):not([data-state="on"]) { background: var(--gooee-color-surface-hover); }
+  .root[data-state="on"]:hover:not(:disabled) { background: var(--gooee-color-accent-hover); }
 }
 
 .root:focus-visible {
@@ -77,11 +78,11 @@
 .iconOnly:active:not(:disabled)::after { inset: -9%; }
 
 /* A solid fill, so the pressed state never rests on a faint shade. */
-.root[data-on] {
+.root[data-state="on"] {
   border-color: var(--gooee-color-accent);
   background: var(--gooee-color-accent);
   color: var(--gooee-color-accent-fg);
-  animation: pop var(--gooee-motion-slow) var(--gooee-ease-spring);
+  animation: pop var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .root:disabled {
@@ -91,4 +92,5 @@
 
 @keyframes pop {
   50% { transform: scale(calc(2 - var(--gooee-press-scale))); }
+}
 }

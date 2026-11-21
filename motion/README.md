@@ -15,16 +15,16 @@ The timing comes from the Gooee tokens, so load them once:
 Then give a panel the morph:
 
 ```js
-import { createLiquid } from 'gooee-motion'
+import { createMorph } from 'gooee-motion'
 
-const liquid = createLiquid(panel, button)
+const morph = createMorph(panel, { origin: button })
 button.addEventListener('click', () => {
   panel.hidden = false
-  liquid.play('open')
+  morph.play('open')
 })
 ```
 
-Every function takes the element (or a function that returns it) and gives back plain methods. Reduced motion sets the timings to 0ms, so every move jumps to its end.
+Each create function takes the element (or a function that returns it) and one options object. It gives back plain methods, and `destroy()` cleans up when the element goes. Reduced motion sets the timings to 0ms, so every move jumps to its end.
 
 What is inside, with a live example: https://gooee.dev/motion
 

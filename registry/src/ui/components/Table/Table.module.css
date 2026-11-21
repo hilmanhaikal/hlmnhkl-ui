@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 /* layout="scroll" (default): narrow screens scroll the table sideways. layout="stack": a
    container query turns rows into cards in narrow columns. */
 .root {
@@ -30,7 +31,7 @@
   overscroll-behavior-x: contain;
 }
 
-.scroll:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg); }
+.scroll:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--gooee-focus-width) var(--gooee-color-fg); }
 
 .table {
   width: 100%;
@@ -83,17 +84,17 @@
   text-transform: inherit;
   cursor: pointer;
   transition:
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    color var(--gooee-motion-fast) var(--gooee-ease-out);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 .th[data-align="end"] .sortButton { flex-direction: row-reverse; }
 @media (hover: hover) {
   .sortButton:hover:not(:disabled) { background: var(--gooee-color-surface-hover); color: var(--gooee-color-fg); }
 }
-.sortButton[data-active] { color: var(--gooee-color-fg); }
+.sortButton[data-state="active"] { color: var(--gooee-color-fg); }
 .sortButton:disabled { cursor: default; }
-.sortButton:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg); }
+.sortButton:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--gooee-focus-width) var(--gooee-color-fg); }
 
 .sortIcon {
   width: var(--gooee-icon-sm);
@@ -106,8 +107,8 @@
   opacity: 0;
   transform: translateY(var(--gooee-space-1));
   transition:
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring),
-    opacity var(--gooee-motion-base) var(--gooee-ease-out);
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph),
+    opacity var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -118,7 +119,7 @@
 .sortIcon[data-dir="descending"] { transform: rotate(180deg); }
 
 .row {
-  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -168,7 +169,7 @@
 }
 
 /* A new group's header settles in while its rows glide into place below it. */
-.groupRow { animation: groupIn var(--gooee-motion-slow) var(--gooee-ease-out) both; }
+.groupRow { animation: groupIn var(--gooee-motion-slow) var(--gooee-ease-morph) both; }
 
 @keyframes groupIn {
   from { opacity: 0; transform: translateY(calc(var(--gooee-shift-sm) * -1)); }
@@ -190,7 +191,7 @@
   place-items: center;
   width: var(--gooee-hit-min);
   height: var(--gooee-hit-min);
-  margin: calc((var(--gooee-hit-min) - var(--gooee-table-check)) / -2);
+  margin: calc((var(--gooee-hit-min) - var(--gooee-table-check, 18px)) / -2);
 }
 
 .checkInput {
@@ -204,17 +205,17 @@
 .checkBox {
   display: grid;
   place-items: center;
-  width: var(--gooee-table-check);
-  height: var(--gooee-table-check);
+  width: var(--gooee-table-check, 18px);
+  height: var(--gooee-table-check, 18px);
   border: var(--gooee-line-thick) solid var(--gooee-color-border-strong);
   border-radius: var(--gooee-radius-xs);
   background: var(--gooee-color-surface);
   color: var(--gooee-color-accent-fg);
   pointer-events: none;
   transition:
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    border-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .checkBox svg {
@@ -227,8 +228,8 @@
   stroke-linejoin: round;
 }
 
-.checkBox[data-state="on"],
-.checkBox[data-state="mixed"] {
+.checkBox[data-state="checked"],
+.checkBox[data-state="indeterminate"] {
   border-color: var(--gooee-color-accent);
   background: var(--gooee-color-accent);
 }
@@ -241,11 +242,11 @@
   /* Hidden just before the path starts. A zero-length dash would leave its round ends as a dot in Safari. */
   stroke-dasharray: 1 2;
   stroke-dashoffset: 1.01;
-  transition: stroke-dashoffset var(--gooee-motion-base) var(--gooee-ease-out);
+  transition: stroke-dashoffset var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
-.checkBox[data-state="on"] .tick,
-.checkBox[data-state="mixed"] .dash { stroke-dashoffset: 0; }
+.checkBox[data-state="checked"] .tick,
+.checkBox[data-state="indeterminate"] .dash { stroke-dashoffset: 0; }
 
 .srOnly {
   position: absolute;
@@ -334,7 +335,7 @@
 }
 
 [data-layout="scroll"] .td {
-  max-width: var(--gooee-table-cell-max);
+  max-width: var(--gooee-table-cell-max, 320px);
 }
 
 /* The first column stays in place while the rest scrolls, so each row keeps its name. */
@@ -375,7 +376,8 @@
   background: linear-gradient(to right, transparent, var(--gooee-color-surface));
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: opacity var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 [data-layout="scroll"][data-more-end]::after { opacity: 1; }
+}

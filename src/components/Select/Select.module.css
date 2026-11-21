@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
@@ -39,9 +40,9 @@
   cursor: pointer;
   --gooee-flow-edge: var(--gooee-color-fg);
   transition:
-    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+    border-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -56,8 +57,8 @@
    field's focus indicator in place of the ring, so it lands at once. */
 .trigger[data-edge] {
   border-color: var(--gooee-flow-edge);
-  box-shadow: inset 0 0 0 calc(var(--gooee-line-focus) - var(--gooee-line)) var(--gooee-flow-edge);
-  transition: transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+  box-shadow: inset 0 0 0 calc(var(--gooee-focus-width) - var(--gooee-line)) var(--gooee-flow-edge);
+  transition: transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .edge {
@@ -66,7 +67,7 @@
   pointer-events: none;
 }
 .trigger[data-invalid] { --gooee-flow-edge: var(--gooee-color-danger); border-color: var(--gooee-color-danger); --edge: var(--gooee-line-thick); }
-.trigger[data-invalid][data-edge] { box-shadow: inset 0 0 0 calc(var(--gooee-line-focus) - var(--gooee-line-thick)) var(--gooee-flow-edge); }
+.trigger[data-invalid][data-edge] { box-shadow: inset 0 0 0 calc(var(--gooee-focus-width) - var(--gooee-line-thick)) var(--gooee-flow-edge); }
 .trigger:disabled { opacity: var(--gooee-disabled-opacity); cursor: not-allowed; background: var(--gooee-color-surface-sunken); }
 
 .value {
@@ -79,7 +80,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  animation: valueIn var(--gooee-motion-base) var(--gooee-ease-out);
+  animation: valueIn var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .placeholder { color: var(--gooee-color-fg-subtle); }
@@ -89,10 +90,10 @@
   width: var(--gooee-icon-md);
   height: var(--gooee-icon-md);
   color: var(--gooee-color-fg-muted);
-  transition: transform var(--gooee-motion-base) var(--gooee-ease-spring);
+  transition: transform var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
-.trigger[data-open] .chevron { transform: rotate(180deg); }
+.trigger[data-state="open"] .chevron { transform: rotate(180deg); }
 
 .list {
   z-index: var(--gooee-z-popover);
@@ -106,13 +107,13 @@
   box-shadow: var(--gooee-shadow-3);
   outline: none;
   transform-origin: top center;
-  animation: listIn var(--gooee-motion-base) var(--gooee-ease-out);
+  animation: listIn var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .list[data-side="top"] { transform-origin: bottom center; }
 
 .list[data-state="closed"] {
-  animation: listOut var(--gooee-motion-fast) var(--gooee-ease-in) forwards;
+  animation: listOut var(--gooee-motion-fast) var(--gooee-ease-morph) forwards;
   pointer-events: none;
 }
 
@@ -130,8 +131,8 @@
   border-radius: max(0px, calc(var(--gooee-radius-md) - var(--gooee-space-2)));
   background: var(--gooee-color-surface-hover);
   transition:
-    transform var(--gooee-motion-base) var(--gooee-ease-out),
-    height var(--gooee-motion-base) var(--gooee-ease-out);
+    transform var(--gooee-motion-base) var(--gooee-ease-morph),
+    height var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .option {
@@ -144,7 +145,7 @@
   padding: var(--gooee-space-2) var(--gooee-space-4);
   border-radius: max(0px, calc(var(--gooee-radius-md) - var(--gooee-space-2)));
   cursor: pointer;
-  animation: optionIn var(--gooee-motion-slow) var(--gooee-ease-out) backwards;
+  animation: optionIn var(--gooee-motion-slow) var(--gooee-ease-morph) backwards;
   animation-delay: calc(var(--i) * var(--gooee-motion-stagger) / 2);
 }
 
@@ -180,11 +181,11 @@
   opacity: 0;
   transform: scale(var(--gooee-check-scale));
   transition:
-    opacity var(--gooee-motion-fast) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+    opacity var(--gooee-motion-fast) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
-.check[data-on] {
+.option[data-selected] .check {
   opacity: 1;
   transform: none;
 }
@@ -203,4 +204,5 @@
 
 @keyframes valueIn {
   from { opacity: 0; transform: translateY(var(--gooee-shift-sm)); }
+}
 }

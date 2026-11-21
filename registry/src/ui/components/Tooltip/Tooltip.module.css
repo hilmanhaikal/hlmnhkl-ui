@@ -1,9 +1,10 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .tip {
   --dx: 0px;
   --dy: var(--gooee-shift-sm);
   z-index: var(--gooee-z-tooltip);
-  max-width: var(--gooee-tooltip-w);
+  max-width: var(--gooee-tooltip-w, 260px);
   padding: var(--gooee-space-2) var(--gooee-space-4);
   border-radius: var(--gooee-radius-sm);
   background: var(--gooee-color-inverse);
@@ -11,7 +12,7 @@
   font-size: var(--gooee-text-sm);
   line-height: var(--gooee-leading-snug);
   box-shadow: var(--gooee-shadow-2);
-  animation: tipIn var(--gooee-motion-base) var(--gooee-ease-out);
+  animation: tipIn var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .tip[data-side="bottom"] { --dy: calc(var(--gooee-shift-sm) * -1); }
@@ -19,7 +20,7 @@
 .tip[data-side="right"] { --dy: 0px; --dx: calc(var(--gooee-shift-sm) * -1); }
 
 .tip[data-state="closed"] {
-  animation: tipOut var(--gooee-motion-fast) var(--gooee-ease-in) forwards;
+  animation: tipOut var(--gooee-motion-fast) var(--gooee-ease-morph) forwards;
 }
 
 /* The morph (internal/liquid.ts) grows the tip out of its target instead; the fade stands down. */
@@ -32,4 +33,5 @@
 
 @keyframes tipOut {
   to { opacity: 0; transform: scale(var(--gooee-pop-scale)); }
+}
 }

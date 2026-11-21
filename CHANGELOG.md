@@ -2,6 +2,52 @@
 
 What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 1.0.0 · 21 Nov 2026
+
+The stable release, with names, tokens and styling hooks you can rely on.
+
+### What 1.0 promises
+
+- From now on, a rename or removal of a part, prop, token, CLI flag or styling hook needs 2.0.
+- `src/icons` and the tokens are public. `src/internal` may change in any version.
+- Every breaking change below is listed, old name first, in the new guide Upgrade to 1.0.
+
+### Added
+
+- Vue: a plain `v-model` on Checkbox, Switch, Toggle and Tag. New `valueCommit` events on Dial, RulerScrubber, PickerWheel, TimeWheel, DateWheel, Slider, RangeSlider, CompareSlider and TimePicker. A Button in Collapsible's `#trigger` slot is wired for you, like Popover.
+- Pagination: `variant="compact"` shows "Page 5 of 12" over a line that fills. Tap the number to type a page in a "Go to page" field. The row of page numbers is still the default, in React and Vue.
+- `onValueCommit` on Slider, RangeSlider, CompareSlider, TimePicker, Dial, RulerScrubber, PickerWheel, TimeWheel and DateWheel. It fires once, when the value comes to rest.
+- A `labels` prop on every part that has fixed text, with an exported type such as `DialogLabels`. Pass only the keys you change.
+- `data-slot` on the root and inner pieces of every part, and one set of state attributes (`data-state`, `data-status`, `data-selected`, `data-highlighted`, `data-disabled`, `data-orientation`). Every part page has a Styling section that lists them.
+- Every library stylesheet is in a cascade layer (`@layer`), so your CSS and Tailwind utilities win without `!important`.
+- The CLI saves your framework in `gooee.json`. It warns when a changed shared file is used by other installed parts, and offers to update them. New `--react` option.
+- Icons are public, in `src/icons`.
+- The Styling hooks guide, in Theming: slots, state attributes and how to combine them.
+- Upgrade to 1.0: a guide with every rename, and searches to find the old names in your code.
+
+### Changed (breaking)
+
+- Value callbacks: `onValueChange` is live and `onValueCommit` is at rest. `onScrub` and the Vue `scrub` event are gone. RichTextEditor `onChange` is `onValueChange`. TimeWheel `minuteStep` is `step`, and its 12 or 24 hour clock now follows the locale, like TimePicker (it was always 12). See Upgrade to 1.0.
+- Format names: `format` is `formatValue` or `formatOptions` (RelativeTime: `unitStyle`), `axisFormat` is `formatAxis`, `xFormat` is `formatX`. See Upgrade to 1.0.
+- Tone: Alert and Toast use `tone` with `danger` and `neutral`, not `variant` and `error`. Toast `loading` is its own flag. SwipeActions `accent` is `info`. See Upgrade to 1.0.
+- Labels: loose text props such as `closeLabel` and `emptyText` moved into `labels`. BottomTabBar `labels` is `labelMode`. See Upgrade to 1.0.
+- Sides and center: Drawer `left` and `right` are `start` and `end`. `centre` is `center`. See Upgrade to 1.0.
+- Exports and types: some helpers are no longer exported, ref props follow one rule, and type names start with the part name (`ThemeToggleTheme`, `DropdownMenuEntry`). See Upgrade to 1.0.
+- Vue: `v-model:checked`, `v-model:pressed` and `v-model:selected` are a plain `v-model`. The exposed element is `el`. Some slots and types were renamed. See Upgrade to 1.0.
+- Icons path: icons moved from `internal/` to `icons/`. See Upgrade to 1.0.
+- Ratio: ImageCropper `aspect` is `ratio`, and `ratio` takes a number or a string (`16 / 9` or `"16 / 9"`) in every part that has it. See Upgrade to 1.0.
+- Fixed: BottomTabBar `position` and Fab `contained` are `fixed`, a boolean. See Upgrade to 1.0.
+- Tokens: `tokens.css` holds only core tokens. Part tokens moved into their parts and were renamed to `--gooee-<part>-<piece>`. Old motion names like `--gooee-ease-out` are gone: use `--gooee-ease-morph`. See Upgrade to 1.0.
+- gooee-motion: every `create` function takes an element and one options object, and `destroy()` is the one way to clean up. `createLiquid` is `createMorph`, `edgeFlow` is `createEdgeFlow`, `bead` is `createBead`, `onScrollFrame` is `createScrollFrame`. See Upgrade to 1.0.
+- CLI: `npx gooee <name>` is `npx gooee add <name>`. `update` deletes files a part no longer has, when you did not change them. The package has no deep imports. See Upgrade to 1.0.
+- data-slot and state words: `data-on`, `data-open`, `data-active`, `data-current` and other old state attributes are gone. See Upgrade to 1.0.
+- @layer and browser support: your unlayered CSS now beats Gooee. Cascade layers need Chrome 99, Safari 15.4 or Firefox 97. See Upgrade to 1.0.
+- Node 20: gooee, gooee-mcp, gooee-motion and gooee-tokens need Node 20 or later. See Upgrade to 1.0.
+
+### Fixed
+
+- DateWheel: turning past a shorter month on the way to a longer one kept the day short (31 May could become 30 May). The day column now follows the month it rests on.
+
 ## 0.52.0 · 17 Nov 2026
 
 The MCP server gives Vue install steps too.

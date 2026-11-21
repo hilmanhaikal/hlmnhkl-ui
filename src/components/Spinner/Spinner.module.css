@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: inline-flex;
   flex: none;
@@ -47,4 +48,5 @@
 @keyframes breathe {
   0%, 100% { stroke-dasharray: 18 100; }
   50% { stroke-dasharray: 62 100; }
+}
 }

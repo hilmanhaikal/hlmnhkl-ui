@@ -10,5 +10,5 @@ export type ProseProps = {
 // Long text written elsewhere, such as Markdown or a CMS: headings, paragraphs, lists, quotes, code and
 // pictures, set for reading. It styles plain HTML inside it, so nothing needs a class.
 export function Prose({ as: Tag = 'div', className, ...rest }: ProseProps) {
-  return <Tag className={cx(styles.root, className)} {...rest} />
+  return <Tag className={cx(styles.root, className)} data-slot="prose" {...rest} />
 }

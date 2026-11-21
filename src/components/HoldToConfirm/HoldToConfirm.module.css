@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
@@ -32,24 +33,24 @@
 }
 
 /* The confirm step: the button itself turns red in place and confirms on the next press. Its words stay. */
-.shell[data-phase="step"] {
+.shell[data-status="step"] {
   background: var(--gooee-color-danger-solid);
   box-shadow: none;
   transition:
     background-color var(--gooee-motion-base) var(--gooee-ease-morph),
     box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
-.shell[data-phase="step"] .main { color: var(--gooee-color-on-danger); }
+.shell[data-status="step"] .main { color: var(--gooee-color-danger-fg); }
 @media (hover: hover) {
-  .shell[data-phase="step"]:hover { background: var(--gooee-color-danger-solid-hover); }
+  .shell[data-status="step"]:hover { background: var(--gooee-color-danger-solid-hover); }
 }
-.shell[data-phase="step"]:has(.main:focus-visible) { box-shadow: var(--gooee-focus-ring); }
+.shell[data-status="step"]:has(.main:focus-visible) { box-shadow: var(--gooee-focus-ring); }
 
 .shell:has(.main:focus-visible) {
   box-shadow: inset 0 0 0 var(--gooee-line-thick) var(--gooee-color-border-strong), var(--gooee-focus-ring);
 }
 
-.shell[data-phase="done"] { box-shadow: inset 0 0 0 var(--gooee-hold-stroke) var(--gooee-color-fg); }
+.shell[data-status="done"] { box-shadow: inset 0 0 0 var(--gooee-hold-to-confirm-stroke, 2px) var(--gooee-color-fg); }
 .shell[data-disabled] { opacity: var(--gooee-disabled-opacity); }
 
 .main {
@@ -73,7 +74,7 @@
   outline: none;
 }
 
-.shell[data-phase="done"] .main { cursor: default; }
+.shell[data-status="done"] .main { cursor: default; }
 .shell[data-disabled] .main { cursor: not-allowed; }
 
 .faces { display: grid; }
@@ -84,7 +85,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--gooee-space-3);
-  transition: opacity var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: opacity var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 .face svg {
@@ -93,8 +94,8 @@
 }
 
 .face[data-face="done"],
-.shell[data-phase="done"] .face[data-face="idle"] { opacity: 0; }
-.shell[data-phase="done"] .face[data-face="done"] { opacity: 1; }
+.shell[data-status="done"] .face[data-face="idle"] { opacity: 0; }
+.shell[data-status="done"] .face[data-face="done"] { opacity: 1; }
 
 .fuse {
   position: absolute;
@@ -106,7 +107,7 @@
 .run {
   fill: none;
   stroke: var(--gooee-color-fg);
-  stroke-width: var(--gooee-hold-stroke);
+  stroke-width: var(--gooee-hold-to-confirm-stroke, 2px);
   stroke-dasharray: 0 1;
   opacity: 0;
 }
@@ -129,7 +130,7 @@
   color: var(--gooee-color-fg);
   cursor: pointer;
   outline: none;
-  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 .cancel svg { width: var(--gooee-icon-md); height: var(--gooee-icon-md); }
 /* Closed it takes no room, but stays on its open spot, so the drop flows back from where it was. */
@@ -157,4 +158,5 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
 }

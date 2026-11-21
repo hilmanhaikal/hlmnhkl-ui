@@ -17,7 +17,7 @@ export function useFlow(
   const inkRef = useRef(ink)
   inkRef.current = ink
   const flow = useRef<ReturnType<typeof createFlow>>(null)
-  flow.current ??= createFlow(() => host.current, () => mark.current, { cls, line, ink: (d) => inkRef.current?.(d) })
+  flow.current ??= createFlow(() => mark.current, { host: () => host.current, className: cls, line, ink: (d) => inkRef.current?.(d) })
   useLayoutEffect(() => {
     flow.current!.update(place, choice, ready)
     // Keyed on the choice and the place; the rest is read when it runs.

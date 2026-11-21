@@ -32,7 +32,7 @@ export type AlertDialogProps = {
   /** Called when they cancel with the button or Esc, before the dialog closes. */
   onCancel?: () => void
   /** "danger" gives the confirm button the solid red look, for actions that destroy something. */
-  tone?: 'default' | 'danger'
+  tone?: 'neutral' | 'danger'
   /** Extra class for the dialog panel. */
   className?: string
 }
@@ -47,7 +47,7 @@ export function AlertDialog({
   cancelLabel = 'Cancel',
   onConfirm,
   onCancel,
-  tone = 'default',
+  tone = 'neutral',
   className,
 }: AlertDialogProps) {
   const id = useId()
@@ -69,7 +69,7 @@ export function AlertDialog({
   if (!mounted) return null
   return (
     <Portal>
-      <div className={dialog.overlay} data-state={state} aria-hidden="true" />
+      <div data-slot="alert-dialog-overlay" className={dialog.overlay} data-state={state} aria-hidden="true" />
       <div className={dialog.positioner}>
         <div
           ref={panelRef}
@@ -78,17 +78,18 @@ export function AlertDialog({
           aria-labelledby={`${id}-title`}
           aria-describedby={`${id}-desc`}
           tabIndex={-1}
+          data-slot="alert-dialog"
           className={cx(dialog.panel, dialog.sm, className)}
           data-state={state}
         >
           <header className={cx(dialog.header, styles.header)}>
             <div className={dialog.titles}>
-              <h2 id={`${id}-title`} className={dialog.title}>{title}</h2>
-              <p id={`${id}-desc`} className={dialog.description}>{description}</p>
+              <h2 id={`${id}-title`} data-slot="alert-dialog-title" className={dialog.title}>{title}</h2>
+              <p id={`${id}-desc`} data-slot="alert-dialog-description" className={dialog.description}>{description}</p>
             </div>
           </header>
-          {children && <div className={dialog.body}>{children}</div>}
-          <footer className={dialog.footer}>
+          {children && <div data-slot="alert-dialog-body" className={dialog.body}>{children}</div>}
+          <footer data-slot="alert-dialog-footer" className={dialog.footer}>
             <Button ref={cancelRef} variant="secondary" onClick={cancel}>
               {cancelLabel}
             </Button>

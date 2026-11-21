@@ -9,7 +9,7 @@ if (pkg.dependencies && Object.keys(pkg.dependencies).length) problems.push('it 
 for (const hook of ['preinstall', 'install', 'postinstall', 'prepare']) if (pkg.scripts?.[hook]) problems.push(`it has a ${hook} script`)
 
 const [packed] = JSON.parse(execFileSync('npm', ['pack', '--dry-run', '--json'], { encoding: 'utf8' }))
-const ok = [/^package\.json$/, /^(README|LICENSE|CHANGELOG)(\.md)?$/, /^scripts\/(add\.js|pro-components\.json)$/, /^src\/(components|internal)\//, /^src\/(tokens|base)\.css$/]
+const ok = [/^package\.json$/, /^(README|LICENSE|CHANGELOG)(\.md)?$/, /^scripts\/(add\.js|pro-components\.json)$/, /^src\/(components|icons|internal)\//, /^src\/(tokens|base)\.css$/]
 for (const { path } of packed.files) if (!ok.some((re) => re.test(path))) problems.push(`unexpected file: ${path}`)
 if (packed.unpackedSize > 3_000_000) problems.push(`too big: ${packed.unpackedSize} bytes unpacked`)
 

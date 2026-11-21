@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
@@ -15,3 +16,4 @@
 .start { align-items: flex-start; }
 .center { align-items: center; }
 .end { align-items: flex-end; }
+}

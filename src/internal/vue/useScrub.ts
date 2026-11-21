@@ -18,14 +18,10 @@ export function useScrub(options: () => UseScrubOptions) {
   // when it came to rest.
   watch([() => options().value, moving], () => s.sync(options().value), { flush: 'post' })
 
-  let stopWheel = () => {}
   onMounted(() => {
-    if (el.value && options().wheel) stopWheel = s.wheelOn(el.value)
+    if (el.value && options().wheel) s.listenWheel(el.value)
   })
-  onBeforeUnmount(() => {
-    stopWheel()
-    s.destroy()
-  })
+  onBeforeUnmount(() => s.destroy())
 
   return {
     el,

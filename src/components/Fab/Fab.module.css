@@ -1,7 +1,8 @@
+@layer gooee.components {
 /* In the thumb zone: the bottom corner of the screen, clear of the home indicator and a notch. */
 .root {
   position: fixed;
-  bottom: calc(env(safe-area-inset-bottom) + var(--gooee-fab-gap));
+  bottom: calc(env(safe-area-inset-bottom) + var(--gooee-fab-gap, 16px));
   z-index: var(--gooee-z-sticky);
   display: flex;
   flex-direction: column;
@@ -10,7 +11,7 @@
   pointer-events: none;
 }
 
-.end { right: calc(env(safe-area-inset-right) + var(--gooee-fab-gap)); }
+.end { right: calc(env(safe-area-inset-right) + var(--gooee-fab-gap, 16px)); }
 
 .center {
   left: 50%;
@@ -19,16 +20,16 @@
 }
 
 .contained { position: absolute; }
-.contained.end { right: var(--gooee-fab-gap); }
-.contained { bottom: var(--gooee-fab-gap); }
+.contained.end { right: var(--gooee-fab-gap, 16px); }
+.contained { bottom: var(--gooee-fab-gap, 16px); }
 
 .fab {
   position: relative;
   display: inline-flex;
   align-items: center;
-  min-width: var(--gooee-fab-size);
-  height: var(--gooee-fab-size);
-  padding: 0 calc((var(--gooee-fab-size) - var(--gooee-icon-md)) / 2);
+  min-width: var(--gooee-fab-size, 56px);
+  height: var(--gooee-fab-size, 56px);
+  padding: 0 calc((var(--gooee-fab-size, 56px) - var(--gooee-icon-md)) / 2);
   border: 0;
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-accent);
@@ -40,8 +41,8 @@
   pointer-events: auto;
   -webkit-tap-highlight-color: transparent;
   transition:
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    scale var(--gooee-motion-fast) var(--gooee-ease-out);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    scale var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -57,13 +58,13 @@
   flex: none;
   width: var(--gooee-icon-md);
   height: var(--gooee-icon-md);
-  transition: rotate var(--gooee-motion-slow) var(--gooee-ease-spring);
+  transition: rotate var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .icon > svg { width: 100%; height: 100%; }
 
 /* Open: the icon turns a quarter, the way a plus becomes a cross. */
-.root[data-open] .icon { rotate: 45deg; }
+.root[data-state='open'] .icon { rotate: 45deg; }
 
 /* The label pours away into the icon: its column closes, so the pill shrinks to a circle around the icon. */
 .labelWrap {
@@ -81,7 +82,7 @@
   white-space: nowrap;
   opacity: 0;
   transition:
-    opacity var(--gooee-motion-base) var(--gooee-ease-out),
+    opacity var(--gooee-motion-base) var(--gooee-ease-morph),
     padding var(--gooee-motion-morph) var(--gooee-ease-morph);
 }
 
@@ -110,14 +111,14 @@
   scale: 0.6;
   transform-origin: 100% 100%;
   transition:
-    opacity var(--gooee-motion-base) var(--gooee-ease-out),
-    translate var(--gooee-motion-slow) var(--gooee-ease-spring),
-    scale var(--gooee-motion-slow) var(--gooee-ease-spring);
+    opacity var(--gooee-motion-base) var(--gooee-ease-morph),
+    translate var(--gooee-motion-slow) var(--gooee-ease-morph),
+    scale var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .center .actions li { transform-origin: 50% 100%; }
 
-.root[data-open] .actions li {
+.root[data-state='open'] .actions li {
   opacity: 1;
   translate: none;
   scale: 1;
@@ -157,7 +158,7 @@
   place-items: center;
   width: var(--gooee-hit-min);
   height: var(--gooee-hit-min);
-  margin-inline-end: calc((var(--gooee-fab-size) - var(--gooee-hit-min)) / 2);
+  margin-inline-end: calc((var(--gooee-fab-size, 56px) - var(--gooee-hit-min)) / 2);
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-glass-bg, var(--gooee-color-surface));
   -webkit-backdrop-filter: var(--gooee-glass-filter, none);
@@ -174,3 +175,4 @@
 
 .action:focus-visible { outline: none; }
 .action:focus-visible .actionIcon { box-shadow: var(--gooee-shadow-2), var(--gooee-focus-ring); }
+}

@@ -21,14 +21,14 @@ export type CardProps = Omit<ComponentPropsWithRef<'div'>, 'title'> & {
 
 export function Card({ title, description, media, footer, interactive, padding = 'md', fill, className, children, ...rest }: CardProps) {
   return (
-    <div className={cx(styles.root, interactive && styles.interactive, styles[padding], fill && styles.fill, className)} {...rest}>
-      {media && <div className={styles.media}>{media}</div>}
-      <div className={styles.body}>
-        {title && <h3 className={styles.title}>{title}</h3>}
-        {description && <p className={styles.description}>{description}</p>}
+    <div data-slot="card" className={cx(styles.root, interactive && styles.interactive, styles[padding], fill && styles.fill, className)} {...rest}>
+      {media && <div data-slot="card-media" className={styles.media}>{media}</div>}
+      <div data-slot="card-body" className={styles.body}>
+        {title && <h3 data-slot="card-title" className={styles.title}>{title}</h3>}
+        {description && <p data-slot="card-description" className={styles.description}>{description}</p>}
         {children}
       </div>
-      {footer && <div className={styles.footer}>{footer}</div>}
+      {footer && <div data-slot="card-footer" className={styles.footer}>{footer}</div>}
     </div>
   )
 }

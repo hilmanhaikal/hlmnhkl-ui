@@ -21,7 +21,7 @@ export function ButtonGroup({ label, children, orientation = 'horizontal', class
     return markRows(own.current)
   }, [orientation])
   return (
-    <div {...rest} ref={mergeRefs(own, ref)} role="group" aria-label={label} className={cx(styles.root, styles[orientation], className)} data-orientation={orientation}>
+    <div {...rest} ref={mergeRefs(own, ref)} role="group" aria-label={label} data-slot="button-group" className={cx(styles.root, styles[orientation], className)} data-orientation={orientation}>
       {children}
     </div>
   )

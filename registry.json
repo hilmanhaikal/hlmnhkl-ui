@@ -56,19 +56,19 @@
           "target": "~/src/ui/components/Accordion/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/useControllable.ts",
@@ -107,6 +107,16 @@
           "target": "~/src/ui/components/Alert/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -115,16 +125,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/keyboard.ts",
@@ -228,6 +228,16 @@
           "target": "~/src/ui/components/Spinner/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/Portal.tsx",
           "type": "registry:file",
           "target": "~/src/ui/internal/Portal.tsx"
@@ -251,16 +261,6 @@
           "path": "registry/src/ui/internal/focus.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/focus.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/keyboard.ts",
@@ -431,21 +431,6 @@
           "target": "~/src/ui/components/Avatar/index.ts"
         },
         {
-          "path": "registry/src/ui/components/AvatarGroup/AvatarGroup.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/components/AvatarGroup/AvatarGroup.module.css"
-        },
-        {
-          "path": "registry/src/ui/components/AvatarGroup/AvatarGroup.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/components/AvatarGroup/AvatarGroup.tsx"
-        },
-        {
-          "path": "registry/src/ui/components/AvatarGroup/index.ts",
-          "type": "registry:file",
-          "target": "~/src/ui/components/AvatarGroup/index.ts"
-        },
-        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -569,19 +554,19 @@
           "target": "~/src/ui/components/Breadcrumb/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -1067,6 +1052,16 @@
           "target": "~/src/ui/components/CopyButton/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -1075,16 +1070,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/liquidMore.ts",
@@ -1148,19 +1133,19 @@
           "target": "~/src/ui/components/Collapsible/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/useControllable.ts",
@@ -1240,6 +1225,16 @@
           "target": "~/src/ui/components/CopyButton/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -1248,16 +1243,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/liquidMore.ts",
@@ -1402,6 +1387,16 @@
           "target": "~/src/ui/components/Dialog/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/Portal.tsx",
           "type": "registry:file",
           "target": "~/src/ui/internal/Portal.tsx"
@@ -1425,16 +1420,6 @@
           "path": "registry/src/ui/internal/focus.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/focus.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/keyboard.ts",
@@ -1670,19 +1655,19 @@
           "target": "~/src/ui/components/EmptyState/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -1935,6 +1920,16 @@
           "target": "~/src/ui/components/HoldToConfirm/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -1943,16 +1938,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/liquidPath.ts",
@@ -2225,19 +2210,19 @@
           "target": "~/src/ui/components/Link/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -2271,6 +2256,16 @@
           "target": "~/src/ui/components/LivePill/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -2279,16 +2274,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/motion.ts",
@@ -2337,19 +2322,19 @@
           "target": "~/src/ui/components/Meter/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -2383,6 +2368,16 @@
           "target": "~/src/ui/components/MorphButton/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -2391,16 +2386,6 @@
           "path": "registry/src/ui/internal/focus.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/focus.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/keyboard.ts",
@@ -2479,6 +2464,16 @@
           "target": "~/src/ui/components/NumberInput/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/FieldMessage.module.css",
           "type": "registry:file",
           "target": "~/src/ui/internal/FieldMessage.module.css"
@@ -2497,16 +2492,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/motion.ts",
@@ -2534,7 +2519,7 @@
       "name": "pagination",
       "type": "registry:item",
       "title": "Pagination",
-      "description": "Page numbers with a pill that glides to the current page.",
+      "description": "Page numbers with a pill that glides to the current page, or a compact Page 5 of 12 whose number opens a Go to page field.",
       "registryDependencies": [
         "hilmanhaikal/gooee-ui/core"
       ],
@@ -2555,9 +2540,44 @@
           "target": "~/src/ui/components/Pagination/index.ts"
         },
         {
+          "path": "registry/src/ui/components/Pagination/labels.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/components/Pagination/labels.ts"
+        },
+        {
           "path": "registry/src/ui/components/Pagination/range.ts",
           "type": "registry:file",
           "target": "~/src/ui/components/Pagination/range.ts"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
+          "path": "registry/src/ui/internal/FieldMessage.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/FieldMessage.module.css"
+        },
+        {
+          "path": "registry/src/ui/internal/FieldMessage.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/FieldMessage.tsx"
+        },
+        {
+          "path": "registry/src/ui/internal/Roll.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/Roll.module.css"
+        },
+        {
+          "path": "registry/src/ui/internal/Roll.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/Roll.tsx"
         },
         {
           "path": "registry/src/ui/internal/cx.ts",
@@ -2565,14 +2585,29 @@
           "target": "~/src/ui/internal/cx.ts"
         },
         {
-          "path": "registry/src/ui/internal/icons.module.css",
+          "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
+          "target": "~/src/ui/internal/feel.ts"
         },
         {
-          "path": "registry/src/ui/internal/icons.tsx",
+          "path": "registry/src/ui/internal/keyboard.ts",
           "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
+          "target": "~/src/ui/internal/keyboard.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/focus.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/focus.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/motion/liquid.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/motion/liquid.ts"
         },
         {
           "path": "registry/src/ui/internal/useControllable.ts",
@@ -2778,6 +2813,16 @@
           "target": "~/src/ui/components/Popover/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/Portal.tsx",
           "type": "registry:file",
           "target": "~/src/ui/internal/Portal.tsx"
@@ -2796,16 +2841,6 @@
           "path": "registry/src/ui/internal/focus.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/focus.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/keyboard.ts",
@@ -2969,6 +3004,11 @@
           "path": "registry/src/ui/components/Radio/index.ts",
           "type": "registry:file",
           "target": "~/src/ui/components/Radio/index.ts"
+        },
+        {
+          "path": "registry/src/ui/components/Radio/radioContext.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/components/Radio/radioContext.ts"
         },
         {
           "path": "registry/src/ui/internal/FieldMessage.module.css",
@@ -3280,6 +3320,16 @@
           "target": "~/src/ui/components/SearchInput/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/FieldMessage.module.css",
           "type": "registry:file",
           "target": "~/src/ui/internal/FieldMessage.module.css"
@@ -3298,16 +3348,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/liquidMore.ts",
@@ -3452,6 +3492,16 @@
           "target": "~/src/ui/components/Select/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/FieldMessage.module.css",
           "type": "registry:file",
           "target": "~/src/ui/internal/FieldMessage.module.css"
@@ -3475,16 +3525,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/keyboard.ts",
@@ -3598,6 +3638,16 @@
           "target": "~/src/ui/components/Sheet/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/Portal.tsx",
           "type": "registry:file",
           "target": "~/src/ui/internal/Portal.tsx"
@@ -3621,16 +3671,6 @@
           "path": "registry/src/ui/internal/focus.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/focus.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/keyboard.ts",
@@ -3965,6 +4005,16 @@
           "target": "~/src/ui/components/SwipeDeck/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -3973,16 +4023,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/motion.ts",
@@ -4168,6 +4208,16 @@
           "target": "~/src/ui/components/TableOfContents/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -4176,16 +4226,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/motion.ts",
@@ -4285,6 +4325,16 @@
           "target": "~/src/ui/components/Tag/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -4293,16 +4343,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/keyboard.ts",
@@ -4533,6 +4573,16 @@
           "target": "~/src/ui/components/Toast/index.ts"
         },
         {
+          "path": "registry/src/ui/icons/icons.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.module.css"
+        },
+        {
+          "path": "registry/src/ui/icons/icons.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/icons/icons.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -4541,16 +4591,6 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.module.css",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.module.css"
-        },
-        {
-          "path": "registry/src/ui/internal/icons.tsx",
-          "type": "registry:file",
-          "target": "~/src/ui/internal/icons.tsx"
         },
         {
           "path": "registry/src/ui/internal/liquidPath.ts",

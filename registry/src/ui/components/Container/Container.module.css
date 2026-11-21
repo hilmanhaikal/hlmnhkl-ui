@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 /* The max width adds the padding back, so the size token stays the content width. */
 .root {
   box-sizing: border-box;
@@ -13,3 +14,4 @@
 .lg { --container-max: var(--gooee-container-lg); }
 .xl { --container-max: var(--gooee-container-xl); }
 .full { max-width: none; }
+}

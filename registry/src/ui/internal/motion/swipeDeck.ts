@@ -1,6 +1,6 @@
 // Gooee UI, MIT licence. https://gooee.dev
 import { clamp, pull, speedTracker } from '../feel'
-import { easing, readMotionMs } from '../motion'
+import { easing, motionMs } from '../motion'
 import { release } from './fling'
 
 // A stack of cards: the top one is thrown to either side to decide. The part keeps the decisions as its
@@ -10,12 +10,43 @@ import { release } from './fling'
 export type DeckSide = -1 | 1
 export type DeckDir = 'start' | 'end'
 
+/** SwipeDeck's text, shared by React and Vue. */
+export type SwipeDeckLabels = {
+  /** The two button words, for the start side then the end side. */
+  actions: [string, string]
+  /** What screen readers say was done, start then end, such as "Passed" and "Saved". */
+  decided: [string, string]
+  /** Screen reader name of the undo button. */
+  undo: string
+  /** Shown when every card has been decided. */
+  empty: string
+  /** What screen readers call the deck. */
+  deck: string
+  /** Said after a decision, about the card now on top. */
+  next: (index: number, total: number, name: string) => string
+  /** Said after the last card is decided. */
+  last: string
+  /** Said when undo brings a card back. */
+  undone: (name: string, index: number, total: number) => string
+}
+
+export const defaultSwipeDeckLabels: SwipeDeckLabels = {
+  actions: ['Pass', 'Save'],
+  decided: ['Passed', 'Saved'],
+  undo: 'Undo the last decision',
+  empty: 'That was the last card.',
+  deck: 'card deck',
+  next: (index, total, name) => `Card ${index} of ${total}: ${name}.`,
+  last: 'No more cards.',
+  undone: (name, index, total) => `Brought back: ${name}. Card ${index} of ${total}.`,
+}
+
 /** What a drag needs from a pointer event: native and React events both have these. */
 type Press = { clientX: number; clientY: number; pointerId: number; pointerType: string; button: number; timeStamp: number; currentTarget: EventTarget | null }
 
 // A press is a drag only once it moves this far sideways, so a tap on a card's own button stays a tap.
 const SLOP = 8
-// The throw rule: past --gooee-deck-throw of the card's width, or a flick this fast that has moved at least FLICK_MIN.
+// The throw rule: past --gooee-swipe-deck-throw of the card's width, or a flick this fast that has moved at least FLICK_MIN.
 const FLICK = 600
 const FLICK_MIN = 40
 const TILT = 0.06
@@ -59,7 +90,7 @@ export function createSwipeDeck(o: SwipeDeckOptions) {
   const physical = (dir: DeckDir): DeckSide => ((dir === 'end') !== rtl() ? 1 : -1)
   const widthOf = () => o.top()?.offsetWidth || o.deck()?.offsetWidth || 300
   const line = () => widthOf() * share
-  const reduced = () => readMotionMs('morph-out') === 0
+  const reduced = () => motionMs('morph-out') === 0
 
   const paint = (x: number) => {
     at = x
@@ -107,7 +138,7 @@ export function createSwipeDeck(o: SwipeDeckOptions) {
     busy = true
     stop()
     if (reduced()) {
-      const anim = el.animate({ opacity: [1, 0] }, { duration: readMotionMs('base'), easing: easing('out'), fill: 'forwards' })
+      const anim = el.animate({ opacity: [1, 0] }, { duration: motionMs('base'), easing: easing('morph'), fill: 'forwards' })
       let ended = false
       const end = () => {
         if (ended) return
@@ -158,10 +189,10 @@ export function createSwipeDeck(o: SwipeDeckOptions) {
     named,
     physical,
     fly,
-    /** Reads the throw line from --gooee-deck-throw. Call once the deck is in the page. */
+    /** Reads the throw line from --gooee-swipe-deck-throw. Call once the deck is in the page. */
     mount() {
       const root = o.root()
-      share = (root ? parseFloat(getComputedStyle(root).getPropertyValue('--gooee-deck-throw')) || 0 : 0) || share
+      share = (root ? parseFloat(getComputedStyle(root).getPropertyValue('--gooee-swipe-deck-throw')) || 0 : 0) || share
     },
     destroy: () => stop(),
     /** Asks to bring the last card back from `side`. False while a card is moving: then nothing changes. */
@@ -180,7 +211,7 @@ export function createSwipeDeck(o: SwipeDeckOptions) {
       undoing = null
       if (!el) return playQueue()
       if (reduced()) {
-        const anim = el.animate({ opacity: [0, 1] }, { duration: readMotionMs('base'), easing: easing('out') })
+        const anim = el.animate({ opacity: [0, 1] }, { duration: motionMs('base'), easing: easing('morph') })
         let ended = false
         anim.finished.then(
           () => !ended && playQueue(),

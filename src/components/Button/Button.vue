@@ -8,27 +8,34 @@ import styles from './Button.module.css'
 // Other attributes and listeners go to the button (or the link, with href).
 defineOptions({ inheritAttrs: false })
 
-const props = withDefaults(
-  defineProps<{
-    /** Visual weight. Use one primary per view and danger for destructive actions. */
-    variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
-    /** Height and text size. */
-    size?: 'sm' | 'md' | 'lg'
-    /** Shows a spinner and ignores clicks, but keeps focus on the button. */
-    loading?: boolean
-    /** Spoken while loading, for example "Saving". */
-    loadingLabel?: string
-    /** Stretches the button to fill its container. */
-    fullWidth?: boolean
-    disabled?: boolean
-    /** Why the button is disabled. Read by screen readers and shown as a tooltip while it is disabled. */
-    disabledReason?: string
-    /** Renders a link with the same look, for navigation. */
-    href?: string
-    type?: 'button' | 'submit' | 'reset'
-  }>(),
-  { variant: 'primary', size: 'md', loading: false, loadingLabel: 'Loading', type: 'button' },
-)
+const {
+  variant = 'primary',
+  size = 'md',
+  loading = false,
+  loadingLabel = 'Loading',
+  fullWidth,
+  disabled,
+  disabledReason,
+  href,
+  type = 'button',
+} = defineProps<{
+  /** Visual weight. Use one primary per view and danger for destructive actions. */
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
+  /** Height and text size. */
+  size?: 'sm' | 'md' | 'lg'
+  /** Shows a spinner and ignores clicks, but keeps focus on the button. */
+  loading?: boolean
+  /** Spoken while loading, for example "Saving". */
+  loadingLabel?: string
+  /** Stretches the button to fill its container. */
+  fullWidth?: boolean
+  disabled?: boolean
+  /** Why the button is disabled. Read by screen readers and shown as a tooltip while it is disabled. */
+  disabledReason?: string
+  /** Renders a link with the same look, for navigation. */
+  href?: string
+  type?: 'button' | 'submit' | 'reset'
+}>()
 // The rendered button or link, for a parent that moves focus to it (React's forwarded ref).
 const el = ref<HTMLButtonElement | HTMLAnchorElement | null>(null)
 defineExpose({ el })
@@ -37,15 +44,15 @@ const attrs = useAttrs()
 
 const reasonId = useId()
 const ariaDisabled = computed(() => attrs['aria-disabled'] === true || attrs['aria-disabled'] === 'true')
-const inert = computed(() => props.loading || props.disabled || ariaDisabled.value)
-const reason = computed(() => (props.disabled || ariaDisabled.value ? props.disabledReason : undefined))
+const inert = computed(() => loading || disabled || ariaDisabled.value)
+const reason = computed(() => (disabled || ariaDisabled.value ? disabledReason : undefined))
 const describedBy = computed(() => [attrs['aria-describedby'], reason.value ? reasonId : undefined].filter(Boolean).join(' ') || undefined)
 
 // The edge is soft: it dents where pressed and springs back (motion/softPress.ts).
 const soft = createSoftPress({
   look: { layer: styles.soft, fill: styles.softFill, ring: styles.softRing, wet: styles.wet },
   get keys() {
-    return props.href === undefined ? [' ', 'Enter'] : ['Enter']
+    return href === undefined ? [' ', 'Enter'] : ['Enter']
   },
   get inert() {
     return inert.value
@@ -71,9 +78,11 @@ const shared = computed(() => ({
   'aria-describedby': describedBy.value,
   title: (attrs.title as string | undefined) ?? reason.value,
   // The caller's class joins ours, as React's className does.
-  class: [styles.root, styles[props.variant], styles[props.size], props.fullWidth && styles.full, attrs.class],
-  'data-loading': props.loading || undefined,
-  'aria-busy': props.loading || undefined,
+  class: [styles.root, styles[variant], styles[size], fullWidth && styles.full, attrs.class],
+  'data-slot': 'button',
+  'data-status': loading ? 'loading' : undefined,
+  'data-disabled': disabled || undefined,
+  'aria-busy': loading || undefined,
   'aria-disabled': inert.value || undefined,
 }))
 </script>
@@ -95,9 +104,9 @@ const shared = computed(() => ({
     @blur="soft.blur"
   >
     <span :class="styles.content">
-      <span v-if="slots.leading" :class="styles.icon"><slot name="leading" /></span>
-      <span :class="styles.label"><slot /></span>
-      <span v-if="slots.trailing" :class="styles.icon"><slot name="trailing" /></span>
+      <span v-if="slots.leading" data-slot="button-icon" :class="styles.icon"><slot name="leading" /></span>
+      <span data-slot="button-label" :class="styles.label"><slot /></span>
+      <span v-if="slots.trailing" data-slot="button-icon" :class="styles.icon"><slot name="trailing" /></span>
     </span>
     <span :class="styles.spinner" aria-hidden="true"><Spinner v-if="loading" size="sm" :label="null" /></span>
     <span :class="styles.srOnly" role="status">{{ loading ? loadingLabel : null }}</span>
@@ -119,9 +128,9 @@ const shared = computed(() => ({
     @blur="soft.blur"
   >
     <span :class="styles.content">
-      <span v-if="slots.leading" :class="styles.icon"><slot name="leading" /></span>
-      <span :class="styles.label"><slot /></span>
-      <span v-if="slots.trailing" :class="styles.icon"><slot name="trailing" /></span>
+      <span v-if="slots.leading" data-slot="button-icon" :class="styles.icon"><slot name="leading" /></span>
+      <span data-slot="button-label" :class="styles.label"><slot /></span>
+      <span v-if="slots.trailing" data-slot="button-icon" :class="styles.icon"><slot name="trailing" /></span>
     </span>
     <span :class="styles.spinner" aria-hidden="true"><Spinner v-if="loading" size="sm" :label="null" /></span>
     <span :class="styles.srOnly" role="status">{{ loading ? loadingLabel : null }}</span>

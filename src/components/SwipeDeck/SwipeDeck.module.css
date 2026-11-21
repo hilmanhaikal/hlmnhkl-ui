@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: grid;
   gap: var(--gooee-space-5);
@@ -16,7 +17,7 @@
   --rise: 0;
   position: relative;
   display: grid;
-  max-inline-size: var(--gooee-deck-w);
+  max-inline-size: var(--gooee-swipe-deck-w, 332px);
   margin-inline: auto;
   border-radius: var(--gooee-radius-panel);
   outline: none;
@@ -31,7 +32,7 @@
   z-index: 3;
   grid-area: 1 / 1;
   display: grid;
-  min-block-size: var(--gooee-deck-card-h);
+  min-block-size: var(--gooee-swipe-deck-card-h, 404px);
   border: var(--gooee-line) solid var(--gooee-color-border);
   border-radius: var(--gooee-radius-panel);
   background: var(--gooee-color-surface-raised);
@@ -66,14 +67,14 @@
 
 .deck:not([data-dragging]) .card[data-depth='1'],
 .deck:not([data-dragging]) .card[data-depth='2'] {
-  transition: transform var(--gooee-motion-base) var(--gooee-ease-out);
+  transition: transform var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .empty {
   grid-area: 1 / 1;
   display: grid;
   place-content: center;
-  min-block-size: var(--gooee-deck-card-h);
+  min-block-size: var(--gooee-swipe-deck-card-h, 404px);
   padding: calc(var(--gooee-space-6) - var(--gooee-line));
   border: var(--gooee-line) dashed var(--gooee-color-border-strong);
   border-radius: var(--gooee-radius-panel);
@@ -85,7 +86,7 @@
 .ruler {
   position: relative;
   inline-size: 100%;
-  max-inline-size: var(--gooee-deck-w);
+  max-inline-size: var(--gooee-swipe-deck-w, 332px);
   block-size: var(--gooee-space-6);
   margin-inline: auto;
   background: linear-gradient(var(--gooee-color-border), var(--gooee-color-border)) center / 100% var(--gooee-line) no-repeat;
@@ -100,8 +101,8 @@
   background: var(--gooee-color-border-strong);
   translate: -50% -50%;
   transition:
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    inline-size var(--gooee-motion-fast) var(--gooee-ease-out);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    inline-size var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 .centre {
@@ -110,11 +111,11 @@
 }
 
 .mark[data-side='left'] {
-  left: calc(50% - var(--gooee-deck-throw) * 100%);
+  left: calc(50% - var(--gooee-swipe-deck-throw, 0.35) * 100%);
 }
 
 .mark[data-side='right'] {
-  left: calc(50% + var(--gooee-deck-throw) * 100%);
+  left: calc(50% + var(--gooee-swipe-deck-throw, 0.35) * 100%);
 }
 
 .mark[data-armed] {
@@ -142,7 +143,7 @@
   grid-template-columns: 1fr auto 1fr;
   gap: var(--gooee-space-4);
   align-items: center;
-  max-inline-size: var(--gooee-deck-w);
+  max-inline-size: var(--gooee-swipe-deck-w, 332px);
   inline-size: 100%;
   margin-inline: auto;
 }
@@ -156,7 +157,7 @@
 
 .choice {
   --fill: 0;
-  transition: --fill var(--gooee-motion-base) var(--gooee-ease-out);
+  transition: --fill var(--gooee-motion-base) var(--gooee-ease-morph);
   position: relative;
   display: grid;
   min-block-size: var(--gooee-control-h-lg);
@@ -247,4 +248,5 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
 }

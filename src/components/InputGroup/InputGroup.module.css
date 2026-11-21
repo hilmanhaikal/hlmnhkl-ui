@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
@@ -23,8 +24,8 @@
   border-radius: var(--r);
   background: var(--gooee-color-surface);
   transition:
-    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    box-shadow var(--gooee-motion-base) var(--gooee-ease-out);
+    border-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .sm { --h: var(--gooee-control-h-sm); }
@@ -97,14 +98,14 @@
 .addon > svg { flex: none; font-size: var(--gooee-icon-md); }
 
 /* The divider takes its width back from the padding on its side, so the words stay on the grid. */
-.addon[data-side="prefix"] {
+.addon[data-slot="input-group-prefix"] {
   padding-inline-end: calc(var(--gooee-space-4) - var(--gooee-line));
   border-inline-end: var(--gooee-line) solid var(--gooee-color-border);
   border-start-start-radius: calc(var(--r) - var(--gooee-line));
   border-end-start-radius: calc(var(--r) - var(--gooee-line));
 }
 
-.addon[data-side="suffix"] {
+.addon[data-slot="input-group-suffix"] {
   padding-inline-start: calc(var(--gooee-space-4) - var(--gooee-line));
   border-inline-start: var(--gooee-line) solid var(--gooee-color-border);
   border-start-end-radius: calc(var(--r) - var(--gooee-line));
@@ -129,12 +130,12 @@
 
 .addon.addon > :is(button, a):focus-visible { box-shadow: var(--gooee-focus-ring); z-index: 1; }
 
-.addon[data-side="prefix"] > :first-child {
+.addon[data-slot="input-group-prefix"] > :first-child {
   border-start-start-radius: calc(var(--r) - var(--gooee-line));
   border-end-start-radius: calc(var(--r) - var(--gooee-line));
 }
 
-.addon[data-side="suffix"] > :last-child {
+.addon[data-slot="input-group-suffix"] > :last-child {
   border-start-end-radius: calc(var(--r) - var(--gooee-line));
   border-end-end-radius: calc(var(--r) - var(--gooee-line));
 }
@@ -146,4 +147,5 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
 }

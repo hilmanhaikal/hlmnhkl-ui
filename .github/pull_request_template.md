@@ -4,7 +4,7 @@
 
 ## Checklist
 
-- [ ] It changes one component folder (or `src/internal/`) only
+- [ ] It changes one component folder (or `src/icons/` or `src/internal/`) only
 - [ ] No new package, no install script, nothing in `.github/` or `scripts/`
 - [ ] `npm run typecheck` passes
 - [ ] Works with the keyboard, and with `prefers-reduced-motion: reduce`

@@ -3,7 +3,7 @@
 
 import { cloneElement, isValidElement, useId, type MouseEvent, type ReactElement, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { ChevronDownIcon } from '../../internal/icons'
+import { ChevronDownIcon } from '../../icons/icons'
 import { useControllable } from '../../internal/useControllable'
 import styles from './Collapsible.module.css'
 
@@ -36,7 +36,7 @@ export function Collapsible({ label, trigger, open: openProp, defaultOpen = fals
   const toggle = () => !disabled && setOpen(!open)
 
   return (
-    <div className={cx(styles.root, className)} data-open={open || undefined}>
+    <div data-slot="collapsible" className={cx(styles.root, className)} data-state={open ? 'open' : 'closed'} data-disabled={disabled || undefined}>
       {trigger && isValidElement(trigger) ? (
         cloneElement(trigger, {
           'aria-expanded': open,
@@ -51,20 +51,21 @@ export function Collapsible({ label, trigger, open: openProp, defaultOpen = fals
       ) : (
         <button
           type="button"
+          data-slot="collapsible-trigger"
           className={styles.trigger}
           aria-expanded={open}
           aria-controls={`${id}-panel`}
           disabled={disabled}
           onClick={toggle}
         >
-          <span className={styles.label}>{label}</span>
-          <ChevronDownIcon className={styles.chevron} />
+          <span data-slot="collapsible-label" className={styles.label}>{label}</span>
+          <ChevronDownIcon data-slot="collapsible-icon" className={styles.chevron} />
         </button>
       )}
       {/* Grid rows animate from 0fr to 1fr, so the height follows the content without measuring. */}
-      <div id={`${id}-panel`} className={styles.panel} inert={!open}>
+      <div id={`${id}-panel`} data-slot="collapsible-panel" className={styles.panel} inert={!open}>
         <div className={styles.inner}>
-          <div className={styles.content}>{children}</div>
+          <div data-slot="collapsible-content" className={styles.content}>{children}</div>
         </div>
       </div>
     </div>

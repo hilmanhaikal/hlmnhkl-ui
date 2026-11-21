@@ -37,13 +37,14 @@ export function Toggle({
       type={type}
       aria-pressed={pressed}
       className={cx(styles.root, styles[size], !children && styles.iconOnly, className)}
-      data-on={pressed || undefined}
+      data-slot="toggle"
+      data-state={pressed ? 'on' : 'off'}
       onClick={(e: MouseEvent<HTMLButtonElement>) => {
         onClick?.(e)
         if (!e.defaultPrevented) setPressed(!pressed)
       }}
     >
-      {icon && <span className={styles.icon}>{icon}</span>}
+      {icon && <span className={styles.icon} data-slot="toggle-icon">{icon}</span>}
       {children}
     </button>
   )

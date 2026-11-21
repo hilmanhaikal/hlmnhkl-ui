@@ -20,6 +20,8 @@ const on = computed(() => ctx.value.value === props.value)
     :hidden="!on"
     :tabindex="0"
     :class="styles.panel"
+    data-slot="tabs-panel"
+    :data-state="on ? 'active' : 'inactive'"
   >
     <slot v-if="on" />
   </div>

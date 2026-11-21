@@ -1,5 +1,6 @@
+@layer gooee.components {
 .root {
-  --size: var(--gooee-avatar-md);
+  --size: var(--gooee-avatar-md, 36px);
   position: relative;
   display: inline-grid;
   place-items: center;
@@ -15,9 +16,9 @@
   user-select: none;
 }
 
-.sm { --size: var(--gooee-avatar-sm); }
-.lg { --size: var(--gooee-avatar-lg); }
-.xl { --size: var(--gooee-avatar-xl); }
+.sm { --size: var(--gooee-avatar-sm, 28px); }
+.lg { --size: var(--gooee-avatar-lg, 48px); }
+.xl { --size: var(--gooee-avatar-xl, 72px); }
 
 .fallback,
 .img {
@@ -33,9 +34,9 @@
   filter: blur(var(--gooee-blur-sm));
   transform: scale(1.05);
   transition:
-    opacity var(--gooee-motion-slow) var(--gooee-ease-out),
-    filter var(--gooee-motion-slow) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-out);
+    opacity var(--gooee-motion-slow) var(--gooee-ease-morph),
+    filter var(--gooee-motion-slow) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .img[data-loaded] {
@@ -52,7 +53,7 @@
   height: 28%;
   min-width: var(--gooee-space-3);
   min-height: var(--gooee-space-3);
-  border: var(--gooee-line-focus) solid var(--gooee-color-bg);
+  border: var(--gooee-focus-width) solid var(--gooee-color-bg);
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-fg);
 }
@@ -60,3 +61,4 @@
 /* Without colour, status reads by fill: solid, half, hollow. */
 .status[data-status="away"] { background: linear-gradient(90deg, var(--gooee-color-fg) 50%, var(--gooee-color-bg) 50%); box-shadow: inset 0 0 0 var(--gooee-line-thick) var(--gooee-color-fg); }
 .status[data-status="offline"] { background: var(--gooee-color-bg); box-shadow: inset 0 0 0 var(--gooee-line-thick) var(--gooee-color-fg-muted); }
+}

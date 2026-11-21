@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .group {
   min-width: 0;
   margin: 0;
@@ -28,4 +29,5 @@
 .group[data-disabled] > :is(.legend, .description) { opacity: var(--gooee-disabled-opacity); }
 
 /* Each Checkbox's drawn box: red edges on the empty ones, like a RadioGroup with an error. */
-.group[data-invalid] [data-state="off"] { border-color: var(--gooee-color-danger); }
+.group[data-invalid] [data-state="unchecked"] { border-color: var(--gooee-color-danger); }
+}

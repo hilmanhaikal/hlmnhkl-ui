@@ -82,8 +82,8 @@ function createServer() {
   server.registerTool(
     'list_components',
     {
-      title: 'List Gooee UI components',
-      description: 'Every component, block, template and theme in Gooee UI, with one line each and whether it is free or Pro.',
+      title: 'List Gooee UI components, blocks, templates and themes',
+      description: 'Every component, block, template and theme in Gooee UI, with one line each and whether it is free or Pro. Filter by kind or tier.',
       inputSchema: fromJsonSchema({
         type: 'object',
         properties: {
@@ -104,8 +104,8 @@ function createServer() {
   server.registerTool(
     'get_component',
     {
-      title: 'Get one Gooee UI component',
-      description: 'For a free component: what it does, the install and import lines, accessibility notes, its props and an example. For Pro: one line and the docs link.',
+      title: 'Get one Gooee UI component, block, template or theme',
+      description: 'Any component, block, template or theme by name (blocks/Settings picks a kind). For a free one: what it does, the install and import lines, accessibility notes, its props and an example. For Pro: one line and the docs link.',
       inputSchema: fromJsonSchema({ type: 'object', properties: { name: NAME }, required: ['name'], additionalProperties: false }),
       annotations: READ_ONLY,
     },

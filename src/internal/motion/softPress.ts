@@ -47,7 +47,8 @@ type KeyLike = Pick<KeyboardEvent, 'key' | 'repeat'> & { currentTarget: EventTar
 
 /**
  * Soft press for one button. Options are read at each event, so they can change. Feed it the button's
- * events, or call `listen` on the button. Call `destroy` when the button goes, and `stop` when it turns inert.
+ * events, or call `listen` on the button. `stop` ends a press now (call it when the button turns inert);
+ * `destroy` also stops listening, when the button goes.
  */
 export function createSoftPress(o: SoftPressOptions) {
   const s = ({
@@ -68,6 +69,7 @@ export function createSoftPress(o: SoftPressOptions) {
     raf: 0,
     off: () => {},
   })
+  let ac = new AbortController()
 
   // The shape for the button's size now. Runs again when the size changes while the layer is up, such
   // as a label that changes on click.
@@ -312,12 +314,15 @@ export function createSoftPress(o: SoftPressOptions) {
     keyDown,
     keyUp,
     blur,
-    /** Ends any press at once and removes the drawing. */
+    /** Ends any press at once and removes the drawing. It keeps working after. */
     stop: teardown,
-    destroy: teardown,
-    /** Listens on the button. Returns a function that stops listening and removes the drawing. */
+    destroy() {
+      ac.abort()
+      ac = new AbortController()
+      teardown()
+    },
+    /** Listens on the button, until `destroy`. */
     listen(button: HTMLElement) {
-      const ac = new AbortController()
       const opts = { signal: ac.signal }
       button.addEventListener('pointerdown', down, opts)
       button.addEventListener('pointermove', hover, opts)
@@ -325,10 +330,6 @@ export function createSoftPress(o: SoftPressOptions) {
       button.addEventListener('keydown', keyDown, opts)
       button.addEventListener('keyup', keyUp, opts)
       button.addEventListener('blur', blur, opts)
-      return () => {
-        ac.abort()
-        teardown()
-      }
     },
   }
 }

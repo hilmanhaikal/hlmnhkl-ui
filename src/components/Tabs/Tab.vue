@@ -30,6 +30,9 @@ const pick = () => {
     :tabindex="on ? 0 : -1"
     :disabled="disabled"
     :class="styles.tab"
+    data-slot="tabs-trigger"
+    :data-state="on ? 'active' : 'inactive'"
+    :data-disabled="disabled || undefined"
     @click="pick"
   >
     <slot />

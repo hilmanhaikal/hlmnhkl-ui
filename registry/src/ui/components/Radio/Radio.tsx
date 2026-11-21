@@ -57,15 +57,16 @@ export function RadioGroup({
     <fieldset
       role="radiogroup"
       className={cx(styles.group, className)}
+      data-slot="radio-group"
       disabled={disabled}
       aria-invalid={error ? true : undefined}
       aria-describedby={describedBy || undefined}
       data-invalid={error ? true : undefined}
     >
-      <legend className={styles.legend}>{label}</legend>
-      {description && <p id={descId} className={styles.groupDescription}>{description}</p>}
-      <div className={cx(styles.items, styles[orientation])}>
-        <RadioCtx.Provider value={{ name: name ?? auto, value, set: setValue, disabled, invalid: !!error }}>{children}</RadioCtx.Provider>
+      <legend className={styles.legend} data-slot="field-label">{label}</legend>
+      {description && <p id={descId} className={styles.groupDescription} data-slot="radio-group-description">{description}</p>}
+      <div className={cx(styles.items, styles[orientation])} data-slot="radio-group-items" data-orientation={orientation}>
+        <RadioCtx value={{ name: name ?? auto, value, set: setValue, disabled, invalid: !!error }}>{children}</RadioCtx>
       </div>
       <FieldMessage helpId={`${auto}-help`} errorId={errorId} error={error} />
     </fieldset>
@@ -89,12 +90,13 @@ export function Radio({ value, label, description, disabled }: RadioProps) {
   const id = useId()
   const isOn = ctx.value === value
   return (
-    <div className={styles.root} data-disabled={disabled || ctx.disabled || undefined}>
+    <div className={styles.root} data-slot="radio" data-state={isOn ? 'checked' : 'unchecked'} data-disabled={disabled || ctx.disabled || undefined}>
       <span className={styles.circleWrap}>
         <input
           id={id}
           type="radio"
           className={styles.input}
+          data-slot="radio-input"
           name={ctx.name}
           value={value}
           checked={isOn}
@@ -103,13 +105,13 @@ export function Radio({ value, label, description, disabled }: RadioProps) {
           aria-describedby={description ? `${id}-desc` : undefined}
           onChange={() => ctx.set(value)}
         />
-        <span className={styles.circle} data-on={isOn || undefined} aria-hidden="true">
+        <span className={styles.circle} data-slot="radio-indicator" data-state={isOn ? 'checked' : 'unchecked'} aria-hidden="true">
           <span className={styles.dot} />
         </span>
       </span>
       <span className={styles.text}>
-        <label htmlFor={id} className={styles.label}>{label}</label>
-        {description && <span id={`${id}-desc`} className={styles.description}>{description}</span>}
+        <label htmlFor={id} className={styles.label} data-slot="field-label">{label}</label>
+        {description && <span id={`${id}-desc`} className={styles.description} data-slot="radio-description">{description}</span>}
       </span>
     </div>
   )

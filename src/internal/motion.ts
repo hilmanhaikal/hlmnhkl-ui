@@ -1,13 +1,11 @@
 import { MORPH, type Curve } from './feel'
 
-export type MotionToken = 'instant' | 'fast' | 'base' | 'slow' | 'slower' | 'liquid' | 'morph' | 'morph-out' | 'reveal' | 'fling' | 'delay-tooltip'
+export type MotionToken = 'instant' | 'fast' | 'base' | 'slow' | 'slower' | 'morph' | 'morph-out' | 'stagger' | 'delay-tooltip'
 
-// Reads a duration token at run time, so reduced motion (0ms) and Retime's speed are honoured by JS
-// timers too.
-export function readMotionMs(name: string): number {
+/** A duration custom property in ms, read at run time. For a part's own token; the shared ones go through motionMs. */
+export function durationOf(property: string): number {
   if (typeof window === 'undefined') return 0
-  const style = getComputedStyle(document.documentElement)
-  const raw = style.getPropertyValue(`--gooee-motion-${name}`).trim()
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(property).trim()
   if (!raw) return 0
   const match = raw.match(/(-?[\d.]+)(ms|s)\b/)
   if (!match) return 0
@@ -17,11 +15,12 @@ export function readMotionMs(name: string): number {
   return times ? base * parseFloat(times[1]) : base
 }
 
+/** A --gooee-motion-* token in ms, read at run time, so reduced motion (0ms) and Retime reach JS timers too. */
 export function motionMs(token: MotionToken): number {
-  return readMotionMs(token)
+  return durationOf(`--gooee-motion-${token}`)
 }
 
-export function easing(name: 'out' | 'in' | 'in-out' | 'spring' | 'bounce' | 'liquid' | 'morph'): string {
+export function easing(name: 'morph' | 'in-out' | 'linear'): string {
   if (typeof window === 'undefined') return 'ease'
   return getComputedStyle(document.documentElement).getPropertyValue(`--gooee-ease-${name}`).trim() || 'ease'
 }

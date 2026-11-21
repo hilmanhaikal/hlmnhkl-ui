@@ -15,10 +15,10 @@ export type BadgeProps = ComponentPropsWithRef<'span'> & {
 export function Badge({ variant = 'subtle', tone = 'neutral', dot, className, children, ...rest }: BadgeProps) {
   const plain = typeof children === 'string' || typeof children === 'number'
   return (
-    <span className={cx(styles.root, styles[variant], className)} data-tone={tone === 'neutral' ? undefined : tone} {...rest}>
-      {dot && <span className={styles.dot} data-pulse={dot === 'pulse' || undefined} aria-hidden="true" />}
+    <span data-slot="badge" className={cx(styles.root, styles[variant], className)} data-tone={tone === 'neutral' ? undefined : tone} {...rest}>
+      {dot && <span data-slot="badge-dot" className={styles.dot} data-pulse={dot === 'pulse' || undefined} aria-hidden="true" />}
       {/* Keyed on content, so a new value pops in instead of swapping silently. */}
-      <span key={plain ? String(children) : undefined} className={styles.text} title={plain && !rest.title ? String(children) : undefined}>
+      <span key={plain ? String(children) : undefined} data-slot="badge-text" className={styles.text} title={plain && !rest.title ? String(children) : undefined}>
         {children}
       </span>
     </span>

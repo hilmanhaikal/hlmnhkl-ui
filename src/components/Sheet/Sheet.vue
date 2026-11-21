@@ -5,7 +5,7 @@ import { trapFocus } from '../../internal/motion/focus'
 import { dismissable, lockScroll } from '../../internal/motion/layers'
 import { createDetentSheet, DETENT_NAME, detentHeights, detentOrder, type SheetDetent } from '../../internal/motion/sheetDetents'
 import { usePresence } from '../../internal/vue/usePresence'
-import { XIcon } from '../../internal/vueIcons'
+import { XIcon } from '../../icons/vue'
 import styles from './Sheet.module.css'
 
 // The Vue Sheet: the same look (Sheet.module.css), drag, heights and focus as the React one.
@@ -13,27 +13,30 @@ import styles from './Sheet.module.css'
 // Other attributes, such as class, go to the panel.
 defineOptions({ inheritAttrs: false })
 
-const props = withDefaults(
-  defineProps<{
-    /** Visible heading, also the dialog's accessible name. The title slot replaces it. */
-    title?: string
-    /** Text under the title, also read as the dialog's description. The description slot replaces it. */
-    description?: string
-    /** Screen reader name for the close button. */
-    closeLabel?: string
-    /** Element to focus first. Defaults to the first focusable element in the content. */
-    initialFocus?: HTMLElement | null
-    /** Heights the sheet rests at, such as ['peek', 'half', 'full']. Below the highest one it is not modal: the page behind stays usable. */
-    detents?: SheetDetent[]
-    /** The height it rests at. Use v-model:detent to control it. */
-    detent?: SheetDetent
-    /** The height it opens at when you do not control it. Defaults to the lowest. */
-    defaultDetent?: SheetDetent
-    /** Screen reader name for the grabber, which sets the height. */
-    heightLabel?: string
-  }>(),
-  { closeLabel: 'Close', heightLabel: 'Sheet height' },
-)
+export type SheetLabels = {
+  /** Screen reader name for the close button. */
+  close: string
+  /** Screen reader name for the grabber, which sets the height. */
+  height: string
+}
+
+const props = defineProps<{
+  /** Visible heading, also the dialog's accessible name. The title slot replaces it. */
+  title?: string
+  /** Text under the title, also read as the dialog's description. The description slot replaces it. */
+  description?: string
+  /** Element to focus first. Defaults to the first focusable element in the content. */
+  initialFocus?: HTMLElement | null
+  /** Heights the sheet rests at, such as ['peek', 'half', 'full']. Below the highest one it is not modal: the page behind stays usable. */
+  detents?: SheetDetent[]
+  /** The height it rests at. Use v-model:detent to control it. */
+  detent?: SheetDetent
+  /** The height it opens at when you do not control it. Defaults to the lowest. */
+  defaultDetent?: SheetDetent
+  /** Text for the sheet's controls, so you can translate it. Missing keys use the English defaults. */
+  labels?: Partial<SheetLabels>
+}>()
+const labels = computed<SheetLabels>(() => ({ close: 'Close', height: 'Sheet height', ...props.labels }))
 /** Whether the sheet is open. Use v-model:open; Esc, an outside tap, a drag or the close button set it false. */
 const open = defineModel<boolean>('open', { required: true })
 const emit = defineEmits<{ 'update:detent': [detent: SheetDetent] }>()
@@ -155,7 +158,7 @@ watch(mounted, () => hold('touch', withDetents.value && !!body.value && (() => s
 
 onBeforeUnmount(() => {
   Object.values(releases).forEach((r) => r())
-  drag.fling.stop()
+  drag.destroy()
   sheet.destroy()
   if (!server) window.removeEventListener('resize', onResize)
 })
@@ -164,7 +167,7 @@ onBeforeUnmount(() => {
 <template>
   <Teleport v-if="mounted" to="body">
     <template v-if="!withDetents">
-      <div :class="styles.overlay" :data-state="state" aria-hidden="true" />
+      <div :class="styles.overlay" data-slot="sheet-overlay" :data-state="state" aria-hidden="true" />
       <div
         v-bind="$attrs"
         ref="panel"
@@ -174,27 +177,28 @@ onBeforeUnmount(() => {
         :aria-describedby="hasDescription ? `${id}-desc` : undefined"
         tabindex="-1"
         :class="styles.sheet"
+        data-slot="sheet-content"
         :data-state="state"
         @animationend="onAnimationEnd"
       >
         <div :class="styles.grab" @pointerdown="drag.down" @pointermove="drag.move" @pointerup="drag.up" @pointercancel="drag.up">
-          <span :class="styles.handle" aria-hidden="true" />
-          <header :class="styles.header">
+          <span :class="styles.handle" data-slot="sheet-handle" aria-hidden="true" />
+          <header :class="styles.header" data-slot="sheet-header">
             <div :class="styles.titles">
-              <h2 :id="`${id}-title`" :class="styles.title"><slot name="title">{{ title }}</slot></h2>
-              <p v-if="hasDescription" :id="`${id}-desc`" :class="styles.description"><slot name="description">{{ description }}</slot></p>
+              <h2 :id="`${id}-title`" :class="styles.title" data-slot="sheet-title"><slot name="title">{{ title }}</slot></h2>
+              <p v-if="hasDescription" :id="`${id}-desc`" :class="styles.description" data-slot="sheet-description"><slot name="description">{{ description }}</slot></p>
             </div>
-            <button type="button" :class="styles.close" :aria-label="closeLabel" data-skip-initial-focus="true" @click="close">
+            <button type="button" :class="styles.close" data-slot="sheet-close" :aria-label="labels.close" data-skip-initial-focus="true" @click="close">
               <XIcon />
             </button>
           </header>
         </div>
-        <div v-if="slots.default" :class="styles.body"><slot /></div>
-        <footer v-if="slots.footer" :class="styles.footer"><slot name="footer" /></footer>
+        <div v-if="slots.default" :class="styles.body" data-slot="sheet-body"><slot /></div>
+        <footer v-if="slots.footer" :class="styles.footer" data-slot="sheet-footer"><slot name="footer" /></footer>
       </div>
     </template>
     <template v-else>
-      <div ref="overlay" :class="styles.overlay" :data-state="state" data-detents="true" :data-top="atTop || undefined" aria-hidden="true" />
+      <div ref="overlay" :class="styles.overlay" data-slot="sheet-overlay" :data-state="state" data-detents="true" :data-top="atTop || undefined" aria-hidden="true" />
       <div
         v-bind="$attrs"
         :id="`${id}-sheet`"
@@ -205,6 +209,7 @@ onBeforeUnmount(() => {
         :aria-describedby="hasDescription ? `${id}-desc` : undefined"
         tabindex="-1"
         :class="styles.sheet"
+        data-slot="sheet-content"
         :data-state="state"
         data-detents="true"
         :data-top="atTop || undefined"
@@ -216,9 +221,10 @@ onBeforeUnmount(() => {
         <div
           ref="grabber"
           :class="styles.grabber"
+          data-slot="sheet-grabber"
           role="slider"
           tabindex="0"
-          :aria-label="heightLabel"
+          :aria-label="labels.height"
           aria-orientation="vertical"
           aria-valuemin="0"
           :aria-valuemax="top"
@@ -229,19 +235,19 @@ onBeforeUnmount(() => {
           @keydown="sheet.grabKey"
           @click="sheet.grabClick"
         >
-          <span :class="styles.pill" />
+          <span :class="styles.pill" data-slot="sheet-handle" />
         </div>
-        <header :class="styles.header">
+        <header :class="styles.header" data-slot="sheet-header">
           <div :class="styles.titles">
-            <h2 :id="`${id}-title`" :class="styles.title"><slot name="title">{{ title }}</slot></h2>
-            <p v-if="hasDescription" :id="`${id}-desc`" :class="styles.description"><slot name="description">{{ description }}</slot></p>
+            <h2 :id="`${id}-title`" :class="styles.title" data-slot="sheet-title"><slot name="title">{{ title }}</slot></h2>
+            <p v-if="hasDescription" :id="`${id}-desc`" :class="styles.description" data-slot="sheet-description"><slot name="description">{{ description }}</slot></p>
           </div>
-          <button type="button" :class="styles.close" :aria-label="closeLabel" data-skip-initial-focus="true" @click="close">
+          <button type="button" :class="styles.close" data-slot="sheet-close" :aria-label="labels.close" data-skip-initial-focus="true" @click="close">
             <XIcon />
           </button>
         </header>
-        <div v-if="slots.default" ref="body" :class="styles.body"><slot /></div>
-        <footer v-if="slots.footer" :class="styles.footer"><slot name="footer" /></footer>
+        <div v-if="slots.default" ref="body" :class="styles.body" data-slot="sheet-body"><slot /></div>
+        <footer v-if="slots.footer" :class="styles.footer" data-slot="sheet-footer"><slot name="footer" /></footer>
         <p :class="styles.srOnly" aria-live="polite">{{ said }}</p>
       </div>
     </template>

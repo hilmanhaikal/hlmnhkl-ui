@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { CheckIcon, ChevronDownIcon } from '../../internal/icons'
+import { CheckIcon, ChevronDownIcon } from '../../icons/icons'
 import { useDismiss } from '../../internal/layers'
 import { useLiquid } from '../../internal/liquid'
 import { useEdgeFlow } from '../../internal/liquidMore'
@@ -15,6 +15,13 @@ import { FieldMessage } from '../../internal/FieldMessage'
 import styles from './Select.module.css'
 
 export type SelectOption = { value: string; label: string; disabled?: boolean; hint?: string }
+
+export type SelectLabels = {
+  /** Shown in the open list when there are no options. */
+  empty: string
+}
+
+const defaultLabels: SelectLabels = { empty: 'No options' }
 
 export type SelectProps = {
   /** Visible name of the field, also read by screen readers. */
@@ -35,8 +42,8 @@ export type SelectProps = {
   help?: ReactNode
   /** Error message under the field. Also marks the field invalid. */
   error?: ReactNode
-  /** Shown in the open list when there are no options. */
-  emptyText?: string
+  /** Text in the open list, so you can translate it. Missing keys use the English defaults. */
+  labels?: Partial<SelectLabels>
   /** Stops the list from opening. */
   disabled?: boolean
   /** Submits the selected value in a hidden field with this name. */
@@ -57,12 +64,13 @@ export function Select({
   placeholder = 'Choose one',
   help,
   error,
-  emptyText = 'No options',
+  labels: labelsProp,
   disabled,
   name,
   id,
   className,
 }: SelectProps) {
+  const labels = { ...defaultLabels, ...labelsProp }
   const auto = useId()
   const baseId = id ?? auto
   const labelId = `${baseId}-label`
@@ -82,7 +90,7 @@ export function Select({
   // The list grows out of the field and folds back into it.
   useLiquid(listRef, triggerRef, state, mounted && ready)
   // Open or keyboard focused, the field's dark edge (its focus indicator) flows round it from where it was pressed, or from its start edge for a key.
-  useEdgeFlow(triggerRef, triggerRef, ':is([data-open], :focus-visible)', styles.edge)
+  useEdgeFlow(triggerRef, triggerRef, ':is([data-state="open"], :focus-visible)', styles.edge)
   const [hl, setHl] = useState<{ top: number; height: number } | null>(null)
 
   const selectedIndex = options.findIndex((o) => o.value === value)
@@ -140,8 +148,8 @@ export function Select({
   const describedBy = [help && !error ? helpId : null, error ? errorId : null, open && empty ? emptyId : null].filter(Boolean).join(' ')
 
   return (
-    <div className={cx(styles.root, className)}>
-      <span id={labelId} className={cx(styles.label, hideLabel && styles.hiddenLabel)} onClick={() => triggerRef.current?.focus()}>
+    <div className={cx(styles.root, className)} data-slot="select">
+      <span id={labelId} className={cx(styles.label, hideLabel && styles.hiddenLabel)} data-slot="field-label" onClick={() => triggerRef.current?.focus()}>
         {label}
       </span>
       <button
@@ -150,7 +158,8 @@ export function Select({
         role="combobox"
         id={triggerId}
         className={styles.trigger}
-        data-open={open || undefined}
+        data-slot="select-trigger"
+        data-state={open ? 'open' : 'closed'}
         data-invalid={error ? true : undefined}
         aria-labelledby={`${labelId} ${triggerId}`}
         aria-haspopup="listbox"
@@ -163,12 +172,12 @@ export function Select({
         onClick={() => (open ? close() : openList())}
         onKeyDown={onKeyDown}
       >
-        <span className={cx(styles.value, !selected && styles.placeholder)}>
+        <span className={cx(styles.value, !selected && styles.placeholder)} data-slot="select-value">
           <span key={selected?.value ?? 'none'} className={styles.valueText} title={selected ? selected.label : placeholder}>
             {selected ? selected.label : placeholder}
           </span>
         </span>
-        <ChevronDownIcon className={styles.chevron} />
+        <ChevronDownIcon className={styles.chevron} data-slot="select-icon" />
       </button>
       {name && <input type="hidden" name={name} value={value ?? ''} />}
       <FieldMessage helpId={helpId} errorId={errorId} help={help} error={error} />
@@ -181,12 +190,13 @@ export function Select({
             aria-labelledby={labelId}
             tabIndex={-1}
             className={styles.list}
+            data-slot="select-list"
             data-state={state}
             data-side={side}
             style={style}
             onMouseDown={(e) => e.preventDefault()}
           >
-            {hl && <span className={styles.highlight} style={{ transform: `translateY(${hl.top}px)`, height: hl.height }} aria-hidden="true" />}
+            {hl && <span className={styles.highlight} data-slot="select-highlight" style={{ transform: `translateY(${hl.top}px)`, height: hl.height }} aria-hidden="true" />}
             {options.map((o, i) => (
               <div
                 key={o.value}
@@ -198,21 +208,24 @@ export function Select({
                 aria-selected={o.value === value}
                 aria-disabled={o.disabled || undefined}
                 className={styles.option}
-                data-active={i === active || undefined}
+                data-slot="select-option"
+                data-highlighted={i === active || undefined}
+                data-selected={o.value === value || undefined}
+                data-disabled={o.disabled || undefined}
                 style={{ ['--i' as string]: i }}
                 onPointerMove={() => enabled(i) && active !== i && setActive(i)}
                 onClick={() => choose(i)}
               >
-                <span className={styles.optionText}>
+                <span className={styles.optionText} data-slot="select-option-text">
                   {o.label}
-                  {o.hint && <span className={styles.hint}>{o.hint}</span>}
+                  {o.hint && <span className={styles.hint} data-slot="select-option-hint">{o.hint}</span>}
                 </span>
-                <CheckIcon className={styles.check} data-on={o.value === value || undefined} />
+                <CheckIcon className={styles.check} data-slot="select-option-indicator" />
               </div>
             ))}
             {empty && (
-              <div id={emptyId} className={styles.empty}>
-                {emptyText}
+              <div id={emptyId} className={styles.empty} data-slot="select-empty">
+                {labels.empty}
               </div>
             )}
           </div>

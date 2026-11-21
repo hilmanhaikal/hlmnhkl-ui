@@ -23,16 +23,17 @@ export function Skeleton({ shape = 'rect', width, height, lines = 1, variant = '
   const look = variant === 'sketch' && styles.sketch
   if (shape === 'text') {
     return (
-      <span className={cx(styles.lines, className)} style={{ width }} aria-hidden="true">
+      <span className={cx(styles.lines, className)} data-slot="skeleton" style={{ width }} aria-hidden="true">
         {Array.from({ length: lines }, (_, i) => (
           <span
             key={i}
             className={cx(styles.bone, styles.text, look)}
+            data-slot="skeleton-line"
             style={{ width: lines > 1 && i === lines - 1 ? '62%' : '100%', ['--i' as string]: i }}
           />
         ))}
       </span>
     )
   }
-  return <span className={cx(styles.bone, styles[shape], look, className)} style={{ width, height }} aria-hidden="true" />
+  return <span className={cx(styles.bone, styles[shape], look, className)} data-slot="skeleton" style={{ width, height }} aria-hidden="true" />
 }

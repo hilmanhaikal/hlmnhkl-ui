@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .root {
   min-width: 0;
   margin: 0;
@@ -33,3 +34,4 @@
    dims here, so no control fades twice. */
 .root:disabled > :is(.legend, .description) { opacity: var(--gooee-disabled-opacity); }
 .root:disabled .fields { cursor: not-allowed; }
+}

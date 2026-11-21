@@ -65,7 +65,9 @@ export function Button({
     'aria-describedby': describedBy,
     title: rest.title ?? reason,
     className: cx(styles.root, styles[variant], styles[size], fullWidth && styles.full, className),
-    'data-loading': loading || undefined,
+    'data-slot': 'button',
+    'data-status': loading ? 'loading' : undefined,
+    'data-disabled': Boolean(rest.disabled) || undefined,
     'aria-busy': loading || undefined,
     'aria-disabled': inert || undefined,
     onClick: (e: MouseEvent<HTMLButtonElement>) => {
@@ -104,9 +106,9 @@ export function Button({
   const inner = (
     <>
       <span className={styles.content}>
-        {leadingIcon && <span className={styles.icon}>{leadingIcon}</span>}
-        <span className={styles.label}>{children}</span>
-        {trailingIcon && <span className={styles.icon}>{trailingIcon}</span>}
+        {leadingIcon && <span data-slot="button-icon" className={styles.icon}>{leadingIcon}</span>}
+        <span data-slot="button-label" className={styles.label}>{children}</span>
+        {trailingIcon && <span data-slot="button-icon" className={styles.icon}>{trailingIcon}</span>}
       </span>
       <span className={styles.spinner} aria-hidden="true">
         {loading && <Spinner size="sm" label={null} />}

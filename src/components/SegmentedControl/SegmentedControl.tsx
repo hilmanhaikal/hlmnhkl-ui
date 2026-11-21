@@ -7,13 +7,13 @@ import { measureSegments, segmentInk, segmentKey } from '../../internal/motion/s
 import { useControllable } from '../../internal/useControllable'
 import styles from './SegmentedControl.module.css'
 
-export type SegmentOption = { value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean; ariaLabel?: string }
+export type SegmentedControlOption = { value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean; ariaLabel?: string }
 
 export type SegmentedControlProps = {
   /** Accessible name for the group. */
   label: string
   /** The segments, in order. */
-  options: SegmentOption[]
+  options: SegmentedControlOption[]
   /** Selected value, when you control it. */
   value?: string
   /** Starting value when you do not control it. Undefined picks the first option. */
@@ -86,12 +86,14 @@ export function SegmentedControl({
       role="radiogroup"
       aria-label={label}
       className={cx(styles.root, styles[size], fullWidth && styles.full, className)}
+      data-slot="segmented-control"
       onKeyDown={onKeyDown}
     >
       {pill && (
         <span
           ref={pillRef}
           className={styles.pill}
+          data-slot="segmented-control-indicator"
           data-ready={ready || undefined}
           style={{ transform: `translateX(${pill.x}px)`, width: pill.w }}
           aria-hidden="true"
@@ -112,11 +114,13 @@ export function SegmentedControl({
             tabIndex={i === tabStop ? 0 : -1}
             disabled={o.disabled}
             className={styles.item}
-            data-on={on || undefined}
+            data-slot="segmented-control-item"
+            data-state={on ? 'active' : 'inactive'}
+            data-disabled={o.disabled || undefined}
             onClick={() => setValue(o.value)}
           >
-            {o.icon && <span className={styles.icon}>{o.icon}</span>}
-            {o.label && <span className={styles.text}>{o.label}</span>}
+            {o.icon && <span className={styles.icon} data-slot="segmented-control-icon">{o.icon}</span>}
+            {o.label && <span className={styles.text} data-slot="segmented-control-label">{o.label}</span>}
           </button>
         )
       })}

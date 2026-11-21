@@ -1,3 +1,4 @@
+@layer gooee.components {
 /* The negative margin keeps the announcers from adding a pixel of scroll under the page. */
 .srOnly {
   position: absolute;
@@ -16,7 +17,7 @@
   bottom: calc(var(--gooee-space-5) + env(safe-area-inset-bottom));
   z-index: var(--gooee-z-toast);
   pointer-events: none;
-  transition: height var(--gooee-motion-slow) var(--gooee-ease-out);
+  transition: height var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 @media (min-width: 640px) {
@@ -24,7 +25,7 @@
     left: auto;
     right: var(--gooee-space-7);
     bottom: var(--gooee-space-7);
-    width: var(--gooee-toast-w);
+    width: var(--gooee-toast-w, 360px);
   }
 }
 
@@ -59,14 +60,14 @@
   transform-origin: bottom center;
   transform: translate(var(--dx), var(--y)) scale(var(--s));
   transition:
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring),
-    opacity var(--gooee-motion-base) var(--gooee-ease-out);
-  animation: toastIn var(--gooee-motion-slow) var(--gooee-ease-spring);
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph),
+    opacity var(--gooee-motion-base) var(--gooee-ease-morph);
+  animation: toastIn var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .toast[data-dragging] { transition: none; }
 /* A spring is moving it from the hand: only the fade stays with CSS. */
-.toast[data-fluid] { transition: opacity var(--gooee-motion-base) var(--gooee-ease-out); }
+.toast[data-fluid] { transition: opacity var(--gooee-motion-base) var(--gooee-ease-morph); }
 .toast[data-hidden] { opacity: 0; pointer-events: none; }
 
 .toast[data-behind] {
@@ -76,16 +77,16 @@
 
 .toast[data-behind] > * {
   opacity: 0;
-  transition: opacity var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: opacity var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
-.toast > * { transition: opacity var(--gooee-motion-base) var(--gooee-ease-out); }
+.toast > * { transition: opacity var(--gooee-motion-base) var(--gooee-ease-morph); }
 
 .toast[data-leaving="down"] { animation: toastOutDown var(--gooee-motion-morph-out) var(--gooee-ease-morph) forwards; }
-.toast[data-leaving="left"] { animation: toastOutLeft var(--gooee-motion-slow) var(--gooee-ease-out) forwards; }
-.toast[data-leaving="right"] { animation: toastOutRight var(--gooee-motion-slow) var(--gooee-ease-out) forwards; }
+.toast[data-leaving="left"] { animation: toastOutLeft var(--gooee-motion-slow) var(--gooee-ease-morph) forwards; }
+.toast[data-leaving="right"] { animation: toastOutRight var(--gooee-motion-slow) var(--gooee-ease-morph) forwards; }
 /* Thrown away: the spring carries it off at the hand's speed, so it only fades. */
-.toast[data-fluid][data-leaving] { animation: toastFade var(--gooee-motion-slow) var(--gooee-ease-out) forwards; }
+.toast[data-fluid][data-leaving] { animation: toastFade var(--gooee-motion-slow) var(--gooee-ease-morph) forwards; }
 /* The bud (Toast.tsx) grows it in and flows it away instead. */
 .toast[data-liquid]:not([data-leaving]),
 .toast[data-liquid][data-leaving="down"] { animation: none; }
@@ -98,8 +99,8 @@
 }
 
 /* Only the icon has status colour; its shape and the title carry the meaning */
-.icon[data-variant="success"] { color: var(--gooee-color-success); }
-.icon[data-variant="error"] { color: var(--gooee-color-danger); }
+.icon[data-tone="success"] { color: var(--gooee-color-success); }
+.icon[data-tone="danger"] { color: var(--gooee-color-danger); }
 
 .text {
   flex: 1;
@@ -132,7 +133,7 @@
   font-weight: var(--gooee-weight-medium);
   cursor: pointer;
   position: relative;
-  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 .action::after {
@@ -161,7 +162,7 @@
   color: var(--gooee-color-fg-muted);
   font-size: var(--gooee-icon-md);
   cursor: pointer;
-  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 /* Looks 32px, keeps a 44px touch area. */
@@ -203,3 +204,4 @@
   pointer-events: none;
 }
 
+}

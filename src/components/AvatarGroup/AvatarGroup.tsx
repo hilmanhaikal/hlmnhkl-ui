@@ -25,15 +25,15 @@ export function AvatarGroup({ children, max = 4, size = 'md', label, className }
   // The names of the hidden people too, so a screen reader hears everyone the "+N" stands for.
   const everyone = list(all.map((a) => a.props.name))
   return (
-    <div className={cx(styles.root, className)} role="group" aria-label={label ? `${label}: ${everyone}` : everyone}>
+    <div data-slot="avatar-group" className={cx(styles.root, className)} role="group" aria-label={label ? `${label}: ${everyone}` : everyone}>
       {shown.map((child, i) => (
-        <span key={child.key ?? i} className={styles.slot} style={{ ['--i' as string]: i }}>
+        <span key={child.key ?? i} data-slot="avatar-group-item" className={styles.slot} style={{ ['--i' as string]: i }}>
           <span className={styles.face}>{child}</span>
         </span>
       ))}
       {extra > 0 && (
-        <span className={styles.slot} style={{ ['--i' as string]: shown.length }}>
-          <span className={cx(styles.face, styles.more, styles[size])} role="img" aria-label={`${extra} more`} title={list(all.slice(max).map((a) => a.props.name))}>
+        <span data-slot="avatar-group-item" className={styles.slot} style={{ ['--i' as string]: shown.length }}>
+          <span data-slot="avatar-group-more" className={cx(styles.face, styles.more, styles[size])} role="img" aria-label={`${extra} more`} title={list(all.slice(max).map((a) => a.props.name))}>
             <span aria-hidden="true">+{extra}</span>
           </span>
         </span>

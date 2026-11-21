@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
@@ -33,7 +34,7 @@
   font-weight: var(--gooee-weight-medium);
   text-align: left;
   cursor: pointer;
-  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -43,7 +44,7 @@
 
 .trigger:focus-visible {
   outline: none;
-  box-shadow: inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg);
+  box-shadow: inset 0 0 0 var(--gooee-focus-width) var(--gooee-color-fg);
 }
 
 .title {
@@ -56,10 +57,10 @@
   width: var(--gooee-icon-md);
   height: var(--gooee-icon-md);
   color: var(--gooee-color-fg-muted);
-  transition: transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+  transition: transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
-.item[data-open] .chevron { transform: rotate(180deg); }
+.item[data-state='open'] .chevron { transform: rotate(180deg); }
 
 /* Height animates with grid rows from 0fr to 1fr, so no JS measuring is needed. */
 .panel {
@@ -71,7 +72,7 @@
     visibility 0s linear var(--gooee-motion-morph);
 }
 
-.item[data-open] .panel {
+.item[data-state='open'] .panel {
   grid-template-rows: 1fr;
   visibility: visible;
   transition:
@@ -88,4 +89,5 @@
   padding: 0 var(--gooee-space-2) var(--gooee-space-6);
   color: var(--gooee-color-fg-muted);
   line-height: var(--gooee-leading-normal);
+}
 }

@@ -2,20 +2,25 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { cx } from '../../internal/cx'
-import { CopyIcon, XIcon } from '../../internal/icons'
+import { CopyIcon, XIcon } from '../../icons/icons'
 import { copyRun, type CopyRun } from '../../internal/liquidMore'
 import { capShift, writeText } from '../../internal/motion/copyButton'
 import styles from './CopyButton.module.css'
+
+export type CopyButtonLabels = {
+  /** Shown and spoken after a successful copy. */
+  copied: string
+  /** Shown and spoken when the browser blocks the copy. */
+  failed: string
+}
+
+const defaultLabels: CopyButtonLabels = { copied: 'Copied', failed: 'Could not copy' }
 
 export type CopyButtonProps = {
   /** Text to put on the clipboard. */
   value: string
   /** Accessible name, and the visible text when showLabel is on. */
   label?: string
-  /** Shown and spoken after a successful copy. */
-  copiedLabel?: string
-  /** Shown and spoken when the browser blocks the copy. */
-  failedLabel?: string
   /** Shows the label as text next to the icon. */
   showLabel?: boolean
   /** Size of the button. */
@@ -24,6 +29,8 @@ export type CopyButtonProps = {
   resetAfter?: number
   /** Called after the text is copied, with the copied text. Not called if copying fails. */
   onCopy?: (value: string) => void
+  /** Status text, so you can translate it. Missing keys use the English defaults. */
+  labels?: Partial<CopyButtonLabels>
   /** Extra class for the button. */
   className?: string
 }
@@ -31,14 +38,14 @@ export type CopyButtonProps = {
 export function CopyButton({
   value,
   label = 'Copy',
-  copiedLabel = 'Copied',
-  failedLabel = 'Could not copy',
   showLabel = false,
   size = 'md',
   resetAfter = 1800,
   onCopy,
+  labels: labelsProp,
   className,
 }: CopyButtonProps) {
+  const labels = { ...defaultLabels, ...labelsProp }
   const [status, setStatus] = useState<'idle' | 'copied' | 'failed'>('idle')
   const timer = useRef<number | undefined>(undefined)
   useEffect(() => () => window.clearTimeout(timer.current), [])
@@ -83,9 +90,9 @@ export function CopyButton({
     <button
       ref={rootRef}
       type="button"
+      data-slot="copy-button"
       className={cx(styles.root, styles[size], showLabel && styles.withLabel, className)}
-      data-copied={status === 'copied' || undefined}
-      data-failed={status === 'failed' || undefined}
+      data-status={status}
       aria-label={showLabel ? undefined : label}
       onClick={(e) => {
         const r = iconsRef.current?.getBoundingClientRect()
@@ -94,7 +101,7 @@ export function CopyButton({
         copy()
       }}
     >
-      <span ref={iconsRef} className={styles.icons} aria-hidden="true">
+      <span ref={iconsRef} data-slot="copy-button-icon" className={styles.icons} aria-hidden="true">
         <CopyIcon className={styles.copy} />
         <svg viewBox="0 0 24 24" className={styles.check}>
           <path d="M5 12.5l4.5 4.5L19 7.5" pathLength="1" />
@@ -102,13 +109,13 @@ export function CopyButton({
         <XIcon className={styles.fail} />
       </span>
       {showLabel && (
-        <span className={styles.labels}>
+        <span data-slot="copy-button-label" className={styles.labels}>
           <span ref={labelRef} className={styles.labelIdle}>{label}</span>
-          <span className={styles.labelDone} aria-hidden="true">{copiedLabel}</span>
-          <span className={styles.labelFailed} aria-hidden="true">{failedLabel}</span>
+          <span className={styles.labelDone} aria-hidden="true">{labels.copied}</span>
+          <span className={styles.labelFailed} aria-hidden="true">{labels.failed}</span>
         </span>
       )}
-      <span className={styles.srOnly} aria-live="polite">{status === 'copied' ? copiedLabel : status === 'failed' ? failedLabel : ''}</span>
+      <span className={styles.srOnly} aria-live="polite">{status === 'copied' ? labels.copied : status === 'failed' ? labels.failed : ''}</span>
     </button>
   )
 }

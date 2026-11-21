@@ -88,31 +88,33 @@ export function Input({
     .join(' ')
 
   return (
-    <div className={cx(styles.root, className)}>
+    <div data-slot="input" className={cx(styles.root, className)}>
       {!floating && (
-        <label htmlFor={inputId} className={styles.topLabel}>
+        <label htmlFor={inputId} data-slot="field-label" className={styles.topLabel}>
           {label}
-          {optional && <span className={styles.optional}> {labels.optional}</span>}
+          {optional && <span data-slot="input-optional" className={styles.optional}> {labels.optional}</span>}
         </label>
       )}
       <div
         ref={fieldRef}
+        data-slot="input-field"
         className={cx(styles.field, styles[size], floating && styles.floating)}
         data-filled={filled || undefined}
         data-invalid={error ? true : undefined}
         data-disabled={rest.disabled || undefined}
       >
-        {leading && <span className={styles.adorn}>{leading}</span>}
+        {leading && <span data-slot="input-leading" className={styles.adorn}>{leading}</span>}
         <div className={styles.control}>
           {floating && (
-            <label htmlFor={inputId} className={styles.floatLabel}>
+            <label htmlFor={inputId} data-slot="field-label" className={styles.floatLabel}>
               {label}
-              {optional && <span className={styles.optional}> {labels.optional}</span>}
+              {optional && <span data-slot="input-optional" className={styles.optional}> {labels.optional}</span>}
             </label>
           )}
           <input
             id={inputId}
             ref={mergeRefs(inner, ref)}
+            data-slot="input-control"
             className={styles.input}
             value={value}
             defaultValue={defaultValue}
@@ -125,7 +127,7 @@ export function Input({
             {...rest}
           />
         </div>
-        {trailing && <span className={styles.adorn}>{trailing}</span>}
+        {trailing && <span data-slot="input-trailing" className={styles.adorn}>{trailing}</span>}
       </div>
       <FieldMessage helpId={helpId} errorId={errorId} help={help} error={error} />
     </div>

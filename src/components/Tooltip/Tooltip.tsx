@@ -108,6 +108,7 @@ export function Tooltip({ content, side = 'top', children, delay }: TooltipProps
             id={id}
             role="tooltip"
             className={styles.tip}
+            data-slot="tooltip-content"
             data-state={state}
             data-side={floating.side}
             style={floating.style}

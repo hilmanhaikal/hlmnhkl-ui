@@ -15,5 +15,5 @@ export type StackProps = ComponentPropsWithRef<'div'> & {
 export function Stack({ gap = 5, align = 'stretch', as = 'div', className, style, ...rest }: StackProps) {
   // One cast keeps the ref and attribute types simple; every option is a block element.
   const Tag = as as 'div'
-  return <Tag className={cx(styles.root, styles[align], className)} style={{ '--stack-gap': space(gap), ...style } as CSSProperties} {...rest} />
+  return <Tag className={cx(styles.root, styles[align], className)} data-slot="stack" style={{ '--stack-gap': space(gap), ...style } as CSSProperties} {...rest} />
 }

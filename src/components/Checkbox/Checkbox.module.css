@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: flex;
   align-items: flex-start;
@@ -40,15 +41,15 @@
   background: var(--gooee-color-surface);
   color: var(--gooee-color-accent-fg);
   transition:
-    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out);
+    border-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
   .input:hover:not(:disabled) + .box { border-color: var(--gooee-color-fg); }
 }
 .input:focus-visible + .box { box-shadow: var(--gooee-focus-ring); }
-.root[data-invalid] .box[data-state="off"] { border-color: var(--gooee-color-danger); }
+.root[data-invalid] .box[data-state="unchecked"] { border-color: var(--gooee-color-danger); }
 
 /* The checked fill covers the border too. Ink pours into it in Checkbox.tsx (internal/liquidMore.ts);
    here it only holds the end state, so reduced motion lands on it at once. */
@@ -60,8 +61,8 @@
   clip-path: circle(0 at 50% 50%);
 }
 
-.box[data-state="on"] .fill,
-.box[data-state="mixed"] .fill { clip-path: none; }
+.box[data-state="checked"] .fill,
+.box[data-state="indeterminate"] .fill { clip-path: none; }
 
 .pour {
   position: absolute;
@@ -88,15 +89,15 @@
   /* Hidden just before the path starts. A zero-length dash would leave its round ends as a dot in Safari. */
   stroke-dasharray: 1 2;
   stroke-dashoffset: 1.01;
-  transition: stroke-dashoffset var(--gooee-motion-base) var(--gooee-ease-out);
+  transition: stroke-dashoffset var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
-.box[data-state="on"] .tick {
+.box[data-state="checked"] .tick {
   stroke-dashoffset: 0;
   transition-delay: var(--gooee-motion-instant);
 }
 
-.box[data-state="mixed"] .dash { stroke-dashoffset: 0; }
+.box[data-state="indeterminate"] .dash { stroke-dashoffset: 0; }
 
 .text {
   display: flex;
@@ -117,4 +118,5 @@
   font-size: var(--gooee-text-sm);
   color: var(--gooee-color-fg-muted);
   line-height: var(--gooee-leading-snug);
+}
 }

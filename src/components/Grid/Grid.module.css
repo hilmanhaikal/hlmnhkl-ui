@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: grid;
   gap: var(--grid-gap);
@@ -36,4 +37,5 @@
     auto-fit,
     minmax(clamp(var(--full), (var(--full-at) - 100%) * 9999, clamp(var(--half), (var(--half-at) - 100%) * 9999, 100%)), 1fr)
   );
+}
 }

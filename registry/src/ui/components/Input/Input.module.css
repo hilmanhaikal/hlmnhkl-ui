@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
@@ -33,9 +34,9 @@
   cursor: text;
   --gooee-flow-edge: var(--gooee-color-fg);
   transition:
-    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out),
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+    border-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph),
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 .sm { --h: var(--gooee-control-h-sm); gap: var(--gooee-space-2); padding: 0 calc(var(--gooee-space-4) - var(--edge)); }
@@ -58,12 +59,12 @@
    at once; a blur fades it. */
 .field[data-edge] {
   border-color: var(--gooee-flow-edge);
-  box-shadow: inset 0 0 0 calc(var(--gooee-line-focus) - var(--gooee-line)) var(--gooee-flow-edge);
-  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  box-shadow: inset 0 0 0 calc(var(--gooee-focus-width) - var(--gooee-line)) var(--gooee-flow-edge);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 .field[data-invalid] { --gooee-flow-edge: var(--gooee-color-danger); }
-.field[data-invalid][data-edge] { box-shadow: inset 0 0 0 calc(var(--gooee-line-focus) - var(--gooee-line-thick)) var(--gooee-flow-edge); }
+.field[data-invalid][data-edge] { box-shadow: inset 0 0 0 calc(var(--gooee-focus-width) - var(--gooee-line-thick)) var(--gooee-flow-edge); }
 
 .edge {
   position: absolute;
@@ -75,7 +76,7 @@
 .field[data-invalid] {
   border-color: var(--gooee-color-danger);
   --edge: var(--gooee-line-thick);
-  animation: nudge var(--gooee-motion-slow) var(--gooee-ease-out);
+  animation: nudge var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 /* Also when a disabled fieldset turns it off, so it looks off like the controls beside it. */
@@ -118,7 +119,7 @@
 
 .input::placeholder {
   color: var(--gooee-color-fg-subtle);
-  transition: opacity var(--gooee-motion-base) var(--gooee-ease-out);
+  transition: opacity var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .floating .input {
@@ -143,8 +144,8 @@
   transform: translateY(-50%);
   pointer-events: none;
   transition:
-    transform var(--gooee-motion-base) var(--gooee-ease-out),
-    color var(--gooee-motion-base) var(--gooee-ease-out);
+    transform var(--gooee-motion-base) var(--gooee-ease-morph),
+    color var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .floating:focus-within .floatLabel,
@@ -157,4 +158,5 @@
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(calc(var(--gooee-shift-sm) * -1)); }
   60% { transform: translateX(var(--gooee-shift-sm)); }
+}
 }

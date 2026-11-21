@@ -209,15 +209,24 @@ function nearestOn(cl: Ring, x: number, y: number) {
   return best
 }
 
+export type EdgeFlowOptions = {
+  /** A selector: the edge shows while the field matches it, such as ':focus-within'. */
+  when: string
+  /** The drawing's class. */
+  className: string
+  /** Where the drawing goes: the field itself (the default), or a wrapper for a textarea. */
+  root?: HTMLElement
+}
+
 /**
- * Field focus: while `el` matches `on`, it carries data-edge, which its CSS draws as the dark edge
- * (the field's focus indicator, --gooee-line-focus thick).
+ * Field focus: while `el` matches `when`, it carries data-edge, which its CSS draws as the dark edge
+ * (the field's focus indicator, --gooee-focus-width thick). The drawing is filled with --gooee-flow-edge.
  * When it starts to match, the edge first flows both ways round from where it was pressed (or from the
  * start edge for a key) and meets on the far side, then data-edge lands; when it stops mid-flow, the
- * drawing fades. The layer sits in `root` (the field itself, or a wrapper for a textarea). Returns a stop.
+ * drawing fades. `destroy` when the field goes.
  */
-export function edgeFlow(el: HTMLElement, root: HTMLElement, on: string, cls: string) {
-  let shown = el.matches(on)
+export function createEdgeFlow(el: HTMLElement, { when, className, root = el }: EdgeFlowOptions) {
+  let shown = el.matches(when)
   if (shown) el.dataset.edge = ''
   let pressed: { x: number; y: number; t: number } | null = null
   let run: { svg: SVGSVGElement; stop: () => void } | null = null
@@ -235,8 +244,8 @@ export function edgeFlow(el: HTMLElement, root: HTMLElement, on: string, cls: st
     const ms = motionFor('base') + motionFor('instant')
     if (!ms) return settle()
     const look = getComputedStyle(el)
-    // The settled edge is a focus indicator: --gooee-line-focus thick, inside the border box.
-    const bw = parseFloat(look.getPropertyValue('--gooee-line-focus')) || 2
+    // The settled edge is a focus indicator: --gooee-focus-width thick, inside the border box.
+    const bw = parseFloat(look.getPropertyValue('--gooee-focus-width')) || 2
     const r = parseFloat(look.borderTopLeftRadius) || 0
     const rect = el.getBoundingClientRect()
     let W = el.offsetWidth
@@ -248,7 +257,7 @@ export function edgeFlow(el: HTMLElement, root: HTMLElement, on: string, cls: st
     const i0 = fresh ? nearestOn(cl, pressed!.x - rect.left, pressed!.y - rect.top) : nearestOn(cl, rtl ? W : 0, H / 2)
     let at = i0 / cl.length
     pressed = null
-    const { svg, paths } = layer(root, cls, null)
+    const { svg, paths } = layer(root, className, null)
     const path = paths[0]
     path.style.fill = look.getPropertyValue('--gooee-flow-edge').trim() || 'currentColor'
     path.setAttribute('fill-rule', 'evenodd')
@@ -288,7 +297,7 @@ export function edgeFlow(el: HTMLElement, root: HTMLElement, on: string, cls: st
     fade.finished.then(() => run === r && end(), () => {})
   }
   const check = () => {
-    const now = el.matches(on)
+    const now = el.matches(when)
     if (now === shown) return
     shown = now
     if (now) start()
@@ -302,17 +311,19 @@ export function edgeFlow(el: HTMLElement, root: HTMLElement, on: string, cls: st
     pressed = { x: ev.clientX, y: ev.clientY, t: performance.now() }
   }
   const watch = new MutationObserver(check)
-  watch.observe(el, { attributes: true, attributeFilter: ['data-open', 'data-invalid'] })
+  watch.observe(el, { attributes: true, attributeFilter: ['data-state', 'data-invalid'] })
   el.addEventListener('pointerdown', down, true)
   el.addEventListener('focusin', later)
   el.addEventListener('focusout', later)
-  return () => {
-    watch.disconnect()
-    el.removeEventListener('pointerdown', down, true)
-    el.removeEventListener('focusin', later)
-    el.removeEventListener('focusout', later)
-    end()
-    delete el.dataset.edge
+  return {
+    destroy() {
+      watch.disconnect()
+      el.removeEventListener('pointerdown', down, true)
+      el.removeEventListener('focusin', later)
+      el.removeEventListener('focusout', later)
+      end()
+      delete el.dataset.edge
+    },
   }
 }
 
@@ -391,7 +402,7 @@ export function checkLoops(m: number, g: CheckMorph): Pt[][] {
 /** Where a copy run is: front filled, back slid under, square morphed into the check, each 0 to 1. */
 export type CopyState = { fill: number; slide: number; morph: number }
 
-// The copy icon (internal/icons CopyIcon) in its 24-unit box, and the check's corner and arms.
+// The copy icon (icons/icons CopyIcon) in its 24-unit box, and the check's corner and arms.
 const ICON = { front: 8.5, size: 11, r: 2.5, back: 4, stroke: 1.75, B: [9.5, 17] as Pt, L1: 4.5 * Math.SQRT2, L2: 9.5 * Math.SQRT2, check: 2.25 }
 const BACK_D = 'M15.5 8.5V6.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2'
 
@@ -562,14 +573,20 @@ export function beadLoops(cx: number, hw: number, r: number, F: { y: number; hh:
   return trace(sdf, [[cx, F.y, 1, 0]])
 }
 
+export type BeadOptions = {
+  /** The drawing's class. */
+  className: string
+}
+
 /**
  * Menu items: the hover fill is a bead that follows focus (which follows the pointer) from item to
  * item. A next item settles in about 100ms with a slight stretch; a jump of two or more stretches a
  * short neck. While it moves `root` (the menu panel) carries data-bead, so the items' own fill stands down; at rest
  * the focused item's CSS fill is back. Focus leaving the panel mid-move fades the bead where it is.
- * Only this panel's own items count (submenus sit inside it). Returns a stop.
+ * The bead is filled with the item's --gooee-bead. Only this panel's own items count (submenus sit
+ * inside it). `destroy` when the menu goes.
  */
-export function bead(root: HTMLElement, cls: string) {
+export function createBead(root: HTMLElement, { className }: BeadOptions) {
   const st = { F: 0, T: 0, hF: 0, hT: 0 }
   let goal: HTMLElement | null = null
   let run: { svg: SVGSVGElement; path: SVGPathElement; id: number; last: number } | null = null
@@ -642,7 +659,7 @@ export function bead(root: HTMLElement, cls: string) {
       const b = boxOf(from)
       st.F = st.T = b.y + b.h / 2
       st.hF = st.hT = b.h / 2
-      const { svg, paths } = layer(root, cls, root.firstChild)
+      const { svg, paths } = layer(root, className, root.firstChild)
       svg.setAttribute('width', `${root.scrollWidth}`)
       svg.setAttribute('height', `${root.scrollHeight}`)
       paths[0].setAttribute('data-measure', 'shape')
@@ -668,9 +685,11 @@ export function bead(root: HTMLElement, cls: string) {
   }
   root.addEventListener('focusin', focusIn)
   root.addEventListener('focusout', focusOut)
-  return () => {
-    root.removeEventListener('focusin', focusIn)
-    root.removeEventListener('focusout', focusOut)
-    end()
+  return {
+    destroy() {
+      root.removeEventListener('focusin', focusIn)
+      root.removeEventListener('focusout', focusOut)
+      end()
+    },
   }
 }

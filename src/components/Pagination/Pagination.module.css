@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: flex;
   align-items: center;
@@ -39,8 +40,8 @@
 
 .pill[data-ready] {
   transition:
-    transform var(--gooee-motion-slow) var(--gooee-ease-out),
-    width var(--gooee-motion-slow) var(--gooee-ease-out);
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph),
+    width var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .btn {
@@ -61,9 +62,9 @@
   font-weight: var(--gooee-weight-medium);
   cursor: pointer;
   transition:
-    color var(--gooee-motion-base) var(--gooee-ease-out),
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+    color var(--gooee-motion-base) var(--gooee-ease-morph),
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -86,4 +87,145 @@
   min-width: var(--gooee-space-7);
   text-align: center;
   color: var(--gooee-color-fg-muted);
+}
+
+/* Compact: Page 5 of 12 over a line, and a Go to page field that grows out of it in the same place. */
+.root[data-variant='compact'] {
+  align-items: flex-start;
+  gap: var(--gooee-space-3);
+}
+
+.middle {
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+}
+
+.current,
+.jump { grid-area: 1 / 1; }
+
+.current {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: var(--gooee-space-2);
+  font-weight: var(--gooee-weight-regular);
+  color: var(--gooee-color-fg-muted);
+}
+
+.words { white-space: nowrap; }
+
+.num {
+  display: inline-grid;
+  justify-items: center;
+  color: var(--gooee-color-fg);
+  font-weight: var(--gooee-weight-semibold);
+}
+
+.num > * { grid-area: 1 / 1; }
+
+/* Holds the width of the longest page number, so the words never shift as the number changes. */
+.ghost { visibility: hidden; }
+
+.line {
+  display: block;
+  height: var(--gooee-space-1);
+  overflow: hidden;
+  border-radius: var(--gooee-radius-full);
+  background: var(--gooee-color-border);
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  background: var(--gooee-color-accent);
+  transform-origin: left;
+  transition: transform var(--gooee-motion-morph) var(--gooee-ease-morph);
+}
+
+.fill:dir(rtl) { transform-origin: right; }
+
+/* The label and the number box each fill the field's inner height, 44px, so the whole field is the target.
+   The border sits outside that, over the arrows' edge line, so the row keeps its height. */
+.jump {
+  display: flex;
+  align-items: stretch;
+  height: calc(var(--gooee-hit-min) + var(--gooee-line) * 2);
+  margin-block: calc(var(--gooee-line) * -1);
+  position: relative;
+  border: var(--gooee-line) solid var(--gooee-color-border-strong);
+  border-radius: var(--gooee-radius-md);
+  background: var(--gooee-color-surface);
+  visibility: hidden;
+  transition: border-color var(--gooee-motion-fast) var(--gooee-ease-morph), box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph);
+}
+
+.jump[data-state="open"] { visibility: visible; }
+
+.jump:focus-within {
+  border-color: var(--gooee-color-fg);
+  box-shadow: 0 0 0 var(--gooee-halo) var(--gooee-color-surface-active);
+}
+
+/* A red border drawn twice as thick (outside, so nothing inside moves) and the shake, so the error does not rely on colour alone. */
+.jump[data-invalid] {
+  border-color: var(--gooee-color-danger);
+  box-shadow: 0 0 0 var(--gooee-line) var(--gooee-color-danger);
+}
+
+.jump[data-shake] { animation: nudge var(--gooee-motion-slow) var(--gooee-ease-morph); }
+
+.jumpLabel {
+  display: flex;
+  align-items: center;
+  padding-inline: var(--gooee-space-4) var(--gooee-space-3);
+  font-size: var(--gooee-text-sm);
+  color: var(--gooee-color-fg-muted);
+  white-space: nowrap;
+  cursor: text;
+}
+
+/* Sits in the field's end corners with a one-line gap, so its corners are the field's less that line. */
+.input {
+  min-width: 0;
+  padding: 0 var(--gooee-space-3);
+  border: 0;
+  border-start-end-radius: calc(var(--gooee-radius-md) - var(--gooee-line));
+  border-end-end-radius: calc(var(--gooee-radius-md) - var(--gooee-line));
+  background: var(--gooee-color-surface-sunken);
+  color: var(--gooee-color-fg);
+  font: inherit;
+  font-size: var(--gooee-text-input);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.input:focus { outline: none; }
+.input::placeholder { color: var(--gooee-color-fg-subtle); }
+
+/* Spans the arrows too without widening the field, so the arrows stay put when an error shows. */
+.message {
+  width: 0;
+  min-width: calc(100% + (var(--gooee-hit-min) + var(--gooee-space-3)) * 2);
+  margin-inline: calc((var(--gooee-hit-min) + var(--gooee-space-3)) * -1);
+  text-wrap: balance;
+}
+
+.message p { justify-content: center; }
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes nudge {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(calc(var(--gooee-shift-sm) * -1)); }
+  60% { transform: translateX(var(--gooee-shift-sm)); }
+}
 }

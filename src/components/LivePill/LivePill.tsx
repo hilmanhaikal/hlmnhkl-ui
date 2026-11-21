@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type CSSProperties, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { CheckIcon } from '../../internal/icons'
+import { CheckIcon } from '../../icons/icons'
 import { focusInCard, measurePill, pillAlertTimer, pillOutside, pillVars } from '../../internal/motion/livePill'
 import { useControllable } from '../../internal/useControllable'
 import styles from './LivePill.module.css'
@@ -131,11 +131,12 @@ export function LivePill({
   const vars = { ...pillVars(shut, rowH, ringAt), ...style } as CSSProperties
 
   return (
-    <div className={cx(styles.root, className)} data-placement={placement} data-align={align} data-ring={ring || undefined} data-fixed={fixed || undefined} style={vars} {...rest}>
+    <div data-slot="live-pill" className={cx(styles.root, className)} data-placement={placement} data-align={align} data-ring={ring || undefined} data-fixed={fixed || undefined} style={vars} {...rest}>
       <div
         ref={shell}
+        data-slot="live-pill-shell"
         className={styles.shell}
-        data-open={open || undefined}
+        data-state={open ? 'open' : 'closed'}
         data-measured={shut ? '' : undefined}
         data-tone={tone}
         onKeyDown={(e) => {
@@ -151,29 +152,29 @@ export function LivePill({
         }}
       >
         {ring && (
-          <span ref={lead} className={styles.lead} data-state={state} aria-hidden="true">
+          <span ref={lead} data-slot="live-pill-ring" className={styles.lead} data-status={state} aria-hidden="true">
             <svg className={styles.ring} viewBox="0 0 44 44">
               <circle className={styles.track} cx="22" cy="22" r="20" />
               <circle className={styles.arc} cx="22" cy="22" r="20" pathLength={100} strokeDasharray={`${state ? 100 : (p ?? 0) * 100} 100`} />
             </svg>
             {state === 'done' ? (
-              <CheckIcon className={styles.mark} />
+              <CheckIcon data-slot="live-pill-mark" className={styles.mark} />
             ) : state === 'stopped' ? (
-              <svg className={styles.mark} viewBox="0 0 24 24">
+              <svg data-slot="live-pill-mark" className={styles.mark} viewBox="0 0 24 24">
                 <path d="M12 7v6M12 17v.01" />
               </svg>
             ) : (
-              <span className={styles.pct}>{Math.round((p ?? 0) * 100)}%</span>
+              <span data-slot="live-pill-percent" className={styles.pct}>{Math.round((p ?? 0) * 100)}%</span>
             )}
           </span>
         )}
         <div className={styles.row}>
-          <button ref={button} type="button" className={styles.button} aria-expanded={open} aria-label={label} onClick={() => (open ? close(false) : setOpen(true))}>
+          <button ref={button} type="button" data-slot="live-pill-trigger" className={styles.button} aria-expanded={open} aria-label={label} onClick={() => (open ? close(false) : setOpen(true))}>
             {ring && <span ref={slot} className={styles.slot} />}
-            <span className={styles.face}>{compact}</span>
+            <span data-slot="live-pill-compact" className={styles.face}>{compact}</span>
           </button>
         </div>
-        <div className={styles.body} inert={!open} aria-hidden={!open || undefined}>
+        <div data-slot="live-pill-content" className={styles.body} inert={!open} aria-hidden={!open || undefined}>
           {children}
         </div>
       </div>

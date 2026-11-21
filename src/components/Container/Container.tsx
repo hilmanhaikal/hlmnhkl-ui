@@ -15,5 +15,5 @@ export type ContainerProps = ComponentPropsWithRef<'div'> & {
 export function Container({ size = 'lg', padding = 5, as = 'div', className, style, ...rest }: ContainerProps) {
   // One cast keeps the ref and attribute types simple; every option is a block element.
   const Tag = as as 'div'
-  return <Tag className={cx(styles.root, styles[size], className)} style={{ '--container-pad': space(padding), ...style } as CSSProperties} {...rest} />
+  return <Tag data-slot="container" className={cx(styles.root, styles[size], className)} style={{ '--container-pad': space(padding), ...style } as CSSProperties} {...rest} />
 }

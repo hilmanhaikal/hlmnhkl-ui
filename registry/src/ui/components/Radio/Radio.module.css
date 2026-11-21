@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .group {
   margin: 0;
   padding: 0;
@@ -62,9 +63,9 @@
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-surface);
   transition:
-    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+    border-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -72,8 +73,8 @@
 }
 .input:active:not(:disabled) + .circle { transform: scale(var(--gooee-press-scale-strong)); transition-duration: var(--gooee-motion-instant); }
 .input:focus-visible + .circle { box-shadow: var(--gooee-focus-ring); }
-.circle[data-on] { border-color: var(--gooee-color-accent); }
-.group[data-invalid] .circle:not([data-on]) { border-color: var(--gooee-color-danger); }
+.circle[data-state="checked"] { border-color: var(--gooee-color-accent); }
+.group[data-invalid] .circle:not([data-state="checked"]) { border-color: var(--gooee-color-danger); }
 
 .dot {
   width: var(--gooee-control-dot);
@@ -81,12 +82,12 @@
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-accent);
   transform: scale(0);
-  transition: transform var(--gooee-motion-fast) var(--gooee-ease-in);
+  transition: transform var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
-.circle[data-on] .dot {
+.circle[data-state="checked"] .dot {
   transform: scale(1);
-  transition: transform var(--gooee-motion-slow) var(--gooee-ease-bounce);
+  transition: transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .text {
@@ -104,4 +105,5 @@
   font-size: var(--gooee-text-sm);
   color: var(--gooee-color-fg-muted);
   line-height: var(--gooee-leading-snug);
+}
 }

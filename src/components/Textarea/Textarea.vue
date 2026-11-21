@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, useAttrs, useId, watch } from 'vue'
 import FieldMessage from '../../internal/FieldMessage.vue'
-import { edgeFlow } from '../../internal/motion/liquidMore'
+import { createEdgeFlow } from '../../internal/motion/liquidMore'
 import { growTextarea } from '../../internal/motion/textarea'
 import styles from './Textarea.module.css'
 
@@ -9,29 +9,26 @@ import styles from './Textarea.module.css'
 // Other attributes, such as name or placeholder, go to the textarea. class and style go to the root.
 defineOptions({ inheritAttrs: false })
 
-const props = withDefaults(
-  defineProps<{
-    /** Visible name of the field, also read by screen readers. */
-    label: string
-    /** Hint under the field. Hidden while an error shows. */
-    help?: string
-    /** Error message under the field. Also marks the field invalid. */
-    error?: string
-    /** Grows with the text. Default true. */
-    autoGrow?: boolean
-    /** Height in lines when empty. */
-    minRows?: number
-    /** Most lines it grows to before it scrolls. Only used with autoGrow. */
-    maxRows?: number
-    /** Shows a live "n / max" count when maxLength is set. */
-    showCount?: boolean
-    maxLength?: number
-    /** The starting text when there is no v-model. */
-    defaultValue?: string
-    id?: string
-  }>(),
-  { autoGrow: true, minRows: 3, maxRows: 10 },
-)
+const { help, error, autoGrow = true, minRows = 3, maxRows = 10, showCount, maxLength, defaultValue, id } = defineProps<{
+  /** Visible name of the field, also read by screen readers. */
+  label: string
+  /** Hint under the field. Hidden while an error shows. */
+  help?: string
+  /** Error message under the field. Also marks the field invalid. */
+  error?: string
+  /** Grows with the text. Default true. */
+  autoGrow?: boolean
+  /** Height in lines when empty. */
+  minRows?: number
+  /** Most lines it grows to before it scrolls. Only used with autoGrow. */
+  maxRows?: number
+  /** Shows a live "n / max" count when maxLength is set. */
+  showCount?: boolean
+  maxLength?: number
+  /** The starting text when there is no v-model. */
+  defaultValue?: string
+  id?: string
+}>()
 /** The text. Use v-model, or leave it out and the field keeps its own text. */
 const model = defineModel<string>()
 const attrs = useAttrs()
@@ -41,19 +38,19 @@ const fieldAttrs = computed(() => {
   return rest
 })
 const auto = useId()
-const fieldId = computed(() => props.id ?? auto)
+const fieldId = computed(() => id ?? auto)
 const helpId = computed(() => `${fieldId.value}-help`)
 const errorId = computed(() => `${fieldId.value}-error`)
 const countId = computed(() => `${fieldId.value}-count`)
 const describedBy = computed(
-  () => [props.help && !props.error ? helpId.value : null, props.error ? errorId.value : null, props.showCount && props.maxLength ? countId.value : null, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined,
+  () => [help && !error ? helpId.value : null, error ? errorId.value : null, showCount && maxLength ? countId.value : null, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined,
 )
 
 const inner = ref<HTMLTextAreaElement | null>(null)
 const box = ref<HTMLElement | null>(null)
 const count = ref<HTMLElement | null>(null)
-defineExpose({ field: inner })
-const resize = () => growTextarea(inner.value, count.value, props)
+defineExpose({ el: inner })
+const resize = () => growTextarea(inner.value, count.value, { autoGrow, minRows, maxRows, maxLength })
 
 // The text is set on the element, not bound: Vue would also write it to a value attribute, which React does not.
 const show = () => {
@@ -66,7 +63,7 @@ watch(model, () => {
   show()
   resize()
 })
-watch(() => [props.autoGrow, props.minRows, props.maxRows, props.maxLength], resize)
+watch(() => [autoGrow, minRows, maxRows, maxLength], resize)
 
 const onInput = (e: Event) => {
   resize()
@@ -83,9 +80,9 @@ const onReset = () => {
 onMounted(() => {
   const el = inner.value!
   if (model.value !== undefined) show()
-  else if (props.defaultValue !== undefined) el.defaultValue = props.defaultValue
+  else if (defaultValue !== undefined) el.defaultValue = defaultValue
   resize()
-  if (box.value) stopEdge = edgeFlow(el, box.value, ':focus', styles.edge)
+  if (box.value) stopEdge = createEdgeFlow(el, { root: box.value, when: ':focus', className: styles.edge }).destroy
   el.form?.addEventListener('reset', onReset)
 })
 onBeforeUnmount(() => {
@@ -96,10 +93,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div :class="[styles.root, attrs.class]" :style="attrs.style as string | undefined">
+  <div :class="[styles.root, attrs.class]" :style="attrs.style as string | undefined" data-slot="textarea">
     <div :class="styles.labelRow">
-      <label :for="fieldId" :class="styles.label">{{ label }}</label>
-      <span v-if="showCount && maxLength !== undefined" :id="countId" ref="count" :class="styles.count" aria-live="off" />
+      <label :for="fieldId" :class="styles.label" data-slot="field-label">{{ label }}</label>
+      <span v-if="showCount && maxLength !== undefined" :id="countId" ref="count" :class="styles.count" data-slot="textarea-count" aria-live="off" />
     </div>
     <div ref="box" :class="styles.box">
       <textarea
@@ -107,6 +104,7 @@ onBeforeUnmount(() => {
         ref="inner"
         :rows="minRows"
         :class="styles.textarea"
+        data-slot="textarea-input"
         :data-invalid="error ? true : undefined"
         :aria-invalid="error ? true : undefined"
         :aria-describedby="describedBy"

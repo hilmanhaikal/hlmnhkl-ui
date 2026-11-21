@@ -3,7 +3,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react'
 import { cx } from '../../internal/cx'
 import { focusables } from '../../internal/focus'
-import { XIcon } from '../../internal/icons'
+import { XIcon } from '../../icons/icons'
 import { useDismiss } from '../../internal/layers'
 import { morphInsets, observeMorphButton, placeMorphButton, takesFocus, type MorphCorner } from '../../internal/motion/morphButton'
 import { useControllable } from '../../internal/useControllable'
@@ -24,13 +24,20 @@ export type MorphButtonProps = {
   onOpenChange?: (open: boolean) => void
   /** How wide the panel grows. It never runs past the edge of the screen. */
   width?: 'sm' | 'md'
-  /** Screen reader name for the close button. */
-  closeLabel?: string
+  /** Text for the button's controls, so you can translate it. Missing keys use the English defaults. */
+  labels?: Partial<MorphButtonLabels>
   /** Element to focus when it opens. Defaults to the first control in the panel. */
   initialFocus?: RefObject<HTMLElement | null>
   /** Extra class for the outer box, which keeps the button's place in the page. */
   className?: string
 }
+
+export type MorphButtonLabels = {
+  /** Screen reader name for the close button. */
+  close: string
+}
+
+const defaultLabels: MorphButtonLabels = { close: 'Close' }
 
 export function MorphButton({
   label,
@@ -40,10 +47,11 @@ export function MorphButton({
   defaultOpen = false,
   onOpenChange,
   width = 'sm',
-  closeLabel = 'Close',
+  labels: labelsProp,
   initialFocus,
   className,
 }: MorphButtonProps) {
+  const labels = { ...defaultLabels, ...labelsProp }
   const id = useId()
   const [open, setOpen] = useControllable(openProp, defaultOpen, onOpenChange)
   const [corner, setCorner] = useState<MorphCorner>('tl')
@@ -105,13 +113,14 @@ export function MorphButton({
   const vars = { ...morphInsets(corner, box, open), maxWidth: room } as CSSProperties
 
   return (
-    <div ref={anchorRef} className={cx(styles.anchor, className)} style={{ width: box.tw || undefined, height: box.th || undefined }}>
-      <div ref={shellRef} className={styles.shell} data-open={open || undefined} data-corner={corner} data-width={width} style={vars}>
+    <div ref={anchorRef} data-slot="morph-button" className={cx(styles.anchor, className)} style={{ width: box.tw || undefined, height: box.th || undefined }}>
+      <div ref={shellRef} data-slot="morph-button-shell" className={styles.shell} data-state={open ? 'open' : 'closed'} data-corner={corner} data-width={width} style={vars}>
         <div className={styles.surface} aria-hidden="true" />
         <div className={styles.content}>
           <button
             ref={triggerRef}
             type="button"
+            data-slot="morph-button-trigger"
             className={styles.trigger}
             aria-expanded={open}
             aria-haspopup="dialog"
@@ -119,17 +128,18 @@ export function MorphButton({
             onClick={() => show(!open)}
           >
             {icon && (
-              <span className={styles.icon} aria-hidden="true">
+              <span data-slot="morph-button-icon" className={styles.icon} aria-hidden="true">
                 {icon}
               </span>
             )}
-            <span id={`${id}-label`}>{label}</span>
+            <span id={`${id}-label`} data-slot="morph-button-label">{label}</span>
           </button>
-          <div ref={panelRef} id={`${id}-panel`} role="dialog" aria-labelledby={`${id}-label`} tabIndex={-1} className={styles.panel} inert={!open} aria-hidden={!open || undefined}>
+          <div ref={panelRef} id={`${id}-panel`} role="dialog" aria-labelledby={`${id}-label`} tabIndex={-1} data-slot="morph-button-panel" className={styles.panel} inert={!open} aria-hidden={!open || undefined}>
             <button
               type="button"
+              data-slot="morph-button-close"
               className={styles.close}
-              aria-label={closeLabel}
+              aria-label={labels.close}
               data-skip-initial-focus
               onClick={() => {
                 setOpen(false)

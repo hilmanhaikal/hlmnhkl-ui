@@ -13,7 +13,7 @@ import {
 } from 'react'
 import { cx } from '../../internal/cx'
 import { useFocusTrap } from '../../internal/focus'
-import { XIcon } from '../../internal/icons'
+import { XIcon } from '../../icons/icons'
 import { useDismiss } from '../../internal/layers'
 import { useLiquid } from '../../internal/liquid'
 import { mergeRefs } from '../../internal/mergeRefs'
@@ -45,11 +45,18 @@ export type PopoverProps = {
   side?: Side
   /** How the panel lines up with the trigger along that side. */
   align?: Align
-  /** Label for the close button. */
-  closeLabel?: string
+  /** Text for the popover's controls, so you can translate it. Missing keys use the English defaults. */
+  labels?: Partial<PopoverLabels>
   /** Extra class for the panel. */
   className?: string
 }
+
+export type PopoverLabels = {
+  /** Screen reader name for the close button. */
+  close: string
+}
+
+const defaultLabels: PopoverLabels = { close: 'Close' }
 
 export function Popover({
   trigger,
@@ -60,9 +67,10 @@ export function Popover({
   onOpenChange,
   side = 'bottom',
   align = 'start',
-  closeLabel = 'Close',
+  labels: labelsProp,
   className,
 }: PopoverProps) {
+  const labels = { ...defaultLabels, ...labelsProp }
   const id = useId()
   const [open, setOpen] = useControllable(openProp, defaultOpen, onOpenChange)
   const anchorRef = useRef<HTMLElement>(null)
@@ -99,17 +107,18 @@ export function Popover({
             aria-labelledby={`${id}-title`}
             tabIndex={-1}
             className={cx(styles.panel, className)}
+            data-slot="popover-content"
             data-state={state}
             data-side={floating.side}
             style={floating.style}
           >
-            <div className={styles.head}>
-              <h2 id={`${id}-title`} className={styles.title}>{title}</h2>
-              <button type="button" className={styles.close} aria-label={closeLabel} data-skip-initial-focus onClick={() => setOpen(false)}>
+            <div className={styles.head} data-slot="popover-header">
+              <h2 id={`${id}-title`} className={styles.title} data-slot="popover-title">{title}</h2>
+              <button type="button" className={styles.close} data-slot="popover-close" aria-label={labels.close} data-skip-initial-focus onClick={() => setOpen(false)}>
                 <XIcon />
               </button>
             </div>
-            <div className={styles.body}>{children}</div>
+            <div className={styles.body} data-slot="popover-body">{children}</div>
           </div>
         </Portal>
       )}

@@ -1,24 +1,25 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: var(--gooee-empty-w);
+  max-width: var(--gooee-empty-state-w, 420px);
   margin: 0 auto;
   padding: var(--gooee-space-10) var(--gooee-space-5);
   text-align: center;
 }
 
 .root > * {
-  animation: rise var(--gooee-motion-slower) var(--gooee-ease-out) backwards;
+  animation: rise var(--gooee-motion-slower) var(--gooee-ease-morph) backwards;
   animation-delay: calc(var(--i) * var(--gooee-motion-stagger) * 2);
 }
 
 .icon {
   display: grid;
   place-items: center;
-  width: var(--gooee-empty-icon);
-  height: var(--gooee-empty-icon);
+  width: var(--gooee-empty-state-icon, 64px);
+  height: var(--gooee-empty-state-icon, 64px);
   margin-bottom: var(--gooee-space-6);
   border: var(--gooee-line) dashed var(--gooee-color-border-strong);
   border-radius: var(--gooee-radius-panel);
@@ -64,4 +65,5 @@ h1.title { font-size: var(--gooee-text-2xl); }
 
 @media (prefers-reduced-motion: reduce) {
   .icon > svg { animation: none; }
+}
 }

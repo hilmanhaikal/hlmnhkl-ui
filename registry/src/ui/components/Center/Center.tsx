@@ -25,5 +25,5 @@ export function Center({ axis = 'both', minHeight, centerText = true, gap = 4, a
     '--center-min-h': minHeight ? `var(--gooee-center-h-${minHeight})` : undefined,
     ...style,
   } as CSSProperties
-  return <Tag className={cx(styles.root, axis === 'both' && styles.both, centerText && styles.text, className)} style={vars} {...rest} />
+  return <Tag data-slot="center" className={cx(styles.root, axis === 'both' && styles.both, centerText && styles.text, className)} style={vars} {...rest} />
 }

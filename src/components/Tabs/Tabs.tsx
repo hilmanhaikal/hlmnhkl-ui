@@ -42,11 +42,11 @@ export function Tabs({ value: valueProp, defaultValue, onValueChange, className,
   const baseId = useId()
   const [value, set] = useControllable(valueProp, defaultValue, onValueChange)
   return (
-    <TabsCtx.Provider value={{ value, set, baseId }}>
-      <div className={cx(styles.root, className)} data-gooee-tabs="">
+    <TabsCtx value={{ value, set, baseId }}>
+      <div className={cx(styles.root, className)} data-slot="tabs" data-gooee-tabs="">
         {children}
       </div>
-    </TabsCtx.Provider>
+    </TabsCtx>
   )
 }
 
@@ -90,10 +90,10 @@ export function TabList({ label, className, children }: TabListProps) {
 
   return (
     <div className={cx(styles.listScroll, className)}>
-      <div ref={listRef} role="tablist" aria-label={label} className={styles.list} onKeyDown={onKeyDown}>
+      <div ref={listRef} role="tablist" aria-label={label} className={styles.list} data-slot="tabs-list" data-orientation="horizontal" onKeyDown={onKeyDown}>
         {children}
         {bar && (
-          <span ref={riseRef} className={styles.rise} aria-hidden="true" />
+          <span ref={riseRef} className={styles.rise} data-slot="tabs-indicator" aria-hidden="true" />
         )}
       </div>
     </div>
@@ -123,6 +123,9 @@ export function Tab({ value, disabled, children }: TabProps) {
       tabIndex={on ? 0 : -1}
       disabled={disabled}
       className={styles.tab}
+      data-slot="tabs-trigger"
+      data-state={on ? 'active' : 'inactive'}
+      data-disabled={disabled || undefined}
       onClick={() => {
         ctx.set(value)
         revealTab(id)
@@ -153,6 +156,8 @@ export function TabPanel({ value, className, children }: TabPanelProps) {
       hidden={!on}
       tabIndex={0}
       className={cx(styles.panel, className)}
+      data-slot="tabs-panel"
+      data-state={on ? 'active' : 'inactive'}
     >
       {on && children}
     </div>

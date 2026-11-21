@@ -1,3 +1,4 @@
+@layer gooee.components {
 /* Clip, not display: none, so screen readers still read it */
 .root,
 .focusable:not(:focus-within) {
@@ -10,4 +11,5 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
 }

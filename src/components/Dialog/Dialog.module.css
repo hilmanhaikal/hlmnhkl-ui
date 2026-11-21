@@ -1,3 +1,4 @@
+@layer gooee.components {
 .overlay {
   position: fixed;
   inset: 0;
@@ -101,7 +102,7 @@
   color: var(--gooee-color-fg-muted);
   font-size: var(--gooee-icon-lg);
   cursor: pointer;
-  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 /* Looks 32px, keeps a 44px touch area. */
@@ -109,7 +110,7 @@
 
 /* Only the icon turns and presses. The button is square to the pointer even though it looks round,
    so turning it would move its corners out from under the pointer and make it flicker. */
-.close svg { transition: transform var(--gooee-motion-slow) var(--gooee-ease-spring); }
+.close svg { transition: transform var(--gooee-motion-slow) var(--gooee-ease-morph); }
 
 @media (hover: hover) {
   .close:hover { background: var(--gooee-color-surface-hover); color: var(--gooee-color-fg); }
@@ -194,3 +195,4 @@
 
 @keyframes slideUp { from { transform: translateY(100%); } }
 @keyframes slideDown { to { transform: translateY(100%); } }
+}

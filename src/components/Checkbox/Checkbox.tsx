@@ -60,7 +60,7 @@ export function Checkbox({
     if (inner.current) inner.current.indeterminate = mixed
   }, [mixed])
 
-  const state = mixed ? 'mixed' : checked ? 'on' : 'off'
+  const state = mixed ? 'indeterminate' : checked ? 'checked' : 'unchecked'
 
   // Ink pours in from the side that was pressed, levels, and then the mark draws (motion/checkbox.ts).
   const boxRef = useRef<HTMLSpanElement>(null)
@@ -71,6 +71,7 @@ export function Checkbox({
 
   return (
     <div
+      data-slot="checkbox"
       className={cx(styles.root, className)}
       data-disabled={disabled || undefined}
       data-invalid={error ? true : undefined}
@@ -81,6 +82,7 @@ export function Checkbox({
           ref={mergeRefs(inner, ref)}
           id={inputId}
           type="checkbox"
+          data-slot="checkbox-input"
           className={styles.input}
           checked={checked}
           disabled={disabled}
@@ -98,17 +100,17 @@ export function Checkbox({
           }}
           {...rest}
         />
-        <span ref={boxRef} className={styles.box} data-state={state} aria-hidden="true">
+        <span ref={boxRef} data-slot="checkbox-box" className={styles.box} data-state={state} aria-hidden="true">
           <span className={styles.fill} data-pour-fill />
-          <svg viewBox="0 0 16 16" className={styles.mark}>
+          <svg viewBox="0 0 16 16" data-slot="checkbox-indicator" className={styles.mark}>
             <path className={styles.tick} d="M3.5 8.5l3 3 6-7" pathLength="1" data-mark="tick" />
             <path className={styles.dash} d="M4 8h8" pathLength="1" data-mark="dash" />
           </svg>
         </span>
       </span>
       <span className={styles.text}>
-        <label htmlFor={inputId} className={styles.label}>{label}</label>
-        {description && <span id={`${inputId}-desc`} className={styles.description}>{description}</span>}
+        <label htmlFor={inputId} data-slot="field-label" className={styles.label}>{label}</label>
+        {description && <span id={`${inputId}-desc`} data-slot="checkbox-description" className={styles.description}>{description}</span>}
         <FieldMessage helpId={`${inputId}-help`} errorId={errorId} error={error} />
       </span>
     </div>

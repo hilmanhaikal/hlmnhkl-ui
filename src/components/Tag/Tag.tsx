@@ -2,7 +2,7 @@
 
 import { useRef, useState, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { CheckIcon, XIcon } from '../../internal/icons'
+import { CheckIcon, XIcon } from '../../icons/icons'
 import { collapseOut, focusPast } from '../../internal/motion/collapseOut'
 import styles from './Tag.module.css'
 
@@ -23,12 +23,10 @@ export type TagProps = {
   children: ReactNode
   /** Shows a remove button. Called after the exit animation ends. */
   onRemove?: () => void
-  /** Label for the remove button. Wins over labels.remove, which defaults to "Remove <text>". */
-  removeLabel?: string
   /** Makes the tag a toggle chip (aria-pressed). */
-  selected?: boolean
-  /** Called when a toggle chip is pressed, with the new selected state. */
-  onSelectedChange?: (selected: boolean) => void
+  pressed?: boolean
+  /** Called when a toggle chip is pressed, with the new pressed state. */
+  onPressedChange?: (pressed: boolean) => void
   /** Icon before the text. Not shown on toggle chips, which show a check. */
   icon?: ReactNode
   /** Screen reader text, so you can translate it. Missing keys use the English defaults. */
@@ -37,11 +35,11 @@ export type TagProps = {
   className?: string
 }
 
-export function Tag({ children, onRemove, removeLabel, selected, onSelectedChange, icon, labels: labelsProp, className }: TagProps) {
+export function Tag({ children, onRemove, pressed, onPressedChange, icon, labels: labelsProp, className }: TagProps) {
   const labels = { ...defaultLabels, ...labelsProp }
   const ref = useRef<HTMLSpanElement>(null)
   const [leaving, setLeaving] = useState(false)
-  const selectable = selected !== undefined
+  const selectable = pressed !== undefined
 
   // Collapse first so neighbours slide in (motion/collapseOut.ts), then tell the parent
   const remove = () => {
@@ -58,29 +56,29 @@ export function Tag({ children, onRemove, removeLabel, selected, onSelectedChang
   const content = (
     <>
       {selectable ? (
-        <span className={styles.check} data-on={selected || undefined} aria-hidden="true">
+        <span className={styles.check} data-slot="tag-indicator" aria-hidden="true">
           <CheckIcon />
         </span>
       ) : (
-        icon && <span className={styles.icon}>{icon}</span>
+        icon && <span className={styles.icon} data-slot="tag-icon">{icon}</span>
       )}
-      <span className={styles.text} title={typeof children === 'string' || typeof children === 'number' ? String(children) : undefined}>
+      <span className={styles.text} data-slot="tag-label" title={typeof children === 'string' || typeof children === 'number' ? String(children) : undefined}>
         {children}
       </span>
     </>
   )
 
   return (
-    <span ref={ref} className={cx(styles.root, selected && styles.selected, className)} data-leaving={leaving || undefined}>
+    <span ref={ref} className={cx(styles.root, pressed && styles.selected, className)} data-slot="tag" data-leaving={leaving || undefined}>
       {selectable ? (
-        <button type="button" className={styles.toggle} aria-pressed={selected} onClick={() => onSelectedChange?.(!selected)}>
+        <button type="button" className={styles.toggle} data-slot="tag-toggle" data-state={pressed ? 'on' : 'off'} aria-pressed={pressed} onClick={() => onPressedChange?.(!pressed)}>
           {content}
         </button>
       ) : (
-        <span className={styles.static}>{content}</span>
+        <span className={styles.static} data-slot="tag-content">{content}</span>
       )}
       {onRemove && (
-        <button type="button" className={styles.remove} aria-label={removeLabel ?? labels.remove(label)} onClick={remove}>
+        <button type="button" className={styles.remove} data-slot="tag-remove" aria-label={labels.remove(label)} onClick={remove}>
           <XIcon />
         </button>
       )}

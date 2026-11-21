@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   --s: var(--gooee-control-h-md);
   position: relative;
@@ -14,10 +15,10 @@
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition:
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    border-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    border-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .root::after {
@@ -48,7 +49,7 @@
 .icon {
   display: inline-flex;
   font-size: var(--gooee-icon-lg);
-  transition: transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+  transition: transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 .sm .icon { font-size: var(--gooee-icon-md); }
 
@@ -75,4 +76,5 @@
 .primary { background: var(--gooee-color-accent); color: var(--gooee-color-accent-fg); }
 @media (hover: hover) {
   .primary:hover:not(:disabled) { background: var(--gooee-color-accent-hover); }
+}
 }

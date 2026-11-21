@@ -21,7 +21,7 @@ export function Kbd({ children, listen, className }: KbdProps) {
     return holdKey(listen, setDown)
   }, [listen])
   return (
-    <kbd className={cx(styles.root, className)} data-down={down || undefined}>
+    <kbd data-slot="kbd" className={cx(styles.root, className)} data-state={down ? 'on' : 'off'}>
       {children}
     </kbd>
   )

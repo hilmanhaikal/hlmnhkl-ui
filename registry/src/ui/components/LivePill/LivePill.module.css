@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .root {
   /* The row is the pill plus the card's inner padding, so the label keeps its pixels as the card grows round it. */
   --pill-pad: calc(var(--gooee-space-6) - (var(--gooee-hit-min) - round(nearest, var(--gooee-text-sm) * var(--gooee-leading-normal-ratio), 4px)) / 2);
@@ -60,26 +61,26 @@
 
 /* Shut, it closes fast and falls away. Open, the surface pours out of the pill on the liquid curve. */
 .shell[data-measured] {
-  transition: clip-path var(--gooee-motion-fast) var(--gooee-ease-in);
+  transition: clip-path var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
-.shell[data-open] {
+.shell[data-state='open'] {
   z-index: 1;
   clip-path: inset(0 0 0 0 round var(--gooee-radius-sheet));
-  transition: clip-path var(--gooee-motion-liquid) var(--gooee-ease-liquid);
+  transition: clip-path var(--gooee-motion-morph) var(--gooee-ease-morph);
 }
 
 /* Shut, the card's own edge can sit on the pill's bottom edge and double its outline there. */
-.shell:not([data-open]) {
+.shell[data-state='closed'] {
   box-shadow: none;
 }
 
 /* Before it is measured (the first paint of a server page), only the pill's words show. */
-.shell:not([data-measured]):not([data-open]) {
+.shell:not([data-measured])[data-state='closed'] {
   visibility: hidden;
 }
 
-.shell:not([data-measured]):not([data-open]) :is(.button, .lead) {
+.shell:not([data-measured])[data-state='closed'] :is(.button, .lead) {
   visibility: visible;
 }
 
@@ -146,16 +147,16 @@
   border-radius: inherit;
   box-shadow: inset 0 0 0 var(--gooee-line) var(--pill-edge);
   pointer-events: none;
-  transition: box-shadow var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 .button:focus-visible {
-  outline: var(--gooee-line-focus) solid var(--gooee-color-accent);
-  outline-offset: calc(var(--gooee-line-focus) * -2);
+  outline: var(--gooee-focus-width) solid var(--gooee-color-accent);
+  outline-offset: calc(var(--gooee-focus-width) * -2);
 }
 
 /* Open, the pill stops being a chip: its outline goes, and its words read as the card's last row. */
-.shell[data-open] .button::after {
+.shell[data-state='open'] .button::after {
   box-shadow: inset 0 0 0 var(--gooee-line) transparent;
 }
 
@@ -175,16 +176,16 @@
 .body {
   padding: var(--gooee-space-2) var(--gooee-space-6) var(--gooee-space-6);
   opacity: 0;
-  transition: opacity var(--gooee-motion-instant) var(--gooee-ease-in);
+  transition: opacity var(--gooee-motion-instant) var(--gooee-ease-morph);
 }
 
 .root[data-placement='bottom'] .body {
   padding: var(--gooee-space-6) var(--gooee-space-6) var(--gooee-space-2);
 }
 
-.shell[data-open] .body {
+.shell[data-state='open'] .body {
   opacity: 1;
-  transition: opacity var(--gooee-motion-base) var(--gooee-ease-out) var(--gooee-motion-fast);
+  transition: opacity var(--gooee-motion-base) var(--gooee-ease-morph) var(--gooee-motion-fast);
 }
 
 .sr {
@@ -216,7 +217,7 @@
   border-radius: var(--card-r);
 }
 
-.root[data-ring] .shell[data-open] {
+.root[data-ring] .shell[data-state='open'] {
   clip-path: inset(0 0 0 0 round var(--card-r));
 }
 
@@ -236,7 +237,7 @@
   translate: -50% 0;
 }
 
-.root[data-ring][data-align='center'] .shell[data-open] .row {
+.root[data-ring][data-align='center'] .shell[data-state='open'] .row {
   left: var(--card-in);
   translate: none;
 }
@@ -250,19 +251,19 @@
 }
 
 /* Open, the button is the ring: a 44px target that folds the card back. */
-.root[data-ring] .shell[data-open] .row {
+.root[data-ring] .shell[data-state='open'] .row {
   inset-inline-start: var(--card-in);
 }
 
-.root[data-ring][data-placement='top'] .shell[data-open] .row {
+.root[data-ring][data-placement='top'] .shell[data-state='open'] .row {
   top: var(--card-in);
 }
 
-.root[data-ring][data-placement='bottom'] .shell[data-open] .row {
+.root[data-ring][data-placement='bottom'] .shell[data-state='open'] .row {
   bottom: var(--card-in);
 }
 
-.root[data-ring] .shell[data-open] .button {
+.root[data-ring] .shell[data-state='open'] .button {
   inline-size: var(--ring-l);
 }
 
@@ -275,12 +276,12 @@
 
 .root[data-ring] .face {
   padding-inline: var(--gooee-space-3) var(--gooee-space-6);
-  transition: opacity var(--gooee-motion-base) var(--gooee-ease-out) var(--gooee-motion-fast);
+  transition: opacity var(--gooee-motion-base) var(--gooee-ease-morph) var(--gooee-motion-fast);
 }
 
-.root[data-ring] .shell[data-open] .face {
+.root[data-ring] .shell[data-state='open'] .face {
   opacity: 0;
-  transition: opacity var(--gooee-motion-instant) var(--gooee-ease-in);
+  transition: opacity var(--gooee-motion-instant) var(--gooee-ease-morph);
 }
 
 .lead {
@@ -296,19 +297,19 @@
   translate: var(--ring-x, 0) var(--ring-y, 0);
   transform-origin: 0 0;
   transition:
-    scale var(--gooee-motion-fast) var(--gooee-ease-in),
-    translate var(--gooee-motion-fast) var(--gooee-ease-in);
+    scale var(--gooee-motion-fast) var(--gooee-ease-morph),
+    translate var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
-.shell[data-open] .lead {
+.shell[data-state='open'] .lead {
   scale: 1;
   translate: 0 0;
   transition:
-    scale var(--gooee-motion-liquid) var(--gooee-ease-liquid),
-    translate var(--gooee-motion-liquid) var(--gooee-ease-liquid);
+    scale var(--gooee-motion-morph) var(--gooee-ease-morph),
+    translate var(--gooee-motion-morph) var(--gooee-ease-morph);
 }
 
-.lead[data-state='stopped'] {
+.lead[data-status='stopped'] {
   --ring-ink: var(--gooee-color-danger);
 }
 
@@ -327,19 +328,19 @@
 .track,
 .arc {
   stroke-width: 5.5;
-  transition: stroke-width var(--gooee-motion-fast) var(--gooee-ease-in);
+  transition: stroke-width var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
-.shell[data-open] :is(.track, .arc) {
+.shell[data-state='open'] :is(.track, .arc) {
   stroke-width: 4;
-  transition: stroke-width var(--gooee-motion-liquid) var(--gooee-ease-liquid);
+  transition: stroke-width var(--gooee-motion-morph) var(--gooee-ease-morph);
 }
 
 .track {
   stroke: var(--pill-line);
 }
 
-.lead[data-state='stopped'] .track {
+.lead[data-status='stopped'] .track {
   stroke: var(--ring-ink);
 }
 
@@ -347,8 +348,8 @@
   stroke: var(--ring-ink);
   stroke-linecap: round;
   transition:
-    stroke-width var(--gooee-motion-fast) var(--gooee-ease-in),
-    stroke-dasharray var(--gooee-motion-slow) var(--gooee-ease-out);
+    stroke-width var(--gooee-motion-fast) var(--gooee-ease-morph),
+    stroke-dasharray var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .mark {
@@ -375,16 +376,17 @@
   letter-spacing: -0.02em;
   line-height: var(--gooee-leading-none);
   opacity: 0;
-  transition: opacity var(--gooee-motion-instant) var(--gooee-ease-in);
+  transition: opacity var(--gooee-motion-instant) var(--gooee-ease-morph);
 }
 
-.shell[data-open] .pct {
+.shell[data-state='open'] .pct {
   opacity: 1;
-  transition: opacity var(--gooee-motion-base) var(--gooee-ease-out) var(--gooee-motion-fast);
+  transition: opacity var(--gooee-motion-base) var(--gooee-ease-morph) var(--gooee-motion-fast);
 }
 
 .root[data-ring] .body {
   grid-area: 1 / 2;
   align-self: start;
   padding: 0;
+}
 }

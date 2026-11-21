@@ -1,3 +1,4 @@
+@layer gooee.components {
 .panel {
   --oy: calc(var(--gooee-shift-md) * -1);
   z-index: var(--gooee-z-popover);
@@ -12,13 +13,13 @@
   box-shadow: var(--gooee-shadow-3);
   outline: none;
   transform-origin: top left;
-  animation: popIn var(--gooee-motion-slow) var(--gooee-ease-spring);
+  animation: popIn var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .panel[data-side="top"] { --oy: var(--gooee-shift-md); transform-origin: bottom left; }
 
 .panel[data-state="closed"] {
-  animation: popOut var(--gooee-motion-fast) var(--gooee-ease-in) forwards;
+  animation: popOut var(--gooee-motion-fast) var(--gooee-ease-morph) forwards;
   pointer-events: none;
 }
 
@@ -59,7 +60,7 @@
   color: var(--gooee-color-fg-muted);
   font-size: var(--gooee-icon-md);
   cursor: pointer;
-  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out), transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-morph), transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 /* Looks 32px, keeps a 44px touch area. */
@@ -83,4 +84,5 @@
 
 @keyframes popOut {
   to { opacity: 0; transform: scale(var(--gooee-pop-scale)); }
+}
 }

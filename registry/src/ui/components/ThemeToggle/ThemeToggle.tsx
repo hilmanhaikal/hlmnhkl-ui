@@ -7,13 +7,13 @@ import { themeReveal } from '../../internal/themeReveal'
 import { IconButton } from '../IconButton'
 import styles from './ThemeToggle.module.css'
 
-export type Theme = 'light' | 'dark'
+export type ThemeToggleTheme = 'light' | 'dark'
 
 export type ThemeToggleProps = {
   /** The theme, when your app keeps it. Leave it out and the toggle sets data-theme on <html> itself. */
-  theme?: Theme
+  theme?: ThemeToggleTheme
   /** Called with the new theme on every flip. */
-  onThemeChange?: (theme: Theme) => void
+  onThemeChange?: (theme: ThemeToggleTheme) => void
   /** Where the choice is remembered when the toggle runs the page. Match it in themeScript. */
   storageKey?: string
   /** The new theme grows from the button in a circle over the screen. Turn it off for an instant change. */
@@ -26,12 +26,12 @@ export type ThemeToggleProps = {
 
 export { themeScript } from '../../internal/motion/themeReveal'
 
-const pageTheme = (): Theme => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
+const pageTheme = (): ThemeToggleTheme => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
 
 // One button that flips between the light and dark theme. The sun morphs into the moon and back.
 export function ThemeToggle({ theme: themeProp, onThemeChange, storageKey = 'gooee-theme', reveal = true, size = 'sm', className }: ThemeToggleProps) {
   const controlled = themeProp !== undefined
-  const [own, setOwn] = useState<Theme>('light')
+  const [own, setOwn] = useState<ThemeToggleTheme>('light')
   const theme = controlled ? themeProp : own
 
   // Read after mount: the server cannot know the page's theme, and themeScript has already set it.
@@ -39,7 +39,7 @@ export function ThemeToggle({ theme: themeProp, onThemeChange, storageKey = 'goo
     if (!controlled) setOwn(pageTheme())
   }, [controlled])
 
-  const next: Theme = theme === 'dark' ? 'light' : 'dark'
+  const next: ThemeToggleTheme = theme === 'dark' ? 'light' : 'dark'
   // Shows the theme the button switches to: the moon in light, the sun in dark (motion/themeIcon.ts).
   const body = useRef<SVGPathElement>(null)
   const icon = useRef<ReturnType<typeof createThemeIcon>>(null)
@@ -85,7 +85,7 @@ export function ThemeToggle({ theme: themeProp, onThemeChange, storageKey = 'goo
       className={className}
       onClick={flip}
       icon={
-        <svg className={styles.icon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <svg className={styles.icon} data-slot="theme-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path ref={body} d={bodyAt(icon.current.shown)} />
           <path className={styles.rays} d={RAYS} style={raysAt(icon.current.shown)} />
         </svg>

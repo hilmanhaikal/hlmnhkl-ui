@@ -54,11 +54,11 @@ provide(key, controlProps)
 </script>
 
 <template>
-  <div :class="styles.root" :data-invalid="error ? true : undefined" :data-disabled="disabled || undefined">
-    <label :id="labelId" :for="controlId" :class="styles.label">
-      <slot name="label">{{ label }}</slot><span v-if="required" :class="styles.required" aria-hidden="true"> *</span><span v-if="optional && !required" :class="styles.optional">{{ ` ${labels?.optional ?? '(optional)'}` }}</span>
+  <div data-slot="form-field" :class="styles.root" :data-invalid="error ? true : undefined" :data-disabled="disabled || undefined">
+    <label :id="labelId" :for="controlId" data-slot="field-label" :class="styles.label">
+      <slot name="label">{{ label }}</slot><span v-if="required" data-slot="form-field-required" :class="styles.required" aria-hidden="true"> *</span><span v-if="optional && !required" data-slot="form-field-optional" :class="styles.optional">{{ ` ${labels?.optional ?? '(optional)'}` }}</span>
     </label>
-    <div :class="styles.control"><slot v-bind="controlProps" /></div>
+    <div data-slot="form-field-control" :class="styles.control"><slot v-bind="controlProps" /></div>
     <FieldMessage :help-id="helpId" :error-id="errorId" :help="help" :error="error" />
   </div>
 </template>

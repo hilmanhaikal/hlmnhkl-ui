@@ -34,7 +34,7 @@ function radiusFor(share: number, x: number, y: number, reach: number) {
  */
 export function themeReveal(origin: Element | null, applyNow: () => void | Promise<void>) {
   const root = document.documentElement
-  const ms = motionMs('reveal')
+  const ms = motionMs('morph-out')
   if (prefersReducedMotion() || !ms) return void applyNow()
   running?.skipTransition()
   root.dataset.gooeeThemeSwitch = ''

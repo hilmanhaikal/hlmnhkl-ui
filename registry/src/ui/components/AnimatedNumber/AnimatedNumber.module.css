@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .root {
   display: inline-flex;
   width: fit-content;
@@ -15,13 +16,13 @@
   display: inline-block;
   height: var(--gooee-leading-tight);
   overflow: hidden;
-  animation: enter var(--gooee-motion-slow) var(--gooee-ease-out);
+  animation: enter var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .strip {
   display: flex;
   flex-direction: column;
-  transition: transform var(--gooee-motion-slower) var(--gooee-ease-spring);
+  transition: transform var(--gooee-motion-slower) var(--gooee-ease-morph);
 }
 
 .cell {
@@ -32,7 +33,7 @@
 
 .symbol {
   display: inline-block;
-  animation: enter var(--gooee-motion-slow) var(--gooee-ease-out);
+  animation: enter var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .srOnly {
@@ -46,4 +47,5 @@
 
 @keyframes enter {
   from { opacity: 0; transform: translateY(40%); }
+}
 }

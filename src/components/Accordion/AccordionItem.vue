@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, useId } from 'vue'
-import { ChevronDownIcon } from '../../internal/vueIcons'
+import { ChevronDownIcon } from '../../icons/vue'
 import { accordionKey } from './accordionContext'
 import styles from './Accordion.module.css'
 
@@ -21,24 +21,25 @@ const isOpen = computed(() => ctx.open.value.includes(props.value))
 </script>
 
 <template>
-  <div :class="styles.item" :data-open="isOpen || undefined">
-    <component :is="`h${ctx.level.value}`" :class="styles.heading">
+  <div data-slot="accordion-item" :class="styles.item" :data-state="isOpen ? 'open' : 'closed'" :data-disabled="disabled || undefined">
+    <component :is="`h${ctx.level.value}`" data-slot="accordion-heading" :class="styles.heading">
       <button
         :id="`${id}-trigger`"
         type="button"
+        data-slot="accordion-trigger"
         :class="styles.trigger"
         :aria-expanded="isOpen"
         :aria-controls="`${id}-panel`"
         :disabled="disabled"
         @click="ctx.toggle(value)"
       >
-        <span :class="styles.title"><slot name="title">{{ title }}</slot></span>
-        <ChevronDownIcon :class="styles.chevron" />
+        <span data-slot="accordion-title" :class="styles.title"><slot name="title">{{ title }}</slot></span>
+        <ChevronDownIcon data-slot="accordion-icon" :class="styles.chevron" />
       </button>
     </component>
-    <div :id="`${id}-panel`" role="region" :aria-labelledby="`${id}-trigger`" :class="styles.panel" :inert="!isOpen">
+    <div :id="`${id}-panel`" role="region" :aria-labelledby="`${id}-trigger`" data-slot="accordion-panel" :class="styles.panel" :inert="!isOpen">
       <div :class="styles.panelInner">
-        <div :class="styles.content"><slot /></div>
+        <div data-slot="accordion-content" :class="styles.content"><slot /></div>
       </div>
     </div>
   </div>

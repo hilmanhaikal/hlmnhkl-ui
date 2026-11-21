@@ -3,7 +3,8 @@
 // templates and themes (with everything they import) into it, then shows and takes later changes.
 // Runs as `npx gooee <command>` from the npm package, or `npm run add -- <command>` in this repo.
 // Plain JavaScript on purpose: the project has no Node type package.
-import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { basename, dirname, join, relative, resolve, sep } from 'node:path'
 import { createInterface } from 'node:readline/promises'
 import { fileURLToPath } from 'node:url'
@@ -11,6 +12,11 @@ import { fileURLToPath } from 'node:url'
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const SRC = join(ROOT, 'src')
 const INTERNAL = join(SRC, 'internal')
+// Shared folders: what a part imports from them comes along, into the same folder name in the app.
+// src/icons is public (names and props stay within a major version); src/internal may change.
+const ICONS = join(SRC, 'icons')
+const SHARED = [INTERNAL, ICONS]
+const inShared = (file) => SHARED.some((dir) => file.startsWith(dir + sep))
 const EXCLUDED = /(\.(test|spec|stories|demo)\.[jt]sx?$)|(^|\/)(docs|demos|__tests__)\//
 const DEFAULT_TO = 'src/ui'
 const CONFIG = 'gooee.json'
@@ -28,8 +34,9 @@ Options:
   --to <folder>   Where files go. Defaults to the folder in ${CONFIG}, else ${DEFAULT_TO}
   --overwrite     add: replace files that are already there
   --with-base     add: also copy base.css (init always does)
-  --yes           update: replace without asking
-  --vue           add, diff, update: the Vue version of a part (.vue), not the React one
+  --yes           update: replace without asking, and update the parts that share a changed file
+  --vue           Vue parts (.vue). init saves it in ${CONFIG}, so later commands use it too
+  --react         React parts (.tsx), the default. Wins over the framework in ${CONFIG}
   --dry-run       Show what would happen, write nothing
 
 In this repo, run: npm run add -- <command> ...`
@@ -60,7 +67,7 @@ function fail(message, usage = true) {
 }
 
 function parseArgs(argv) {
-  const opts = { command: 'add', names: [], to: '', kind: '', overwrite: false, dryRun: false, withBase: false, yes: false }
+  const opts = { command: '', names: [], to: '', kind: '', overwrite: false, dryRun: false, withBase: false, yes: false, framework: '' }
   const rest = []
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
@@ -79,13 +86,22 @@ function parseArgs(argv) {
     else if (arg === '--overwrite') opts.overwrite = true
     else if (arg === '--dry-run') opts.dryRun = true
     else if (arg === '--with-base') opts.withBase = true
-    else if (arg === '--vue') framework = 'vue'
+    else if (arg === '--vue' || arg === '--react') {
+      if (opts.framework && opts.framework !== arg.slice(2)) fail('Use --vue or --react, not both.')
+      opts.framework = arg.slice(2)
+    }
     else if (arg === '--yes' || arg === '-y') opts.yes = true
     else if (arg.startsWith('-')) fail(`Unknown option ${arg}.`)
     else rest.push(arg)
   }
-  // The command comes first, like shadcn. A bare name still means add, as before.
-  if (COMMANDS.includes(rest[0])) opts.command = rest.shift()
+  // The command always comes first, so a new command can never clash with a part's name.
+  if (!rest.length) fail('Name a command.')
+  const first = rest.shift()
+  if (!COMMANDS.includes(first)) {
+    const near = COMMANDS.find((c) => distance(first.toLowerCase(), c) <= 1)
+    fail(`"${first}" is not a command. ${near ? `Did you mean npx gooee ${near}?` : `To add it, run: npx gooee add ${[first, ...rest].join(' ')}`}`, false)
+  }
+  opts.command = first
   opts.names = rest
   if (['add', 'diff', 'update'].includes(opts.command) && !opts.names.length) {
     fail(`Name at least one component, block, template or theme, for example: npx gooee ${opts.command} button`)
@@ -192,9 +208,12 @@ function listFiles(dir) {
   })
 }
 
-// React or Vue, from --vue. A part folder holds both: Switch.tsx and Switch.vue share Switch.module.css.
+// React or Vue: --react or --vue, else the framework in gooee.json, else React.
+// A part folder holds both: Switch.tsx and Switch.vue share Switch.module.css.
 let framework = 'react'
 const forFramework = (file) => (file.endsWith('.vue') ? framework === 'vue' : framework === 'react' || file.endsWith('.css'))
+
+const hasVue = (item) => kindOf(item.kind).single || listFiles(join(kindOf(item.kind).dir, item.name)).some((f) => f.endsWith('.vue'))
 
 const filesOf = (item) => {
   const k = kindOf(item.kind)
@@ -234,15 +253,15 @@ function resolveImport(from, spec) {
   return hit
 }
 
-// Which component, block, template or theme a file belongs to, or null for src/internal.
+// Which component, block, template or theme a file belongs to, or null for src/internal and src/icons.
 function ownerOf(file) {
-  if (file.startsWith(INTERNAL + sep)) return null
+  if (inShared(file)) return null
   for (const k of KINDS) {
     if (!file.startsWith(k.dir + sep)) continue
     if (k.single) return { kind: k.key, name: basename(file, '.css') }
     return { kind: k.key, name: relative(k.dir, file).split(sep)[0] }
   }
-  fail(`${rel(file)} is outside src/components, src/blocks, src/templates, src/themes and src/internal, so it cannot be copied.`, false)
+  fail(`${rel(file)} is outside src/components, src/blocks, src/templates, src/themes, src/internal and src/icons, so it cannot be copied.`, false)
 }
 
 function plan(items) {
@@ -282,7 +301,7 @@ function plan(items) {
   for (let i = 0; i < seenInternal.length; i++) {
     for (const spec of importsOf(seenInternal[i])) {
       const target = resolveImport(seenInternal[i], spec)
-      if (ownerOf(target) !== null) fail(`${rel(seenInternal[i])} imports from outside src/internal, which internal files must not do.`, false)
+      if (ownerOf(target) !== null) fail(`${rel(seenInternal[i])} imports from outside src/internal and src/icons, which shared files must not do.`, false)
       visitInternal(target)
     }
   }
@@ -311,6 +330,21 @@ function readConfig() {
   }
 }
 
+// gooee.json keeps a short hash of each file the CLI wrote, so update can tell whether a file the
+// latest version dropped is still exactly as written, and only then delete it.
+const hash = (text) => createHash('sha256').update(text).digest('hex').slice(0, 16)
+const configKey = (file) => relative(CWD, file).split(sep).join('/')
+
+function saveHashes(written, dropped = []) {
+  const config = readConfig()
+  if (!config) return
+  const files = { ...config.files }
+  for (const c of written) files[configKey(c.to)] = hash(readFileSync(c.from, 'utf8'))
+  for (const f of dropped) delete files[configKey(f)]
+  config.files = Object.fromEntries(Object.entries(files).sort(([a], [b]) => a.localeCompare(b)))
+  writeFileSync(join(CWD, CONFIG), `${JSON.stringify(config, null, 2)}\n`)
+}
+
 function targetFolder(opts) {
   const folder = opts.to || readConfig()?.to || DEFAULT_TO
   const to = resolve(CWD, folder)
@@ -326,7 +360,7 @@ function copiesFor(items, internal, to) {
     const pro = isPro(item)
     for (const file of filesOf(item)) copies.push({ from: file, to: join(to, k.folder, relative(k.dir, file)), pro })
   }
-  for (const file of internal) copies.push({ from: file, to: join(to, 'internal', relative(INTERNAL, file)), pro: false })
+  for (const file of internal) copies.push({ from: file, to: join(to, relative(SRC, file)), pro: false })
   return copies
 }
 
@@ -383,11 +417,11 @@ function runInit(opts) {
   const config = join(CWD, CONFIG)
   if (isFile(config)) console.log(`  ${CONFIG}: already there, kept`)
   else {
-    if (!opts.dryRun) writeFileSync(config, `${JSON.stringify({ to: folder }, null, 2)}\n`)
-    console.log(`  ${CONFIG}: added, so later commands put files in ${folder}`)
+    if (!opts.dryRun) writeFileSync(config, `${JSON.stringify({ framework, to: folder }, null, 2)}\n`)
+    console.log(`  ${CONFIG}: added, so later commands use ${framework === 'vue' ? 'Vue' : 'React'} and put files in ${folder}`)
   }
   console.log(`\nNext:\n  1. Import both once, tokens first, ${fromEntry(folder)}`)
-  console.log(`  2. Add your first component: npx gooee add button${framework === 'vue' ? ' --vue' : ''}`)
+  console.log('  2. Add your first component: npx gooee add button')
   console.log(`  See everything there is: npx gooee list, or ${SITE}`)
 }
 
@@ -395,17 +429,22 @@ function runList(opts) {
   const all = listItems()
   const wanted = opts.kind ? KINDS.find((k) => k.folder === opts.kind.toLowerCase() || k.key === opts.kind.toLowerCase()) : null
   if (opts.kind && !wanted) fail(`"${opts.kind}" is not a kind. Use components, blocks, templates or themes.`)
+  const vue = framework === 'vue'
+  if (vue) console.log('Vue parts. Add --react to see the React ones.')
   for (const k of KINDS) {
     if (wanted && wanted !== k) continue
     const names = all.filter((i) => i.kind === k.key)
-    const free = names.filter((i) => !isPro(i)).map((i) => i.name)
-    const pro = [...names.filter((i) => isPro(i)).map((i) => i.name), ...(k.key === 'component' ? proComponents() : [])]
-    if (!free.length && !pro.length) continue
+    const fits = vue ? names.filter(hasVue) : names
+    const free = fits.filter((i) => !isPro(i)).map((i) => i.name)
+    const pro = [...fits.filter((i) => isPro(i)).map((i) => i.name), ...(k.key === 'component' ? proComponents() : [])]
+    const reactOnly = names.filter((i) => !fits.includes(i)).map((i) => i.name)
+    if (!free.length && !pro.length && !reactOnly.length) continue
     console.log(`${k.plural} (${free.length + pro.length})`)
     if (free.length) console.log(`  ${free.join(', ')}`)
     if (pro.length) console.log(`  Pro: ${pro.join(', ')}`)
+    if (reactOnly.length) console.log(`  React only: ${reactOnly.join(', ')}`)
   }
-  if (!wanted) console.log(`Helpers (${Object.keys(HELPERS).length})\n  ${Object.keys(HELPERS).join(', ')}`)
+  if (!wanted && !vue) console.log(`Helpers (${Object.keys(HELPERS).length})\n  ${Object.keys(HELPERS).join(', ')}`)
   console.log(`\nAdd one: npx gooee add <name>. Every page: ${SITE}`)
 }
 
@@ -430,6 +469,7 @@ function runAdd(opts) {
     return true
   }
   for (const c of copies) put(c, opts.overwrite)
+  if (!opts.dryRun) saveHashes(copies.filter((c) => state(c) === 'same'))
   // Stylesheets hold the app's own theme edits, so they are never replaced.
   const tokensNew = put(sheets[0], false)
   if (sheets[1]) put(sheets[1], false)
@@ -440,7 +480,9 @@ function runAdd(opts) {
     const names = items.filter((i) => i.kind === k.key).map((i) => i.name)
     if (names.length || k.key === 'component') console.log(`${k.plural}: ${names.length ? names.join(', ') : 'none'}`)
   }
-  console.log(`Internal files: ${internal.length ? internal.map((f) => relative(INTERNAL, f)).join(', ') : 'none'}`)
+  const inside = (dir) => internal.filter((f) => f.startsWith(dir + sep)).map((f) => relative(dir, f))
+  console.log(`Internal files: ${inside(INTERNAL).join(', ') || 'none'}`)
+  if (inside(ICONS).length) console.log(`Icons: ${inside(ICONS).map((f) => `icons/${f}`).join(', ')}`)
   if (needs.size) {
     console.log('Dependencies:')
     for (const { item, deps } of needs.values()) console.log(`  ${item.name} needs ${[...deps.values()].map(label).join(', ')}`)
@@ -455,16 +497,73 @@ function runAdd(opts) {
   if (items.some((i) => i.kind === 'theme')) console.log('Themes: import each one after tokens.css, then set data-theme-brand or data-density on <html>.')
 }
 
-// Compares the asked items (and what they import) with the copies in the project.
-function compare(opts) {
-  const all = listItems()
-  const { to } = targetFolder(opts)
-  const { items, internal } = plan(opts.names.map((n) => lookup(n, all)))
+// Compares the items (and what they import) with the copies in the project.
+function compare(to, items, internal) {
   const copies = copiesFor(items, internal, to).map((c) => ({ ...c, state: state(c) }))
-  return { to, items, copies }
+  return { copies, gone: goneFiles(to, items, copies) }
 }
 
-function report(to, copies, withLines) {
+const walkFiles = (dir) => (isDir(dir) ? readdirSync(dir, { withFileTypes: true }).flatMap((d) => (d.isDirectory() ? walkFiles(join(dir, d.name)) : [join(dir, d.name)])) : [])
+
+// Files in an item's folder that start with our credit line, but that the latest version no longer has.
+// One can go only when it is still exactly what the CLI wrote (its hash in gooee.json); otherwise it stays.
+function goneFiles(to, items, copies) {
+  const ours = new Set(copies.map((c) => c.to))
+  const hashes = readConfig()?.files ?? {}
+  return items
+    .filter((item) => !kindOf(item.kind).single)
+    .flatMap((item) => {
+      const k = kindOf(item.kind)
+      const latest = new Set(listFiles(join(k.dir, item.name)).map((f) => relative(k.dir, f)))
+      return walkFiles(join(to, k.folder, item.name)).filter((f) => !ours.has(f) && !latest.has(relative(join(to, k.folder), f)))
+    })
+    .flatMap((file) => {
+      const text = readFileSync(file, 'utf8')
+      const body = withoutCredit(text)
+      if (body === text) return []
+      const saved = hashes[configKey(file)]
+      return [{ file, remove: saved === hash(body), why: saved ? 'you changed it' : `${CONFIG} has no record of it` }]
+    })
+}
+
+// Installed parts, besides the ones asked for, that import a shared file (internal/ or icons/) whose latest version differs.
+function dependents(to, items, copies) {
+  const sharedIn = (file) => ['internal', 'icons'].some((d) => file.startsWith(join(to, d) + sep))
+  const changed = new Set(copies.filter((c) => c.state === 'changed' && sharedIn(c.to)).map((c) => c.to))
+  if (!changed.size) return []
+  const asked = new Set(items.map(keyOf))
+  const local = (from, spec) => {
+    const base = resolve(dirname(from), spec)
+    return [base, `${base}.ts`, `${base}.tsx`, join(base, 'index.ts'), join(base, 'index.tsx')].find(isFile)
+  }
+  const reach = new Map()
+  const internalOf = (file) => {
+    if (reach.has(file)) return reach.get(file)
+    const found = new Set()
+    reach.set(file, found)
+    for (const spec of importsOf(file)) {
+      const hit = local(file, spec)
+      if (!hit || !sharedIn(hit)) continue
+      found.add(hit)
+      for (const f of internalOf(hit)) found.add(f)
+    }
+    return found
+  }
+  const fits = (f) => (f.endsWith('.vue') ? framework === 'vue' : f.endsWith('.tsx') ? framework === 'react' : /\.ts$/.test(f))
+  const all = listItems()
+  return KINDS.filter((k) => !k.single && isDir(join(to, k.folder))).flatMap((k) =>
+    readdirSync(join(to, k.folder), { withFileTypes: true })
+      .filter((d) => d.isDirectory() && !asked.has(`${k.key}:${d.name}`))
+      .flatMap((d) => {
+        const uses = new Set(walkFiles(join(to, k.folder, d.name)).filter(fits).flatMap((f) => [...internalOf(f)].filter((i) => changed.has(i))))
+        if (!uses.size) return []
+        const item = all.find((i) => i.kind === k.key && i.name === d.name)
+        return [{ name: d.name, item, uses: [...uses].map((f) => shown(to, f)).sort() }]
+      }),
+  )
+}
+
+function report(to, copies, gone, withLines) {
   const changed = copies.filter((c) => c.state === 'changed')
   const missing = copies.filter((c) => c.state === 'missing')
   for (const c of changed) {
@@ -472,26 +571,64 @@ function report(to, copies, withLines) {
     if (withLines) for (const line of lineDiff(withoutCredit(readFileSync(c.to, 'utf8')), readFileSync(c.from, 'utf8'))) console.log(`  ${line}`)
   }
   for (const c of missing) console.log(`New: ${shown(to, c.to)}`)
+  for (const g of gone) console.log(`Gone: ${shown(to, g.file)} (not in the latest version. ${g.remove ? 'update deletes it' : `update keeps it, since ${g.why}. Delete it yourself if nothing uses it`})`)
   const same = copies.length - changed.length - missing.length
-  console.log(`\n${plural(changed.length, 'file')} changed, ${missing.length} new, ${same} up to date.`)
+  console.log(`\n${plural(changed.length, 'file')} changed, ${missing.length} new, ${gone.length} gone, ${same} up to date.`)
   if (withLines && changed.length) console.log('Lines with "-" are in your copy, lines with "+" are in the latest version.')
-  return changed.length + missing.length
+  return changed.length + missing.length + gone.length
+}
+
+function reportDependents(deps) {
+  if (!deps.length) return
+  console.log('\nThese installed parts use a shared file that changed, so they may need the update too:')
+  for (const d of deps) console.log(`  ${d.name}${d.item ? '' : ' (your own part)'}: ${d.uses.join(', ')}`)
+}
+
+async function ask(question) {
+  const rl = createInterface({ input: process.stdin, output: process.stdout })
+  const answer = (await rl.question(`${question} (y/N) `)).trim().toLowerCase()
+  rl.close()
+  return answer === 'y' || answer === 'yes'
 }
 
 function runDiff(opts) {
-  const { to, copies } = compare(opts)
-  const count = report(to, copies, true)
-  if (count) console.log(`Take the latest version: npx gooee update ${opts.names.join(' ')}`)
+  const all = listItems()
+  const { to } = targetFolder(opts)
+  const { items, internal } = plan(opts.names.map((n) => lookup(n, all)))
+  const { copies, gone } = compare(to, items, internal)
+  const count = report(to, copies, gone, true)
+  const deps = dependents(to, items, copies)
+  reportDependents(deps)
+  const more = deps.filter((d) => d.item).map((d) => kebab(d.name))
+  if (count) console.log(`\nTake the latest version: npx gooee update ${[...opts.names, ...more].join(' ')}`)
 }
 
 async function runUpdate(opts) {
-  const { to, copies } = compare(opts)
+  const all = listItems()
+  const { to } = targetFolder(opts)
+  const asked = opts.names.map((n) => lookup(n, all))
+  let { items, internal } = plan(asked)
+  let { copies, gone } = compare(to, items, internal)
+  const deps = dependents(to, items, copies)
+  reportDependents(deps)
+  const extra = deps.filter((d) => d.item).map((d) => d.item)
+  if (extra.length && !opts.dryRun) {
+    const names = extra.map((i) => i.name).join(', ')
+    if (!opts.yes && !process.stdin.isTTY) fail('update asks before replacing files. Run it in a terminal, or add --yes.', false)
+    if (opts.yes || (await ask(`Update ${names} too?`))) {
+      ;({ items, internal } = plan([...asked, ...extra]))
+      ;({ copies, gone } = compare(to, items, internal))
+      console.log(`Also updating ${names}.`)
+    }
+  }
   const todo = copies.filter((c) => c.state !== 'same')
-  if (!todo.length) {
+  const remove = gone.filter((g) => g.remove)
+  if (!todo.length && !gone.length) {
     console.log(`Everything is up to date (${plural(copies.length, 'file')}).`)
     return
   }
-  report(to, copies, false)
+  report(to, copies, gone, false)
+  if (!todo.length && !remove.length) return
   if (opts.dryRun) {
     console.log('Dry run, nothing written.')
     return
@@ -499,16 +636,16 @@ async function runUpdate(opts) {
   if (!opts.yes) {
     if (!process.stdin.isTTY) fail('update asks before replacing files. Run it in a terminal, or add --yes.', false)
     console.log('Your own edits in the changed files will be replaced. See them first with diff.')
-    const rl = createInterface({ input: process.stdin, output: process.stdout })
-    const answer = (await rl.question(`Replace ${plural(todo.length, 'file')}? (y/N) `)).trim().toLowerCase()
-    rl.close()
-    if (answer !== 'y' && answer !== 'yes') {
+    const what = [todo.length && `replace ${plural(todo.length, 'file')}`, remove.length && `delete ${plural(remove.length, 'file')}`].filter(Boolean).join(' and ')
+    if (!(await ask(`${what[0].toUpperCase()}${what.slice(1)}?`))) {
       console.log('Nothing changed.')
       return
     }
   }
   for (const c of todo) writeCopy(c, false)
-  console.log(`Updated ${plural(todo.length, 'file')}.`)
+  for (const g of remove) rmSync(g.file)
+  saveHashes(copies, remove.map((g) => g.file))
+  console.log([todo.length && `Updated ${plural(todo.length, 'file')}.`, remove.length && `Deleted ${plural(remove.length, 'file')} the latest version no longer has.`].filter(Boolean).join(' '))
 }
 
 const tokenNames = (text) => new Set([...text.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/(--[\w-]+)\s*:/g)].map((m) => m[1]))
@@ -547,9 +684,11 @@ function warnMissingTokens(opts) {
 }
 
 const opts = parseArgs(process.argv.slice(2))
+framework = opts.framework || readConfig()?.framework || 'react'
+if (!['react', 'vue'].includes(framework)) fail(`${CONFIG} has "framework": ${JSON.stringify(framework)}. Use "react" or "vue".`, false)
 if (opts.command === 'init') runInit(opts)
 else if (opts.command === 'list') runList(opts)
 else if (opts.command === 'diff') runDiff(opts)
 else if (opts.command === 'update') await runUpdate(opts)
-else runAdd(opts)
+else if (opts.command === 'add') runAdd(opts)
 if (['add', 'diff', 'update'].includes(opts.command)) warnMissingTokens(opts)

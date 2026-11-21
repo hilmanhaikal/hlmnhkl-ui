@@ -1,4 +1,4 @@
-import { easing, readMotionMs } from '../motion'
+import { easing, motionMs } from '../motion'
 
 // SplitFlap's board with no framework: each cell runs forward through its drum to the new letter, and
 // the board's edge grows or folds when the text gets longer or shorter.
@@ -101,7 +101,7 @@ export function createSplitFlap(b: HTMLElement, look: FlapLook, first: string) {
       return
     }
 
-    const scale = readMotionMs('fast') / FAST_TOKEN
+    const scale = motionMs('fast') / FAST_TOKEN
     // Reduced motion: the new text at once, with no flips and no morph.
     if (!scale) {
       cells = [...target].map((ch) => makeCell(look, ch))
@@ -113,8 +113,8 @@ export function createSplitFlap(b: HTMLElement, look: FlapLook, first: string) {
     const n0 = list.length
     const n1 = target.length
     const radius = getComputedStyle(b).borderRadius || '0px'
-    const grow = { duration: readMotionMs('morph'), easing: easing('morph') }
-    const shrink = { duration: readMotionMs('morph-out'), easing: easing('morph') }
+    const grow = { duration: motionMs('morph'), easing: easing('morph') }
+    const shrink = { duration: motionMs('morph-out'), easing: easing('morph') }
     let left = 0
     const landed = () => {
       if (--left === 0) done()

@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   position: relative;
   display: inline-flex;
@@ -29,8 +30,8 @@
    it flows the pill hides and .liquid draws it, then the pill is back in its place, exact. */
 .pill[data-ready] {
   transition:
-    transform var(--gooee-motion-morph-out) var(--gooee-ease-out),
-    width var(--gooee-motion-morph-out) var(--gooee-ease-out);
+    transform var(--gooee-motion-morph-out) var(--gooee-ease-morph),
+    width var(--gooee-motion-morph-out) var(--gooee-ease-morph);
 }
 
 .pill[data-flowing] {
@@ -85,8 +86,8 @@
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition:
-    color var(--gooee-motion-base) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+    color var(--gooee-motion-base) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .item::after {
@@ -106,7 +107,7 @@
   .item:hover:not(:disabled) { color: var(--gooee-color-fg); }
 }
 .item:active:not(:disabled) { transform: scale(var(--gooee-press-scale)); }
-.item[data-on] { color: var(--gooee-color-fg); }
+.item[data-state="active"] { color: var(--gooee-color-fg); }
 .item:disabled { opacity: var(--gooee-disabled-opacity); cursor: not-allowed; }
 
 .item:focus-visible {
@@ -147,4 +148,5 @@
     text-align: center;
   }
   .root[data-tight] .item { min-width: var(--gooee-hit-min); }
+}
 }

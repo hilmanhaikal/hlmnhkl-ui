@@ -69,26 +69,12 @@ export const ErrorIcon = (p: IconProps) => (
     <path d="M9.5 9.5l5 5M14.5 9.5l-5 5" />
   </Svg>
 )
-export const EyeIcon = (p: IconProps) => (
-  <Svg m="blink" {...p}>
-    <path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12z" />
-    <circle cx="12" cy="12" r="2.75" />
-  </Svg>
-)
-export const CodeIcon = (p: IconProps) => <Svg m="draw" {...p}><path d="M8.5 7.5L4 12l4.5 4.5M15.5 7.5L20 12l-4.5 4.5" /></Svg>
 export const SearchIcon = (p: IconProps) => (
   <Svg m="wiggle" {...p}>
     <circle cx="11" cy="11" r="6.5" />
     <path d="M16 16l4 4" />
   </Svg>
 )
-export const SunIcon = (p: IconProps) => (
-  <Svg m="turn" {...p}>
-    <circle cx="12" cy="12" r="4" />
-    <path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4" />
-  </Svg>
-)
-export const MoonIcon = (p: IconProps) => <Svg m="wiggle" {...p}><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" /></Svg>
 export const PlusIcon = (p: IconProps) => <Svg m="pop" {...p}><path d="M12 5v14M5 12h14" /></Svg>
 export const MinusIcon = (p: IconProps) => <Svg m="pop" {...p}><path d="M5 12h14" /></Svg>
 export const MenuIcon = (p: IconProps) => <Svg m="draw" {...p}><path d="M4 7h16M4 12h16M4 17h10" /></Svg>
@@ -195,7 +181,21 @@ export const GripIcon = (p: IconProps) => (
   </Svg>
 )
 export const FilterIcon = (p: IconProps) => <Svg m="draw" {...p}><path d="M4.5 6h15l-5.75 7v5.5l-3.5-2V13z" /></Svg>
-
+export const PaperclipIcon = (p: IconProps) => <Svg m="draw" {...p}><path d="M19 11.5l-7.25 7.25a4.6 4.6 0 0 1-6.5-6.5L12.5 5a3 3 0 0 1 4.25 4.25l-7 7a1.5 1.5 0 0 1-2.1-2.1l6.6-6.65" /></Svg>
+export const EyeIcon = (p: IconProps) => (
+  <Svg m="blink" {...p}>
+    <path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12z" />
+    <circle cx="12" cy="12" r="2.75" />
+  </Svg>
+)
+export const CodeIcon = (p: IconProps) => <Svg m="draw" {...p}><path d="M8.5 7.5L4 12l4.5 4.5M15.5 7.5L20 12l-4.5 4.5" /></Svg>
+export const SunIcon = (p: IconProps) => (
+  <Svg m="turn" {...p}>
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4" />
+  </Svg>
+)
+export const MoonIcon = (p: IconProps) => <Svg m="wiggle" {...p}><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" /></Svg>
 export const BookIcon = (p: IconProps) => (
   <Svg m="bounce" {...p}>
     <path d="M12 6.5C10.5 5.3 8.2 4.75 4 4.75v13.5c4.2 0 6.5.55 8 1.75 1.5-1.2 3.8-1.75 8-1.75V4.75c-4.2 0-6.5.55-8 1.75z" />
@@ -298,7 +298,6 @@ export const LinkIcon = (p: IconProps) => (
     <path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1" />
   </Svg>
 )
-export const PaperclipIcon = (p: IconProps) => <Svg m="draw" {...p}><path d="M19 11.5l-7.25 7.25a4.6 4.6 0 0 1-6.5-6.5L12.5 5a3 3 0 0 1 4.25 4.25l-7 7a1.5 1.5 0 0 1-2.1-2.1l6.6-6.65" /></Svg>
 export const UploadIcon = (p: IconProps) => (
   <Svg m="nudge-u" {...p}>
     <path d="M12 15V4M7.5 8.5L12 4l4.5 4.5" />

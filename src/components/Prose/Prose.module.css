@@ -1,3 +1,4 @@
+@layer gooee.components {
 /* A line of about 68 characters, the length an eye can follow back to the next line without losing it.
    :where keeps every rule at zero weight, so a class you add inside always wins. */
 .root {
@@ -36,7 +37,7 @@
   text-decoration-color: var(--gooee-color-border-strong);
   text-decoration-thickness: var(--gooee-line);
   text-underline-offset: 0.2em;
-  transition: text-decoration-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: text-decoration-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -74,8 +75,8 @@
   overflow-x: auto;
   padding: var(--gooee-space-5);
   border-radius: var(--gooee-radius-md);
-  background: var(--gooee-code-bg);
-  color: var(--gooee-code-fg);
+  background: var(--gooee-code-block-bg, var(--gooee-color-surface-sunken));
+  color: var(--gooee-code-block-fg, var(--gooee-color-fg));
   font-size: var(--gooee-text-sm);
   line-height: var(--gooee-leading-normal);
 }
@@ -115,3 +116,4 @@
 }
 
 .root :where(th) { font-weight: var(--gooee-weight-semibold); }
+}

@@ -1,20 +1,22 @@
 import { useLayoutEffect, useRef, type RefObject } from 'react'
-import { createDialogMorph, createLiquid, createStretch, type LiquidOrigin as Origin, type StretchBox } from './motion/liquid'
+import { createDialogMorph, createMorph, createStretch, type MorphOrigin, type StretchBox } from './motion/liquid'
 
 export { startShape, stretch, type StretchBox } from './motion/liquid'
 
 /** What the panel grows from: the opener's ref, or a function that finds the opener or a rectangle at open time. */
-export type LiquidOrigin = RefObject<HTMLElement | null> | (() => HTMLElement | DOMRect | null)
+export type MorphOriginRef = RefObject<HTMLElement | null> | (() => HTMLElement | DOMRect | null)
 
-/** React's hold on createLiquid (motion/liquid.ts): grows when `state` turns open (once `ready`), folds when it turns closed. */
-export function useLiquid(panel: RefObject<HTMLElement | null>, origin: LiquidOrigin, state: 'open' | 'closed', ready: boolean) {
+/** React's hold on createMorph (motion/liquid.ts): grows when `state` turns open (once `ready`), folds when it turns closed. */
+export function useLiquid(panel: RefObject<HTMLElement | null>, origin: MorphOriginRef, state: 'open' | 'closed', ready: boolean) {
   const from = useRef(origin)
   from.current = origin
-  const liquid = useRef<ReturnType<typeof createLiquid>>(null)
-  liquid.current ??= createLiquid(() => panel.current, (() => {
-    const o = from.current
-    return typeof o === 'function' ? o() : o.current
-  }) satisfies Origin)
+  const liquid = useRef<ReturnType<typeof createMorph>>(null)
+  liquid.current ??= createMorph(() => panel.current, {
+    origin: (() => {
+      const o = from.current
+      return typeof o === 'function' ? o() : o.current
+    }) satisfies MorphOrigin,
+  })
   useLayoutEffect(() => {
     if (ready) liquid.current!.play(state)
     // Plays once per open and once per close; the origin is read fresh each time.
@@ -51,7 +53,7 @@ export function useStretch(
   const fmt = useRef(place)
   fmt.current = place
   const run = useRef<ReturnType<typeof createStretch>>(null)
-  run.current ??= createStretch(() => el.current, (b) => fmt.current(b), axis)
+  run.current ??= createStretch(() => el.current, { place: (b) => fmt.current(b), axis })
   useLayoutEffect(() => {
     run.current!.update(box, choice, ready)
     // Keyed on the choice and the box; `place` is a pure formatter.

@@ -8,5 +8,5 @@ export type VisuallyHiddenProps = ComponentPropsWithRef<'span'> & {
 }
 
 export function VisuallyHidden({ focusable = false, className, ...rest }: VisuallyHiddenProps) {
-  return <span className={cx(focusable ? styles.focusable : styles.root, className)} {...rest} />
+  return <span className={cx(focusable ? styles.focusable : styles.root, className)} data-slot="visually-hidden" {...rest} />
 }

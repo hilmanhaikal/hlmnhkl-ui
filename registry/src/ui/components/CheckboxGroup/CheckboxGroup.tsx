@@ -65,10 +65,10 @@ export function CheckboxGroup({
     setValue(options.map((o) => o.value).filter((x) => next.has(x)))
   }
   return (
-    <fieldset className={cx(styles.group, className)} disabled={disabled} aria-describedby={describedBy || undefined} data-disabled={disabled || undefined} data-invalid={error ? true : undefined}>
-      <legend className={styles.legend}>{label}</legend>
-      {description && <p id={descId} className={styles.description}>{description}</p>}
-      <div className={cx(styles.items, styles[orientation])}>
+    <fieldset data-slot="checkbox-group" className={cx(styles.group, className)} disabled={disabled} aria-describedby={describedBy || undefined} data-disabled={disabled || undefined} data-invalid={error ? true : undefined} data-orientation={orientation}>
+      <legend data-slot="field-label" className={styles.legend}>{label}</legend>
+      {description && <p id={descId} data-slot="checkbox-group-description" className={styles.description}>{description}</p>}
+      <div data-slot="checkbox-group-items" className={cx(styles.items, styles[orientation])}>
         {options.map((o) => (
           <Checkbox
             key={o.value}

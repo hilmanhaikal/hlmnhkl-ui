@@ -71,7 +71,7 @@ export function columnScrub(column: WheelColumn, index: number, state: ColumnSta
     tap: (e, at) => {
       const el = e.currentTarget as HTMLElement
       const r = el.getBoundingClientRect()
-      const tilt = (tokenNumber(el, '--gooee-wheel-tilt') * Math.PI) / 180
+      const tilt = (tokenNumber(el, '--gooee-picker-wheel-tilt') * Math.PI) / 180
       const radius = state.row / 2 / Math.tan(tilt / 2)
       const dy = e.clientY - (r.top + r.height / 2)
       if (!tilt || !radius) return null
@@ -100,9 +100,12 @@ export function drumRows(at: number, n: number, loop: boolean) {
 const pad = (v: number) => String(v).padStart(2, '0')
 
 /** A time wheel: hour, minute and, on a 12 hour clock, AM or PM, and the turns between rows and "HH:mm". */
-export function timeWheel(hourCycle: 12 | 24, minuteStep: number, strong: number[]) {
+/** 12 or 24: the hour cycle a locale uses. Undefined is the browser's locale. */
+export const localeHourCycle = (locale?: string): 12 | 24 => (new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions().hour12 ? 12 : 24)
+
+export function timeWheel(hourCycle: 12 | 24, step: number, strong: number[]) {
   const twelve = hourCycle === 12
-  const minutes = Array.from({ length: Math.ceil(60 / minuteStep) }, (_, i) => i * minuteStep)
+  const minutes = Array.from({ length: Math.ceil(60 / step) }, (_, i) => i * step)
   const columns: WheelColumn[] = [
     { label: 'Hour', options: twelve ? Array.from({ length: 12 }, (_, i) => String(i + 1)) : Array.from({ length: 24 }, (_, i) => pad(i)), loop: true },
     { label: 'Minute', options: minutes.map(pad), loop: true, strong: strong.map((m) => minutes.indexOf(m)).filter((i) => i >= 0) },
@@ -112,7 +115,7 @@ export function timeWheel(hourCycle: 12 | 24, minuteStep: number, strong: number
     columns,
     toRows(hhmm: string) {
       const [h = 0, m = 0] = hhmm.split(':').map(Number)
-      const mi = clamp(Math.round(m / minuteStep), 0, minutes.length - 1)
+      const mi = clamp(Math.round(m / step), 0, minutes.length - 1)
       return twelve ? [(h % 12 || 12) - 1, mi, h >= 12 ? 1 : 0] : [h, mi]
     },
     toTime(rows: number[]) {

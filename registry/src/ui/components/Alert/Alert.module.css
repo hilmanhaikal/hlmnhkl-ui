@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .root {
   display: flex;
   align-items: flex-start;
@@ -8,7 +9,7 @@
   border-radius: var(--gooee-radius-md);
   background: var(--gooee-color-surface);
   overflow: hidden;
-  animation: alertIn var(--gooee-motion-slow) var(--gooee-ease-out);
+  animation: alertIn var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 /* The icon shape also tells statuses apart, so colour is never alone. */
@@ -20,14 +21,14 @@
   background: var(--gooee-color-warning-soft);
   border-color: color-mix(in srgb, var(--gooee-color-warning) 45%, var(--gooee-color-border));
 }
-.error {
+.danger {
   background: var(--gooee-color-danger-soft);
   border-color: color-mix(in srgb, var(--gooee-color-danger) 45%, var(--gooee-color-border));
 }
 .success .icon { color: var(--gooee-color-success); }
 .warning .icon { color: var(--gooee-color-warning); }
-.error .icon { color: var(--gooee-color-danger); }
-.error .title { font-weight: var(--gooee-weight-semibold); }
+.danger .icon { color: var(--gooee-color-danger); }
+.danger .title { font-weight: var(--gooee-weight-semibold); }
 
 .banner {
   --strip: var(--gooee-color-inverse);
@@ -55,7 +56,7 @@
   --gooee-color-inverse-hover: color-mix(in srgb, var(--strip-fg) 82%, var(--strip));
   --gooee-color-accent: var(--strip-fg);
   --gooee-color-accent-fg: var(--strip);
-  --gooee-focus-ring: 0 0 0 var(--gooee-line-focus) var(--strip), 0 0 0 calc(var(--gooee-line-focus) * 2) var(--strip-fg);
+  --gooee-focus-ring: 0 0 0 var(--gooee-focus-width) var(--strip), 0 0 0 calc(var(--gooee-focus-width) * 2) var(--strip-fg);
 }
 
 .icon {
@@ -63,7 +64,7 @@
   width: var(--gooee-icon-lg);
   height: var(--gooee-icon-lg);
   margin-top: var(--gooee-space-1);
-  animation: iconIn var(--gooee-motion-slower) var(--gooee-ease-spring);
+  animation: iconIn var(--gooee-motion-slower) var(--gooee-ease-morph);
 }
 
 /* On the inverse strip a status hue can drop under 3:1, so the banner icon keeps the strip's text colour. */
@@ -105,7 +106,7 @@
   color: var(--gooee-color-fg-muted);
   font-size: var(--gooee-icon-md);
   cursor: pointer;
-  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -119,4 +120,5 @@
 
 @keyframes iconIn {
   from { opacity: 0; transform: scale(0.5) rotate(-20deg); }
+}
 }

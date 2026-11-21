@@ -1,7 +1,7 @@
 // Gooee UI, MIT licence. https://gooee.dev
 import type { ComponentPropsWithRef } from 'react'
 import { cx } from '../../internal/cx'
-import { ArrowUpRightIcon } from '../../internal/icons'
+import { ArrowUpRightIcon } from '../../icons/icons'
 import styles from './Link.module.css'
 
 export type LinkLabels = {
@@ -26,14 +26,15 @@ export function Link({ external, variant = 'inline', labels: labelsProp, classNa
   const labels = { ...defaultLabels, ...labelsProp }
   return (
     <a
+      data-slot="link"
       className={cx(styles.root, styles[variant], className)}
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : null)}
       {...rest}
     >
-      <span className={styles.text}>{children}</span>
+      <span data-slot="link-text" className={styles.text}>{children}</span>
       {external && (
         <>
-          <ArrowUpRightIcon className={styles.arrow} />
+          <ArrowUpRightIcon data-slot="link-arrow" className={styles.arrow} />
           <span className={styles.srOnly}> {labels.newTab}</span>
         </>
       )}

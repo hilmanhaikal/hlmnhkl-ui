@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .lines {
   display: flex;
   flex-direction: column;
@@ -24,8 +25,8 @@
 }
 
 .text { height: 0.8em; height: round(nearest, 0.8em, 4px); border-radius: var(--gooee-radius-xs); }
-.rect { width: 100%; height: var(--gooee-skeleton-block); border-radius: var(--gooee-radius-md); }
-.circle { width: var(--gooee-skeleton-avatar); height: var(--gooee-skeleton-avatar); border-radius: var(--gooee-radius-full); }
+.rect { width: 100%; height: var(--gooee-skeleton-block, 120px); border-radius: var(--gooee-radius-md); }
+.circle { width: var(--gooee-skeleton-avatar, 40px); height: var(--gooee-skeleton-avatar, 40px); border-radius: var(--gooee-radius-full); }
 
 /* A sketch: the shapes as dashed pencil outlines, no fill. Text becomes dashed baselines. The lines
    themselves fade gently instead of a shimmer, which would light up the empty box behind them. */
@@ -54,4 +55,5 @@
 @media (prefers-reduced-motion: reduce) {
   .bone::after { animation: none; display: none; }
   .sketch { animation: none; }
+}
 }

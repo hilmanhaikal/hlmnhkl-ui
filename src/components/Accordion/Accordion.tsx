@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useId, useRef, type KeyboardEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { ChevronDownIcon } from '../../internal/icons'
+import { ChevronDownIcon } from '../../icons/icons'
 import { useControllable } from '../../internal/useControllable'
 import styles from './Accordion.module.css'
 
@@ -65,13 +65,13 @@ export function Accordion({
   }
 
   return (
-    <AccCtx.Provider value={{ open, toggle }}>
-      <LevelCtx.Provider value={headingLevel}>
-        <div ref={rootRef} className={cx(styles.root, className)} onKeyDown={onKeyDown}>
+    <AccCtx value={{ open, toggle }}>
+      <LevelCtx value={headingLevel}>
+        <div ref={rootRef} data-slot="accordion" className={cx(styles.root, className)} onKeyDown={onKeyDown}>
           {children}
         </div>
-      </LevelCtx.Provider>
-    </AccCtx.Provider>
+      </LevelCtx>
+    </AccCtx>
   )
 }
 
@@ -94,30 +94,32 @@ export function AccordionItem({ value, title, disabled, children }: AccordionIte
   const isOpen = ctx.open.includes(value)
   const Heading = `h${level}` as 'h3'
   return (
-    <div className={styles.item} data-open={isOpen || undefined}>
-      <Heading className={styles.heading}>
+    <div data-slot="accordion-item" className={styles.item} data-state={isOpen ? 'open' : 'closed'} data-disabled={disabled || undefined}>
+      <Heading data-slot="accordion-heading" className={styles.heading}>
         <button
           id={`${id}-trigger`}
           type="button"
+          data-slot="accordion-trigger"
           className={styles.trigger}
           aria-expanded={isOpen}
           aria-controls={`${id}-panel`}
           disabled={disabled}
           onClick={() => ctx.toggle(value)}
         >
-          <span className={styles.title}>{title}</span>
-          <ChevronDownIcon className={styles.chevron} />
+          <span data-slot="accordion-title" className={styles.title}>{title}</span>
+          <ChevronDownIcon data-slot="accordion-icon" className={styles.chevron} />
         </button>
       </Heading>
       <div
         id={`${id}-panel`}
         role="region"
         aria-labelledby={`${id}-trigger`}
+        data-slot="accordion-panel"
         className={styles.panel}
         inert={!isOpen}
       >
         <div className={styles.panelInner}>
-          <div className={styles.content}>{children}</div>
+          <div data-slot="accordion-content" className={styles.content}>{children}</div>
         </div>
       </div>
     </div>

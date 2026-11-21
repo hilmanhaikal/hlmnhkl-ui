@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 /* Inline, not inline-flex, so a long link wraps with the sentence and each line keeps its underline. */
 .root {
   position: relative;
@@ -20,7 +21,7 @@
   background-position: 0 100%, 0 100%;
   background-size: 0% var(--gooee-line), 100% var(--gooee-line);
   padding-bottom: var(--gooee-space-1);
-  transition: background-size var(--gooee-motion-slow) var(--gooee-ease-out);
+  transition: background-size var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .root:focus-visible .text {
@@ -44,7 +45,7 @@
   vertical-align: middle;
   width: 0.85em;
   height: 0.85em;
-  transition: transform var(--gooee-motion-base) var(--gooee-ease-spring);
+  transition: transform var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -63,4 +64,5 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
 }

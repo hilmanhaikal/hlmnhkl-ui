@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import { cx } from '../../internal/cx'
-import { CheckCircleIcon, ErrorIcon, WarningIcon } from '../../internal/icons'
+import { CheckCircleIcon, ErrorIcon, WarningIcon } from '../../icons/icons'
 import styles from './Meter.module.css'
 
 export type MeterTone = 'good' | 'fair' | 'poor'
@@ -77,14 +77,14 @@ export function Meter({
   const Icon = tone && icons[tone]
   const marks = [low, high].filter((n): n is number => n !== undefined && n > min && n < max)
   return (
-    <div className={cx(styles.root, className)} data-tone={tone}>
+    <div data-slot="meter" className={cx(styles.root, className)} data-tone={tone}>
       <div className={styles.head}>
-        <span id={id} className={cx(styles.label, hideLabel && styles.srOnly)}>{label}</span>
+        <span id={id} data-slot="meter-label" className={cx(styles.label, hideLabel && styles.srOnly)}>{label}</span>
         <span className={styles.reading} aria-hidden="true">
-          {showValue && <span className={styles.value}>{text}</span>}
+          {showValue && <span data-slot="meter-value" className={styles.value}>{text}</span>}
           {Icon && (
-            <span className={styles.tone}>
-              <Icon className={styles.icon} />
+            <span data-slot="meter-tone" className={styles.tone}>
+              <Icon data-slot="meter-icon" className={styles.icon} />
               {labels[tone]}
             </span>
           )}
@@ -97,11 +97,12 @@ export function Meter({
         aria-valuemax={max}
         aria-valuenow={now}
         aria-valuetext={tone ? `${text}, ${labels[tone]}` : text}
+        data-slot="meter-track"
         className={cx(styles.track, styles[size])}
       >
-        <span className={styles.fill} style={{ transform: `scaleX(${at(now)})` }} />
+        <span data-slot="meter-fill" className={styles.fill} style={{ transform: `scaleX(${at(now)})` }} />
         {marks.map((n) => (
-          <span key={n} className={styles.mark} style={{ left: `${at(n) * 100}%` }} />
+          <span key={n} data-slot="meter-mark" className={styles.mark} style={{ left: `${at(n) * 100}%` }} />
         ))}
       </div>
     </div>

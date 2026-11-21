@@ -5,10 +5,11 @@ export type SliderRead = { value: number; min: number; max: number; step: number
 
 /**
  * A native range input that glides to a click and lands on a mark let go near it. `read` gives the
- * value and props now; `setValue` sets a new value; `onShown` gets where the thumb is drawn while it
- * glides (null once it is at the value). Wire `down`, `move`, `up`, `end`, `input` and `key` to the input.
+ * value and props now; `onValue` gets each new value; `onShown` gets where the thumb is drawn while it
+ * glides (null once it is at the value); `onCommit` gets the value once the hand or key lets go of it.
+ * Wire `down`, `move`, `up`, `end`, `input`, `key` and `keyUp` to the input.
  */
-export function createSlider(read: () => SliderRead, setValue: (v: number) => void, onShown: (v: number | null) => void) {
+export function createSlider(read: () => SliderRead, onValue: (v: number) => void, onShown: (v: number | null) => void, onCommit?: (v: number) => void) {
   // `grab` is how far from the thumb's centre it was picked up, so the thumb does not jump to the pointer.
   let press: { x: number; lastX: number; moved: boolean; grab: number } | null = null
   let shown: number | null = null
@@ -18,6 +19,25 @@ export function createSlider(read: () => SliderRead, setValue: (v: number) => vo
     onShown(v)
   }
   const at = () => shown ?? read().value
+
+  // The value when this touch or key began, and the last one set since. Null when nothing holds it.
+  let from: number | null = null
+  let last = 0
+  const begin = () => {
+    if (from !== null) return
+    from = read().value
+    last = from
+  }
+  const setValue = (v: number) => {
+    last = v
+    onValue(v)
+  }
+  const commit = () => {
+    if (from === null) return
+    const was = from
+    from = null
+    if (last !== was) onCommit?.(last)
+  }
 
   const toStep = (v: number) => {
     const { min, max, step } = read()
@@ -57,11 +77,17 @@ export function createSlider(read: () => SliderRead, setValue: (v: number) => vo
   const end = () => {
     press = null
   }
+  const letGo = () => {
+    end()
+    commit()
+  }
 
   return {
     /** The input's "input" event, with the number the browser moved to. */
     input(input: HTMLInputElement, native: number) {
       const p = press
+      const held = from !== null
+      begin()
       const next = p && read().marks?.length ? toStep(fromPointer(input, p.lastX - p.grab)) : native
       // A press that has not moved is a click: the value jumps, the thumb glides there. Once it moves, the hand leads.
       if (p && !p.moved) glideTo(at(), next)
@@ -70,6 +96,8 @@ export function createSlider(read: () => SliderRead, setValue: (v: number) => vo
         show(null)
       }
       setValue(next)
+      // A step from assistive tech, with no hand or key down, rests at once.
+      if (!held) commit()
     },
     down(input: HTMLInputElement, x: number) {
       const { value, min, max, marks } = read()
@@ -77,6 +105,7 @@ export function createSlider(read: () => SliderRead, setValue: (v: number) => vo
       const centre = t.left + ((value - min) / (max - min || 1)) * t.width
       const grab = marks?.length && Math.abs(x - centre) <= t.thumb / 2 ? x - centre : 0
       press = { x, lastX: x, moved: false, grab }
+      begin()
     },
     move(x: number) {
       if (!press) return
@@ -92,17 +121,22 @@ export function createSlider(read: () => SliderRead, setValue: (v: number) => vo
         glideTo(at(), mark)
         setValue(mark)
       }
+      commit()
     },
-    end,
+    /** The hand or the focus went away (cancel, lost capture, blur): the value rests where it is. */
+    end: letGo,
     /** A key down, after the caller's own handler. Returns true when it used the key. */
     key(key: string) {
       end()
+      begin()
       const { value, min, max, marks } = read()
       if (!marks?.length || (key !== 'PageUp' && key !== 'PageDown')) return false
       const sorted = [...marks].sort((a, b) => a - b)
       setValue(key === 'PageUp' ? (sorted.find((m) => m > value) ?? max) : ([...sorted].reverse().find((m) => m < value) ?? min))
       return true
     },
+    /** A key up: the value rests. */
+    keyUp: commit,
     destroy: () => cancelAnimationFrame(glide),
   }
 }

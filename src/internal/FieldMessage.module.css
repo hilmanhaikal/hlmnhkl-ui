@@ -1,12 +1,13 @@
+@layer gooee.components {
 .collapse {
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
   transform: translateY(calc(var(--gooee-shift-sm) * -1));
   transition:
-    grid-template-rows var(--gooee-motion-base) var(--gooee-ease-out),
-    opacity var(--gooee-motion-base) var(--gooee-ease-out),
-    transform var(--gooee-motion-base) var(--gooee-ease-out);
+    grid-template-rows var(--gooee-motion-base) var(--gooee-ease-morph),
+    opacity var(--gooee-motion-base) var(--gooee-ease-morph),
+    transform var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .open {
@@ -46,4 +47,5 @@
   stroke: currentColor;
   stroke-width: 1.75;
   stroke-linecap: round;
+}
 }

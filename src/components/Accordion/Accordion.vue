@@ -6,21 +6,22 @@ import styles from './Accordion.module.css'
 // The Vue Accordion: the same look (Accordion.module.css) and keys as the React one. Put AccordionItem
 // parts inside.
 
-const props = withDefaults(
-  defineProps<{
-    /** "single" keeps one item open at a time. */
-    type?: 'single' | 'multiple'
-    /** Starting open items when there is no v-model. */
-    defaultValue?: string[]
-    /** Heading level for item titles, to fit the page outline. */
-    headingLevel?: 2 | 3 | 4 | 5 | 6
-  }>(),
-  { type: 'single', defaultValue: () => [], headingLevel: 3 },
-)
+const {
+  type = 'single',
+  defaultValue = [],
+  headingLevel = 3,
+} = defineProps<{
+  /** "single" keeps one item open at a time. */
+  type?: 'single' | 'multiple'
+  /** Starting open items when there is no v-model. */
+  defaultValue?: string[]
+  /** Heading level for item titles, to fit the page outline. */
+  headingLevel?: 2 | 3 | 4 | 5 | 6
+}>()
 
 /** Values of the open items. Use v-model, or leave it out and the accordion keeps its own state. */
 const model = defineModel<string[]>()
-const local = ref(props.defaultValue)
+const local = ref(defaultValue)
 const open = computed(() => model.value ?? local.value)
 const set = (next: string[]) => {
   local.value = next
@@ -29,10 +30,10 @@ const set = (next: string[]) => {
 
 provide(accordionKey, {
   open,
-  level: computed(() => props.headingLevel),
+  level: computed(() => headingLevel),
   toggle: (v) => {
     const isOpen = open.value.includes(v)
-    if (props.type === 'single') set(isOpen ? [] : [v])
+    if (type === 'single') set(isOpen ? [] : [v])
     else set(isOpen ? open.value.filter((x) => x !== v) : [...open.value, v])
   },
 })
@@ -56,7 +57,7 @@ const onKeyDown = (e: KeyboardEvent) => {
 </script>
 
 <template>
-  <div ref="root" :class="styles.root" @keydown="onKeyDown">
+  <div ref="root" data-slot="accordion" :class="styles.root" @keydown="onKeyDown">
     <slot />
   </div>
 </template>

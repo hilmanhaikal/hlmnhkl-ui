@@ -6,7 +6,7 @@ import { castShadow, frames, layer, morphEase, motionFor, shadowOf } from './liq
 // The toast stack, the same in every framework: where each toast sits, how long it stays, the throw
 // that sends it away, and the drop it buds out of.
 
-export type ToastVariant = 'default' | 'success' | 'error' | 'info' | 'loading'
+export type ToastTone = 'neutral' | 'info' | 'success' | 'danger'
 export type ToastOrigin = HTMLElement | { x: number; y: number }
 export type ToastLeaving = false | 'down' | 'left' | 'right'
 
@@ -25,7 +25,7 @@ export function toastSay(prev: string, opts: { title?: string; description?: str
 }
 
 /** Where each toast sits, newest first, and how tall the stack is. */
-export function toastLayout<T extends { id: number; leaving: ToastLeaving }>(items: T[], heights: Record<number, number>, expanded: boolean, visible: number) {
+export function toastLayout<T extends { id: number; leaving: ToastLeaving }>(items: T[], heights: Record<number, number>, expanded: boolean, max: number) {
   const live = items.filter((t) => !t.leaving)
   const order = [...items].reverse()
   let offset = 0
@@ -37,7 +37,7 @@ export function toastLayout<T extends { id: number; leaving: ToastLeaving }>(ite
     return { t, index, y }
   })
   const frontHeight = live.length ? (heights[live[live.length - 1].id] ?? 64) : 0
-  const stackHeight = expanded ? offset : frontHeight + Math.min(live.length - 1, visible - 1) * TOAST_PEEK
+  const stackHeight = expanded ? offset : frontHeight + Math.min(live.length - 1, max - 1) * TOAST_PEEK
   return { layout, live: live.length, frontHeight, height: live.length ? stackHeight : 0 }
 }
 

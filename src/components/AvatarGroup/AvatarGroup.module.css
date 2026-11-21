@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: inline-flex;
   align-items: center;
@@ -10,16 +11,16 @@
   display: inline-flex;
   margin-left: calc(var(--gooee-space-3) * -1);
   border-radius: var(--gooee-radius-full);
-  animation: slotIn var(--gooee-motion-slow) var(--gooee-ease-spring) backwards;
+  animation: slotIn var(--gooee-motion-slow) var(--gooee-ease-morph) backwards;
   animation-delay: calc(var(--i) * var(--gooee-motion-stagger) * 2);
-  transition: margin var(--gooee-motion-slow) var(--gooee-ease-spring);
+  transition: margin var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 .face {
   display: inline-flex;
   border-radius: var(--gooee-radius-full);
-  box-shadow: 0 0 0 var(--gooee-line-focus) var(--gooee-color-bg);
-  transition: transform var(--gooee-motion-base) var(--gooee-ease-spring);
+  box-shadow: 0 0 0 var(--gooee-focus-width) var(--gooee-color-bg);
+  transition: transform var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -28,14 +29,14 @@
 }
 
 .more {
-  --size: var(--gooee-avatar-md);
+  --size: var(--gooee-avatar-md, 36px);
   display: inline-grid;
   place-items: center;
   width: var(--size);
   height: var(--size);
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-surface);
-  box-shadow: inset 0 0 0 var(--gooee-line) var(--gooee-color-border-strong), 0 0 0 var(--gooee-line-focus) var(--gooee-color-bg);
+  box-shadow: inset 0 0 0 var(--gooee-line) var(--gooee-color-border-strong), 0 0 0 var(--gooee-focus-width) var(--gooee-color-bg);
   color: var(--gooee-color-fg);
   font-size: calc(var(--size) * 0.32);
   font-weight: var(--gooee-weight-medium);
@@ -44,10 +45,11 @@
   user-select: none;
 }
 
-.sm { --size: var(--gooee-avatar-sm); }
-.lg { --size: var(--gooee-avatar-lg); }
-.xl { --size: var(--gooee-avatar-xl); }
+.sm { --size: var(--gooee-avatar-sm, 28px); }
+.lg { --size: var(--gooee-avatar-lg, 48px); }
+.xl { --size: var(--gooee-avatar-xl, 72px); }
 
 @keyframes slotIn {
   from { opacity: 0; transform: translateX(calc(var(--gooee-shift-md) * -1)) scale(0.8); }
+}
 }

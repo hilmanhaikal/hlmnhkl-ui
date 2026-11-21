@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 /* The anchor keeps the button's place in the page. The shell is the panel's final box, laid out from
    the start, so nothing inside it reflows while it grows. */
 .anchor {
@@ -16,8 +17,8 @@
 .shell[data-width="md"] { width: min(var(--gooee-panel-w-md), calc(100vw - var(--gooee-space-5) * 2)); }
 
 /* Shut, only the button takes the pointer: the rest of the box is empty space over the page. */
-.shell:not([data-open]) { pointer-events: none; }
-.shell:not([data-open]) .trigger { pointer-events: auto; }
+.shell[data-state='closed'] { pointer-events: none; }
+.shell[data-state='closed'] .trigger { pointer-events: auto; }
 
 .shell[data-corner="tl"] { top: 0; left: 0; }
 .shell[data-corner="tr"] { top: 0; right: 0; }
@@ -45,7 +46,7 @@
   transition: clip-path var(--gooee-motion-morph-out) var(--gooee-ease-morph);
 }
 
-.shell[data-open] .surface {
+.shell[data-state='open'] .surface {
   border-radius: var(--gooee-radius-panel);
   box-shadow: var(--gooee-shadow-3);
   transition:
@@ -54,15 +55,15 @@
     box-shadow var(--gooee-motion-morph) var(--gooee-ease-morph);
 }
 
-.shell[data-open] .content {
+.shell[data-state='open'] .content {
   clip-path: inset(var(--t) var(--r) var(--b) var(--l) round var(--gooee-radius-panel));
   transition: clip-path var(--gooee-motion-morph) var(--gooee-ease-morph);
 }
 
-.shell:not([data-open]):has(.trigger:focus-visible) .surface { box-shadow: var(--gooee-focus-ring); }
+.shell[data-state='closed']:has(.trigger:focus-visible) .surface { box-shadow: var(--gooee-focus-ring); }
 
 @media (hover: hover) {
-  .shell:not([data-open]):has(.trigger:hover) .surface { background: var(--gooee-color-surface-hover); }
+  .shell[data-state='closed']:has(.trigger:hover) .surface { background: var(--gooee-color-surface-hover); }
 }
 
 .trigger {
@@ -100,7 +101,7 @@
 .shell[data-corner="bl"] .trigger { bottom: 0; left: 0; }
 .shell[data-corner="br"] .trigger { bottom: 0; right: 0; }
 
-.shell[data-open] .trigger:focus-visible { box-shadow: inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg); }
+.shell[data-state='open'] .trigger:focus-visible { box-shadow: inset 0 0 0 var(--gooee-focus-width) var(--gooee-color-fg); }
 
 /* The panel's content clears the button's row, which is now its title, above or below it. */
 .panel {
@@ -113,7 +114,7 @@
 }
 
 /* Shut, the panel leaves the accessibility tree and the tab order, once the fold has finished. */
-.shell:not([data-open]) .panel {
+.shell[data-state='closed'] .panel {
   visibility: hidden;
   transition: visibility 0s linear var(--gooee-motion-morph-out);
 }
@@ -154,4 +155,5 @@
   .close:hover { background: var(--gooee-color-surface-hover); color: var(--gooee-color-fg); }
 }
 
-.close:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg); }
+.close:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--gooee-focus-width) var(--gooee-color-fg); }
+}

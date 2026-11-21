@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
@@ -37,10 +38,10 @@
   border-radius: inherit;
   background: var(--gooee-color-accent);
   transform-origin: left center;
-  transition: transform var(--gooee-motion-slower) var(--gooee-ease-out);
+  transition: transform var(--gooee-motion-slower) var(--gooee-ease-morph);
 }
 
-.track[data-indeterminate] .fill {
+.track[data-status="indeterminate"] .fill {
   width: 40%;
   animation: slide var(--gooee-motion-indeterminate) var(--gooee-ease-in-out) infinite;
 }
@@ -58,4 +59,5 @@
   0% { transform: translateX(-100%) scaleX(0.6); }
   50% { transform: translateX(80%) scaleX(1); }
   100% { transform: translateX(260%) scaleX(0.6); }
+}
 }

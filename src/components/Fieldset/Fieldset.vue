@@ -33,10 +33,10 @@ const describedBy = computed(() => [hasDescription.value ? descId.value : null, 
 </script>
 
 <template>
-  <fieldset v-bind="rest" :id="id" :class="styles.root" :disabled="disabled" :aria-describedby="describedBy">
-    <legend :class="styles.legend"><slot name="legend">{{ legend }}</slot></legend>
-    <p v-if="hasDescription" :id="descId" :class="styles.description"><slot name="description">{{ description }}</slot></p>
-    <div :class="styles.fields"><slot /></div>
+  <fieldset v-bind="rest" :id="id" data-slot="fieldset" :class="styles.root" :disabled="disabled" :aria-describedby="describedBy">
+    <legend data-slot="fieldset-legend" :class="styles.legend"><slot name="legend">{{ legend }}</slot></legend>
+    <p v-if="hasDescription" :id="descId" data-slot="fieldset-description" :class="styles.description"><slot name="description">{{ description }}</slot></p>
+    <div data-slot="fieldset-fields" :class="styles.fields"><slot /></div>
     <FieldMessage :help-id="`${base}-help`" :error-id="errorId" :error="error" />
   </fieldset>
 </template>

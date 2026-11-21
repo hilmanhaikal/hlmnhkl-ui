@@ -58,13 +58,10 @@ export function revealCell(el: HTMLElement, target: EventTarget | null) {
   else if (r.right > box.right) el.scrollLeft += r.right - box.right
 }
 
-/**
- * FLIP: rows glide from their last place to the new one. When the groups themselves changed (`regrouped`),
- * they snap there with the spring, so the table visibly splits apart and closes up again. Returns the new places.
- */
-export function flipRows(table: HTMLElement, last: Map<string, number>, regrouped: boolean) {
+/** FLIP: rows glide from their last place to the new one. Returns the new places. */
+export function flipRows(table: HTMLElement, last: Map<string, number>) {
   const duration = motionMs('slow')
-  const ease = easing(regrouped ? 'spring' : 'out')
+  const ease = easing('morph')
   const now = new Map<string, number>()
   table.querySelectorAll<HTMLElement>('tbody [data-row-id]').forEach((tr) => {
     const rid = tr.dataset.rowId!

@@ -2,7 +2,7 @@
 import { onBeforeUnmount, onMounted, ref, useId, watch, type Component } from 'vue'
 import { foldOnScroll } from '../../internal/motion/fab'
 import { dismissable } from '../../internal/motion/layers'
-import { onScrollFrame } from '../../internal/motion/scrollFrame'
+import { createScrollFrame } from '../../internal/motion/scrollFrame'
 import styles from './Fab.module.css'
 
 export type FabAction = {
@@ -14,21 +14,23 @@ export type FabAction = {
 }
 
 // The Vue Fab: the same look (Fab.module.css), fold and actions as the React one. The main icon goes in the icon slot.
-const props = withDefaults(
-  defineProps<{
-    /** The button's name. Shown as text when extended, and always read by screen readers. */
-    label: string
-    /** Shows the label beside the icon. It pours away into the icon as the page scrolls down, and back on the way up. */
-    extended?: boolean
-    /** A short stack of actions that pours up out of the button when it is tapped. */
-    actions?: FabAction[]
-    /** Where it sits along the bottom of the screen. */
-    position?: 'end' | 'center'
-    /** Sits at the bottom of its nearest positioned parent instead of the screen, for a demo or a panel. */
-    contained?: boolean
-  }>(),
-  { extended: false, position: 'end', contained: false },
-)
+const {
+  extended = false,
+  actions,
+  position = 'end',
+  fixed = true,
+} = defineProps<{
+  /** The button's name. Shown as text when extended, and always read by screen readers. */
+  label: string
+  /** Shows the label beside the icon. It pours away into the icon as the page scrolls down, and back on the way up. */
+  extended?: boolean
+  /** A short stack of actions that pours up out of the button when it is tapped. */
+  actions?: FabAction[]
+  /** Where it sits along the bottom of the screen. */
+  position?: 'end' | 'center'
+  /** Pins it to the screen. false sits it at the bottom of its nearest positioned parent instead, for a demo or a panel. */
+  fixed?: boolean
+}>()
 /** click: on tap. With actions, a tap opens them instead. */
 const emit = defineEmits<{ click: [] }>()
 defineSlots<{ icon?: () => unknown }>()
@@ -45,10 +47,10 @@ const fold = foldOnScroll((c) => (compact.value = c))
 let stopFold: (() => void) | undefined
 onMounted(() =>
   watch(
-    () => props.extended,
+    () => extended,
     (on) => {
       stopFold?.()
-      stopFold = on ? onScrollFrame(fold) : undefined
+      stopFold = on ? createScrollFrame(fold).destroy : undefined
     },
     { immediate: true },
   ),
@@ -73,7 +75,7 @@ onBeforeUnmount(() => {
 })
 
 const setFirst = (el: unknown) => (firstEl.value = el as HTMLButtonElement | null)
-const hasActions = () => Boolean(props.actions?.length)
+const hasActions = () => Boolean(actions?.length)
 const toggle = () => {
   if (!hasActions()) return emit('click')
   open.value = !open.value
@@ -87,18 +89,19 @@ const select = (a: FabAction) => {
 </script>
 
 <template>
-  <div ref="rootEl" :class="[styles.root, styles[position], contained && styles.contained]" :data-open="open || undefined">
-    <ul v-if="actions?.length" :id="`${id}-actions`" :class="styles.actions" :inert="!open">
+  <div ref="rootEl" data-slot="fab" :class="[styles.root, styles[position], !fixed && styles.contained]" :data-state="open ? 'open' : 'closed'">
+    <ul v-if="actions?.length" :id="`${id}-actions`" data-slot="fab-actions" :class="styles.actions" :inert="!open">
       <li v-for="(a, i) in actions" :key="a.label" :style="{ '--i': actions.length - 1 - i }">
-        <button :ref="i === 0 ? setFirst : undefined" type="button" :class="styles.action" @click="select(a)">
-          <span :class="styles.actionLabel">{{ a.label }}</span>
-          <span :class="styles.actionIcon" aria-hidden="true"><component :is="a.icon" /></span>
+        <button :ref="i === 0 ? setFirst : undefined" type="button" data-slot="fab-action" :class="styles.action" @click="select(a)">
+          <span data-slot="fab-action-label" :class="styles.actionLabel">{{ a.label }}</span>
+          <span data-slot="fab-action-icon" :class="styles.actionIcon" aria-hidden="true"><component :is="a.icon" /></span>
         </button>
       </li>
     </ul>
     <button
       ref="buttonEl"
       type="button"
+      data-slot="fab-trigger"
       :class="styles.fab"
       :aria-label="extended ? undefined : label"
       :aria-expanded="actions?.length ? open : undefined"
@@ -106,9 +109,9 @@ const select = (a: FabAction) => {
       :data-extended="(extended && !compact) || undefined"
       @click="toggle"
     >
-      <span :class="styles.icon" aria-hidden="true"><slot name="icon" /></span>
+      <span data-slot="fab-icon" :class="styles.icon" aria-hidden="true"><slot name="icon" /></span>
       <span v-if="extended" :class="styles.labelWrap">
-        <span :class="styles.label">{{ label }}</span>
+        <span data-slot="fab-label" :class="styles.label">{{ label }}</span>
       </span>
     </button>
   </div>

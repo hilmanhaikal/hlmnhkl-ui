@@ -52,11 +52,11 @@ export function SplitFlap({ value, length = 0, size = 'md', chars = SPLIT_FLAP_C
   useEffect(() => () => flap.current?.destroy(), [])
 
   return (
-    <span className={cx(styles.root, className)} data-size={size} {...rest}>
+    <span className={cx(styles.root, className)} data-slot="split-flap" data-size={size} {...rest}>
       <span className={styles.sr} aria-live={announce ? 'polite' : undefined} aria-atomic="true">
         {said}
       </span>
-      <span ref={board} className={styles.board} aria-hidden="true" dangerouslySetInnerHTML={first} />
+      <span ref={board} className={styles.board} data-slot="split-flap-board" aria-hidden="true" dangerouslySetInnerHTML={first} />
     </span>
   )
 }

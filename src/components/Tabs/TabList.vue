@@ -39,9 +39,9 @@ onBeforeUnmount(() => {
 
 <template>
   <div :class="styles.listScroll">
-    <div ref="list" role="tablist" :aria-label="label" :class="styles.list" @keydown="tabKey(list, $event)">
+    <div ref="list" role="tablist" :aria-label="label" :class="styles.list" data-slot="tabs-list" data-orientation="horizontal" @keydown="tabKey(list, $event)">
       <slot />
-      <span v-if="bar" ref="riseEl" :class="styles.rise" aria-hidden="true" />
+      <span v-if="bar" ref="riseEl" :class="styles.rise" data-slot="tabs-indicator" aria-hidden="true" />
     </div>
   </div>
 </template>

@@ -13,8 +13,10 @@ export type SliderProps = Omit<ComponentPropsWithRef<'input'>, 'type' | 'value' 
   value?: number
   /** Starting value when you do not control it. Undefined starts at min. */
   defaultValue?: number
-  /** Called when the value changes, with the new number. */
+  /** Called on each new value, while the thumb still moves. */
   onValueChange?: (value: number) => void
+  /** Called once the value comes to rest: the hand lets go, a key comes up, or the slider loses focus. */
+  onValueCommit?: (value: number) => void
   /** Lowest value on the track. */
   min?: number
   /** Highest value on the track. */
@@ -34,6 +36,7 @@ export function Slider({
   value: valueProp,
   defaultValue,
   onValueChange,
+  onValueCommit,
   min = 0,
   max = 100,
   step = 1,
@@ -48,6 +51,7 @@ export function Slider({
   onPointerUp,
   onPointerCancel,
   onKeyDown,
+  onKeyUp,
   onBlur,
   ...rest
 }: SliderProps) {
@@ -60,6 +64,8 @@ export function Slider({
   latest.current = { value, min, max, step, marks }
   const set = useRef(setValue)
   set.current = setValue
+  const commit = useRef(onValueCommit)
+  commit.current = onValueCommit
   // The glide, the grab and the landing on marks (motion/slider.ts).
   const slider = useRef<ReturnType<typeof createSlider>>(null)
   slider.current ??= createSlider(
@@ -69,6 +75,7 @@ export function Slider({
       set.current(v)
     },
     setShown,
+    (v) => commit.current?.(v),
   )
   const at = shown ?? value
   const pct = max === min ? 0 : ((at - min) / (max - min)) * 100
@@ -77,16 +84,17 @@ export function Slider({
   useEffect(() => () => slider.current!.destroy(), [])
 
   return (
-    <div className={cx(styles.root, className)} data-disabled={disabled || undefined}>
+    <div className={cx(styles.root, className)} data-slot="slider" data-orientation="horizontal" data-disabled={disabled || undefined}>
       <div className={styles.head}>
-        <label htmlFor={inputId} className={styles.label}>{label}</label>
-        {showValue && <output htmlFor={inputId} className={styles.value} aria-hidden="true">{text}</output>}
+        <label htmlFor={inputId} className={styles.label} data-slot="field-label">{label}</label>
+        {showValue && <output htmlFor={inputId} className={styles.value} data-slot="slider-value" aria-hidden="true">{text}</output>}
       </div>
-      <div className={styles.trackWrap} data-gliding={shown !== null || undefined} style={{ ['--pct' as string]: `${pct}%`, ['--p' as string]: pct / 100 }}>
+      <div className={styles.trackWrap} data-slot="slider-control" data-gliding={shown !== null || undefined} style={{ ['--pct' as string]: `${pct}%`, ['--p' as string]: pct / 100 }}>
         <input
           id={inputId}
           type="range"
           className={styles.input}
+          data-slot="slider-input"
           min={min}
           max={max}
           step={shown === null ? step : 'any'}
@@ -118,20 +126,23 @@ export function Slider({
             onBlur?.(e)
           }}
           onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-            slider.current!.end()
             onKeyDown?.(e)
             if (!e.defaultPrevented && slider.current!.key(e.key)) e.preventDefault()
+          }}
+          onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => {
+            slider.current!.keyUp()
+            onKeyUp?.(e)
           }}
           {...rest}
         />
         {showValue && (
-          <span className={styles.bubble} aria-hidden="true">{text}</span>
+          <span className={styles.bubble} data-slot="slider-bubble" aria-hidden="true">{text}</span>
         )}
         {/* After the bubble, which CSS shows from the input just before it. */}
         {marks?.length ? (
-          <span className={styles.marks} aria-hidden="true">
+          <span className={styles.marks} data-slot="slider-marks" aria-hidden="true">
             {marks.map((m) => (
-              <span key={m} className={styles.mark} data-on={m === value || undefined} style={{ ['--m' as string]: (m - min) / (max - min || 1) }} />
+              <span key={m} className={styles.mark} data-slot="slider-mark" data-state={m === value ? 'active' : 'inactive'} style={{ ['--m' as string]: (m - min) / (max - min || 1) }} />
             ))}
           </span>
         ) : null}

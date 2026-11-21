@@ -4,7 +4,7 @@ import { useId, useRef, type ReactNode, type RefObject } from 'react'
 import { cx } from '../../internal/cx'
 import { useDragClose } from '../../internal/fling'
 import { useFocusTrap } from '../../internal/focus'
-import { XIcon } from '../../internal/icons'
+import { XIcon } from '../../icons/icons'
 import { useDismiss, useScrollLock } from '../../internal/layers'
 import { useDialogMorph } from '../../internal/liquid'
 import { Portal } from '../../internal/Portal'
@@ -28,13 +28,20 @@ export type DialogProps = {
   size?: 'sm' | 'md' | 'lg'
   /** Set false for dialogs that must not close by a stray tap, like unsaved work. */
   dismissOnOverlay?: boolean
-  /** Screen reader name for the close button. */
-  closeLabel?: string
+  /** Text for the dialog's controls, so you can translate it. Missing keys use the English defaults. */
+  labels?: Partial<DialogLabels>
   /** Element to focus first. Defaults to the first focusable element. */
   initialFocus?: RefObject<HTMLElement | null>
   /** Extra class for the dialog panel. */
   className?: string
 }
+
+export type DialogLabels = {
+  /** Screen reader name for the close button. */
+  close: string
+}
+
+const defaultLabels: DialogLabels = { close: 'Close' }
 
 export function Dialog({
   open,
@@ -45,10 +52,11 @@ export function Dialog({
   footer,
   size = 'md',
   dismissOnOverlay = true,
-  closeLabel = 'Close',
+  labels: labelsProp,
   initialFocus,
   className,
 }: DialogProps) {
+  const labels = { ...defaultLabels, ...labelsProp }
   const id = useId()
   const panelRef = useRef<HTMLDivElement>(null)
   const { mounted, state } = usePresence(open, 'morph-out')
@@ -68,8 +76,8 @@ export function Dialog({
   if (!mounted) return null
   return (
     <Portal>
-      <div className={styles.overlay} data-state={state} aria-hidden="true" />
-      <div className={styles.positioner}>
+      <div data-slot="dialog-overlay" className={styles.overlay} data-state={state} aria-hidden="true" />
+      <div data-slot="dialog" className={styles.positioner}>
         <div
           ref={panelRef}
           role="dialog"
@@ -77,22 +85,23 @@ export function Dialog({
           aria-labelledby={`${id}-title`}
           aria-describedby={description ? `${id}-desc` : undefined}
           tabIndex={-1}
+          data-slot="dialog-content"
           className={cx(styles.panel, styles[size], className)}
           data-state={state}
           {...(dismissOnOverlay ? grab : {})}
         >
-          {dismissOnOverlay && <span className={styles.handle} aria-hidden="true" />}
-          <header className={styles.header}>
+          {dismissOnOverlay && <span data-slot="dialog-handle" className={styles.handle} aria-hidden="true" />}
+          <header data-slot="dialog-header" className={styles.header}>
             <div className={styles.titles}>
-              <h2 id={`${id}-title`} className={styles.title}>{title}</h2>
-              {description && <p id={`${id}-desc`} className={styles.description}>{description}</p>}
+              <h2 id={`${id}-title`} data-slot="dialog-title" className={styles.title}>{title}</h2>
+              {description && <p id={`${id}-desc`} data-slot="dialog-description" className={styles.description}>{description}</p>}
             </div>
-            <button type="button" className={styles.close} aria-label={closeLabel} data-skip-initial-focus onClick={() => onOpenChange(false)}>
+            <button type="button" data-slot="dialog-close" className={styles.close} aria-label={labels.close} data-skip-initial-focus onClick={() => onOpenChange(false)}>
               <XIcon />
             </button>
           </header>
-          {children && <div className={styles.body}>{children}</div>}
-          {footer && <footer className={styles.footer}>{footer}</footer>}
+          {children && <div data-slot="dialog-body" className={styles.body}>{children}</div>}
+          {footer && <footer data-slot="dialog-footer" className={styles.footer}>{footer}</footer>}
         </div>
       </div>
     </Portal>

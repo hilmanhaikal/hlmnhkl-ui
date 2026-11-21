@@ -1,3 +1,4 @@
+@layer gooee.components {
 /* One card: a header row (title or tabs, and copy) over the code. */
 .root {
   min-width: 0;
@@ -6,8 +7,8 @@
   outline: var(--gooee-line) solid var(--gooee-color-border);
   outline-offset: calc(var(--gooee-line) * -1);
   border-radius: var(--gooee-radius-md);
-  background: var(--gooee-code-bg);
-  color: var(--gooee-code-fg);
+  background: var(--gooee-code-block-bg, var(--gooee-color-surface-sunken));
+  color: var(--gooee-code-block-fg, var(--gooee-color-fg));
 }
 
 .head {
@@ -59,8 +60,8 @@
   left: 0;
   padding: 0 calc(var(--gooee-space-4) - var(--gooee-line)) 0 var(--gooee-space-5);
   border-right: var(--gooee-line) solid var(--gooee-color-border);
-  background: var(--gooee-code-bg);
-  color: var(--gooee-code-gutter);
+  background: var(--gooee-code-block-bg, var(--gooee-color-surface-sunken));
+  color: var(--gooee-code-block-gutter, var(--gooee-color-fg-subtle));
   text-align: right;
   font-variant-numeric: tabular-nums;
   user-select: none;
@@ -68,9 +69,10 @@
 
 .code { font: inherit; }
 
-.keyword { color: var(--gooee-code-keyword); font-weight: var(--gooee-weight-semibold); }
-.tag { color: var(--gooee-code-tag); font-weight: var(--gooee-weight-semibold); }
-.attr { color: var(--gooee-code-attr); }
-.string { color: var(--gooee-code-string); }
-.number { color: var(--gooee-code-number); }
-.comment { color: var(--gooee-code-comment); font-style: italic; }
+.keyword { color: var(--gooee-code-block-keyword, var(--gooee-color-fg)); font-weight: var(--gooee-weight-semibold); }
+.tag { color: var(--gooee-code-block-tag, var(--gooee-color-fg)); font-weight: var(--gooee-weight-semibold); }
+.attr { color: var(--gooee-code-block-attr, var(--gooee-color-fg-subtle)); }
+.string { color: var(--gooee-code-block-string, var(--gooee-color-fg-muted)); }
+.number { color: var(--gooee-code-block-number, var(--gooee-color-fg-muted)); }
+.comment { color: var(--gooee-code-block-comment, var(--gooee-color-fg-subtle)); font-style: italic; }
+}

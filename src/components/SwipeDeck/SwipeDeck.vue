@@ -1,34 +1,27 @@
 <script setup lang="ts" generic="T">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
-import { createSwipeDeck, type DeckDir, type DeckSide } from '../../internal/motion/swipeDeck'
-import { UndoIcon } from '../../internal/vueIcons'
+import { createSwipeDeck, defaultSwipeDeckLabels, type DeckDir, type DeckSide, type SwipeDeckLabels } from '../../internal/motion/swipeDeck'
+import { UndoIcon } from '../../icons/vue'
 import styles from './SwipeDeck.module.css'
 
 export type SwipeDeckSide = DeckDir
+export type { SwipeDeckLabels }
 
 // The Vue SwipeDeck: the same look (SwipeDeck.module.css), drag, throw and undo as the React one. Each
 // card is drawn by the card slot, which gets the item. Other attributes go to the outer box.
-const props = withDefaults(
-  defineProps<{
-    /** The cards, top card first. The top card is the first whose key is not decided yet, so you may remove decided ones. */
-    items: T[]
-    /** A key that stays the same for each item. */
-    getKey: (item: T) => string
-    /** A short name for an item, said by screen readers after each decision. */
-    getName: (item: T) => string
-    /** Screen reader name of the deck, such as "Flats to rent". */
-    label: string
-    /** The two button words, for the start side then the end side. */
-    actions?: [string, string]
-    /** What screen readers say was done, start then end, such as "Passed" and "Saved". */
-    decided?: [string, string]
-    /** Screen reader name of the undo button. */
-    undoLabel?: string
-    /** Shown when every card has been decided. The empty slot replaces it. */
-    empty?: string
-  }>(),
-  { actions: () => ['Pass', 'Save'], decided: () => ['Passed', 'Saved'], undoLabel: 'Undo the last decision', empty: 'That was the last card.' },
-)
+const props = defineProps<{
+  /** The cards, top card first. The top card is the first whose key is not decided yet, so you may remove decided ones. */
+  items: T[]
+  /** A key that stays the same for each item. */
+  getKey: (item: T) => string
+  /** A short name for an item, said by screen readers after each decision. */
+  getName: (item: T) => string
+  /** Screen reader name of the deck, such as "Flats to rent". */
+  label: string
+  /** The button words and what screen readers hear, so you can change or translate them. Missing keys use the English defaults. The empty slot replaces labels.empty. */
+  labels?: Partial<SwipeDeckLabels>
+}>()
+const labels = computed<SwipeDeckLabels>(() => ({ ...defaultSwipeDeckLabels, ...props.labels }))
 /** decide: once for each card, when it has been thrown or a button or key decided it. undo: Undo brought a card back; if you removed it from items, put it back here. */
 const emit = defineEmits<{ decide: [item: T, side: SwipeDeckSide]; undo: [item: T] }>()
 defineSlots<{ card(props: { item: T }): unknown; empty?: () => unknown }>()
@@ -56,8 +49,8 @@ const commit = (side: DeckSide) => {
   const n = left.value.length
   const dir = swipe.named(side)
   done.value = [...done.value, { item, side, dir }]
-  const said = `${props.decided[dir === 'start' ? 0 : 1]}: ${props.getName(item)}.`
-  news.value = next ? `${said} Card ${count + 2} of ${count + n}: ${props.getName(next)}.` : `${said} No more cards.`
+  const said = `${labels.value.decided[dir === 'start' ? 0 : 1]}: ${props.getName(item)}.`
+  news.value = `${said} ${next ? labels.value.next(count + 2, count + n, props.getName(next)) : labels.value.last}`
   emit('decide', item, dir)
 }
 
@@ -85,7 +78,7 @@ const undo = () => {
   const count = done.value.length - 1
   const n = left.value.length
   done.value = done.value.slice(0, -1)
-  news.value = `Brought back: ${props.getName(last.item)}. Card ${count + 1} of ${count + n + 1}.`
+  news.value = labels.value.undone(props.getName(last.item), count + 1, count + n + 1)
   emit('undo', last.item)
 }
 
@@ -117,15 +110,16 @@ const choose = (dir: SwipeDeckSide) => !over.value && swipe.fly(swipe.physical(d
 </script>
 
 <template>
-  <div ref="root" :class="styles.root" :data-armed="armedDir">
+  <div ref="root" :class="styles.root" data-slot="swipe-deck" :data-armed="armedDir">
     <div :class="styles.stage">
-      <div ref="deck" :class="styles.deck" role="group" aria-roledescription="card deck" :aria-label="label" aria-keyshortcuts="ArrowLeft ArrowRight Backspace" tabindex="0" @keydown="onKeyDown">
-        <div v-if="over" :class="styles.empty"><slot name="empty">{{ empty }}</slot></div>
+      <div ref="deck" :class="styles.deck" data-slot="swipe-deck-stack" role="group" :aria-roledescription="labels.deck" :aria-label="label" aria-keyshortcuts="ArrowLeft ArrowRight Backspace" tabindex="0" @keydown="onKeyDown">
+        <div v-if="over" :class="styles.empty" data-slot="swipe-deck-empty"><slot name="empty">{{ labels.empty }}</slot></div>
         <div
           v-for="{ item, depth } in shown"
           :key="getKey(item)"
           :ref="depth === 0 ? setTop : undefined"
           :class="styles.card"
+          data-slot="swipe-deck-card"
           :data-depth="depth"
           :inert="depth > 0"
           :aria-hidden="depth > 0 || undefined"
@@ -140,26 +134,26 @@ const choose = (dir: SwipeDeckSide) => !over.value && swipe.fly(swipe.physical(d
         </div>
       </div>
     </div>
-    <div :class="styles.ruler" aria-hidden="true">
+    <div :class="styles.ruler" data-slot="swipe-deck-ruler" aria-hidden="true">
       <span :class="styles.mark" data-side="left" :data-armed="armed === -1 || undefined" />
       <span :class="styles.centre" />
       <span :class="styles.mark" data-side="right" :data-armed="armed === 1 || undefined" />
       <span ref="knob" :class="styles.knob" :data-armed="armed !== 0 || undefined" />
     </div>
-    <div :class="styles.bar">
-      <button :ref="buttonRef('start')" type="button" :class="styles.choice" data-side="start" :aria-disabled="over || undefined" @click="choose('start')">
-        <span :class="styles.word">{{ actions[0] }}</span>
+    <div :class="styles.bar" data-slot="swipe-deck-actions">
+      <button :ref="buttonRef('start')" type="button" :class="styles.choice" data-slot="swipe-deck-choice" data-side="start" :aria-disabled="over || undefined" @click="choose('start')">
+        <span :class="styles.word">{{ labels.actions[0] }}</span>
         <span :class="styles.fill" aria-hidden="true">
-          <span :class="styles.word">{{ actions[0] }}</span>
+          <span :class="styles.word">{{ labels.actions[0] }}</span>
         </span>
       </button>
-      <button type="button" :class="styles.undo" :aria-label="undoLabel" :aria-disabled="!done.length || undefined" @click="undo">
+      <button type="button" :class="styles.undo" data-slot="swipe-deck-undo" :aria-label="labels.undo" :aria-disabled="!done.length || undefined" @click="undo">
         <UndoIcon />
       </button>
-      <button :ref="buttonRef('end')" type="button" :class="styles.choice" data-side="end" :aria-disabled="over || undefined" @click="choose('end')">
-        <span :class="styles.word">{{ actions[1] }}</span>
+      <button :ref="buttonRef('end')" type="button" :class="styles.choice" data-slot="swipe-deck-choice" data-side="end" :aria-disabled="over || undefined" @click="choose('end')">
+        <span :class="styles.word">{{ labels.actions[1] }}</span>
         <span :class="styles.fill" aria-hidden="true">
-          <span :class="styles.word">{{ actions[1] }}</span>
+          <span :class="styles.word">{{ labels.actions[1] }}</span>
         </span>
       </button>
     </div>

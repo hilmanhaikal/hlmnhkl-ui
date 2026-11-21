@@ -31,5 +31,5 @@ export function Grid({ columns, min, gap = 5, as = 'div', steps = 'all', classNa
     ...style,
   } as CSSProperties
   const fitClass = !columns ? styles.fit : steps === 'halves' ? styles.halves : styles.capped
-  return <Tag className={cx(styles.root, fit ? fitClass : styles.fixed, className)} style={vars} {...rest} />
+  return <Tag data-slot="grid" className={cx(styles.root, fit ? fitClass : styles.fixed, className)} style={vars} {...rest} />
 }

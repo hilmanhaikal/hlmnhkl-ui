@@ -1,4 +1,12 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+/* The script reads this token, so each is registered with its default: set it on :root to change it. */
+@property --gooee-picker-wheel-tilt {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 18deg;
+}
+
+@layer gooee.components {
 .root {
   display: grid;
   gap: var(--gooee-space-5);
@@ -38,12 +46,12 @@
 }
 
 .column {
-  /* The drum's radius, so each row of --gooee-hit-min turns by --gooee-wheel-tilt. */
-  --wheel-r: calc(var(--gooee-hit-min) / 2 / tan(var(--gooee-wheel-tilt) / 2));
+  /* The drum's radius, so each row of --gooee-hit-min turns by --gooee-picker-wheel-tilt. */
+  --wheel-r: calc(var(--gooee-hit-min) / 2 / tan(var(--gooee-picker-wheel-tilt) / 2));
   position: relative;
   flex: none;
-  width: var(--gooee-wheel-w);
-  height: calc(var(--gooee-wheel-rows) * var(--gooee-hit-min));
+  width: var(--gooee-picker-wheel-w, 64px);
+  height: calc(var(--gooee-picker-wheel-rows, 5) * var(--gooee-hit-min));
   perspective: calc(var(--wheel-r) * 7);
   touch-action: none;
   cursor: grab;
@@ -55,7 +63,7 @@
 }
 
 .column[data-wide] {
-  width: calc(var(--gooee-wheel-w) * 2);
+  width: calc(var(--gooee-picker-wheel-w, 64px) * 2);
 }
 
 .column[data-moving] {
@@ -110,7 +118,7 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   backface-visibility: hidden;
-  transform: rotateX(calc(var(--d) * -1 * var(--gooee-wheel-tilt))) translateZ(var(--wheel-r));
+  transform: rotateX(calc(var(--d) * -1 * var(--gooee-picker-wheel-tilt))) translateZ(var(--wheel-r));
 }
 
 .row[data-strong]::after {
@@ -121,4 +129,5 @@
   height: var(--gooee-space-2);
   border-radius: var(--gooee-radius-full);
   background: currentColor;
+}
 }

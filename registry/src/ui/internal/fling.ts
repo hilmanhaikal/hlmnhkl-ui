@@ -8,10 +8,10 @@ export { rubber, speedTracker, release }
 /** React's hold on createFling (motion/fling.ts): the panel's ref and its open state. */
 export function useFling(ref: RefObject<HTMLElement | null>, open: boolean, axis: 'x' | 'y') {
   const core = useRef<ReturnType<typeof createFling>>(null)
-  core.current ??= createFling(() => ref.current, axis)
+  core.current ??= createFling(() => ref.current, { axis })
   const fling = core.current
 
-  useEffect(() => () => fling.stop(), [fling])
+  useEffect(() => () => fling.destroy(), [fling])
   useEffect(() => {
     if (open) fling.opened()
     else fling.closed()
@@ -32,7 +32,7 @@ export function useDragClose(ref: RefObject<HTMLElement | null>, open: boolean, 
   })
   const drag = core.current
 
-  useEffect(() => () => drag.fling.stop(), [drag])
+  useEffect(() => () => drag.destroy(), [drag])
   useEffect(() => {
     if (open) drag.fling.opened()
     else drag.fling.closed()

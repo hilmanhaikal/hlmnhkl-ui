@@ -36,7 +36,7 @@ export function createScrollArea({ root, viewport, thumb }: Parts) {
       if (!overflow) return
       const pad = parseFloat(getComputedStyle(track).paddingTop) || 0
       const trackLen = (axis === 'y' ? track.clientHeight : track.clientWidth) - pad * 2
-      const minThumb = parseFloat(getComputedStyle(el).getPropertyValue('--gooee-scrollbar-min')) || 24
+      const minThumb = parseFloat(getComputedStyle(el).getPropertyValue('--gooee-scroll-area-thumb-min')) || 24
       const len = Math.max(minThumb, (size / full) * trackLen)
       const offset = (pos / (full - size)) * (trackLen - len)
       if (axis === 'y') {
@@ -54,10 +54,10 @@ export function createScrollArea({ root, viewport, thumb }: Parts) {
   const wake = () => {
     const el = root()
     if (!el) return
-    el.setAttribute('data-active', '')
+    el.setAttribute('data-scrolling', '')
     window.clearTimeout(idle)
     idle = window.setTimeout(() => {
-      if (!drag) el.removeAttribute('data-active')
+      if (!drag) el.removeAttribute('data-scrolling')
     }, IDLE_MS)
   }
 

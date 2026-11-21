@@ -1,7 +1,7 @@
 // Gooee UI, MIT licence. https://gooee.dev
 import { pour, type Pour } from './liquidMore'
 
-export type CheckState = 'off' | 'on' | 'mixed'
+export type CheckState = 'unchecked' | 'checked' | 'indeterminate'
 
 /**
  * A checkbox's cup fill: ink pours in from the side that was pressed (a key fills it evenly from below),
@@ -22,15 +22,15 @@ export function createCheckboxPour(box: () => HTMLElement | null, cls: string, s
     set(state: CheckState) {
       const prev = was
       was = state
-      const filled = state !== 'off'
-      if ((prev !== 'off') === filled) return
+      const filled = state !== 'unchecked'
+      if ((prev !== 'unchecked') === filled) return
       const el = box()
       const at = pressedAt
       pressedAt = null
       if (!el) return
       const r = el.getBoundingClientRect()
       const side = at && performance.now() - at.t < 1000 ? Math.max(-1, Math.min(1, (at.x - r.left - r.width / 2) / (r.width / 2))) : 0
-      const mark = el.querySelector<SVGPathElement>(prev === 'mixed' || state === 'mixed' ? '[data-mark="dash"]' : '[data-mark="tick"]')
+      const mark = el.querySelector<SVGPathElement>(prev === 'indeterminate' || state === 'indeterminate' ? '[data-mark="dash"]' : '[data-mark="tick"]')
       run = pour(el, mark, filled ? 1 : 0, side, cls, run)
     },
     destroy() {

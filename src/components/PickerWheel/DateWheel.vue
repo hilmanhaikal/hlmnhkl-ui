@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { dateWheel, today } from '../../internal/motion/pickerWheel'
 import PickerWheel from './PickerWheel.vue'
 
@@ -18,10 +18,10 @@ const props = defineProps<{
   /** Dates, as "YYYY-MM-DD", drawn stronger. Undefined is today. */
   strong?: string[]
 }>()
-const emit = defineEmits<{ /** The date in the band while the wheel still turns, as "YYYY-MM-DD". */ scrub: [value: string] }>()
+const emit = defineEmits<{ /** The date, as "YYYY-MM-DD", once the wheel comes to rest on a new one. */ valueCommit: [value: string] }>()
 
 const now = today()
-/** The date as "YYYY-MM-DD", set once the wheel comes to rest. Use v-model, or leave it out and the wheel keeps its own date. */
+/** The date in the band as "YYYY-MM-DD", set each time it changes while the wheel turns. Use v-model, or leave it out and the wheel keeps its own date. */
 const model = defineModel<string>()
 const local = ref(props.defaultValue ?? now)
 const value = computed({
@@ -31,18 +31,26 @@ const value = computed({
     model.value = next
   },
 })
-const wheel = computed(() => dateWheel(value.value, now, props.fromYear, props.toYear, props.strong))
+// The days follow the month the wheel rests on, not each month that turns past (31 stays 31 on the way
+// through February). A date from outside, not one this wheel told, is a new rest.
+let told = value.value
+const rested = ref(value.value)
+watch(value, (v) => v !== told && (rested.value = v), { flush: 'sync' })
+const wheel = computed(() => dateWheel(rested.value, now, props.fromYear, props.toYear, props.strong))
+const onChange = (rows: number[] | undefined) => {
+  if (!rows) return
+  told = wheel.value.toDate(rows)
+  value.value = told
+}
+const onCommit = (rows: number[]) => {
+  told = wheel.value.toDate(rows)
+  rested.value = told
+  emit('valueCommit', told)
+}
 </script>
 
 <template>
-  <PickerWheel
-    :label="label"
-    :columns="wheel.columns"
-    :model-value="wheel.rows"
-    :format-value="wheel.show"
-    @update:model-value="(rows) => rows && (value = wheel.toDate(rows))"
-    @scrub="emit('scrub', wheel.toDate($event))"
-  >
+  <PickerWheel :label="label" :columns="wheel.columns" :model-value="wheel.rows" :format-value="wheel.show" @update:model-value="onChange" @value-commit="onCommit">
     <template v-for="(_, name) in $slots" #[name]><slot :name="name" /></template>
   </PickerWheel>
 </template>

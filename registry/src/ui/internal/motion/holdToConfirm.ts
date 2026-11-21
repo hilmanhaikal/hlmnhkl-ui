@@ -1,7 +1,7 @@
 // Gooee UI, MIT licence. https://gooee.dev
 import { bezier } from '../feel'
 import { body, boxPath, lerp, loopsPath, pincher, seg, trace, type Box } from '../liquidPath'
-import { morphCurve, readMotionMs } from '../motion'
+import { morphCurve, motionMs } from '../motion'
 import { frames, layer, morphEase, motionFor } from './liquidMatter'
 
 // The hold to confirm button's motion: the burning line on its edge and the cancel drop that buds out of it.
@@ -24,7 +24,7 @@ export const GUARD = 500
  */
 export function bud(row: HTMLElement, shell: HTMLElement, x: HTMLElement, way: 'in' | 'out', cls: string) {
   // 400ms both ways: the drop is small, and at the morph's 600ms the cancel button felt late to arrive.
-  const ms = motionFor('reveal')
+  const ms = motionFor('morph-out')
   if (!ms) return null
   const box = (el: HTMLElement): Box => {
     const r = el.getBoundingClientRect(),
@@ -133,7 +133,7 @@ export function createFuse(run: () => SVGPathElement | null) {
   const rewind = () => {
     stop()
     const from = p
-    const length = readMotionMs('fast')
+    const length = motionMs('fast')
     if (!length || !from) return paint(0)
     const ease = bezier(morphCurve())
     const t0 = performance.now()

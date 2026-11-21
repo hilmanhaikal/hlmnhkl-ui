@@ -24,7 +24,7 @@ import { useFloating, type Align } from '../../internal/useFloating'
 import { usePresence } from '../../internal/usePresence'
 import styles from './DropdownMenu.module.css'
 
-export type MenuEntry =
+export type DropdownMenuEntry =
   | {
       type?: 'item'
       label: string
@@ -51,7 +51,7 @@ export type DropdownMenuProps = {
   /** One button that opens the menu. It gets the menu ARIA attributes, and an id if it has none. */
   trigger: ReactElement<TriggerProps>
   /** Items, separators and group labels, in menu order. */
-  items: MenuEntry[]
+  items: DropdownMenuEntry[]
   /** Accessible name for the menu, if the trigger text is not enough. */
   label?: string
   /** Which edge of the trigger the menu lines up with. */
@@ -127,6 +127,7 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
             role="menu"
             aria-label={label}
             aria-labelledby={label ? undefined : triggerId}
+            data-slot="dropdown-menu-content"
             className={styles.menu}
             data-state={state}
             data-side={floating.side}
@@ -134,10 +135,10 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
             onKeyDown={keys.current}
           >
             {items.map((item, i) => {
-              if (item.type === 'separator') return <div key={i} role="separator" className={styles.separator} />
+              if (item.type === 'separator') return <div key={i} role="separator" data-slot="dropdown-menu-separator" className={styles.separator} />
               if (item.type === 'label')
                 return (
-                  <div key={i} role="presentation" className={styles.groupLabel}>
+                  <div key={i} role="presentation" data-slot="dropdown-menu-label" className={styles.groupLabel}>
                     {item.label}
                   </div>
                 )
@@ -149,7 +150,9 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
                   role="menuitem"
                   tabIndex={-1}
                   aria-disabled={item.disabled || undefined}
+                  data-slot="dropdown-menu-item"
                   className={styles.item}
+                  data-disabled={item.disabled || undefined}
                   data-destructive={item.destructive || undefined}
                   style={{ ['--i' as string]: n }}
                   onPointerMove={(e) => !item.disabled && e.currentTarget.focus()}
@@ -160,16 +163,16 @@ export function DropdownMenu({ trigger, items, label, align = 'start' }: Dropdow
                   }}
                   onKeyDown={itemKey}
                 >
-                  {item.icon && <span className={styles.icon}>{item.icon}</span>}
-                  <span className={styles.label}>
+                  {item.icon && <span data-slot="dropdown-menu-item-icon" className={styles.icon}>{item.icon}</span>}
+                  <span data-slot="dropdown-menu-item-label" className={styles.label}>
                     {item.label}
                     {reason && (
-                      <span className={styles.reason}>
+                      <span data-slot="dropdown-menu-item-reason" className={styles.reason}>
                         {reason}
                       </span>
                     )}
                   </span>
-                  {item.shortcut && <kbd className={styles.shortcut}>{item.shortcut}</kbd>}
+                  {item.shortcut && <kbd data-slot="dropdown-menu-shortcut" className={styles.shortcut}>{item.shortcut}</kbd>}
                 </div>
               )
             })}

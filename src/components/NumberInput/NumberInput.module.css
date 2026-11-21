@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
@@ -14,7 +15,7 @@
   display: inline-flex;
   align-items: center;
   align-self: flex-start;
-  width: var(--gooee-number-w);
+  width: var(--gooee-number-input-w, 168px);
   max-width: 100%;
   min-height: var(--gooee-hit-min);
   padding: 0;
@@ -26,8 +27,8 @@
   border-radius: var(--gooee-radius-control);
   background: var(--gooee-color-surface);
   transition:
-    outline-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    box-shadow var(--gooee-motion-base) var(--gooee-ease-out);
+    outline-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -60,8 +61,8 @@
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition:
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -105,4 +106,5 @@
   font-size: var(--gooee-text-md);
   font-weight: var(--gooee-weight-medium);
   pointer-events: none;
+}
 }

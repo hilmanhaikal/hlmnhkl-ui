@@ -1,10 +1,10 @@
 // Gooee UI, MIT licence. https://gooee.dev
 import { useLayoutEffect, useRef } from 'react'
-import { onScrollFrame, type ScrollReader } from './motion/scrollFrame'
+import { createScrollFrame, type ScrollReader } from './motion/scrollFrame'
 
 export { bandProgress, easeToward, readScrollTokens, scrollTokens, type ScrollFrame, type ScrollReader, type ScrollTokens } from './motion/scrollFrame'
 
-/** React's hold on onScrollFrame (motion/scrollFrame.ts): calls the latest `read` on mount and every frame while the page moves. */
+/** React's hold on createScrollFrame (motion/scrollFrame.ts): calls the latest `read` on mount and every frame while the page moves. */
 export function useScrollFrame(read: ScrollReader, active = true) {
   const ref = useRef(read)
   useLayoutEffect(() => {
@@ -12,6 +12,6 @@ export function useScrollFrame(read: ScrollReader, active = true) {
   })
   useLayoutEffect(() => {
     if (!active) return
-    return onScrollFrame((f) => ref.current(f))
+    return createScrollFrame((f) => ref.current(f)).destroy
   }, [active])
 }

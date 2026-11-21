@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: inline-flex;
   vertical-align: middle;
@@ -37,9 +38,9 @@
 .cell {
   position: relative;
   display: block;
-  inline-size: var(--gooee-flap-w);
-  block-size: var(--gooee-flap-h);
-  perspective: calc(var(--gooee-flap-h) * 3);
+  inline-size: var(--gooee-split-flap-w, round(nearest, 0.92em, 4px));
+  block-size: var(--gooee-split-flap-h, round(nearest, 1.36em, 4px));
+  perspective: calc(var(--gooee-split-flap-h, round(nearest, 1.36em, 4px)) * 3);
   color: var(--gooee-color-fg);
 }
 
@@ -58,22 +59,22 @@
 .front {
   top: 0;
   border-radius: var(--gooee-radius-xs) var(--gooee-radius-xs) 0 0;
-  background: var(--gooee-flap-top);
+  background: var(--gooee-split-flap-top, light-dark(var(--gooee-color-surface-sunken), var(--gooee-color-surface-active)));
 }
 
 .bottom,
 .back {
   bottom: 0;
   border-radius: 0 0 var(--gooee-radius-xs) var(--gooee-radius-xs);
-  background: var(--gooee-flap-bottom);
+  background: var(--gooee-split-flap-bottom, var(--gooee-color-surface-hover));
 }
 
 .glyph {
   position: absolute;
   inset-inline: 0;
   top: 0;
-  block-size: var(--gooee-flap-h);
-  line-height: var(--gooee-flap-h);
+  block-size: var(--gooee-split-flap-h, round(nearest, 1.36em, 4px));
+  line-height: var(--gooee-split-flap-h, round(nearest, 1.36em, 4px));
   text-align: center;
 }
 
@@ -104,4 +105,5 @@
   top: 0;
   bottom: auto;
   transform: rotateX(180deg);
+}
 }

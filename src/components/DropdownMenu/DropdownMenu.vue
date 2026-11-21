@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Component } from 'vue'
 
-export type MenuEntry =
+export type DropdownMenuEntry =
   | {
       type?: 'item'
       label: string
@@ -23,8 +23,8 @@ export type MenuEntry =
 import { computed, onBeforeUnmount, ref, shallowRef, useId, watch, type VNode } from 'vue'
 import type { Align } from '../../internal/motion/floating'
 import { dismissable } from '../../internal/motion/layers'
-import { createLiquid } from '../../internal/motion/liquid'
-import { bead } from '../../internal/motion/liquidMore'
+import { createMorph } from '../../internal/motion/liquid'
+import { createBead } from '../../internal/motion/liquidMore'
 import { createMenuKeys, itemKey, menuButtonKey, menuItems } from '../../internal/motion/menuKeys'
 import { useFloating } from '../../internal/vue/useFloating'
 import { usePresence } from '../../internal/vue/usePresence'
@@ -34,17 +34,14 @@ import styles from './DropdownMenu.module.css'
 // The Vue DropdownMenu: the same look (DropdownMenu.module.css), keys, growth and bead as the React one.
 // The trigger slot is one button that opens the menu. It gets the menu ARIA attributes, and an id if it has none.
 
-const props = withDefaults(
-  defineProps<{
-    /** Items, separators and group labels, in menu order. */
-    items: MenuEntry[]
-    /** Accessible name for the menu, if the trigger text is not enough. */
-    label?: string
-    /** Which edge of the trigger the menu lines up with. */
-    align?: Align
-  }>(),
-  { align: 'start' },
-)
+const { items, align = 'start' } = defineProps<{
+  /** Items, separators and group labels, in menu order. */
+  items: DropdownMenuEntry[]
+  /** Accessible name for the menu, if the trigger text is not enough. */
+  label?: string
+  /** Which edge of the trigger the menu lines up with. */
+  align?: Align
+}>()
 const slots = defineSlots<{ trigger?: () => VNode[] }>()
 
 const id = useId()
@@ -54,13 +51,10 @@ const anchor = shallowRef<HTMLElement | null>(null)
 const setAnchor = elementRef(anchor)
 const menu = ref<HTMLElement | null>(null)
 const { mounted, state } = usePresence(open, 'morph-out')
-const { style, side: placed, ready } = useFloating(anchor, menu, mounted, () => ({ side: 'bottom', align: props.align, offset: 6 }))
+const { style, side: placed, ready } = useFloating(anchor, menu, mounted, () => ({ side: 'bottom', align, offset: 6 }))
 // Vue sets a bare number as no length at all, so the place gets its unit here.
 // The menu grows out of its button and folds back into it.
-const liquid = createLiquid(
-  () => menu.value,
-  () => anchor.value,
-)
+const liquid = createMorph(() => menu.value, { origin: () => anchor.value })
 watch([state, () => mounted.value && ready.value], ([s, on]) => on && liquid.play(s), { flush: 'post' })
 
 // The hover fill is a bead that follows the pointer from item to item.
@@ -69,7 +63,7 @@ watch(
   mounted,
   (on) => {
     stopBead()
-    stopBead = on && menu.value ? bead(menu.value, styles.bead) : () => {}
+    stopBead = on && menu.value ? createBead(menu.value, { className: styles.bead }).destroy : () => {}
   },
   { flush: 'post' },
 )
@@ -111,7 +105,7 @@ const onMenuKey = createMenuKeys(
   () => close(),
 )
 
-const select = (item: Extract<MenuEntry, { label: string; type?: 'item' }>) => {
+const select = (item: Extract<DropdownMenuEntry, { label: string; type?: 'item' }>) => {
   if (item.disabled) return
   close()
   item.onSelect?.()
@@ -120,7 +114,7 @@ const select = (item: Extract<MenuEntry, { label: string; type?: 'item' }>) => {
 // Each item's place in the stagger, counting items only.
 const stagger = computed(() => {
   let n = 0
-  return props.items.map((item) => (item.type === 'separator' || item.type === 'label' ? -1 : n++))
+  return items.map((item) => (item.type === 'separator' || item.type === 'label' ? -1 : n++))
 })
 
 // A caller's id on the trigger wins, so their own labels and tests keep working. Read in the same render, after the trigger.
@@ -154,6 +148,7 @@ const labelledBy = () => triggerId
       role="menu"
       :aria-label="label"
       :aria-labelledby="label ? undefined : labelledBy()"
+      data-slot="dropdown-menu-content"
       :class="styles.menu"
       :data-state="state"
       :data-side="placed"
@@ -161,23 +156,25 @@ const labelledBy = () => triggerId
       @keydown="onMenuKey"
     >
       <template v-for="(item, i) in items" :key="i">
-        <div v-if="item.type === 'separator'" role="separator" :class="styles.separator" />
-        <div v-else-if="item.type === 'label'" role="presentation" :class="styles.groupLabel">{{ item.label }}</div>
+        <div v-if="item.type === 'separator'" role="separator" data-slot="dropdown-menu-separator" :class="styles.separator" />
+        <div v-else-if="item.type === 'label'" role="presentation" data-slot="dropdown-menu-label" :class="styles.groupLabel">{{ item.label }}</div>
         <div
           v-else
           role="menuitem"
           tabindex="-1"
           :aria-disabled="item.disabled || undefined"
+          data-slot="dropdown-menu-item"
           :class="styles.item"
+          :data-disabled="item.disabled || undefined"
           :data-destructive="item.destructive || undefined"
           :style="{ '--i': stagger[i] }"
           @pointermove="(e: PointerEvent) => !item.disabled && (e.currentTarget as HTMLElement).focus()"
           @click="select(item)"
           @keydown="itemKey"
         >
-          <span v-if="item.icon" :class="styles.icon"><component :is="item.icon" /></span>
-          <span :class="styles.label">{{ item.label }}<span v-if="item.disabled && item.disabledReason" :class="styles.reason">{{ item.disabledReason }}</span></span>
-          <kbd v-if="item.shortcut" :class="styles.shortcut">{{ item.shortcut }}</kbd>
+          <span v-if="item.icon" data-slot="dropdown-menu-item-icon" :class="styles.icon"><component :is="item.icon" /></span>
+          <span data-slot="dropdown-menu-item-label" :class="styles.label">{{ item.label }}<span v-if="item.disabled && item.disabledReason" data-slot="dropdown-menu-item-reason" :class="styles.reason">{{ item.disabledReason }}</span></span>
+          <kbd v-if="item.shortcut" data-slot="dropdown-menu-shortcut" :class="styles.shortcut">{{ item.shortcut }}</kbd>
         </div>
       </template>
     </div>

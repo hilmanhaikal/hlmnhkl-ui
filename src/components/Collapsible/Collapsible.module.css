@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
@@ -21,8 +22,8 @@
   font-weight: var(--gooee-weight-medium);
   cursor: pointer;
   transition:
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out),
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph),
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -43,10 +44,10 @@
   width: var(--gooee-icon-md);
   height: var(--gooee-icon-md);
   color: var(--gooee-color-fg-muted);
-  transition: transform var(--gooee-motion-slow) var(--gooee-ease-spring);
+  transition: transform var(--gooee-motion-slow) var(--gooee-ease-morph);
 }
 
-.root[data-open] .chevron { transform: rotate(180deg); }
+.root[data-state='open'] .chevron { transform: rotate(180deg); }
 
 .panel {
   display: grid;
@@ -57,7 +58,7 @@
     visibility 0s linear var(--gooee-motion-morph);
 }
 
-.root[data-open] .panel {
+.root[data-state='open'] .panel {
   grid-template-rows: 1fr;
   visibility: visible;
   transition:
@@ -72,4 +73,5 @@
 
 .content {
   padding-top: var(--gooee-space-3);
+}
 }

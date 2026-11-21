@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .menu {
   --oy: calc(var(--gooee-shift-sm) * -1);
   z-index: var(--gooee-z-popover);
@@ -16,13 +17,13 @@
   outline: none;
   isolation: isolate;
   transform-origin: top left;
-  animation: menuIn var(--gooee-motion-base) var(--gooee-ease-out);
+  animation: menuIn var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .menu[data-side="top"] { --oy: var(--gooee-shift-sm); transform-origin: bottom left; }
 
 .menu[data-state="closed"] {
-  animation: menuOut var(--gooee-motion-fast) var(--gooee-ease-in) forwards;
+  animation: menuOut var(--gooee-motion-fast) var(--gooee-ease-morph) forwards;
   pointer-events: none;
 }
 
@@ -43,9 +44,9 @@
   cursor: pointer;
   outline: none;
   user-select: none;
-  animation: itemIn var(--gooee-motion-slow) var(--gooee-ease-out) backwards;
+  animation: itemIn var(--gooee-motion-slow) var(--gooee-ease-morph) backwards;
   animation-delay: calc(var(--i) * var(--gooee-motion-stagger));
-  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
   --gooee-bead: var(--gooee-color-surface-hover);
 }
 
@@ -67,7 +68,7 @@
 .menu[data-bead] .item[data-destructive]:not([aria-disabled]):is(:focus, :active) { background: transparent; }
 
 .item:focus { background: var(--gooee-color-surface-hover); }
-.item:focus-visible { box-shadow: inset 0 0 0 var(--gooee-line-focus) var(--gooee-color-fg); }
+.item:focus-visible { box-shadow: inset 0 0 0 var(--gooee-focus-width) var(--gooee-color-fg); }
 
 .item:active:not([aria-disabled]) {
   background: var(--gooee-color-surface-active);
@@ -89,7 +90,7 @@
   display: inline-flex;
   font-size: var(--gooee-icon-md);
   color: var(--gooee-color-fg-muted);
-  transition: transform var(--gooee-motion-base) var(--gooee-ease-spring);
+  transition: transform var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .item:focus .icon { transform: translateX(var(--gooee-space-1)); color: var(--gooee-color-fg); }
@@ -132,4 +133,5 @@
 
 @keyframes itemIn {
   from { opacity: 0; transform: translateX(calc(var(--gooee-shift-sm) * -1)); }
+}
 }

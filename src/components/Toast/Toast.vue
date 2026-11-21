@@ -1,13 +1,21 @@
 <script lang="ts">
 import { inject, type InjectionKey } from 'vue'
-import type { ToastLeaving, ToastOrigin, ToastVariant } from '../../internal/motion/toast'
+import type { ToastLeaving, ToastOrigin, ToastTone } from '../../internal/motion/toast'
 
-export type { ToastVariant }
+export type { ToastTone }
+
+export type ToastLabels = {
+  /** Name of each close button. The toast title is added after it. */
+  dismiss: string
+}
 
 export type ToastOptions = {
   title: string
   description?: string
-  variant?: ToastVariant
+  /** Sets the icon and colour. Danger is announced at once. */
+  tone?: ToastTone
+  /** Shows a spinner and keeps the toast until you update it with loading: false. */
+  loading?: boolean
   /** Milliseconds before it leaves. Infinity keeps it until dismissed. */
   duration?: number
   action?: { label: string; onClick: () => void }
@@ -44,17 +52,19 @@ import styles from './Toast.module.css'
 // The Vue ToastProvider: the same look (Toast.module.css), stack, bud and throw as the React one.
 // Wrap your app in it; anything inside can call useToast().
 
-const props = withDefaults(
-  defineProps<{
-    /** How many toasts stay visible in the stack. */
-    visible?: number
-    /** Name of the notification region for screen readers. */
-    label?: string
-    /** Screen reader name for each close button. The toast title is added after it. */
-    dismissLabel?: string
-  }>(),
-  { visible: 3, label: 'Notifications', dismissLabel: 'Dismiss' },
-)
+const {
+  max = 3,
+  label = 'Notifications',
+  labels,
+} = defineProps<{
+  /** Most toasts shown in the stack at once. */
+  max?: number
+  /** Name of the notification region for screen readers. */
+  label?: string
+  /** Screen reader text, so you can translate it. Missing keys use the English defaults. */
+  labels?: Partial<ToastLabels>
+}>()
+const text = computed(() => ({ dismiss: 'Dismiss', ...labels }))
 
 const items = shallowRef<ToastItemData[]>([])
 const heights = shallowRef<Record<number, number>>({})
@@ -64,8 +74,8 @@ const urgent = ref('')
 const timers = new Set<number>()
 onBeforeUnmount(() => timers.forEach((t) => window.clearTimeout(t)))
 
-const say = (opts: Partial<ToastOptions>, variant?: ToastVariant) => {
-  if (variant === 'error') urgent.value = toastSay(urgent.value, opts)
+const say = (opts: Partial<ToastOptions>, tone?: ToastTone) => {
+  if (tone === 'danger') urgent.value = toastSay(urgent.value, opts)
   else announce.value = toastSay(announce.value, opts)
 }
 
@@ -83,19 +93,19 @@ const remove = (id: number, dir: ToastLeaving = 'down') => {
 provide(toastKey, {
   toast: (opts) => {
     const id = toastId()
-    items.value = [...items.value, { duration: 5000, variant: 'default', ...opts, id, leaving: false }]
-    say(opts, opts.variant)
+    items.value = [...items.value, { duration: 5000, tone: 'neutral', ...opts, id, leaving: false }]
+    say(opts, opts.tone)
     return id
   },
   update: (id, opts) => {
-    const variant = items.value.find((t) => t.id === id)?.variant
+    const tone = items.value.find((t) => t.id === id)?.tone
     items.value = items.value.map((t) => (t.id === id ? { ...t, ...opts } : t))
-    if (opts.title) say(opts, opts.variant ?? variant)
+    if (opts.title) say(opts, opts.tone ?? tone)
   },
   dismiss: (id) => remove(id),
 })
 
-const stack = computed(() => toastLayout(items.value, heights.value, expanded.value, props.visible))
+const stack = computed(() => toastLayout(items.value, heights.value, expanded.value, max))
 const setHeight = (id: number, h: number) => {
   if (heights.value[id] !== h) heights.value = { ...heights.value, [id]: h }
 }
@@ -111,6 +121,7 @@ const onFocusOut = (e: FocusEvent) => !(e.currentTarget as HTMLElement).contains
     <!-- Toasts are not part of an open dialog, but tapping one should not close it. -->
     <section
       :class="styles.viewport"
+      data-slot="toast-viewport"
       data-gooee-layer-ignore=""
       :aria-label="label"
       :style="{ height: `${stack.height}px`, '--front-h': `${stack.frontHeight}px` }"
@@ -119,7 +130,7 @@ const onFocusOut = (e: FocusEvent) => !(e.currentTarget as HTMLElement).contains
       @focusin="expanded = true"
       @focusout="onFocusOut"
     >
-      <ol :class="styles.list">
+      <ol :class="styles.list" data-slot="toast-list">
         <ToastItem
           v-for="{ t, index, y } in stack.layout"
           :key="t.id"
@@ -127,8 +138,8 @@ const onFocusOut = (e: FocusEvent) => !(e.currentTarget as HTMLElement).contains
           :index="index"
           :y="y"
           :expanded="expanded"
-          :hidden="index >= props.visible"
-          :dismiss-label="dismissLabel"
+          :hidden="index >= max"
+          :labels="text"
           @height="(h: number) => setHeight(t.id, h)"
           @dismiss="(dir: ToastLeaving) => remove(t.id, dir)"
         />

@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: inline-flex;
   width: fit-content;
@@ -57,3 +58,4 @@
   .root > :hover { z-index: 1; }
 }
 .root > :focus-visible { z-index: 2; }
+}

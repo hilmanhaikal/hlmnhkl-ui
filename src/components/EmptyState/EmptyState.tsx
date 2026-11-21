@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { InboxIcon } from '../../internal/icons'
+import { InboxIcon } from '../../icons/icons'
 import styles from './EmptyState.module.css'
 
 export type EmptyStateProps = {
@@ -23,12 +23,12 @@ export type EmptyStateProps = {
 export function EmptyState({ title, description, icon = <InboxIcon />, action, secondaryAction, headingLevel = 3, className }: EmptyStateProps) {
   const H = `h${headingLevel}` as 'h3'
   return (
-    <div className={cx(styles.root, className)}>
-      <div className={styles.icon} style={{ ['--i' as string]: 0 }} aria-hidden="true">{icon}</div>
-      <H className={styles.title} style={{ ['--i' as string]: 1 }}>{title}</H>
-      {description && <p className={styles.description} style={{ ['--i' as string]: 2 }}>{description}</p>}
+    <div data-slot="empty-state" className={cx(styles.root, className)}>
+      <div data-slot="empty-state-icon" className={styles.icon} style={{ ['--i' as string]: 0 }} aria-hidden="true">{icon}</div>
+      <H data-slot="empty-state-title" className={styles.title} style={{ ['--i' as string]: 1 }}>{title}</H>
+      {description && <p data-slot="empty-state-description" className={styles.description} style={{ ['--i' as string]: 2 }}>{description}</p>}
       {(action || secondaryAction) && (
-        <div className={styles.actions} style={{ ['--i' as string]: 3 }}>
+        <div data-slot="empty-state-actions" className={styles.actions} style={{ ['--i' as string]: 3 }}>
           {secondaryAction}
           {action}
         </div>

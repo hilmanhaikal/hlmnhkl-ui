@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
@@ -48,20 +49,20 @@
 .input:focus { outline: none; }
 
 .input::-webkit-slider-runnable-track {
-  height: var(--gooee-track-h);
+  height: var(--gooee-slider-track-h, 4px);
   border-radius: var(--gooee-radius-full);
   background: linear-gradient(to right, var(--gooee-color-accent) var(--pct), var(--gooee-color-surface-active) var(--pct));
   box-shadow: inset 0 0 0 var(--gooee-line) var(--gooee-color-border);
 }
 
 .input::-moz-range-track {
-  height: var(--gooee-track-h);
+  height: var(--gooee-slider-track-h, 4px);
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-surface-active);
 }
 
 .input::-moz-range-progress {
-  height: var(--gooee-track-h);
+  height: var(--gooee-slider-track-h, 4px);
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-accent);
 }
@@ -70,14 +71,14 @@
   -webkit-appearance: none;
   width: var(--thumb);
   height: var(--thumb);
-  margin-top: calc((var(--gooee-track-h) - var(--thumb)) / 2);
+  margin-top: calc((var(--gooee-slider-track-h, 4px) - var(--thumb)) / 2);
   border: var(--gooee-line-thick) solid var(--gooee-color-accent);
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-surface-raised);
   box-shadow: var(--gooee-shadow-2);
   transition:
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring),
-    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out);
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 .input::-moz-range-thumb {
@@ -89,8 +90,8 @@
   background: var(--gooee-color-surface-raised);
   box-shadow: var(--gooee-shadow-2);
   transition:
-    transform var(--gooee-motion-slow) var(--gooee-ease-spring),
-    box-shadow var(--gooee-motion-fast) var(--gooee-ease-out);
+    transform var(--gooee-motion-slow) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 @media (hover: hover) {
@@ -118,8 +119,8 @@
   transform: translate(-50%, var(--gooee-shift-sm)) scale(0.8);
   /* It stays a beat after a click or a let-go, so the value can be read before it fades. */
   transition:
-    opacity var(--gooee-motion-fast) var(--gooee-ease-out) var(--gooee-motion-base),
-    transform var(--gooee-motion-base) var(--gooee-ease-spring) var(--gooee-motion-base);
+    opacity var(--gooee-motion-fast) var(--gooee-ease-morph) var(--gooee-motion-base),
+    transform var(--gooee-motion-base) var(--gooee-ease-morph) var(--gooee-motion-base);
 }
 
 .input:active:not(:disabled) + .bubble,
@@ -147,9 +148,10 @@
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-border-strong);
   translate: -50% -50%;
-  transition: opacity var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: opacity var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
-.mark[data-on] {
+.mark[data-state="active"] {
   opacity: 0;
+}
 }

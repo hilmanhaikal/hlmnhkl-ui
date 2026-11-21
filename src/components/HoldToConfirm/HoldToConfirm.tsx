@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
-import { CheckIcon, XIcon } from '../../internal/icons'
+import { CheckIcon, XIcon } from '../../icons/icons'
 import { prefersReducedMotion } from '../../internal/motion'
 import { bud, createFuse, cssMs, DONE_FOR, GUARD, HINT_AFTER, LEAVE, outline, TAP } from '../../internal/motion/holdToConfirm'
 import styles from './HoldToConfirm.module.css'
@@ -75,7 +75,7 @@ export function HoldToConfirm({
     const measure = () => {
       const w = main.offsetWidth
       const h = main.offsetHeight
-      const inset = parseFloat(getComputedStyle(root).getPropertyValue('--gooee-hold-stroke')) / 2 || 1
+      const inset = parseFloat(getComputedStyle(root).getPropertyValue('--gooee-hold-to-confirm-stroke')) / 2 || 1
       setSize({ w, h, inset })
       setPath(outline(w, h, inset, w / 2))
     }
@@ -101,7 +101,7 @@ export function HoldToConfirm({
   }
 
   // Forward at an even speed, and back fast on the morph curve.
-  const run = () => fuse.current!.forward(cssMs(shellRef.current, '--gooee-hold-time', 1500), (now) => press.current && now - press.current.t0 > HINT_AFTER && setKeep(true), finish)
+  const run = () => fuse.current!.forward(cssMs(shellRef.current, '--gooee-delay-hold-to-confirm', 1500), (now) => press.current && now - press.current.t0 > HINT_AFTER && setKeep(true), finish)
   const rewind = () => fuse.current!.rewind()
 
   const openStep = () => {
@@ -231,12 +231,13 @@ export function HoldToConfirm({
   const line = open ? (stepHint ?? `Press it again to ${confirmLabel.toLowerCase()}, or ${cancelLabel}.`) : phase === 'done' ? '' : keep ? 'Keep holding' : hint
 
   return (
-    <div ref={rootRef} className={cx(styles.root, className)}>
+    <div ref={rootRef} data-slot="hold-to-confirm" className={cx(styles.root, className)}>
       <div ref={rowRef} className={styles.row}>
-        <div ref={shellRef} className={styles.shell} data-phase={phase} data-disabled={disabled || undefined}>
+        <div ref={shellRef} data-slot="hold-to-confirm-shell" className={styles.shell} data-status={phase} data-disabled={disabled || undefined}>
           <button
             ref={mainRef}
             type="button"
+            data-slot="hold-to-confirm-button"
             className={styles.main}
             aria-describedby={`${id}-hint`}
             aria-expanded={open}
@@ -253,15 +254,15 @@ export function HoldToConfirm({
             onClick={onClick}
           >
             <span className={styles.faces}>
-              <span className={styles.face} data-face="idle" aria-hidden={phase === 'done' || undefined}>
+              <span data-slot="hold-to-confirm-label" className={styles.face} data-face="idle" aria-hidden={phase === 'done' || undefined}>
                 {children}
               </span>
-              <span className={styles.face} data-face="done" aria-hidden={phase !== 'done' || undefined}>
+              <span data-slot="hold-to-confirm-done-label" className={styles.face} data-face="done" aria-hidden={phase !== 'done' || undefined}>
                 <CheckIcon />
                 {doneLabel}
               </span>
             </span>
-            <svg className={styles.fuse} width={size.w} height={size.h} aria-hidden="true">
+            <svg data-slot="hold-to-confirm-fuse" className={styles.fuse} width={size.w} height={size.h} aria-hidden="true">
               <path ref={runRef} d={path} className={styles.run} pathLength={1} />
             </svg>
           </button>
@@ -270,6 +271,7 @@ export function HoldToConfirm({
           ref={cancelRef}
           id={`${id}-step`}
           type="button"
+          data-slot="hold-to-confirm-cancel"
           className={styles.cancel}
           aria-label={cancelLabel}
           aria-describedby={`${id}-hint`}
@@ -280,7 +282,7 @@ export function HoldToConfirm({
           <XIcon />
         </button>
       </div>
-      <p id={`${id}-hint`} className={styles.hint}>
+      <p id={`${id}-hint`} data-slot="hold-to-confirm-hint" className={styles.hint}>
         {line}
       </p>
       <p className={styles.srOnly} aria-live="polite">

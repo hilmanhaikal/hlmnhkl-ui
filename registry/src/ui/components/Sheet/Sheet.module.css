@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .overlay {
   position: fixed;
   inset: 0;
@@ -77,7 +78,7 @@
   margin: var(--gooee-space-3) auto 0;
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-border-strong);
-  transition: width var(--gooee-motion-base) var(--gooee-ease-out);
+  transition: width var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
 .sheet[data-dragging] .handle { width: var(--gooee-handle-w-active); }
@@ -132,7 +133,7 @@
   color: var(--gooee-color-fg-muted);
   font-size: var(--gooee-icon-lg);
   cursor: pointer;
-  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 /* Looks 32px, keeps a 44px touch area. */
@@ -212,8 +213,8 @@
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-border-strong);
   transition:
-    width var(--gooee-motion-base) var(--gooee-ease-liquid),
-    background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+    width var(--gooee-motion-base) var(--gooee-ease-morph),
+    background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 .grabber[data-detent="peek"] .pill { width: var(--gooee-handle-w-short); }
@@ -233,4 +234,5 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
 }

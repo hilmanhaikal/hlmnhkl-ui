@@ -34,10 +34,11 @@ export function Avatar({ name, src, size = 'md', status, className }: AvatarProp
     setState(src ? 'loading' : 'error')
   }
   return (
-    <span className={cx(styles.root, styles[size], className)} role="img" aria-label={status ? `${name}, ${status}` : name}>
-      <span className={styles.fallback} aria-hidden="true">{initials(name)}</span>
+    <span data-slot="avatar" className={cx(styles.root, styles[size], className)} role="img" aria-label={status ? `${name}, ${status}` : name}>
+      <span data-slot="avatar-fallback" className={styles.fallback} aria-hidden="true">{initials(name)}</span>
       {src && state !== 'error' && (
         <img
+          data-slot="avatar-image"
           className={styles.img}
           src={src}
           alt=""
@@ -50,7 +51,7 @@ export function Avatar({ name, src, size = 'md', status, className }: AvatarProp
           onError={() => setState('error')}
         />
       )}
-      {status && <span className={styles.status} data-status={status} aria-hidden="true" />}
+      {status && <span data-slot="avatar-status" className={styles.status} data-status={status} aria-hidden="true" />}
     </span>
   )
 }

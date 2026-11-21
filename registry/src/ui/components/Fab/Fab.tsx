@@ -28,14 +28,14 @@ export type FabProps = {
   actions?: FabAction[]
   /** Where it sits along the bottom of the screen. */
   position?: 'end' | 'center'
-  /** Sits at the bottom of its nearest positioned parent instead of the screen, for a demo or a panel. */
-  contained?: boolean
+  /** Pins it to the screen. false sits it at the bottom of its nearest positioned parent instead, for a demo or a panel. */
+  fixed?: boolean
   /** Extra class for the root element. */
   className?: string
 }
 
 // One main action, floating in the thumb zone at the bottom of the screen.
-export function Fab({ label, icon, onClick, extended = false, actions, position = 'end', contained = false, className }: FabProps) {
+export function Fab({ label, icon, onClick, extended = false, actions, position = 'end', fixed = true, className }: FabProps) {
   const id = useId()
   const rootRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -60,14 +60,15 @@ export function Fab({ label, icon, onClick, extended = false, actions, position 
   }
 
   return (
-    <div ref={rootRef} className={cx(styles.root, styles[position], contained && styles.contained, className)} data-open={open || undefined}>
+    <div ref={rootRef} data-slot="fab" className={cx(styles.root, styles[position], !fixed && styles.contained, className)} data-state={open ? 'open' : 'closed'}>
       {hasActions && (
-        <ul id={`${id}-actions`} className={styles.actions} inert={!open}>
+        <ul id={`${id}-actions`} data-slot="fab-actions" className={styles.actions} inert={!open}>
           {actions!.map((a, i) => (
             <li key={a.label} style={{ ['--i' as string]: actions!.length - 1 - i }}>
               <button
                 ref={i === 0 ? firstRef : undefined}
                 type="button"
+                data-slot="fab-action"
                 className={styles.action}
                 onClick={() => {
                   setOpen(false)
@@ -75,8 +76,8 @@ export function Fab({ label, icon, onClick, extended = false, actions, position 
                   a.onSelect()
                 }}
               >
-                <span className={styles.actionLabel}>{a.label}</span>
-                <span className={styles.actionIcon} aria-hidden="true">
+                <span data-slot="fab-action-label" className={styles.actionLabel}>{a.label}</span>
+                <span data-slot="fab-action-icon" className={styles.actionIcon} aria-hidden="true">
                   {a.icon}
                 </span>
               </button>
@@ -87,6 +88,7 @@ export function Fab({ label, icon, onClick, extended = false, actions, position 
       <button
         ref={buttonRef}
         type="button"
+        data-slot="fab-trigger"
         className={styles.fab}
         aria-label={extended ? undefined : label}
         aria-expanded={hasActions ? open : undefined}
@@ -94,12 +96,12 @@ export function Fab({ label, icon, onClick, extended = false, actions, position 
         data-extended={(extended && !compact) || undefined}
         onClick={toggle}
       >
-        <span className={styles.icon} aria-hidden="true">
+        <span data-slot="fab-icon" className={styles.icon} aria-hidden="true">
           {icon}
         </span>
         {extended && (
           <span className={styles.labelWrap}>
-            <span className={styles.label}>{label}</span>
+            <span data-slot="fab-label" className={styles.label}>{label}</span>
           </span>
         )}
       </button>

@@ -5,7 +5,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode, ty
 import { cx } from '../../internal/cx'
 import { useDragClose } from '../../internal/fling'
 import { useFocusTrap } from '../../internal/focus'
-import { XIcon } from '../../internal/icons'
+import { XIcon } from '../../icons/icons'
 import { createDetentSheet, DETENT_NAME, detentHeights, detentOrder, type SheetDetent } from '../../internal/motion/sheetDetents'
 import { useDismiss, useScrollLock } from '../../internal/layers'
 import { Portal } from '../../internal/Portal'
@@ -27,8 +27,6 @@ export type SheetProps = {
   children?: ReactNode
   /** Sticky actions at the bottom of the sheet. */
   footer?: ReactNode
-  /** Screen reader name for the close button. */
-  closeLabel?: string
   /** Element to focus first. Defaults to the first focusable element in the content. */
   initialFocus?: RefObject<HTMLElement | null>
   /** Extra class for the panel. */
@@ -41,11 +39,20 @@ export type SheetProps = {
   defaultDetent?: SheetDetent
   /** Called with the new height after a drag, a tap or a key on the grabber, or Esc. */
   onDetentChange?: (detent: SheetDetent) => void
-  /** Screen reader name for the grabber, which sets the height. */
-  heightLabel?: string
+  /** Text for the sheet's controls, so you can translate it. Missing keys use the English defaults. */
+  labels?: Partial<SheetLabels>
 }
 
-type BaseProps = Omit<SheetProps, 'detents' | 'detent' | 'defaultDetent' | 'onDetentChange' | 'heightLabel' | 'closeLabel'> & { closeLabel: string }
+export type SheetLabels = {
+  /** Screen reader name for the close button. */
+  close: string
+  /** Screen reader name for the grabber, which sets the height. */
+  height: string
+}
+
+const defaultLabels: SheetLabels = { close: 'Close', height: 'Sheet height' }
+
+type BaseProps = Omit<SheetProps, 'detents' | 'detent' | 'defaultDetent' | 'onDetentChange' | 'labels'> & { labels: SheetLabels }
 
 /** With detents, the grabber becomes a control for the height, and the sheet is modal only at its highest. */
 export function Sheet({
@@ -55,21 +62,21 @@ export function Sheet({
   description,
   children,
   footer,
-  closeLabel = 'Close',
   initialFocus,
   className,
   detents,
   detent,
   defaultDetent,
   onDetentChange,
-  heightLabel = 'Sheet height',
+  labels: labelsProp,
 }: SheetProps) {
-  const base = { open, onOpenChange, title, description, children, footer, closeLabel, initialFocus, className }
+  const labels = { ...defaultLabels, ...labelsProp }
+  const base = { open, onOpenChange, title, description, children, footer, labels, initialFocus, className }
   if (!detents?.length) return <PlainSheet {...base} />
-  return <DetentSheet {...base} detents={detents} detent={detent} defaultDetent={defaultDetent} onDetentChange={onDetentChange} heightLabel={heightLabel} />
+  return <DetentSheet {...base} detents={detents} detent={detent} defaultDetent={defaultDetent} onDetentChange={onDetentChange} />
 }
 
-function PlainSheet({ open, onOpenChange, title, description, children, footer, closeLabel, initialFocus, className }: BaseProps) {
+function PlainSheet({ open, onOpenChange, title, description, children, footer, labels, initialFocus, className }: BaseProps) {
   const id = useId()
   const panelRef = useRef<HTMLDivElement>(null)
   const { mounted, state } = usePresence(open, 'morph-out')
@@ -82,7 +89,7 @@ function PlainSheet({ open, onOpenChange, title, description, children, footer, 
   if (!mounted) return null
   return (
     <Portal>
-      <div className={styles.overlay} data-state={state} aria-hidden="true" />
+      <div className={styles.overlay} data-slot="sheet-overlay" data-state={state} aria-hidden="true" />
       <div
         ref={panelRef}
         role="dialog"
@@ -91,6 +98,7 @@ function PlainSheet({ open, onOpenChange, title, description, children, footer, 
         aria-describedby={description ? `${id}-desc` : undefined}
         tabIndex={-1}
         className={cx(styles.sheet, className)}
+        data-slot="sheet-content"
         data-state={state}
         onAnimationEnd={(e) => {
           if (e.target === panelRef.current && state === 'open') panelRef.current.style.transform = ''
@@ -100,27 +108,27 @@ function PlainSheet({ open, onOpenChange, title, description, children, footer, 
           className={styles.grab}
           {...grab}
         >
-          <span className={styles.handle} aria-hidden="true" />
-          <header className={styles.header}>
+          <span className={styles.handle} data-slot="sheet-handle" aria-hidden="true" />
+          <header className={styles.header} data-slot="sheet-header">
             <div className={styles.titles}>
-              <h2 id={`${id}-title`} className={styles.title}>{title}</h2>
-              {description && <p id={`${id}-desc`} className={styles.description}>{description}</p>}
+              <h2 id={`${id}-title`} className={styles.title} data-slot="sheet-title">{title}</h2>
+              {description && <p id={`${id}-desc`} className={styles.description} data-slot="sheet-description">{description}</p>}
             </div>
-            <button type="button" className={styles.close} aria-label={closeLabel} data-skip-initial-focus onClick={() => onOpenChange(false)}>
+            <button type="button" className={styles.close} data-slot="sheet-close" aria-label={labels.close} data-skip-initial-focus onClick={() => onOpenChange(false)}>
               <XIcon />
             </button>
           </header>
         </div>
-        {children && <div className={styles.body}>{children}</div>}
-        {footer && <footer className={styles.footer}>{footer}</footer>}
+        {children && <div className={styles.body} data-slot="sheet-body">{children}</div>}
+        {footer && <footer className={styles.footer} data-slot="sheet-footer">{footer}</footer>}
       </div>
     </Portal>
   )
 }
 
-type DetentProps = BaseProps & Required<Pick<SheetProps, 'detents' | 'heightLabel'>> & Pick<SheetProps, 'detent' | 'defaultDetent' | 'onDetentChange'>
+type DetentProps = BaseProps & Required<Pick<SheetProps, 'detents'>> & Pick<SheetProps, 'detent' | 'defaultDetent' | 'onDetentChange'>
 
-function DetentSheet({ open, onOpenChange, title, description, children, footer, closeLabel, initialFocus, className, detents, detent, defaultDetent, onDetentChange, heightLabel }: DetentProps) {
+function DetentSheet({ open, onOpenChange, title, description, children, footer, labels, initialFocus, className, detents, detent, defaultDetent, onDetentChange }: DetentProps) {
   const id = useId()
   const order = detentOrder(detents)
   const top = order.length - 1
@@ -217,7 +225,7 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
   const shown = order[dragging ? target : index]
   return (
     <Portal>
-      <div ref={overlayRef} className={styles.overlay} data-state={state} data-detents data-top={atTop || undefined} aria-hidden="true" />
+      <div ref={overlayRef} className={styles.overlay} data-slot="sheet-overlay" data-state={state} data-detents data-top={atTop || undefined} aria-hidden="true" />
       <div
         ref={panelRef}
         role="dialog"
@@ -227,6 +235,7 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
         tabIndex={-1}
         id={`${id}-sheet`}
         className={cx(styles.sheet, className)}
+        data-slot="sheet-content"
         data-state={state}
         data-detents
         data-top={atTop || undefined}
@@ -238,9 +247,10 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
         <div
           ref={grabRef}
           className={styles.grabber}
+          data-slot="sheet-grabber"
           role="slider"
           tabIndex={0}
-          aria-label={heightLabel}
+          aria-label={labels.height}
           aria-orientation="vertical"
           aria-valuemin={0}
           aria-valuemax={top}
@@ -251,19 +261,19 @@ function DetentSheet({ open, onOpenChange, title, description, children, footer,
           onKeyDown={sheet.grabKey}
           onClick={sheet.grabClick}
         >
-          <span className={styles.pill} />
+          <span className={styles.pill} data-slot="sheet-handle" />
         </div>
-        <header className={styles.header}>
+        <header className={styles.header} data-slot="sheet-header">
           <div className={styles.titles}>
-            <h2 id={`${id}-title`} className={styles.title}>{title}</h2>
-            {description && <p id={`${id}-desc`} className={styles.description}>{description}</p>}
+            <h2 id={`${id}-title`} className={styles.title} data-slot="sheet-title">{title}</h2>
+            {description && <p id={`${id}-desc`} className={styles.description} data-slot="sheet-description">{description}</p>}
           </div>
-          <button type="button" className={styles.close} aria-label={closeLabel} data-skip-initial-focus onClick={() => onOpenChange(false)}>
+          <button type="button" className={styles.close} data-slot="sheet-close" aria-label={labels.close} data-skip-initial-focus onClick={() => onOpenChange(false)}>
             <XIcon />
           </button>
         </header>
-        {children && <div ref={bodyRef} className={styles.body}>{children}</div>}
-        {footer && <footer className={styles.footer}>{footer}</footer>}
+        {children && <div ref={bodyRef} className={styles.body} data-slot="sheet-body">{children}</div>}
+        {footer && <footer className={styles.footer} data-slot="sheet-footer">{footer}</footer>}
         <p className={styles.srOnly} aria-live="polite">{said}</p>
       </div>
     </Portal>

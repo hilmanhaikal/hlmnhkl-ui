@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 /* One shape: the sun's disc grows and a bite slides over it into the moon's crescent, with the rays
    drawing back in first (ThemeToggle.tsx draws every frame). */
 .icon {
@@ -10,4 +11,5 @@
 .rays {
   transform-box: view-box;
   transform-origin: 50% 50%;
+}
 }

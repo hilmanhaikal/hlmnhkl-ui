@@ -23,8 +23,7 @@ export function useScrub(o: UseScrubOptions) {
   const wheels = !!o.wheel
   useEffect(() => {
     const el = ref.current
-    if (!el || !wheels) return
-    return s.wheelOn(el)
+    if (el && wheels) s.listenWheel(el)
   }, [s, wheels])
   useEffect(() => () => s.destroy(), [s])
 
@@ -41,16 +40,3 @@ export function useScrub(o: UseScrubOptions) {
 }
 
 export { ink, sideways, tokenNumber } from './motion/scrubLook'
-
-/** Calls `fn` each time `value` changes (by `key`), but not for the value it starts with. */
-export function useOnChange<T>(value: T, fn: ((value: T) => void) | undefined, key = String(value)) {
-  const latest = useRef(fn)
-  latest.current = fn
-  const seen = useRef(key)
-  useEffect(() => {
-    if (seen.current === key) return
-    seen.current = key
-    latest.current?.(value)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key])
-}

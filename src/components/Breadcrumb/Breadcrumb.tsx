@@ -2,7 +2,7 @@
 
 import { Fragment, useLayoutEffect, useRef, useState, type MouseEvent } from 'react'
 import { cx } from '../../internal/cx'
-import { ChevronRightIcon } from '../../internal/icons'
+import { ChevronRightIcon } from '../../icons/icons'
 import styles from './Breadcrumb.module.css'
 
 export type BreadcrumbItem = {
@@ -14,6 +14,13 @@ export type BreadcrumbItem = {
   onClick?: (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void
 }
 
+export type BreadcrumbLabels = {
+  /** Name of the "…" button. */
+  expand: string
+}
+
+const defaultLabels: BreadcrumbLabels = { expand: 'Show full path' }
+
 export type BreadcrumbProps = {
   /** Path from the top level down. The last item is the current page. */
   items: BreadcrumbItem[]
@@ -21,13 +28,14 @@ export type BreadcrumbProps = {
   maxItems?: number
   /** Name of the nav landmark. */
   label?: string
-  /** Screen reader name for the "…" button. */
-  expandLabel?: string
+  /** Screen reader text, so you can translate it. Missing keys use the English defaults. */
+  labels?: Partial<BreadcrumbLabels>
   /** Extra class for the nav element. */
   className?: string
 }
 
-export function Breadcrumb({ items, maxItems = 4, label = 'Breadcrumb', expandLabel = 'Show full path', className }: BreadcrumbProps) {
+export function Breadcrumb({ items, maxItems = 4, label = 'Breadcrumb', labels: labelsProp, className }: BreadcrumbProps) {
+  const labels = { ...defaultLabels, ...labelsProp }
   const [expanded, setExpanded] = useState(false)
   const listRef = useRef<HTMLOListElement>(null)
   const collapse = !expanded && items.length > maxItems
@@ -43,29 +51,29 @@ export function Breadcrumb({ items, maxItems = 4, label = 'Breadcrumb', expandLa
   }, [expanded, head])
 
   return (
-    <nav aria-label={label} className={cx(styles.root, className)}>
-      <ol ref={listRef} className={styles.list}>
+    <nav aria-label={label} data-slot="breadcrumb" className={cx(styles.root, className)}>
+      <ol ref={listRef} data-slot="breadcrumb-list" className={styles.list}>
         {visible.map((item, i) => {
           const last = i === visible.length - 1
           return (
             <Fragment key={item ? `${item.label}-${i}` : 'more'}>
-              <li className={styles.item} style={{ ['--i' as string]: i }} data-revealed={expanded || undefined}>
+              <li data-slot="breadcrumb-item" className={styles.item} style={{ ['--i' as string]: i }} data-revealed={expanded || undefined}>
                 {item === null ? (
-                  <button type="button" className={styles.more} aria-label={expandLabel} onClick={() => setExpanded(true)}>
+                  <button type="button" data-slot="breadcrumb-more" className={styles.more} aria-label={labels.expand} onClick={() => setExpanded(true)}>
                     …
                   </button>
                 ) : last ? (
-                  <span className={styles.current} aria-current="page" title={item.label}>{item.label}</span>
+                  <span data-slot="breadcrumb-current" className={styles.current} aria-current="page" title={item.label}>{item.label}</span>
                 ) : item.href === undefined ? (
-                  <button type="button" className={cx(styles.link, styles.button)} title={item.label} onClick={item.onClick}>
+                  <button type="button" data-slot="breadcrumb-link" className={cx(styles.link, styles.button)} title={item.label} onClick={item.onClick}>
                     {item.label}
                   </button>
                 ) : (
-                  <a className={styles.link} href={item.href} title={item.label} onClick={item.onClick}>
+                  <a data-slot="breadcrumb-link" className={styles.link} href={item.href} title={item.label} onClick={item.onClick}>
                     {item.label}
                   </a>
                 )}
-                {!last && <ChevronRightIcon className={styles.sep} />}
+                {!last && <ChevronRightIcon data-slot="breadcrumb-separator" className={styles.sep} />}
               </li>
             </Fragment>
           )

@@ -1,5 +1,5 @@
 import { createScrub, type ScrubOptions } from '../feel'
-import { morphCurve, readMotionMs } from '../motion'
+import { morphCurve, motionMs } from '../motion'
 
 // Pointer, keys and wheel in, the drawn position out, for Dial, RulerScrubber and PickerWheel. The
 // motion itself lives in feel.ts (createScrub).
@@ -13,8 +13,9 @@ type KeyLike = Pick<KeyboardEvent, 'key' | 'altKey' | 'ctrlKey' | 'metaKey' | 'p
 export type ScrubberOptions<P extends PointerLike = PointerEvent> = Pick<ScrubOptions, 'min' | 'max' | 'edge' | 'land' | 'coast' | 'maxSpeed'> & {
   /** The value it starts at, and later the value from outside: `sync` glides there. */
   value: number
-  onSettle: (value: number) => void
-  /** A new resting value came under the hand while it moves. */
+  /** It came to rest on a new value. `from` is where it rested before. */
+  onSettle: (value: number, from: number) => void
+  /** A new resting value came under it while it moves. */
   onMark?: (value: number) => void
   /** How far a pointer move turns the value, in its units. */
   move: (e: P, last: Last, el: HTMLElement) => number
@@ -37,14 +38,22 @@ type Press = { id: number; sx: number; sy: number; x: number; y: number; moved: 
 // A press is not a drag until it moves this far, so a tap stays a tap.
 const SLOP = 4
 
-/** A scrubbed value: feed it the control's events, or call `listen` on the control. `update` takes new options. */
+/**
+ * A scrubbed value: feed it the control's events, or call `listen` on the control. `update` takes new
+ * options. `destroy` stops the glide and every listener.
+ */
 export function createScrubber<P extends PointerLike = PointerEvent>(options: ScrubberOptions<P>) {
   let o = options
   let press: Press | null = null
+  let ac = new AbortController()
+  let wheelEl: HTMLElement | null = null
+  // Where it last rested. The value from outside can move on while it moves (a parent that follows each
+  // new value), so a landing is compared with this, not with that value.
+  let rest = o.value
   const s = createScrub({
     value: o.value,
     land: (p) => o.land(p),
-    duration: () => readMotionMs('morph-out'),
+    duration: () => motionMs('morph-out'),
     curve: morphCurve,
     onFrame: (v) => o.onFrame?.(v),
     onMoving: (m) => o.onMoving?.(m),
@@ -53,7 +62,12 @@ export function createScrubber<P extends PointerLike = PointerEvent>(options: Sc
       if (o.haptics) navigator.vibrate?.(5)
     },
     // Only a new value is news: a tap, Home at the start, or a drag back to where it was says nothing.
-    onSettle: (v) => v !== o.value && o.onSettle(v),
+    onSettle: (v) => {
+      if (v === rest) return
+      const from = rest
+      rest = v
+      o.onSettle(v, from)
+    },
   })
   const update = (next: ScrubberOptions<P>) => {
     o = next
@@ -101,16 +115,17 @@ export function createScrubber<P extends PointerLike = PointerEvent>(options: Sc
     s.go(t)
   }
 
-  /** Lets the wheel turn it, when `wheel` is set. Returns a function that stops. */
-  const wheelOn = (el: HTMLElement) => {
+  /** Lets the wheel turn it, when `wheel` is set, until `destroy`. */
+  const listenWheel = (el: HTMLElement) => {
+    if (wheelEl === el) return
+    wheelEl = el
     const onWheel = (e: WheelEvent) => {
       const t = o.wheel?.(e, s.target, document.activeElement === el) ?? null
       if (t === null) return
       e.preventDefault()
       if (t !== s.target) s.go(t)
     }
-    el.addEventListener('wheel', onWheel, { passive: false })
-    return () => el.removeEventListener('wheel', onWheel)
+    el.addEventListener('wheel', onWheel, { passive: false, signal: ac.signal })
   }
 
   return {
@@ -118,10 +133,11 @@ export function createScrubber<P extends PointerLike = PointerEvent>(options: Sc
     move,
     up,
     keyDown,
-    wheelOn,
+    listenWheel,
     /** A value set from outside (a controlled prop, a reset) glides there, unless the hand holds it. */
     sync(value: number) {
       if (press || s.moving || value === s.target) return
+      rest = value
       s.go(value)
     },
     update,
@@ -133,22 +149,25 @@ export function createScrubber<P extends PointerLike = PointerEvent>(options: Sc
     },
     target: () => s.target,
     go: (to: number) => s.go(to),
-    place: (to: number) => s.place(to),
-    destroy: () => s.stop(),
-    /** Listens on the control (pointer, keys, and the wheel when `wheel` is set). Returns a function that stops. */
+    place: (to: number) => {
+      rest = to
+      s.place(to)
+    },
+    destroy() {
+      s.stop()
+      ac.abort()
+      ac = new AbortController()
+      wheelEl = null
+    },
+    /** Listens on the control (pointer, keys, and the wheel when `wheel` is set), until `destroy`. */
     listen(el: HTMLElement) {
-      const ac = new AbortController()
       const opts = { signal: ac.signal }
       el.addEventListener('pointerdown', (e) => down(e as unknown as P), opts)
       el.addEventListener('pointermove', (e) => move(e as unknown as P), opts)
       el.addEventListener('pointerup', (e) => up(e as unknown as P), opts)
       el.addEventListener('pointercancel', (e) => up(e as unknown as P), opts)
       el.addEventListener('keydown', keyDown, opts)
-      const stopWheel = o.wheel ? wheelOn(el) : () => {}
-      return () => {
-        ac.abort()
-        stopWheel()
-      }
+      if (o.wheel) listenWheel(el)
     },
   }
 }

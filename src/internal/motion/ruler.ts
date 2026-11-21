@@ -52,6 +52,6 @@ export function rulerScrub(p: RulerScale, fit: RulerFit, wheel: ReturnType<typeo
 
 /** Measures the ruler: the tick gap token, the ticks that fit, its width and the tag's. */
 export function measureRuler(el: HTMLElement, tag: HTMLElement | null): RulerFit {
-  const gap = parseFloat(getComputedStyle(el).getPropertyValue('--gooee-ruler-tick-gap')) || 0
+  const gap = parseFloat(getComputedStyle(el).getPropertyValue('--gooee-ruler-scrubber-tick-gap')) || 0
   return { gap, span: gap ? Math.ceil(el.clientWidth / 2 / gap) + 1 : 24, width: el.clientWidth, tag: tag?.offsetWidth ?? 0 }
 }

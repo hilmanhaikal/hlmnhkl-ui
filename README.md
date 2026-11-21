@@ -34,7 +34,7 @@ import { Button } from './ui/components/Button'
 <Button onClick={save}>Save</Button>
 ```
 
-Using Vue? Add `--vue` (`npx gooee@latest add button --vue`) and import the `.vue` file:
+Using Vue? Set it up with `npx gooee@latest init --vue`. `gooee.json` then remembers Vue, so `add`, `diff` and `update` copy `.vue` files. Import the `.vue` file:
 
 ```vue
 <script setup lang="ts">
@@ -66,14 +66,21 @@ It writes the same files as `npx gooee add button`, into `src/ui`, with `tokens.
 | `diff <name>...` | Show what changed between your copy and the latest version |
 | `update <name>...` | Show the changes, then replace your copy after you say yes |
 
+The command always comes first: `npx gooee add button`, not `npx gooee button`.
+
 | Option | What it does |
 | --- | --- |
-| `--vue` | `add`: copy the Vue 3.5 version of each part instead of React |
+| `--vue` | Copy the Vue 3.5 version of each part. With `init`, `gooee.json` remembers it for every later command |
+| `--react` | Copy the React version, even when `gooee.json` says Vue. React is the default |
 | `--to <folder>` | Where the files go. Default: the folder in `gooee.json`, else `src/ui` |
 | `--dry-run` | Print what would happen, write nothing |
 | `--overwrite` | `add`: replace files that are already there. Without it, they are skipped and listed |
 | `--with-base` | `add`: also copy `base.css` (`init` always does) |
-| `--yes` | `update`: replace without asking |
+| `--yes` | `update`: replace without asking, and also update the other parts that use a changed shared file |
+
+`gooee.json` holds `framework` (`react` or `vue`), `to` (the folder) and `files`, a short hash of each file the CLI wrote. When a shared file in `internal/` or `icons/` changes, `diff` and `update` name the other installed parts that use it, and `update` offers to update them too. When the latest version of a part no longer has a file, `update` deletes your copy only if it is still exactly as the CLI wrote it. Otherwise it lists the file and keeps it.
+
+A part that draws icons brings `icons/` with it (`icons.tsx`, or `vue.ts` for Vue). That folder is public: import `CheckIcon` and the rest from it in your own code, and names and props stay the same within a major version. `internal/` is not public and may change in any version.
 
 Every copied file starts with one line naming Gooee UI and the MIT licence, so the licence notice travels with the code. `diff` and `update` ignore that line.
 

@@ -1,14 +1,15 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .root {
   display: inline-flex;
   width: fit-content;
   align-items: center;
   justify-content: center;
-  min-width: var(--gooee-kbd-h);
-  height: var(--gooee-kbd-h);
+  min-width: var(--gooee-kbd-h, 24px);
+  height: var(--gooee-kbd-h, 24px);
   padding: 0 calc(var(--gooee-space-3) - var(--gooee-line));
   border: var(--gooee-line) solid var(--gooee-color-border-strong);
-  border-bottom-width: var(--gooee-line-focus);
+  border-bottom-width: var(--gooee-focus-width);
   border-radius: var(--gooee-radius-sm);
   background: var(--gooee-color-surface);
   color: var(--gooee-color-fg);
@@ -17,13 +18,14 @@
   line-height: var(--gooee-leading-none);
   vertical-align: middle;
   transition:
-    transform var(--gooee-motion-instant) var(--gooee-ease-out),
-    border-bottom-width var(--gooee-motion-instant) var(--gooee-ease-out),
-    background-color var(--gooee-motion-instant) var(--gooee-ease-out);
+    transform var(--gooee-motion-instant) var(--gooee-ease-morph),
+    border-bottom-width var(--gooee-motion-instant) var(--gooee-ease-morph),
+    background-color var(--gooee-motion-instant) var(--gooee-ease-morph);
 }
 
-.root[data-down] {
+.root[data-state='on'] {
   transform: translateY(var(--gooee-line));
   border-bottom-width: var(--gooee-line);
   background: var(--gooee-color-surface-active);
+}
 }

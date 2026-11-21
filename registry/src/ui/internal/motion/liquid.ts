@@ -12,7 +12,12 @@ import { easing, morphCurve, motionMs, prefersReducedMotion } from '../motion'
 // runs instead.
 
 /** What the panel grows from: the opener element, or one found at open time, or a rectangle (such as the point of a right click). */
-export type LiquidOrigin = HTMLElement | DOMRect | (() => HTMLElement | DOMRect | null)
+export type MorphOrigin = HTMLElement | DOMRect | (() => HTMLElement | DOMRect | null)
+
+export type MorphOptions = {
+  /** Read fresh at each play. */
+  origin: MorphOrigin
+}
 
 type El = HTMLElement | (() => HTMLElement | null)
 const get = (t: El) => (typeof t === 'function' ? t() : t)
@@ -102,7 +107,7 @@ function clipMorph(p: HTMLElement, found: HTMLElement | DOMRect, state: 'open' |
  * enter and exit animation down. Keep the panel in the page for --gooee-motion-morph-out after a close,
  * so the fold lands as it goes. The origin is read fresh each time.
  */
-export function createLiquid(panel: El, origin: LiquidOrigin) {
+export function createMorph(panel: El, { origin }: MorphOptions) {
   let run: Animation | null = null
   return {
     play(state: 'open' | 'closed') {
@@ -206,12 +211,19 @@ export function stretch(node: HTMLElement, from: StretchBox, to: StretchBox, pla
   run.finished.then(done, done)
 }
 
+export type StretchOptions = {
+  /** Turns a box into the highlight's transform. */
+  place: (b: StretchBox) => string
+  /** Along one row, or one column with 'y'. */
+  axis?: 'x' | 'y'
+}
+
 /**
  * Liquid highlight: when the choice changes, the highlight stretches toward it (see stretch). Call
  * `update` with the highlight's box and the choice behind it whenever either may have changed; it runs
- * only on a change of choice, and a resize simply follows. Along one row, or one column with axis 'y'.
+ * only on a change of choice, and a resize simply follows.
  */
-export function createStretch(el: El, place: (b: StretchBox) => string, axis: 'x' | 'y' = 'x') {
+export function createStretch(el: El, { place, axis = 'x' }: StretchOptions) {
   let last: { box: StretchBox; choice: unknown } | null = null
   let moved: HTMLElement | null = null
   return {

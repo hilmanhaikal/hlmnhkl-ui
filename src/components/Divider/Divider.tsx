@@ -17,10 +17,10 @@ export function Divider({ orientation = 'horizontal', label, animated = true, cl
   if (label && orientation === 'horizontal') {
     // A separator hides its children, so the role sits on the lines and the label is still read.
     return (
-      <div className={cx(styles.labelled, animated && styles.animated, className)}>
-        <span className={styles.line} role="separator" aria-orientation="horizontal" />
-        <span className={styles.text}>{label}</span>
-        <span className={styles.line} role="separator" aria-orientation="horizontal" />
+      <div data-slot="divider" data-orientation="horizontal" className={cx(styles.labelled, animated && styles.animated, className)}>
+        <span data-slot="divider-line" className={styles.line} role="separator" aria-orientation="horizontal" />
+        <span data-slot="divider-label" className={styles.text}>{label}</span>
+        <span data-slot="divider-line" className={styles.line} role="separator" aria-orientation="horizontal" />
       </div>
     )
   }
@@ -28,6 +28,8 @@ export function Divider({ orientation = 'horizontal', label, animated = true, cl
     <div
       role="separator"
       aria-orientation={orientation}
+      data-slot="divider"
+      data-orientation={orientation}
       className={cx(styles.root, styles[orientation], animated && styles.animated, className)}
     />
   )

@@ -66,6 +66,6 @@ export function pillOutside(shell: () => HTMLElement | null, button: () => HTMLE
 
 /** A card an alert opened shrinks back after alertMs, never sooner than its own open motion. Returns a stop function. */
 export function pillAlertTimer(alertMs: number, onDone: () => void) {
-  const t = window.setTimeout(onDone, Math.max(alertMs, motionMs('liquid')))
+  const t = window.setTimeout(onDone, Math.max(alertMs, motionMs('morph')))
   return () => window.clearTimeout(t)
 }

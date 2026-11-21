@@ -1,4 +1,4 @@
-/* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 /* Each icon's motion plays once when the control it sits in is pointed at or focused, or when the icon
    itself is. Nothing plays with reduced motion. Moves stay within about a tenth of the icon, so it never
    leaves its box. */
@@ -11,7 +11,7 @@
   :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon,
   .icon:hover {
     animation-duration: var(--gooee-motion-slow);
-    animation-timing-function: var(--gooee-ease-out);
+    animation-timing-function: var(--gooee-ease-morph);
   }
   :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="nudge-r"],
   .icon[data-motion="nudge-r"]:hover { animation-name: nudge-r; }
@@ -40,7 +40,7 @@
   :global(:is(a, button, label, summary, [role="button"], [role="menuitem"], [role="tab"], [role="option"], [role="link"])):is(:hover, :focus-visible) .icon[data-motion="draw"] > *,
   .icon[data-motion="draw"]:hover > * {
     stroke-dasharray: 1;
-    animation: draw var(--gooee-motion-slower) var(--gooee-ease-out);
+    animation: draw var(--gooee-motion-slower) var(--gooee-ease-morph);
   }
 }
 
@@ -73,3 +73,4 @@
 }
 /* Every name is local to this file, so a bundler's CSS modules (Turbopack too) rename them in step. */
 @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+}

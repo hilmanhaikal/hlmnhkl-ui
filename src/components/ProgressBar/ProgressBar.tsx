@@ -27,10 +27,10 @@ export function ProgressBar({ label, value, max = 100, showValue = true, hideLab
   const ratio = determinate ? Math.min(Math.max(value / max, 0), 1) : 0
   const pct = Math.round(ratio * 100)
   return (
-    <div className={cx(styles.root, className)}>
+    <div className={cx(styles.root, className)} data-slot="progress-bar">
       <div className={cx(styles.head, hideLabel && styles.srOnly)}>
-        <span id={id} className={styles.label}>{label}</span>
-        {determinate && showValue && <span className={styles.value} aria-hidden="true">{pct}%</span>}
+        <span id={id} className={styles.label} data-slot="progress-bar-label">{label}</span>
+        {determinate && showValue && <span className={styles.value} data-slot="progress-bar-value" aria-hidden="true">{pct}%</span>}
       </div>
       <div
         role="progressbar"
@@ -39,9 +39,10 @@ export function ProgressBar({ label, value, max = 100, showValue = true, hideLab
         aria-valuemax={determinate ? max : undefined}
         aria-valuenow={determinate ? Math.min(Math.max(value, 0), max) : undefined}
         className={cx(styles.track, styles[size])}
-        data-indeterminate={!determinate || undefined}
+        data-slot="progress-bar-track"
+        data-status={!determinate ? 'indeterminate' : ratio >= 1 ? 'complete' : 'loading'}
       >
-        <span className={styles.fill} style={determinate ? { transform: `scaleX(${ratio})` } : undefined} />
+        <span className={styles.fill} data-slot="progress-bar-indicator" style={determinate ? { transform: `scaleX(${ratio})` } : undefined} />
       </div>
     </div>
   )

@@ -1,4 +1,12 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+/* The script reads this token, so each is registered with its default: set it on :root to change it. */
+@property --gooee-ruler-scrubber-tick-gap {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 12px;
+}
+
+@layer gooee.components {
 .root {
   display: grid;
   gap: var(--gooee-space-6);
@@ -32,9 +40,9 @@
 }
 
 .track {
-  --base: calc(var(--gooee-ruler-h) * 0.63);
+  --base: calc(var(--gooee-ruler-scrubber-h, 120px) * 0.63);
   position: relative;
-  height: var(--gooee-ruler-h);
+  height: var(--gooee-ruler-scrubber-h, 120px);
   border-radius: var(--gooee-radius-md);
   cursor: grab;
   outline: none;
@@ -144,4 +152,5 @@
 
 .tag[data-measure] {
   visibility: hidden;
+}
 }

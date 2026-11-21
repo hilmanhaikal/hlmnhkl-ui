@@ -2,31 +2,34 @@
 import { computed, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import { prefersReducedMotion } from '../../internal/motion'
 import { bud, createFuse, cssMs, DONE_FOR, GUARD, HINT_AFTER, LEAVE, outline, TAP } from '../../internal/motion/holdToConfirm'
-import { CheckIcon, XIcon } from '../../internal/vueIcons'
+import { CheckIcon, XIcon } from '../../icons/vue'
 import styles from './HoldToConfirm.module.css'
 
 // The Vue HoldToConfirm: the same look (HoldToConfirm.module.css), hold, confirm step and motion as the
 // React one. The action's label goes in the default slot.
-const props = withDefaults(
-  defineProps<{
-    /** The action as a verb for the confirm step's line, such as "Delete": "Press it again to delete, or Cancel." */
-    confirmLabel?: string
-    /** The name of the round cancel button that buds out beside it in the confirm step. */
-    cancelLabel?: string
-    /** Shown in place of the label once it is done, such as "Workspace deleted". The done slot replaces it. */
-    doneLabel?: string
-    /** The line under the button. Defaults to how to use it. The hint slot replaces it. */
-    hint?: string
-    /** The line under the button while the confirm step is open. The stepHint slot replaces it. */
-    stepHint?: string
-    /** Blocks the button. Say why in the hint. */
-    disabled?: boolean
-  }>(),
-  { confirmLabel: 'Confirm', cancelLabel: 'Cancel', doneLabel: 'Done', hint: 'Hold to confirm, or tap for a confirm step.', disabled: false },
-)
+const {
+  confirmLabel = 'Confirm',
+  cancelLabel = 'Cancel',
+  doneLabel = 'Done',
+  hint = 'Hold to confirm, or tap for a confirm step.',
+  disabled = false,
+} = defineProps<{
+  /** The action as a verb for the confirm step's line, such as "Delete": "Press it again to delete, or Cancel." */
+  confirmLabel?: string
+  /** The name of the round cancel button that buds out beside it in the confirm step. */
+  cancelLabel?: string
+  /** Shown in place of the label once it is done, such as "Workspace deleted". The doneLabel slot replaces it. */
+  doneLabel?: string
+  /** The line under the button. Defaults to how to use it. The hint slot replaces it. */
+  hint?: string
+  /** The line under the button while the confirm step is open. The stepHint slot replaces it. */
+  stepHint?: string
+  /** Blocks the button. Say why in the hint. */
+  disabled?: boolean
+}>()
 /** confirm: once the hold runs to the end, or the button is pressed again in the confirm step. cancel: a hold let go early, or the step cancelled. */
 const emit = defineEmits<{ confirm: []; cancel: [] }>()
-defineSlots<{ default?: () => unknown; done?: () => unknown; hint?: () => unknown; stepHint?: () => unknown }>()
+defineSlots<{ default?: () => unknown; doneLabel?: () => unknown; hint?: () => unknown; stepHint?: () => unknown }>()
 
 type Phase = 'idle' | 'step' | 'done'
 
@@ -57,7 +60,7 @@ onMounted(() => {
   const measure = () => {
     const w = main.offsetWidth
     const h = main.offsetHeight
-    const inset = parseFloat(getComputedStyle(root).getPropertyValue('--gooee-hold-stroke')) / 2 || 1
+    const inset = parseFloat(getComputedStyle(root).getPropertyValue('--gooee-hold-to-confirm-stroke')) / 2 || 1
     size.value = { w, h, inset }
     path.value = outline(w, h, inset, w / 2)
   }
@@ -74,7 +77,7 @@ const finish = () => {
   // From the step, focus goes back to the button: the step closes under it. Safari never focused Confirm.
   if (phase.value === 'step') mainEl.value?.focus({ preventScroll: true })
   phase.value = 'done'
-  said.value = props.doneLabel
+  said.value = doneLabel
   if (!prefersReducedMotion()) navigator.vibrate?.(12)
   emit('confirm')
 }
@@ -82,7 +85,7 @@ const finish = () => {
 // Forward at an even speed, and back fast on the morph curve.
 const run = () =>
   fuse.forward(
-    cssMs(shellEl.value, '--gooee-hold-time', 1500),
+    cssMs(shellEl.value, '--gooee-delay-hold-to-confirm', 1500),
     (now) => {
       if (press && now - press.t0 > HINT_AFTER) keep.value = true
     },
@@ -166,7 +169,7 @@ const letGo = (tapAllowed: boolean) => {
 }
 
 const onPointerDown = (e: PointerEvent) => {
-  if (props.disabled || phase.value !== 'idle' || press || (e.pointerType === 'mouse' && e.button !== 0)) return
+  if (disabled || phase.value !== 'idle' || press || (e.pointerType === 'mouse' && e.button !== 0)) return
   const el = e.currentTarget as HTMLElement
   el.setPointerCapture?.(e.pointerId)
   start(e.pointerId, e.clientX - el.getBoundingClientRect().left)
@@ -192,7 +195,7 @@ const onKeyDown = (e: KeyboardEvent) => {
   }
   if (e.key !== 'Enter' && e.key !== ' ') return
   e.preventDefault()
-  if (e.repeat || props.disabled || phase.value !== 'idle' || press) return
+  if (e.repeat || disabled || phase.value !== 'idle' || press) return
   start('key', size.value.w / 2, e.key)
 }
 
@@ -209,7 +212,7 @@ const onClick = (e: MouseEvent) => {
     if (e.detail === 0 || performance.now() - stepAt > GUARD) finish()
     return
   }
-  if (props.disabled || phase.value !== 'idle' || press) return
+  if (disabled || phase.value !== 'idle' || press) return
   if (e.detail === 0 || tapTimer) openStep()
 }
 
@@ -223,12 +226,13 @@ const open = computed(() => phase.value === 'step')
 </script>
 
 <template>
-  <div ref="rootEl" :class="styles.root">
+  <div ref="rootEl" data-slot="hold-to-confirm" :class="styles.root">
     <div ref="rowEl" :class="styles.row">
-      <div ref="shellEl" :class="styles.shell" :data-phase="phase" :data-disabled="disabled || undefined">
+      <div ref="shellEl" data-slot="hold-to-confirm-shell" :class="styles.shell" :data-status="phase" :data-disabled="disabled || undefined">
         <button
           ref="mainEl"
           type="button"
+          data-slot="hold-to-confirm-button"
           :class="styles.main"
           :aria-describedby="`${id}-hint`"
           :aria-expanded="open"
@@ -245,13 +249,13 @@ const open = computed(() => phase.value === 'step')
           @click="onClick"
         >
           <span :class="styles.faces">
-            <span :class="styles.face" data-face="idle" :aria-hidden="phase === 'done' || undefined"><slot /></span>
-            <span :class="styles.face" data-face="done" :aria-hidden="phase !== 'done' || undefined">
+            <span data-slot="hold-to-confirm-label" :class="styles.face" data-face="idle" :aria-hidden="phase === 'done' || undefined"><slot /></span>
+            <span data-slot="hold-to-confirm-done-label" :class="styles.face" data-face="done" :aria-hidden="phase !== 'done' || undefined">
               <CheckIcon />
-              <slot name="done">{{ doneLabel }}</slot>
+              <slot name="doneLabel">{{ doneLabel }}</slot>
             </span>
           </span>
-          <svg :class="styles.fuse" :width="size.w" :height="size.h" aria-hidden="true">
+          <svg data-slot="hold-to-confirm-fuse" :class="styles.fuse" :width="size.w" :height="size.h" aria-hidden="true">
             <path ref="runEl" :d="path" :class="styles.run" :pathLength="1" />
           </svg>
         </button>
@@ -260,6 +264,7 @@ const open = computed(() => phase.value === 'step')
         :id="`${id}-step`"
         ref="cancelEl"
         type="button"
+        data-slot="hold-to-confirm-cancel"
         :class="styles.cancel"
         :aria-label="cancelLabel"
         :aria-describedby="`${id}-hint`"
@@ -270,7 +275,7 @@ const open = computed(() => phase.value === 'step')
         <XIcon />
       </button>
     </div>
-    <p :id="`${id}-hint`" :class="styles.hint">
+    <p :id="`${id}-hint`" data-slot="hold-to-confirm-hint" :class="styles.hint">
       <slot v-if="open" name="stepHint">{{ stepHint ?? `Press it again to ${confirmLabel.toLowerCase()}, or ${cancelLabel}.` }}</slot>
       <template v-else-if="phase === 'done'" />
       <template v-else-if="keep">Keep holding</template>

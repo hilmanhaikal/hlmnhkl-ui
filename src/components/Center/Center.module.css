@@ -1,3 +1,4 @@
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
@@ -13,3 +14,4 @@
 
 /* A child wider than the box wraps instead of spilling out on both sides. */
 .root > * { max-width: 100%; }
+}

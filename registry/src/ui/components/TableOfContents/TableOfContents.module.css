@@ -1,4 +1,5 @@
 /* Gooee UI, MIT licence. https://gooee.dev */
+@layer gooee.components {
 .root {
   display: flex;
   flex-direction: column;
@@ -43,7 +44,7 @@
   font-size: var(--gooee-text-sm);
   line-height: var(--gooee-leading-snug);
   text-decoration: none;
-  transition: color var(--gooee-motion-fast) var(--gooee-ease-out), background-color var(--gooee-motion-fast) var(--gooee-ease-out);
+  transition: color var(--gooee-motion-fast) var(--gooee-ease-morph), background-color var(--gooee-motion-fast) var(--gooee-ease-morph);
 }
 
 .link::after {
@@ -71,16 +72,16 @@
   border-radius: var(--gooee-radius-full);
   background: var(--gooee-color-bg);
   transition:
-    background-color var(--gooee-motion-base) var(--gooee-ease-out),
-    border-color var(--gooee-motion-base) var(--gooee-ease-out),
-    box-shadow var(--gooee-motion-base) var(--gooee-ease-out);
+    background-color var(--gooee-motion-base) var(--gooee-ease-morph),
+    border-color var(--gooee-motion-base) var(--gooee-ease-morph),
+    box-shadow var(--gooee-motion-base) var(--gooee-ease-morph);
 }
 
-[data-state="read"] .node { border-color: var(--gooee-color-fg-subtle); background: var(--gooee-color-fg-subtle); }
+[data-status="read"] .node { border-color: var(--gooee-color-fg-subtle); background: var(--gooee-color-fg-subtle); }
 
-[data-state="here"] .link { color: var(--gooee-color-fg); font-weight: var(--gooee-weight-medium); }
+[data-status="here"] .link { color: var(--gooee-color-fg); font-weight: var(--gooee-weight-medium); }
 
-[data-state="here"] .node {
+[data-status="here"] .node {
   border-color: var(--gooee-color-fg);
   background: var(--gooee-color-fg);
   box-shadow: 0 0 0 var(--gooee-space-1) var(--gooee-color-bg), 0 0 0 calc(var(--gooee-space-1) + var(--gooee-line-thick)) var(--gooee-color-fg);
@@ -106,3 +107,4 @@
 }
 
 .toTop:focus-visible { outline: none; box-shadow: var(--gooee-focus-ring); }
+}

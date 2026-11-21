@@ -79,11 +79,11 @@ export function Textarea({
     .join(' ')
 
   return (
-    <div className={cx(styles.root, className)}>
+    <div className={cx(styles.root, className)} data-slot="textarea">
       <div className={styles.labelRow}>
-        <label htmlFor={fieldId} className={styles.label}>{label}</label>
+        <label htmlFor={fieldId} className={styles.label} data-slot="field-label">{label}</label>
         {showCount && maxLength !== undefined && (
-          <span id={countId} ref={countRef} className={styles.count} aria-live="off" />
+          <span id={countId} ref={countRef} className={styles.count} data-slot="textarea-count" aria-live="off" />
         )}
       </div>
       <div ref={boxRef} className={styles.box}>
@@ -92,6 +92,7 @@ export function Textarea({
           ref={mergeRefs(inner, ref)}
           rows={minRows}
           className={styles.textarea}
+          data-slot="textarea-input"
           data-invalid={error ? true : undefined}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy || undefined}

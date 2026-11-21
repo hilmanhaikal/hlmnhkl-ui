@@ -3,7 +3,7 @@
 
 import { useEffect, useState, type MouseEvent } from 'react'
 import { cx } from '../../internal/cx'
-import { ArrowUpIcon } from '../../internal/icons'
+import { ArrowUpIcon } from '../../icons/icons'
 import { prefersReducedMotion } from '../../internal/motion'
 import styles from './TableOfContents.module.css'
 
@@ -71,20 +71,20 @@ export function TableOfContents({ items, title = 'On this page', backToTop = fal
 
   const at = Math.max(0, items.findIndex((t) => t.id === active))
   return (
-    <nav className={cx(styles.root, className)} aria-label={title}>
-      <p className={styles.title}>{title}</p>
-      <ol className={styles.list}>
+    <nav className={cx(styles.root, className)} data-slot="table-of-contents" aria-label={title}>
+      <p className={styles.title} data-slot="table-of-contents-title">{title}</p>
+      <ol className={styles.list} data-slot="table-of-contents-list">
         {items.map((t, n) => (
-          <li key={t.id} data-state={n < at ? 'read' : n === at ? 'here' : 'ahead'}>
-            <a href={`#${t.id}`} className={styles.link} aria-current={active === t.id ? 'location' : undefined} onClick={(e) => go(e, t.id)}>
-              <span className={styles.node} aria-hidden="true" />
+          <li key={t.id} data-slot="table-of-contents-item" data-status={n < at ? 'read' : n === at ? 'here' : 'ahead'}>
+            <a href={`#${t.id}`} className={styles.link} data-slot="table-of-contents-link" aria-current={active === t.id ? 'location' : undefined} onClick={(e) => go(e, t.id)}>
+              <span className={styles.node} data-slot="table-of-contents-node" aria-hidden="true" />
               {t.label}
             </a>
           </li>
         ))}
       </ol>
       {backToTop && at > 0 && (
-        <a href="#" className={styles.toTop} onClick={toTop}>
+        <a href="#" className={styles.toTop} data-slot="table-of-contents-to-top" onClick={toTop}>
           <ArrowUpIcon aria-hidden="true" />
           Back to top
         </a>
