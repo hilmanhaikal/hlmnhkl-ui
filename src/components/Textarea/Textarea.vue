@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, useAttrs, useId, watch } fro
 import FieldMessage from '../../internal/FieldMessage.vue'
 import { createEdgeFlow } from '../../internal/motion/liquidMore'
 import { growTextarea } from '../../internal/motion/textarea'
+import { useField } from '../../internal/vue/useField'
 import styles from './Textarea.module.css'
 
 // The Vue Textarea: the same look (Textarea.module.css), growth and focus edge as the React one.
@@ -42,11 +43,14 @@ const fieldId = computed(() => id ?? auto)
 const helpId = computed(() => `${fieldId.value}-help`)
 const errorId = computed(() => `${fieldId.value}-error`)
 const countId = computed(() => `${fieldId.value}-count`)
+const inner = ref<HTMLTextAreaElement | null>(null)
+// Values written by code and a form reset fire no input event, so grow to fit them.
+const form = useField({ input: inner, name: () => attrs.name as string | undefined, error: () => error, onSync: () => resize() })
+const shownError = form.error
 const describedBy = computed(
-  () => [help && !error ? helpId.value : null, error ? errorId.value : null, showCount && maxLength ? countId.value : null, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined,
+  () => [help && !shownError.value ? helpId.value : null, shownError.value ? errorId.value : null, showCount && maxLength ? countId.value : null, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined,
 )
 
-const inner = ref<HTMLTextAreaElement | null>(null)
 const box = ref<HTMLElement | null>(null)
 const count = ref<HTMLElement | null>(null)
 defineExpose({ el: inner })
@@ -68,28 +72,19 @@ watch(() => [autoGrow, minRows, maxRows, maxLength], resize)
 const onInput = (e: Event) => {
   resize()
   if (model.value !== undefined) model.value = (e.target as HTMLTextAreaElement).value
+  form.changed()
 }
 
 // Focus draws the dark edge round the field from where it was pressed (motion/liquidMore.ts).
 let stopEdge = () => {}
-// A native form reset changes the value without an input event.
-let frame = 0
-const onReset = () => {
-  frame = requestAnimationFrame(resize)
-}
 onMounted(() => {
   const el = inner.value!
   if (model.value !== undefined) show()
   else if (defaultValue !== undefined) el.defaultValue = defaultValue
   resize()
   if (box.value) stopEdge = createEdgeFlow(el, { root: box.value, when: ':focus', className: styles.edge }).destroy
-  el.form?.addEventListener('reset', onReset)
 })
-onBeforeUnmount(() => {
-  stopEdge()
-  inner.value?.form?.removeEventListener('reset', onReset)
-  cancelAnimationFrame(frame)
-})
+onBeforeUnmount(() => stopEdge())
 </script>
 
 <template>
@@ -105,14 +100,15 @@ onBeforeUnmount(() => {
         :rows="minRows"
         :class="styles.textarea"
         data-slot="textarea-input"
-        :data-invalid="error ? true : undefined"
-        :aria-invalid="error ? true : undefined"
+        :data-invalid="shownError ? true : undefined"
+        :aria-invalid="shownError ? true : undefined"
         :aria-describedby="describedBy"
         :maxlength="maxLength"
         v-bind="fieldAttrs"
         @input="onInput"
+        @blur="form.blurred()"
       />
     </div>
-    <FieldMessage :help-id="helpId" :error-id="errorId" :help="help" :error="error" />
+    <FieldMessage :help-id="helpId" :error-id="errorId" :help="help" :error="shownError" />
   </div>
 </template>

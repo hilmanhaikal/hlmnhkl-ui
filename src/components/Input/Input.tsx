@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useId, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
+import { useId, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
 import { useEdgeFlow } from '../../internal/liquidMore'
 import { mergeRefs } from '../../internal/mergeRefs'
+import { useField } from '../../internal/useField'
 import styles from './Input.module.css'
 
 export type InputProps = Omit<ComponentPropsWithRef<'input'>, 'size'> & {
@@ -50,6 +51,7 @@ export function Input({
   value,
   defaultValue,
   onChange,
+  onBlur,
   labels: labelsProp,
   ref,
   'aria-describedby': describedByProp,
@@ -68,22 +70,11 @@ export function Input({
   const fieldRef = useRef<HTMLDivElement>(null)
   useEdgeFlow(fieldRef, fieldRef, ':focus-within', styles.edge)
 
-  // A native form reset changes the value without an onChange
-  useEffect(() => {
-    const form = inner.current?.form
-    if (!form) return
-    let frame = 0
-    const onReset = () => {
-      frame = requestAnimationFrame(() => setInnerFilled(inner.current?.value !== ''))
-    }
-    form.addEventListener('reset', onReset)
-    return () => {
-      form.removeEventListener('reset', onReset)
-      cancelAnimationFrame(frame)
-    }
-  }, [])
+  // Values written by code (a form library's setValue or reset) and a form reset fire no onChange, so read the input.
+  const field = useField({ input: inner, name: rest.name, error, onSync: () => setInnerFilled(!!inner.current?.value) })
+  const shownError = field.error
   // The caller's ids join ours, so help and error stay linked.
-  const describedBy = [help && !error ? helpId : null, error ? errorId : null, describedByProp]
+  const describedBy = [help && !shownError ? helpId : null, shownError ? errorId : null, describedByProp]
     .filter(Boolean)
     .join(' ')
 
@@ -100,7 +91,7 @@ export function Input({
         data-slot="input-field"
         className={cx(styles.field, styles[size], floating && styles.floating)}
         data-filled={filled || undefined}
-        data-invalid={error ? true : undefined}
+        data-invalid={shownError ? true : undefined}
         data-disabled={rest.disabled || undefined}
       >
         {leading && <span data-slot="input-leading" className={styles.adorn}>{leading}</span>}
@@ -118,18 +109,23 @@ export function Input({
             className={styles.input}
             value={value}
             defaultValue={defaultValue}
-            aria-invalid={error ? true : undefined}
+            aria-invalid={shownError ? true : undefined}
             aria-describedby={describedBy || undefined}
             onChange={(e) => {
               setInnerFilled(e.target.value !== '')
+              field.changed()
               onChange?.(e)
+            }}
+            onBlur={(e) => {
+              field.blurred()
+              onBlur?.(e)
             }}
             {...rest}
           />
         </div>
         {trailing && <span data-slot="input-trailing" className={styles.adorn}>{trailing}</span>}
       </div>
-      <FieldMessage helpId={helpId} errorId={errorId} help={help} error={error} />
+      <FieldMessage helpId={helpId} errorId={errorId} help={help} error={shownError} />
     </div>
   )
 }

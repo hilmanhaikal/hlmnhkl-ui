@@ -2,6 +2,35 @@
 
 What changed in Gooee UI (called hlmnhkl/ui until 0.40.0) for people who use it: components, blocks, templates, themes, tokens and the `npm run add` command. Newest first.
 
+## 1.1.0 · 21 Nov 2026
+
+Every field now works in real forms, with form libraries and server actions, plus a new Form part.
+
+### Added
+
+- **Form** (new, free, React and Vue). `<Form errors={{ email: 'Already taken' }}>` shows each error under its field by name, and the error goes as soon as that field changes. `validationBehavior="native"` uses the browser's checks; `"aria"` only marks fields and never blocks. It works with a React 19 action and `useActionState`, and after a failed submit it moves focus to the first field with an error.
+- **About 30 fields join a form fully**, in a plain form, with react-hook-form and zod, and with vee-validate and zod: the value is in the form data under `name`, `required` and `readOnly` work, `ref` reaches the field (Vue exposes `el`), `onBlur` fires when focus leaves the whole field, and a form reset or a value set by code (`reset()`, `setValue()`, `defaultValues`, autofill) redraws it.
+- **Fields with many values** (CheckboxGroup, MultiSelect, TagInput) send every value; FileUpload sends the real files and a reset clears them.
+- **Every field shows the browser's own message** (required, pattern, min, max) under it, in Gooee's style, after a submit attempt or after a blur once edited. Which message shows: the field's own `error`, then the Form's error for its name, then the browser's.
+- **Switch** sends through a hidden checkbox (new `value`, `required`, `readOnly`, `error`, `inputRef`). Its `ref` stays on the button, so with react-hook-form pass `inputRef` for the Switch only.
+- **Toggle, ToggleGroup and SegmentedControl** join a form when given a `name`.
+- **RichTextEditor**: `name` (sends the HTML), `error`, `required`, `readOnly`, `disabled`.
+- **DateRangePicker**: `startName` and `endName`.
+- The Forms guide shows plain forms, react-hook-form with zod, vee-validate with zod (Vue), and server answers with Form, live with copyable code.
+
+### Changed
+
+- **DatePicker and DateRangePicker say why a day cannot be picked**: "Pick today or a later date.", "Pick {min} or a later date.", "Pick {max} or an earlier date.", or your own reason when `isDateDisabled` returns a string. New labels `beforeMin`, `beforeToday` and `afterMax`.
+- **CurrencyInput, PhoneInput, IcInput and AddressFields stop a plain form from being sent while their own check fails** (a wrong phone number, an empty required address). Before, the form sent the bad value. In a Form with `validationBehavior="aria"` nothing is blocked.
+
+### Fixed
+
+- Checkbox, Switch, Select and the other fields now follow a form reset. Before, the drawn tick, switch or choice kept the old value while the form sent the new one.
+- Vue Input and InputGroup without `v-model` lost the typed text when they re-rendered.
+- SearchInput: the clear button and Esc now fire a real change event. PasswordInput and SearchInput no longer fire `onBlur` when focus moves to their own button.
+- Combobox no longer turns an empty value into `null`. RangeSlider and DateRangePicker no longer send their values while disabled.
+- Vue MentionInput: a form reset went back to the last text instead of the first.
+
 ## 1.0.1 · 21 Nov 2026
 
 Three fixes for long lists, dates typed on a phone and checkboxes in form libraries.

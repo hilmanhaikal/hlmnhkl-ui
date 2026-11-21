@@ -35,7 +35,8 @@ const isOn = computed(() => ctx.value.value === props.value)
         :disabled="disabled"
         :aria-invalid="ctx.invalid.value || undefined"
         :aria-describedby="description ? `${id}-desc` : undefined"
-        @change="ctx.set(value)"
+        @click="ctx.readOnly?.value && $event.preventDefault()"
+        @change="!ctx.readOnly?.value && ctx.set(value)"
       />
       <span :class="styles.circle" data-slot="radio-indicator" :data-state="isOn ? 'checked' : 'unchecked'" aria-hidden="true">
         <span :class="styles.dot" />

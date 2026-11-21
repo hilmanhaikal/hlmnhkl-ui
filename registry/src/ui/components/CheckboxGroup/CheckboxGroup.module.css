@@ -30,4 +30,16 @@
 
 /* Each Checkbox's drawn box: red edges on the empty ones, like a RadioGroup with an error. */
 .group[data-invalid] [data-state="unchecked"] { border-color: var(--gooee-color-danger); }
+
+/* Holds the values for the form. Not display: none, so the browser still checks required. */
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
 }

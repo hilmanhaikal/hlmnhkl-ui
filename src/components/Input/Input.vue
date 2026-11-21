@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, useAttrs, useId } from 'vue'
 import FieldMessage from '../../internal/FieldMessage.vue'
 import { createEdgeFlow } from '../../internal/motion/liquidMore'
+import { useField } from '../../internal/vue/useField'
 import styles from './Input.module.css'
 
 // The Vue Input: the same look (Input.module.css) and focus edge as the React one.
@@ -42,9 +43,11 @@ const model = defineModel<string>()
 const slots = defineSlots<{ leading?: () => unknown; trailing?: () => unknown }>()
 const attrs = useAttrs()
 
+// Without a v-model the value is not bound at all: Vue writes a bound value back on every render, which
+// would wipe what the person typed.
 const inputAttrs = computed(() => {
   const { class: _class, style: _style, ...rest } = attrs
-  return rest
+  return model.value === undefined ? rest : { ...rest, value: model.value }
 })
 const optionalText = computed(() => labels?.optional ?? '(optional)')
 const auto = useId()
@@ -54,34 +57,27 @@ const errorId = computed(() => `${inputId.value}-error`)
 const floating = computed(() => labelPlacement === 'floating')
 const typed = ref(String(attrs.value ?? model.value ?? '') !== '')
 const filled = computed(() => (model.value !== undefined ? model.value !== '' : typed.value))
-// The caller's ids join ours, so help and error stay linked.
-const describedBy = computed(() => [help && !error ? helpId.value : null, error ? errorId.value : null, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined)
-
 const input = ref<HTMLInputElement | null>(null)
 const field = ref<HTMLElement | null>(null)
 defineExpose({ el: input })
+// Values written by code and a form reset fire no input event, so read the input.
+const form = useField({ input, name: () => attrs.name as string | undefined, error: () => error, onSync: () => (typed.value = !!input.value?.value) })
+const shownError = form.error
+// The caller's ids join ours, so help and error stay linked.
+const describedBy = computed(() => [help && !shownError.value ? helpId.value : null, shownError.value ? errorId.value : null, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined)
 const onInput = (e: Event) => {
   const v = (e.target as HTMLInputElement).value
   typed.value = v !== ''
   if (model.value !== undefined) model.value = v
+  form.changed()
 }
 
 // Focus draws the dark edge round the field from where it was pressed (motion/liquidMore.ts).
 let stopEdge = () => {}
-// A native form reset changes the value without an input event.
-let frame = 0
-const onReset = () => {
-  frame = requestAnimationFrame(() => (typed.value = input.value?.value !== ''))
-}
 onMounted(() => {
   if (field.value) stopEdge = createEdgeFlow(field.value, { when: ':focus-within', className: styles.edge }).destroy
-  input.value?.form?.addEventListener('reset', onReset)
 })
-onBeforeUnmount(() => {
-  stopEdge()
-  input.value?.form?.removeEventListener('reset', onReset)
-  cancelAnimationFrame(frame)
-})
+onBeforeUnmount(() => stopEdge())
 </script>
 
 <template>
@@ -94,7 +90,7 @@ onBeforeUnmount(() => {
       data-slot="input-field"
       :class="[styles.field, styles[size], floating && styles.floating]"
       :data-filled="filled || undefined"
-      :data-invalid="error ? true : undefined"
+      :data-invalid="shownError ? true : undefined"
       :data-disabled="disabled || undefined"
     >
       <span v-if="slots.leading" data-slot="input-leading" :class="styles.adorn"><slot name="leading" /></span>
@@ -108,15 +104,15 @@ onBeforeUnmount(() => {
           ref="input"
           data-slot="input-control"
           :class="styles.input"
-          :value="model ?? (attrs.value as string | undefined)"
           :disabled="disabled"
-          :aria-invalid="error ? true : (attrs['aria-invalid'] as boolean | undefined)"
+          :aria-invalid="shownError ? true : (attrs['aria-invalid'] as boolean | undefined)"
           :aria-describedby="describedBy"
           @input="onInput"
+          @blur="form.blurred()"
         />
       </div>
       <span v-if="slots.trailing" data-slot="input-trailing" :class="styles.adorn"><slot name="trailing" /></span>
     </div>
-    <FieldMessage :help-id="helpId" :error-id="errorId" :help="help" :error="error" />
+    <FieldMessage :help-id="helpId" :error-id="errorId" :help="help" :error="shownError" />
   </div>
 </template>

@@ -153,6 +153,12 @@
   color: var(--gooee-color-fg);
 }
 
+/* Autofill shows a value before any script can read it. Its own rule, so a browser without :autofill keeps the one above. */
+.floating:has(.input:autofill) .floatLabel {
+  transform: translateY(-110%) scale(0.8);
+  color: var(--gooee-color-fg);
+}
+
 @keyframes nudge {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(calc(var(--gooee-shift-sm) * -1)); }

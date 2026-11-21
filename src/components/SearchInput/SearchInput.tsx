@@ -1,11 +1,13 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type FocusEvent } from 'react'
 import { cx } from '../../internal/cx'
 import { SearchIcon, XIcon } from '../../icons/icons'
+import { leavesField, onFormReset, watchValue } from '../../internal/formCore'
 import { mergeRefs } from '../../internal/mergeRefs'
 import { shortcutFocus } from '../../internal/motion/keys'
 import { useControllable } from '../../internal/useControllable'
+import { retarget, setNativeValue } from '../../internal/useField'
 import { Input, type InputLabels, type InputProps } from '../Input'
 import { Kbd } from '../Kbd'
 import styles from './SearchInput.module.css'
@@ -40,12 +42,43 @@ export function SearchInput({
   className,
   ref,
   onKeyDown,
+  onBlur,
   ...props
 }: SearchInputProps) {
   const [value, setValue] = useControllable(valueProp, defaultValue, onValueChange)
   // A form library's onChange runs after the field's own instead of being dropped.
   const { onChange, ...rest } = props as typeof props & Pick<InputProps, 'onChange'>
   const inputRef = useRef<HTMLInputElement>(null)
+  const latest = useRef(value)
+  latest.current = value
+  const [firstValue] = useState(value)
+  const resetTo = useRef(valueProp === undefined ? defaultValue : firstValue)
+  resetTo.current = valueProp === undefined ? defaultValue : firstValue
+
+  // Text written by code (a form library's setValue or reset) fires no change, and a form reset puts back
+  // what the field started with, so the clear button follows both.
+  useLayoutEffect(() => {
+    const el = inputRef.current
+    if (!el) return
+    const stopWatch = watchValue(el, () => el.value !== latest.current && setValue(el.value))
+    const stopReset = onFormReset(el, () => setValue(resetTo.current))
+    if (el.value !== latest.current) setValue(el.value)
+    return () => {
+      stopWatch()
+      stopReset()
+    }
+  }, [setValue])
+
+  // A person's clear: the input fires a real change event, so onChange and a form library hear it.
+  const clear = () => {
+    const el = inputRef.current
+    if (!el || !setNativeValue(el, '')) setValue('')
+  }
+  // onBlur fires when focus leaves the field, not when it moves to the clear button.
+  const leave = (e: FocusEvent<HTMLElement>) => {
+    const el = inputRef.current
+    if (leavesField(e.nativeEvent, el?.closest('[data-slot="input-field"]') ?? null)) onBlur?.(retarget(e, el) as FocusEvent<HTMLInputElement>)
+  }
 
   useEffect(() => {
     if (!shortcut) return
@@ -67,6 +100,7 @@ export function SearchInput({
         setValue(e.target.value)
         onChange?.(e)
       }}
+      onBlur={leave}
       onKeyDown={(e) => {
         onKeyDown?.(e)
         // Enter during IME composition picks a word, not a search
@@ -75,7 +109,7 @@ export function SearchInput({
         else if (e.key === 'Escape' && value) {
           e.preventDefault()
           e.stopPropagation()
-          setValue('')
+          clear()
         }
       }}
       trailing={
@@ -86,9 +120,10 @@ export function SearchInput({
             data-slot="search-input-clear"
             aria-label={labels?.clear ?? 'Clear search'}
             onClick={() => {
-              setValue('')
+              clear()
               inputRef.current?.focus()
             }}
+            onBlur={leave}
           >
             <XIcon />
           </button>

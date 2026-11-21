@@ -1,8 +1,11 @@
 // Gooee UI, MIT licence. https://gooee.dev
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState, type FocusEvent } from 'react'
 import { cx } from '../../internal/cx'
+import { leavesField } from '../../internal/formCore'
+import { mergeRefs } from '../../internal/mergeRefs'
+import { retarget } from '../../internal/useField'
 import { Input, type InputLabels, type InputProps } from '../Input'
 import styles from './PasswordInput.module.css'
 
@@ -30,8 +33,15 @@ export function PasswordInput({
   autoComplete = 'current-password',
   disabled,
   className,
+  ref,
+  onBlur,
   ...rest
 }: PasswordInputProps) {
+  const input = useRef<HTMLInputElement>(null)
+  // onBlur fires when focus leaves the field, not when it moves between the text and the toggle.
+  const leave = (e: FocusEvent<HTMLElement>) => {
+    if (leavesField(e.nativeEvent, input.current?.closest('[data-slot="input-field"]') ?? null)) onBlur?.(retarget(e, input.current) as FocusEvent<HTMLInputElement>)
+  }
   const [inner, setInner] = useState(defaultVisible)
   const visible = visibleProp ?? inner
   const toggle = () => {
@@ -42,6 +52,8 @@ export function PasswordInput({
   return (
     <Input
       {...rest}
+      ref={mergeRefs(input, ref)}
+      onBlur={leave}
       labels={labels}
       className={cx(styles.root, className)}
       type={visible ? 'text' : 'password'}
@@ -59,6 +71,7 @@ export function PasswordInput({
           aria-pressed={visible}
           disabled={disabled}
           onClick={toggle}
+          onBlur={leave}
         >
           <svg viewBox="0 0 24 24" className={styles.eye} aria-hidden="true" focusable="false">
             <path className={styles.lid} d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12z" />

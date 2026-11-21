@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import FieldMessage from '../../internal/FieldMessage.vue'
+import { leavesField } from '../../internal/formCore'
 import { dismissable } from '../../internal/motion/layers'
 import { createMorph } from '../../internal/motion/liquid'
 import { createEdgeFlow } from '../../internal/motion/liquidMore'
 import { createListbox } from '../../internal/motion/listbox'
+import { setNativeValue, useField, useMirror } from '../../internal/vue/useField'
 import { useFloating } from '../../internal/vue/useFloating'
 import { usePresence } from '../../internal/vue/usePresence'
 import { CheckIcon, ChevronDownIcon } from '../../icons/vue'
@@ -19,7 +21,7 @@ export type SelectLabels = {
   empty: string
 }
 
-const { hideLabel = false, options, defaultValue = null, placeholder = 'Choose one', help, error, labels: labelsProp, disabled, id } = defineProps<{
+const { hideLabel = false, options, defaultValue = null, placeholder = 'Choose one', help, error, labels: labelsProp, disabled, readOnly, name, id } = defineProps<{
   /** Visible name of the field, also read by screen readers. */
   label: string
   /** Keeps the label for screen readers only, for a list where a column heading already names the field. */
@@ -40,8 +42,16 @@ const { hideLabel = false, options, defaultValue = null, placeholder = 'Choose o
   disabled?: boolean
   /** Submits the selected value in a hidden field with this name. */
   name?: string
+  /** The form cannot be sent while nothing is chosen. */
+  required?: boolean
+  /** Shows the value and sends it with the form, but the list does not open. Shown with data-readonly. */
+  readOnly?: boolean
   /** Id of the button, so a label's `for` can point at it. Inner ids add a suffix to it. */
   id?: string
+}>()
+const emit = defineEmits<{
+  /** Focus left the field, so vee-validate's handleBlur runs. */
+  blur: [event: FocusEvent]
 }>()
 const labels = computed<SelectLabels>(() => ({ empty: 'No options', ...labelsProp }))
 
@@ -65,6 +75,15 @@ const errorId = computed(() => `${baseId.value}-error`)
 const emptyId = computed(() => `${baseId.value}-empty`)
 const triggerId = computed(() => id ?? `${auto}-trigger`)
 
+// The hidden input holds the value for the form; a form reset goes back to the first value.
+const root = ref<HTMLElement | null>(null)
+const input = ref<HTMLInputElement | null>(null)
+defineExpose({ el: input })
+const firstValue = value.value
+useMirror(input, () => value.value ?? '', () => firstValue ?? '')
+const form = useField({ input, name: () => name, error: () => error, onSync: () => input.value && input.value.value !== (value.value ?? '') && (value.value = input.value.value || null) })
+const shownError = form.error
+
 const open = ref(false)
 const active = ref(-1)
 const trigger = ref<HTMLButtonElement | null>(null)
@@ -81,7 +100,7 @@ const list = createListbox(() => options)
 const { enabled, first } = list
 
 const openList = (at?: number) => {
-  if (disabled) return
+  if (disabled || readOnly) return
   open.value = true
   active.value = at ?? (enabled(selectedIndex.value) ? selectedIndex.value : first())
 }
@@ -89,10 +108,22 @@ const close = (focusTrigger = true) => {
   open.value = false
   if (focusTrigger) trigger.value?.focus()
 }
+// A person's choice: the hidden input fires a real change event first.
+const commit = (next: string) => {
+  if (next === value.value) return
+  if (input.value) setNativeValue(input.value, next)
+  value.value = next
+  form.changed()
+}
 const choose = (i: number) => {
   if (!enabled(i)) return
-  value.value = options[i].value
+  commit(options[i].value)
   close()
+}
+const onBlur = (e: FocusEvent) => {
+  if (!leavesField(e, root.value, listEl.value)) return
+  form.blurred()
+  emit('blur', e)
 }
 
 const onKeyDown = (e: KeyboardEvent) => {
@@ -103,7 +134,7 @@ const onKeyDown = (e: KeyboardEvent) => {
   else if (r.active !== undefined) active.value = r.active
   if (r.choose) choose(active.value)
   if (r.tab) {
-    if (enabled(active.value)) value.value = options[active.value].value
+    if (enabled(active.value)) commit(options[active.value].value)
     open.value = false
   }
 }
@@ -159,12 +190,12 @@ onBeforeUnmount(() => {
 
 const empty = computed(() => options.length === 0)
 const describedBy = computed(
-  () => [help && !error ? helpId.value : null, error ? errorId.value : null, open.value && empty.value ? emptyId.value : null].filter(Boolean).join(' ') || undefined,
+  () => [help && !shownError.value ? helpId.value : null, shownError.value ? errorId.value : null, open.value && empty.value ? emptyId.value : null].filter(Boolean).join(' ') || undefined,
 )
 </script>
 
 <template>
-  <div :class="styles.root" data-slot="select">
+  <div ref="root" :class="styles.root" data-slot="select" :data-readonly="readOnly || undefined">
     <span :id="labelId" :class="[styles.label, hideLabel && styles.hiddenLabel]" data-slot="field-label" @click="trigger?.focus()">
       {{ label }}
     </span>
@@ -176,17 +207,20 @@ const describedBy = computed(
       :class="styles.trigger"
       data-slot="select-trigger"
       :data-state="open ? 'open' : 'closed'"
-      :data-invalid="error ? true : undefined"
+      :data-invalid="shownError ? true : undefined"
       :aria-labelledby="`${labelId} ${triggerId}`"
       aria-haspopup="listbox"
       :aria-expanded="open"
       :aria-controls="listId"
       :aria-activedescendant="open && enabled(active) ? `${baseId}-opt-${active}` : undefined"
-      :aria-invalid="error ? true : undefined"
+      :aria-invalid="shownError ? true : undefined"
+      :aria-required="required || undefined"
+      :aria-readonly="readOnly || undefined"
       :aria-describedby="describedBy"
       :disabled="disabled"
       @click="open ? close() : openList()"
       @keydown="onKeyDown"
+      @blur="onBlur"
     >
       <span :class="[styles.value, !selected && styles.placeholder]" data-slot="select-value">
         <span :key="selected?.value ?? 'none'" :class="styles.valueText" :title="selected ? selected.label : placeholder">
@@ -195,8 +229,20 @@ const describedBy = computed(
       </span>
       <ChevronDownIcon :class="styles.chevron" data-slot="select-icon" />
     </button>
-    <input v-if="name" type="hidden" :name="name" :value="value ?? ''" />
-    <FieldMessage :help-id="helpId" :error-id="errorId" :help="help" :error="error" />
+    <!-- Holds the value for the form. Not type hidden, so required works; focus moves on to the field. -->
+    <input
+      ref="input"
+      :name="name"
+      :required="required"
+      :disabled="disabled"
+      tabindex="-1"
+      aria-hidden="true"
+      autocomplete="off"
+      :class="styles.input"
+      data-slot="select-input"
+      @focus="trigger?.focus()"
+    />
+    <FieldMessage :help-id="helpId" :error-id="errorId" :help="help" :error="shownError" />
     <Teleport v-if="mounted" to="body">
       <div
         :id="listId"

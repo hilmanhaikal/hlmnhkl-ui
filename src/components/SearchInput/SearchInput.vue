@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { SearchIcon, XIcon } from '../../icons/vue'
+import { leavesField, onFormReset, watchValue } from '../../internal/formCore'
 import { shortcutFocus } from '../../internal/motion/keys'
 import Input, { type InputLabels } from '../Input/Input.vue'
 import Kbd from '../Kbd/Kbd.vue'
@@ -24,13 +25,21 @@ const props = defineProps<{
 }>()
 /** The search text. Use v-model, or leave it out and the field keeps its own text. Also changes on clear. */
 const model = defineModel<string>({ default: '' })
-const emit = defineEmits<{ search: [value: string] }>()
+const emit = defineEmits<{
+  search: [value: string]
+  /** Focus left the field, not moved to the clear button, so vee-validate's handleBlur runs. */
+  blur: [event: FocusEvent]
+}>()
 
 const root = ref<InstanceType<typeof Input> | null>(null)
 const field = () => root.value?.el ?? null
+const el = computed(() => root.value?.el ?? null)
+defineExpose({ el })
+const firstValue = model.value
 
 let stop = () => {}
-onMounted(() =>
+let stopForm = () => {}
+onMounted(() => {
   watch(
     () => props.shortcut,
     (key) => {
@@ -38,9 +47,24 @@ onMounted(() =>
       stop = key ? shortcutFocus(key, field) : () => {}
     },
     { immediate: true },
-  ),
-)
-onBeforeUnmount(() => stop())
+  )
+  // Text written by code fires no input event, and a form reset puts back the first text.
+  const input = field()
+  if (!input) return
+  const stopWatch = watchValue(input, () => input.value !== model.value && (model.value = input.value))
+  const stopReset = onFormReset(input, () => (model.value = firstValue))
+  stopForm = () => {
+    stopWatch()
+    stopReset()
+  }
+})
+onBeforeUnmount(() => {
+  stop()
+  stopForm()
+})
+const leave = (e: FocusEvent) => {
+  if (leavesField(e, field()?.closest('[data-slot="input-field"]') ?? null)) emit('blur', e)
+}
 
 const onKeydown = (e: KeyboardEvent) => {
   // Enter during IME composition picks a word, not a search
@@ -59,10 +83,10 @@ const clear = () => {
 </script>
 
 <template>
-  <Input ref="root" v-model="model" :label="label" :labels="labels" :class="styles.root" type="search" enterkeyhint="search" :aria-keyshortcuts="shortcut" @keydown="onKeydown">
+  <Input ref="root" v-model="model" :label="label" :labels="labels" :class="styles.root" type="search" enterkeyhint="search" :aria-keyshortcuts="shortcut" @keydown="onKeydown" @blur="leave">
     <template #leading><SearchIcon /></template>
     <template v-if="model" #trailing>
-      <button type="button" :class="styles.clear" data-slot="search-input-clear" :aria-label="labels?.clear ?? 'Clear search'" @click="clear"><XIcon /></button>
+      <button type="button" :class="styles.clear" data-slot="search-input-clear" :aria-label="labels?.clear ?? 'Clear search'" @click="clear" @blur="leave"><XIcon /></button>
     </template>
     <template v-else-if="shortcut" #trailing>
       <span :class="styles.hint" data-slot="search-input-shortcut" aria-hidden="true">

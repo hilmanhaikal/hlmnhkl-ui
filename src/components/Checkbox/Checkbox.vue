@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, useAttrs, useId, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useAttrs, useId, watch } from 'vue'
 import FieldMessage from '../../internal/FieldMessage.vue'
 import { createCheckboxPour } from '../../internal/motion/checkbox'
+import { useField } from '../../internal/vue/useField'
 import styles from './Checkbox.module.css'
 
 // The Vue Checkbox: the same look (Checkbox.module.css) and cup fill as the React one.
 // Other attributes, such as name or aria-required, go to the input. A class goes to the root, as in React.
 defineOptions({ inheritAttrs: false })
 
-const { description, defaultChecked = false, indeterminate = false, error, id } = defineProps<{
+const { description, defaultChecked = false, indeterminate = false, error, readOnly, id } = defineProps<{
   /** Visible text next to the box. Clicking it toggles the box. The label slot replaces it. */
   label?: string
   /** Muted text under the label, linked with aria-describedby. The description slot replaces it. */
@@ -19,6 +20,8 @@ const { description, defaultChecked = false, indeterminate = false, error, id } 
   indeterminate?: boolean
   /** Error message under the label. Marks the box invalid. */
   error?: string
+  /** Keeps the box as it is and still sends it with the form. Shown with data-readonly. */
+  readOnly?: boolean
   disabled?: boolean
   id?: string
 }>()
@@ -44,7 +47,23 @@ const auto = useId()
 const inputId = computed(() => id ?? auto)
 const errorId = computed(() => `${inputId.value}-error`)
 const hasDescription = computed(() => !!(description || slots.description))
-const describedBy = computed(() => [hasDescription.value ? `${inputId.value}-desc` : null, error ? errorId.value : null, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined)
+const input = ref<HTMLInputElement | null>(null)
+defineExpose({ el: input })
+// The tick is set on the element, not bound: Vue would also write it to the checked attribute, which is
+// what a form reset goes back to. A reset goes back to defaultChecked, or to the first v-model value.
+const firstChecked = checked.value
+const show = () => {
+  const el = input.value
+  if (!el) return
+  el.defaultChecked = model.value === undefined ? defaultChecked : firstChecked
+  if (el.checked !== checked.value) el.checked = checked.value
+}
+onMounted(show)
+watch([checked, () => defaultChecked], show, { flush: 'post' })
+// Code that writes the box directly and a form reset fire no change event: follow the input.
+const form = useField({ input, name: () => attrs.name as string | undefined, error: () => error, onSync: () => input.value && input.value.checked !== checked.value && (checked.value = input.value.checked) })
+const shownError = form.error
+const describedBy = computed(() => [hasDescription.value ? `${inputId.value}-desc` : null, shownError.value ? errorId.value : null, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined)
 
 // Like a native checkbox, a click clears the mixed look until the prop sets it again.
 const mixed = ref(indeterminate)
@@ -63,7 +82,10 @@ const onChange = (e: Event) => {
   }
   // A v-model that holds its value keeps the box as it was.
   input.checked = checked.value
+  form.changed()
 }
+// A native checkbox ignores readonly, so the click is held back.
+const onClick = (e: MouseEvent) => readOnly && e.preventDefault()
 
 // Ink pours in from the side that was pressed, levels, and then the mark draws (motion/checkbox.ts).
 const box = ref<HTMLElement | null>(null)
@@ -73,20 +95,31 @@ onBeforeUnmount(cup.destroy)
 </script>
 
 <template>
-  <div data-slot="checkbox" :class="[styles.root, attrs.class]" :data-disabled="disabled || undefined" :data-invalid="error ? true : undefined" @pointerdown="cup.press($event.clientX)">
+  <div
+    data-slot="checkbox"
+    :class="[styles.root, attrs.class]"
+    :data-disabled="disabled || undefined"
+    :data-readonly="readOnly || undefined"
+    :data-invalid="shownError ? true : undefined"
+    @pointerdown="!readOnly && cup.press($event.clientX)"
+  >
     <span :class="styles.boxWrap">
       <input
         v-bind="inputAttrs"
         :id="inputId"
+        ref="input"
         type="checkbox"
         data-slot="checkbox-input"
         :class="styles.input"
-        :checked="checked"
         :indeterminate="mixed"
         :disabled="disabled"
-        :aria-invalid="error ? true : (inputAttrs['aria-invalid'] as boolean | undefined)"
+        :readonly="readOnly"
+        :aria-readonly="readOnly || undefined"
+        :aria-invalid="shownError ? true : (inputAttrs['aria-invalid'] as boolean | undefined)"
         :aria-describedby="describedBy"
+        @click="onClick"
         @change="onChange"
+        @blur="form.blurred()"
         @keydown="cup.key()"
       />
       <span ref="box" data-slot="checkbox-box" :class="styles.box" :data-state="state" aria-hidden="true">
@@ -100,7 +133,7 @@ onBeforeUnmount(cup.destroy)
     <span :class="styles.text">
       <label :for="inputId" data-slot="field-label" :class="styles.label"><slot name="label">{{ label }}</slot></label>
       <span v-if="hasDescription" :id="`${inputId}-desc`" data-slot="checkbox-description" :class="styles.description"><slot name="description">{{ description }}</slot></span>
-      <FieldMessage :help-id="`${inputId}-help`" :error-id="errorId" :error="error" />
+      <FieldMessage :help-id="`${inputId}-help`" :error-id="errorId" :error="shownError" />
     </span>
   </div>
 </template>

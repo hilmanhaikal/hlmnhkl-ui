@@ -1,6 +1,6 @@
 {
   "name": "gooee",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "React and Vue components in black, white and grey with one blue accent. Copy them into your app with npx gooee add <name>.",
   "license": "MIT",
   "homepage": "https://gooee.dev",
@@ -33,12 +33,16 @@
     "prepublishOnly": "node scripts/check-publish.mjs"
   },
   "devDependencies": {
+    "@hookform/resolvers": "7.0.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-vue": "6.0.10",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
+    "react-hook-form": "7.91.0",
     "typescript": "^7.0.2",
-    "vue": "3.5.44"
+    "vee-validate": "4.15.1",
+    "vue": "3.5.44",
+    "zod": "4.6.7"
   }
 }

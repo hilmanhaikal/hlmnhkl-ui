@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, useId } from 'vue'
 import FieldMessage from '../../internal/FieldMessage.vue'
+import { leavesField } from '../../internal/formCore'
+import { setNativeValue, useField, useMirror } from '../../internal/vue/useField'
 import { MinusIcon, PlusIcon } from '../../icons/vue'
 import { createHold, parseNumber, type NumberInputLabels } from '../../internal/motion/numberInput'
 import AnimatedNumber from '../AnimatedNumber/AnimatedNumber.vue'
@@ -18,6 +20,8 @@ const {
   locale,
   help,
   error,
+  name,
+  readOnly,
   labels,
 } = defineProps<{
   /** Visible name of the field, also read by screen readers. */
@@ -44,17 +48,45 @@ const {
   disabled?: boolean
   /** Submits the plain number in a hidden field with this name. */
   name?: string
+  /** The form cannot be sent while the field is empty. */
+  required?: boolean
+  /** Shows the number and sends it with the form, but typing, keys and the step buttons do not change it. */
+  readOnly?: boolean
   /** Screen reader names for the step buttons. */
   labels?: Partial<NumberInputLabels>
 }>()
 /** The number, or null when the field is empty. Use v-model, or leave it out and the field keeps its own. */
 const model = defineModel<number | null | undefined>({ default: undefined })
+const emit = defineEmits<{
+  /** Focus left the field, so vee-validate's handleBlur runs. */
+  blur: [event: FocusEvent]
+}>()
 const inner = ref<number | null>(defaultValue)
 const value = computed(() => (model.value !== undefined ? model.value : inner.value))
 const setValue = (next: number | null) => {
   inner.value = next
   model.value = next
 }
+
+// The hidden input holds the plain number for the form; a form reset goes back to the first value.
+const root = ref<HTMLElement | null>(null)
+const visible = ref<HTMLInputElement | null>(null)
+const mirror = ref<HTMLInputElement | null>(null)
+defineExpose({ el: mirror })
+const asText = (n: number | null) => (n === null ? '' : String(n))
+const firstValue = value.value
+useMirror(mirror, () => asText(value.value), () => asText(firstValue))
+const form = useField({
+  input: mirror,
+  name: () => name,
+  error: () => error,
+  onSync: () => {
+    const v = mirror.value?.value ?? ''
+    const n = v === '' ? null : Number(v)
+    if (v !== asText(value.value) && !Number.isNaN(n)) setValue(n)
+  },
+})
+const shownError = form.error
 
 const nameOf = (text: NumberInputLabels['decrease'] | undefined, fallback: (l: string) => string) => {
   const t = text ?? fallback
@@ -74,10 +106,16 @@ const plain = computed(() => new Intl.NumberFormat(locale, { useGrouping: false,
 const clamp = (n: number) => Number(Math.min(max, Math.max(min, n)).toFixed(decimals.value))
 const commit = (n: number | null) => {
   const next = n === null ? null : clamp(n)
-  if (next !== value.value) setValue(next)
+  if (next !== value.value) {
+    // A person's change: the hidden input fires a real change event first.
+    if (mirror.value) setNativeValue(mirror.value, asText(next))
+    setValue(next)
+    form.changed()
+  }
   if (editing.value) text.value = next === null ? '' : plain.value.format(next)
 }
 const bump = (dir: 1 | -1, size = step) => {
+  if (readOnly) return
   const current = (editing.value ? parseNumber(text.value, locale) : null) ?? value.value
   const base = current ?? (min > -Infinity ? min : 0)
   commit(current === null ? base : base + dir * size)
@@ -99,6 +137,7 @@ const startHold = (dir: 1 | -1) => (e: PointerEvent) => {
 onBeforeUnmount(hold.stop)
 
 const onKeydown = (e: KeyboardEvent) => {
+  if (readOnly) return
   const big = largeStep ?? step * 10
   const k = e.key
   if (k === 'ArrowUp') bump(1)
@@ -115,21 +154,24 @@ const onFocus = () => {
   editing.value = true
   text.value = value.value === null ? '' : plain.value.format(value.value)
 }
-const onBlur = () => {
-  commit(parseNumber(text.value, locale))
+const onBlur = (e: FocusEvent) => {
+  if (!readOnly) commit(parseNumber(text.value, locale))
   editing.value = false
+  if (!leavesField(e, root.value)) return
+  form.blurred()
+  emit('blur', e)
 }
 
 const atMin = computed(() => value.value !== null && value.value <= min)
 const atMax = computed(() => value.value !== null && value.value >= max)
-const describedBy = computed(() => [help && !error ? helpId : null, error ? errorId : null].filter(Boolean).join(' ') || undefined)
+const describedBy = computed(() => [help && !shownError.value ? helpId : null, shownError.value ? errorId : null].filter(Boolean).join(' ') || undefined)
 const shown = computed(() => (editing.value ? text.value : value.value === null ? '' : fmt.value.format(value.value)))
 </script>
 
 <template>
-  <div :class="styles.root" data-slot="number-input">
+  <div ref="root" :class="styles.root" data-slot="number-input" :data-readonly="readOnly || undefined">
     <label :for="id" :class="styles.label" data-slot="field-label">{{ label }}</label>
-    <div :class="styles.field" data-slot="number-input-field" :data-invalid="error ? true : undefined" :data-disabled="disabled || undefined">
+    <div :class="styles.field" data-slot="number-input-field" :data-invalid="shownError ? true : undefined" :data-disabled="disabled || undefined">
       <button
         type="button"
         tabindex="-1"
@@ -137,7 +179,7 @@ const shown = computed(() => (editing.value ? text.value : value.value === null 
         data-slot="number-input-decrement"
         :aria-label="decreaseName"
         :aria-controls="id"
-        :disabled="disabled || atMin"
+        :disabled="disabled || readOnly || atMin"
         @pointerdown="startHold(-1)($event)"
         @pointerup="hold.stop"
         @pointerleave="hold.stop"
@@ -149,6 +191,7 @@ const shown = computed(() => (editing.value ? text.value : value.value === null 
       <div :class="styles.control">
         <input
           :id="id"
+          ref="visible"
           :class="styles.input"
           data-slot="number-input-input"
           type="text"
@@ -159,10 +202,12 @@ const shown = computed(() => (editing.value ? text.value : value.value === null 
           :aria-valuemin="min > -Infinity ? min : undefined"
           :aria-valuemax="max < Infinity ? max : undefined"
           :aria-valuetext="value !== null ? fmt.format(value) : undefined"
-          :aria-invalid="error ? true : undefined"
+          :aria-invalid="shownError ? true : undefined"
+          :aria-required="required || undefined"
           :aria-describedby="describedBy"
           :data-editing="editing || undefined"
           :disabled="disabled"
+          :readonly="readOnly"
           :value="shown"
           @focus="onFocus"
           @blur="onBlur"
@@ -180,7 +225,7 @@ const shown = computed(() => (editing.value ? text.value : value.value === null 
         data-slot="number-input-increment"
         :aria-label="increaseName"
         :aria-controls="id"
-        :disabled="disabled || atMax"
+        :disabled="disabled || readOnly || atMax"
         @pointerdown="startHold(1)($event)"
         @pointerup="hold.stop"
         @pointerleave="hold.stop"
@@ -190,7 +235,19 @@ const shown = computed(() => (editing.value ? text.value : value.value === null 
         <PlusIcon />
       </button>
     </div>
-    <input v-if="name" type="hidden" :name="name" :value="value ?? ''" />
-    <FieldMessage :help-id="helpId" :error-id="errorId" :help="help" :error="error" />
+    <!-- Holds the number for the form. Not type hidden, so required works; focus moves on to the field. -->
+    <input
+      ref="mirror"
+      :name="name"
+      :required="required"
+      :disabled="disabled"
+      tabindex="-1"
+      aria-hidden="true"
+      autocomplete="off"
+      :class="styles.value"
+      data-slot="number-input-value"
+      @focus="visible?.focus()"
+    />
+    <FieldMessage :help-id="helpId" :error-id="errorId" :help="help" :error="shownError" />
   </div>
 </template>

@@ -1,12 +1,13 @@
 // Gooee UI, MIT licence. https://gooee.dev
 'use client'
 
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, type ComponentPropsWithRef, type ReactNode } from 'react'
+import { useCallback, useId, useLayoutEffect, useRef, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
 import { useEdgeFlow } from '../../internal/liquidMore'
 import { mergeRefs } from '../../internal/mergeRefs'
 import { growTextarea } from '../../internal/motion/textarea'
+import { useField } from '../../internal/useField'
 import styles from './Textarea.module.css'
 
 export type TextareaProps = ComponentPropsWithRef<'textarea'> & {
@@ -38,6 +39,7 @@ export function Textarea({
   className,
   ref,
   onChange,
+  onBlur,
   value,
   defaultValue,
   maxLength,
@@ -59,22 +61,11 @@ export function Textarea({
 
   useLayoutEffect(resize, [resize, value])
 
-  // A native form reset changes the value without an onChange
-  useEffect(() => {
-    const form = inner.current?.form
-    if (!form) return
-    let frame = 0
-    const onReset = () => {
-      frame = requestAnimationFrame(resize)
-    }
-    form.addEventListener('reset', onReset)
-    return () => {
-      form.removeEventListener('reset', onReset)
-      cancelAnimationFrame(frame)
-    }
-  }, [resize])
+  // Values written by code (a form library's setValue or reset) and a form reset fire no onChange, so grow to fit them.
+  const field = useField({ input: inner, name: rest.name, error, onSync: resize })
+  const shownError = field.error
 
-  const describedBy = [help && !error ? helpId : null, error ? errorId : null, showCount && maxLength ? countId : null, describedByProp]
+  const describedBy = [help && !shownError ? helpId : null, shownError ? errorId : null, showCount && maxLength ? countId : null, describedByProp]
     .filter(Boolean)
     .join(' ')
 
@@ -93,20 +84,25 @@ export function Textarea({
           rows={minRows}
           className={styles.textarea}
           data-slot="textarea-input"
-          data-invalid={error ? true : undefined}
-          aria-invalid={error ? true : undefined}
+          data-invalid={shownError ? true : undefined}
+          aria-invalid={shownError ? true : undefined}
           aria-describedby={describedBy || undefined}
           value={value}
           defaultValue={defaultValue}
           maxLength={maxLength}
           onChange={(e) => {
             resize()
+            field.changed()
             onChange?.(e)
+          }}
+          onBlur={(e) => {
+            field.blurred()
+            onBlur?.(e)
           }}
           {...rest}
         />
       </div>
-      <FieldMessage helpId={helpId} errorId={errorId} help={help} error={error} />
+      <FieldMessage helpId={helpId} errorId={errorId} help={help} error={shownError} />
     </div>
   )
 }

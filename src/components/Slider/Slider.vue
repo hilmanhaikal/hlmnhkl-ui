@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, useAttrs, useId } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useAttrs, useId } from 'vue'
+import FieldMessage from '../../internal/FieldMessage.vue'
+import { onFormReset } from '../../internal/formCore'
 import { createSlider } from '../../internal/motion/slider'
+import { useField } from '../../internal/vue/useField'
 import styles from './Slider.module.css'
 
 // The Vue Slider: the same look (Slider.module.css), glide and marks as the React one.
@@ -15,6 +18,8 @@ const {
   showValue = true,
   formatValue = String,
   marks,
+  readOnly,
+  error,
   id,
 } = defineProps<{
   /** Visible name of the slider, also read by screen readers. */
@@ -33,6 +38,10 @@ const {
   formatValue?: (value: number) => string
   /** Values the thumb is drawn to as it passes, shown as dots on the track. Let go near one and it lands on it; Page Up and Page Down jump between them. */
   marks?: number[]
+  /** Keeps the thumb where it is and still sends the value with the form. Shown with data-readonly. */
+  readOnly?: boolean
+  /** Error message under the slider. Marks the slider invalid. */
+  error?: string
   disabled?: boolean
   id?: string
 }>()
@@ -72,19 +81,61 @@ const slider = createSlider(
 )
 onBeforeUnmount(slider.destroy)
 
+// The range input is the form field. The drawn place during a glide is not a value set by code.
+const inner = ref<HTMLInputElement | null>(null)
+defineExpose({ el: inner })
+// Vue keeps the input's default in step with its value, so a form reset is brought back here.
+const firstValue = value.value
+let stopReset = () => {}
+onMounted(() => {
+  if (inner.value)
+    stopReset = onFormReset(inner.value, () => {
+      slider.end()
+      value.value = firstValue
+    })
+})
+onBeforeUnmount(() => stopReset())
+const form = useField({
+  input: inner,
+  name: () => attrs.name as string | undefined,
+  error: () => error,
+  onSync: () => {
+    const el = inner.value
+    if (el && shown.value === null && Number(el.value) !== value.value) value.value = Number(el.value)
+  },
+})
+const shownError = form.error
+const errorId = computed(() => `${inputId.value}-error`)
+const describedBy = computed(() => [shownError.value ? errorId.value : null, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined)
+
 const onInput = (e: Event) => {
   const input = e.target as HTMLInputElement
-  slider.input(input, Number(input.value))
+  if (!readOnly) {
+    slider.input(input, Number(input.value))
+    form.changed()
+  }
   // A v-model that holds its value keeps the thumb where it was.
   input.value = String(at.value)
 }
 const onKeydown = (e: KeyboardEvent) => {
+  if (readOnly && e.key !== 'Tab') e.preventDefault()
   if (!e.defaultPrevented && slider.key(e.key)) e.preventDefault()
+}
+const onPointerdown = (e: PointerEvent) => {
+  if (readOnly) e.preventDefault()
+  else slider.down(e.currentTarget as HTMLInputElement, e.clientX)
 }
 </script>
 
 <template>
-  <div :class="[styles.root, attrs.class]" data-slot="slider" data-orientation="horizontal" :data-disabled="disabled || undefined">
+  <div
+    :class="[styles.root, attrs.class]"
+    data-slot="slider"
+    data-orientation="horizontal"
+    :data-disabled="disabled || undefined"
+    :data-readonly="readOnly || undefined"
+    :data-invalid="shownError ? true : undefined"
+  >
     <div :class="styles.head">
       <label :for="inputId" :class="styles.label" data-slot="field-label">{{ label }}</label>
       <output v-if="showValue" :for="inputId" :class="styles.value" data-slot="slider-value" aria-hidden="true">{{ text }}</output>
@@ -93,6 +144,7 @@ const onKeydown = (e: KeyboardEvent) => {
       <input
         v-bind="inputAttrs"
         :id="inputId"
+        ref="inner"
         type="range"
         :class="styles.input"
         data-slot="slider-input"
@@ -103,13 +155,16 @@ const onKeydown = (e: KeyboardEvent) => {
         :disabled="disabled"
         :aria-valuenow="value"
         :aria-valuetext="formatValue === String ? undefined : text"
+        :aria-readonly="readOnly || undefined"
+        :aria-invalid="shownError ? true : undefined"
+        :aria-describedby="describedBy"
         @input="onInput"
-        @pointerdown="slider.down($event.currentTarget as HTMLInputElement, $event.clientX)"
+        @pointerdown="onPointerdown"
         @pointermove="slider.move($event.clientX)"
         @pointerup="slider.up()"
         @pointercancel="slider.end()"
         @lostpointercapture="slider.end()"
-        @blur="slider.end()"
+        @blur="slider.end(), form.blurred()"
         @keydown="onKeydown"
         @keyup="slider.keyUp()"
       />
@@ -119,5 +174,6 @@ const onKeydown = (e: KeyboardEvent) => {
         <span v-for="m in marks" :key="m" :class="styles.mark" data-slot="slider-mark" :data-state="m === value ? 'active' : 'inactive'" :style="{ '--m': (m - min) / (max - min || 1) }" />
       </span>
     </div>
+    <FieldMessage :help-id="`${inputId}-help`" :error-id="errorId" :error="shownError" />
   </div>
 </template>

@@ -99,4 +99,17 @@
   font-size: var(--gooee-text-sm);
   color: var(--gooee-color-fg-muted);
 }
+
+.root[data-readonly] .track,
+.root[data-readonly] .label { cursor: default; }
+
+/* The hidden checkbox that holds the value for the form: out of the layout and out of reach. */
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
 }

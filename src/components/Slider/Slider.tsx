@@ -1,9 +1,13 @@
 'use client'
 
-import { useEffect, useId, useRef, useState, type ComponentPropsWithRef, type KeyboardEvent, type PointerEvent } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentPropsWithRef, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
 import { cx } from '../../internal/cx'
+import { FieldMessage } from '../../internal/FieldMessage'
+import { onFormReset } from '../../internal/formCore'
+import { mergeRefs } from '../../internal/mergeRefs'
 import { createSlider } from '../../internal/motion/slider'
 import { useControllable } from '../../internal/useControllable'
+import { useField } from '../../internal/useField'
 import styles from './Slider.module.css'
 
 export type SliderProps = Omit<ComponentPropsWithRef<'input'>, 'type' | 'value' | 'defaultValue' | 'onChange'> & {
@@ -29,6 +33,10 @@ export type SliderProps = Omit<ComponentPropsWithRef<'input'>, 'type' | 'value' 
   formatValue?: (value: number) => string
   /** Values the thumb is drawn to as it passes, shown as dots on the track. Let go near one and it lands on it; Page Up and Page Down jump between them. */
   marks?: number[]
+  /** Keeps the thumb where it is and still sends the value with the form. Shown with data-readonly. */
+  readOnly?: boolean
+  /** Error message under the slider. Marks the slider invalid. */
+  error?: ReactNode
 }
 
 export function Slider({
@@ -43,9 +51,12 @@ export function Slider({
   showValue = true,
   formatValue = String,
   marks,
+  readOnly,
+  error,
   id,
   className,
   disabled,
+  ref,
   onPointerDown,
   onPointerMove,
   onPointerUp,
@@ -80,19 +91,54 @@ export function Slider({
     (v) => commit.current?.(v),
   )
   const at = shown ?? value
+  // The range input is the form field. React writes the drawn place into it, so a glide is not a value set by code.
+  const inner = useRef<HTMLInputElement>(null)
+  const gliding = useRef(false)
+  gliding.current = shown !== null
+  const field = useField({
+    input: inner,
+    name: inputRest.name,
+    error,
+    onSync: () => {
+      const el = inner.current
+      if (el && !gliding.current && Number(el.value) !== latest.current.value) set.current(Number(el.value))
+    },
+  })
+  const shownError = field.error
+  const errorId = `${inputId}-error`
+  // React keeps the input's default in step with its value, so a form reset is brought back here.
+  const [firstValue] = useState(value)
+  const resetTo = useRef(value)
+  resetTo.current = valueProp === undefined ? (defaultValue ?? min) : firstValue
+  useLayoutEffect(() => {
+    if (!inner.current) return
+    return onFormReset(inner.current, () => {
+      slider.current!.end()
+      set.current(resetTo.current)
+    })
+  }, [])
+  const describedBy = [shownError ? errorId : null, inputRest['aria-describedby']].filter(Boolean).join(' ')
   const pct = max === min ? 0 : ((at - min) / (max - min)) * 100
   const text = formatValue(value)
 
   useEffect(() => () => slider.current!.destroy(), [])
 
   return (
-    <div className={cx(styles.root, className)} data-slot="slider" data-orientation="horizontal" data-disabled={disabled || undefined}>
+    <div
+      className={cx(styles.root, className)}
+      data-slot="slider"
+      data-orientation="horizontal"
+      data-disabled={disabled || undefined}
+      data-readonly={readOnly || undefined}
+      data-invalid={shownError ? true : undefined}
+    >
       <div className={styles.head}>
         <label htmlFor={inputId} className={styles.label} data-slot="field-label">{label}</label>
         {showValue && <output htmlFor={inputId} className={styles.value} data-slot="slider-value" aria-hidden="true">{text}</output>}
       </div>
       <div className={styles.trackWrap} data-slot="slider-control" data-gliding={shown !== null || undefined} style={{ ['--pct' as string]: `${pct}%`, ['--p' as string]: pct / 100 }}>
         <input
+          ref={mergeRefs(inner, ref)}
           id={inputId}
           type="range"
           className={styles.input}
@@ -104,13 +150,18 @@ export function Slider({
           disabled={disabled}
           aria-valuenow={value}
           aria-valuetext={formatValue === String ? undefined : text}
+          aria-readonly={readOnly || undefined}
+          aria-invalid={shownError ? true : undefined}
           // Only "input": the browser's "change" on release carries the thumb's mid-glide place, not the value.
           onChange={(e) => {
+            if (readOnly) return
             if (e.nativeEvent.type === 'input') slider.current!.input(e.currentTarget, Number(e.target.value))
+            field.changed()
             onChange?.(e)
           }}
           onPointerDown={(e: PointerEvent<HTMLInputElement>) => {
-            slider.current!.down(e.currentTarget, e.clientX)
+            if (readOnly) e.preventDefault()
+            else slider.current!.down(e.currentTarget, e.clientX)
             onPointerDown?.(e)
           }}
           onPointerMove={(e: PointerEvent<HTMLInputElement>) => {
@@ -128,10 +179,12 @@ export function Slider({
           onLostPointerCapture={slider.current.end}
           onBlur={(e) => {
             slider.current!.end()
+            field.blurred()
             onBlur?.(e)
           }}
           onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
             onKeyDown?.(e)
+            if (readOnly && e.key !== 'Tab') e.preventDefault()
             if (!e.defaultPrevented && slider.current!.key(e.key)) e.preventDefault()
           }}
           onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => {
@@ -139,6 +192,7 @@ export function Slider({
             onKeyUp?.(e)
           }}
           {...inputRest}
+          aria-describedby={describedBy || undefined}
         />
         {showValue && (
           <span className={styles.bubble} data-slot="slider-bubble" aria-hidden="true">{text}</span>
@@ -152,6 +206,7 @@ export function Slider({
           </span>
         ) : null}
       </div>
+      <FieldMessage helpId={`${inputId}-help`} errorId={errorId} error={shownError} />
     </div>
   )
 }

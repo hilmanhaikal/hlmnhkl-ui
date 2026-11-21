@@ -2,7 +2,7 @@
 import { inject, type InjectionKey, type Ref } from 'vue'
 
 // What the Vue RadioGroup shares with its Radio parts.
-export type RadioContext = { name: Ref<string>; value: Ref<string | null>; set: (v: string) => void; disabled: Ref<boolean | undefined>; invalid: Ref<boolean> }
+export type RadioContext = { name: Ref<string>; value: Ref<string | null>; set: (v: string) => void; disabled: Ref<boolean | undefined>; invalid: Ref<boolean>; readOnly?: Ref<boolean | undefined> }
 
 export const radioKey: InjectionKey<RadioContext> = Symbol('gooee-radio')
 

@@ -5,6 +5,7 @@ import { useId, useRef, type ComponentPropsWithRef, type PointerEvent, type Reac
 import { cx } from '../../internal/cx'
 import { FieldMessage } from '../../internal/FieldMessage'
 import { mergeRefs } from '../../internal/mergeRefs'
+import { useField } from '../../internal/useField'
 import styles from './InputGroup.module.css'
 
 export type InputGroupProps = Omit<ComponentPropsWithRef<'input'>, 'size' | 'prefix'> & {
@@ -36,12 +37,16 @@ export function InputGroup({
   className,
   disabled,
   ref,
+  onChange,
+  onBlur,
   'aria-describedby': describedByProp,
   ...rest
 }: InputGroupProps) {
   const auto = useId()
   const inputId = id ?? auto
   const inner = useRef<HTMLInputElement>(null)
+  const field = useField({ input: inner, name: rest.name, error })
+  const shownError = field.error
   const helpId = `${inputId}-help`
   const errorId = `${inputId}-error`
   // Text beside the field, such as a unit or "https://", is read as part of its description.
@@ -49,8 +54,8 @@ export function InputGroup({
   const describedBy = [
     text(prefix) ? `${inputId}-prefix` : null,
     text(suffix) ? `${inputId}-suffix` : null,
-    help && !error ? helpId : null,
-    error ? errorId : null,
+    help && !shownError ? helpId : null,
+    shownError ? errorId : null,
     describedByProp,
   ]
     .filter(Boolean)
@@ -72,7 +77,7 @@ export function InputGroup({
   return (
     <div data-slot="input-group" className={cx(styles.root, className)}>
       <label htmlFor={inputId} data-slot="field-label" className={cx(styles.label, hideLabel && styles.srOnly)}>{label}</label>
-      <div data-slot="input-group-field" className={cx(styles.group, styles[size])} data-invalid={error ? true : undefined} data-disabled={disabled || undefined}>
+      <div data-slot="input-group-field" className={cx(styles.group, styles[size])} data-invalid={shownError ? true : undefined} data-disabled={disabled || undefined}>
         {prefix !== undefined && prefix !== null && addon(prefix, 'prefix')}
         <input
           {...rest}
@@ -81,12 +86,20 @@ export function InputGroup({
           data-slot="input-group-control"
           className={styles.input}
           disabled={disabled}
-          aria-invalid={error ? true : undefined}
+          aria-invalid={shownError ? true : undefined}
           aria-describedby={describedBy || undefined}
+          onChange={(e) => {
+            field.changed()
+            onChange?.(e)
+          }}
+          onBlur={(e) => {
+            field.blurred()
+            onBlur?.(e)
+          }}
         />
         {suffix !== undefined && suffix !== null && addon(suffix, 'suffix')}
       </div>
-      <FieldMessage helpId={helpId} errorId={errorId} help={help} error={error} />
+      <FieldMessage helpId={helpId} errorId={errorId} help={help} error={shownError} />
     </div>
   )
 }

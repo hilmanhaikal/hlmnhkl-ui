@@ -1,7 +1,7 @@
 // Gooee UI, MIT licence. https://gooee.dev
 'use client'
 
-import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ChangeEventHandler, type FocusEventHandler, type KeyboardEvent, type ReactNode, type Ref } from 'react'
 import { cx } from '../../internal/cx'
 import { CheckIcon, ChevronDownIcon } from '../../icons/icons'
 import { useDismiss } from '../../internal/layers'
@@ -13,6 +13,9 @@ import { useFloating } from '../../internal/useFloating'
 import { usePresence } from '../../internal/usePresence'
 import { createListbox } from '../../internal/motion/listbox'
 import { FieldMessage } from '../../internal/FieldMessage'
+import { leavesField } from '../../internal/formCore'
+import { mergeRefs } from '../../internal/mergeRefs'
+import { changeEvent, retarget, setNativeValue, useField, useMirror } from '../../internal/useField'
 import styles from './Select.module.css'
 
 export type SelectOption = { value: string; label: string; disabled?: boolean; hint?: string }
@@ -49,6 +52,16 @@ export type SelectProps = {
   disabled?: boolean
   /** Submits the selected value in a hidden field with this name. */
   name?: string
+  /** The form cannot be sent while nothing is chosen. */
+  required?: boolean
+  /** Shows the value and sends it with the form, but the list does not open. Shown with data-readonly. */
+  readOnly?: boolean
+  /** Reaches the hidden input that holds the value and the name. Its focus() moves focus to the field, so react-hook-form's register works. */
+  ref?: Ref<HTMLInputElement>
+  /** Called after a choice with a change event from the hidden input, as a form library's register expects. */
+  onChange?: ChangeEventHandler<HTMLInputElement>
+  /** Called when focus leaves the field. The event's target is the hidden input, so a form library finds the field by name. */
+  onBlur?: FocusEventHandler<HTMLButtonElement>
   /** Id of the button, so a `<label htmlFor>` can point at it. Inner ids add a suffix to it. */
   id?: string
   /** Extra class for the root element. */
@@ -68,6 +81,11 @@ export function Select({
   labels: labelsProp,
   disabled,
   name,
+  required,
+  readOnly,
+  ref,
+  onChange,
+  onBlur,
   id,
   className,
 }: SelectProps) {
@@ -83,7 +101,14 @@ export function Select({
   const [value, setValue] = useControllable<string | null>(valueProp, defaultValue, (v) => v !== null && onValueChange?.(v))
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(-1)
+  const rootRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
+  // The hidden input holds the value for the form and for form libraries; a form reset goes back to the first value.
+  const input = useRef<HTMLInputElement>(null)
+  const [firstValue] = useState(value)
+  useMirror(input, value ?? '', (valueProp === undefined ? defaultValue : firstValue) ?? '')
+  const field = useField({ input, name, error, onSync: () => input.current && input.current.value !== (value ?? '') && setValue(input.current.value || null) })
+  const shownError = field.error
   const listRef = useRef<HTMLDivElement>(null)
   const optionRefs = useRef<Array<HTMLDivElement | null>>([])
   const { mounted, state } = usePresence(open, 'morph-out')
@@ -105,7 +130,7 @@ export function Select({
   const { enabled, first } = list.current
 
   const openList = (at?: number) => {
-    if (disabled) return
+    if (disabled || readOnly) return
     setOpen(true)
     setActive(at ?? (enabled(selectedIndex) ? selectedIndex : first()))
   }
@@ -113,9 +138,17 @@ export function Select({
     setOpen(false)
     if (focusTrigger) triggerRef.current?.focus()
   }
+  // A person's choice: the hidden input fires a real change event, then the caller's onChange gets it.
+  const commit = (next: string) => {
+    if (next === value) return
+    const native = input.current && setNativeValue(input.current, next)
+    setValue(next)
+    field.changed()
+    if (native) onChange?.(changeEvent(native, input.current!))
+  }
   const choose = (i: number) => {
     if (!enabled(i)) return
-    setValue(options[i].value)
+    commit(options[i].value)
     close()
   }
 
@@ -140,16 +173,16 @@ export function Select({
     else if (r.active !== undefined) setActive(r.active)
     if (r.choose) choose(active)
     if (r.tab) {
-      if (enabled(active)) setValue(options[active].value)
+      if (enabled(active)) commit(options[active].value)
       setOpen(false)
     }
   }
 
   const empty = options.length === 0
-  const describedBy = [help && !error ? helpId : null, error ? errorId : null, open && empty ? emptyId : null].filter(Boolean).join(' ')
+  const describedBy = [help && !shownError ? helpId : null, shownError ? errorId : null, open && empty ? emptyId : null].filter(Boolean).join(' ')
 
   return (
-    <div className={cx(styles.root, className)} data-slot="select">
+    <div ref={rootRef} className={cx(styles.root, className)} data-slot="select" data-readonly={readOnly || undefined}>
       <span id={labelId} className={cx(styles.label, hideLabel && styles.hiddenLabel)} data-slot="field-label" onClick={() => triggerRef.current?.focus()}>
         {label}
       </span>
@@ -161,17 +194,24 @@ export function Select({
         className={styles.trigger}
         data-slot="select-trigger"
         data-state={open ? 'open' : 'closed'}
-        data-invalid={error ? true : undefined}
+        data-invalid={shownError ? true : undefined}
         aria-labelledby={`${labelId} ${triggerId}`}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listId}
         aria-activedescendant={open && enabled(active) ? `${baseId}-opt-${active}` : undefined}
-        aria-invalid={error ? true : undefined}
+        aria-invalid={shownError ? true : undefined}
+        aria-required={required || undefined}
+        aria-readonly={readOnly || undefined}
         aria-describedby={describedBy || undefined}
         disabled={disabled}
         onClick={() => (open ? close() : openList())}
         onKeyDown={onKeyDown}
+        onBlur={(e) => {
+          if (!leavesField(e.nativeEvent, rootRef.current, listRef.current)) return
+          field.blurred()
+          onBlur?.(retarget(e, input.current))
+        }}
       >
         <span className={cx(styles.value, !selected && styles.placeholder)} data-slot="select-value">
           <span key={selected?.value ?? 'none'} className={styles.valueText} title={selected ? selected.label : placeholder}>
@@ -180,8 +220,20 @@ export function Select({
         </span>
         <ChevronDownIcon className={styles.chevron} data-slot="select-icon" />
       </button>
-      {name && <input type="hidden" name={name} value={value ?? ''} />}
-      <FieldMessage helpId={helpId} errorId={errorId} help={help} error={error} />
+      {/* Holds the value for the form. Not type hidden, so required works; focus moves on to the field. */}
+      <input
+        ref={mergeRefs(input, ref)}
+        name={name}
+        required={required}
+        disabled={disabled}
+        tabIndex={-1}
+        aria-hidden="true"
+        autoComplete="off"
+        className={styles.input}
+        data-slot="select-input"
+        onFocus={() => triggerRef.current?.focus()}
+      />
+      <FieldMessage helpId={helpId} errorId={errorId} help={help} error={shownError} />
       {mounted && (
         <Portal>
           <div

@@ -824,6 +824,11 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
           "path": "registry/src/ui/internal/liquidPath.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidPath.ts"
@@ -857,6 +862,11 @@
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -925,6 +935,11 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
           "path": "registry/src/ui/internal/liquidPath.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidPath.ts"
@@ -958,6 +973,11 @@
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -1794,6 +1814,47 @@
       ]
     },
     {
+      "name": "form",
+      "type": "registry:item",
+      "title": "Form",
+      "description": "A real form that gives every Gooee field its errors by name, shows the browser's own checks in the fields' style, and works with React 19 actions.",
+      "registryDependencies": [
+        "hilmanhaikal/gooee-ui/core"
+      ],
+      "files": [
+        {
+          "path": "registry/src/ui/components/Form/Form.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/components/Form/Form.tsx"
+        },
+        {
+          "path": "registry/src/ui/components/Form/index.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/components/Form/index.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/mergeRefs.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/mergeRefs.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
+        },
+        {
+          "path": "registry/src/ui/tokens.css",
+          "type": "registry:file",
+          "target": "~/src/ui/tokens.css"
+        }
+      ]
+    },
+    {
       "name": "form-field",
       "type": "registry:item",
       "title": "FormField",
@@ -2047,6 +2108,11 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
           "path": "registry/src/ui/internal/liquidMore.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidMore.ts"
@@ -2075,6 +2141,11 @@
           "path": "registry/src/ui/internal/motion/liquidMore.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/liquidMore.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -2128,6 +2199,11 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
           "path": "registry/src/ui/internal/mergeRefs.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/mergeRefs.ts"
@@ -2136,6 +2212,11 @@
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -2494,6 +2575,16 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/mergeRefs.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/mergeRefs.ts"
+        },
+        {
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
@@ -2507,6 +2598,11 @@
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -2681,6 +2777,11 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
           "path": "registry/src/ui/internal/liquidMore.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidMore.ts"
@@ -2709,6 +2810,11 @@
           "path": "registry/src/ui/internal/motion/liquidMore.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/liquidMore.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -3031,6 +3137,16 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/mergeRefs.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/mergeRefs.ts"
+        },
+        {
           "path": "registry/src/ui/internal/motion.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion.ts"
@@ -3039,6 +3155,11 @@
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -3082,6 +3203,16 @@
           "target": "~/src/ui/components/SegmentedControl/index.ts"
         },
         {
+          "path": "registry/src/ui/internal/FieldMessage.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/FieldMessage.module.css"
+        },
+        {
+          "path": "registry/src/ui/internal/FieldMessage.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/FieldMessage.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -3092,6 +3223,11 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
           "path": "registry/src/ui/internal/liquidMatter.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidMatter.ts"
@@ -3100,6 +3236,11 @@
           "path": "registry/src/ui/internal/liquidPath.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidPath.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/mergeRefs.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/mergeRefs.ts"
         },
         {
           "path": "registry/src/ui/internal/motion.ts",
@@ -3125,6 +3266,11 @@
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -3350,6 +3496,11 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
           "path": "registry/src/ui/internal/liquidMore.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidMore.ts"
@@ -3390,6 +3541,11 @@
           "target": "~/src/ui/internal/useControllable.ts"
         },
         {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
+        },
+        {
           "path": "registry/src/ui/tokens.css",
           "type": "registry:file",
           "target": "~/src/ui/tokens.css"
@@ -3421,6 +3577,16 @@
           "target": "~/src/ui/components/SegmentedControl/index.ts"
         },
         {
+          "path": "registry/src/ui/internal/FieldMessage.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/FieldMessage.module.css"
+        },
+        {
+          "path": "registry/src/ui/internal/FieldMessage.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/FieldMessage.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -3431,6 +3597,11 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
           "path": "registry/src/ui/internal/liquidMatter.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidMatter.ts"
@@ -3439,6 +3610,11 @@
           "path": "registry/src/ui/internal/liquidPath.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidPath.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/mergeRefs.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/mergeRefs.ts"
         },
         {
           "path": "registry/src/ui/internal/motion.ts",
@@ -3459,6 +3635,11 @@
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -3527,6 +3708,11 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
           "path": "registry/src/ui/internal/keyboard.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/keyboard.ts"
@@ -3550,6 +3736,11 @@
           "path": "registry/src/ui/internal/liquidPath.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidPath.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/mergeRefs.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/mergeRefs.ts"
         },
         {
           "path": "registry/src/ui/internal/motion.ts",
@@ -3595,6 +3786,11 @@
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/internal/useFloating.ts",
@@ -3780,6 +3976,16 @@
           "target": "~/src/ui/components/Slider/index.ts"
         },
         {
+          "path": "registry/src/ui/internal/FieldMessage.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/FieldMessage.module.css"
+        },
+        {
+          "path": "registry/src/ui/internal/FieldMessage.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/FieldMessage.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -3788,6 +3994,16 @@
           "path": "registry/src/ui/internal/feel.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/feel.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/mergeRefs.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/mergeRefs.ts"
         },
         {
           "path": "registry/src/ui/internal/motion.ts",
@@ -3803,6 +4019,11 @@
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -4071,6 +4292,16 @@
           "target": "~/src/ui/components/Switch/index.ts"
         },
         {
+          "path": "registry/src/ui/internal/FieldMessage.module.css",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/FieldMessage.module.css"
+        },
+        {
+          "path": "registry/src/ui/internal/FieldMessage.tsx",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/FieldMessage.tsx"
+        },
+        {
           "path": "registry/src/ui/internal/cx.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/cx.ts"
@@ -4081,9 +4312,19 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
           "path": "registry/src/ui/internal/liquidPath.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidPath.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/mergeRefs.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/mergeRefs.ts"
         },
         {
           "path": "registry/src/ui/internal/motion.ts",
@@ -4104,6 +4345,11 @@
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -4416,6 +4662,11 @@
           "target": "~/src/ui/internal/feel.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
           "path": "registry/src/ui/internal/liquidMore.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/liquidMore.ts"
@@ -4449,6 +4700,11 @@
           "path": "registry/src/ui/internal/motion/textarea.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/motion/textarea.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
@@ -4654,9 +4910,24 @@
           "target": "~/src/ui/internal/cx.ts"
         },
         {
+          "path": "registry/src/ui/internal/formCore.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/formCore.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/mergeRefs.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/mergeRefs.ts"
+        },
+        {
           "path": "registry/src/ui/internal/useControllable.ts",
           "type": "registry:file",
           "target": "~/src/ui/internal/useControllable.ts"
+        },
+        {
+          "path": "registry/src/ui/internal/useField.ts",
+          "type": "registry:file",
+          "target": "~/src/ui/internal/useField.ts"
         },
         {
           "path": "registry/src/ui/tokens.css",
